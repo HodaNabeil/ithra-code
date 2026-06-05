@@ -3,12 +3,8 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { cookies, headers } from 'next/headers';
-import Stripe from 'stripe';
 import { env } from '@/config/env';
-
-const stripe = new Stripe(env.STRIPE_API_KEY, {
-  apiVersion: '2025-02-24.acacia' as any,
-});
+import { stripe } from '@/lib/stripe';
 
 export async function addToCart(courseId: string, userId?: string) {
   try {

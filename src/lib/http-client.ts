@@ -54,8 +54,6 @@ function createAxiosInstance(): AxiosInstance {
   // Request interceptor - logging
   instance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      console.log(`[HTTP] ${config.method?.toUpperCase()} ${config.url}`);
-
       // Inject access token from cookies
       const token = cookieManager.getAccessToken();
       if (token) {
@@ -105,8 +103,6 @@ function createAxiosInstance(): AxiosInstance {
             {},
             { withCredentials: true },
           );
-
-          console.log('✅ Token refresh successful');
 
           // Update cookies with new tokens
           if (refreshResponse.data?.data) {

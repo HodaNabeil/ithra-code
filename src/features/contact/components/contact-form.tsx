@@ -7,10 +7,9 @@ import { Button } from '@/components/ui/button';
 import { FieldGroup, FieldSet } from '@/components/ui/field';
 import { Spinner } from '@/components/ui/spinner';
 import useFormFields from '@/hooks/useFormFields';
-import useFormValidations from '@/hooks/useFormValidations';
 import { contactAction } from '../actions/contact.actions';
 import { useState } from 'react';
-import { ContactInput } from '@/validation/contact';
+import { ContactInput, contactSchema } from '@/validation/contact';
 import FormField from '@/components/shared/form-fields';
 import { APP_ROUTES } from '@/constant/enums';
 
@@ -18,12 +17,9 @@ export default function ContactForm() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const { getFormFields } = useFormFields({ slug: APP_ROUTES.CONTACT });
-  const { getValidationSchema } = useFormValidations({
-    slug: APP_ROUTES.CONTACT,
-  });
 
   const form = useForm<ContactInput>({
-    resolver: zodResolver(getValidationSchema() as any),
+    resolver: zodResolver(contactSchema),
     mode: 'onChange',
     defaultValues: {
       email: '',

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { paymentQueue } from '@/lib/queue';
 import { logger } from '@/lib/logger';
 import { env } from '@/config/env';
+import Stripe from 'stripe';
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -24,8 +25,13 @@ export async function POST(req: Request) {
   logger.info({ type: event.type }, 'Webhook received');
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as any;
-    const orderId = session.metadata.orderId;
+    const session = event.data.object as Stripe.Checkout.Session;
+    const orderId = session.metadata?.orderId;
+
+    if (!orderId) {
+      logger.error({ sessionId: session.id }, 'No orderId in session metadata');
+      return new Response('Missing orderId', { status: 400 });
+    }
 
     try {
       const order = await prisma.order.findUnique({
