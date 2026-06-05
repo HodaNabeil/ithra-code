@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleLectureCompletion } from '../actions/my-course';
 import { MY_COURSES_TAGS } from '@/lib/query-keys';
+import type { MyCourseLecturesDTO } from '@/types/my-courses/my-courses.dto';
 
 export function useToggleLectureCompletion(courseSlug: string) {
   const queryClient = useQueryClient();
@@ -25,15 +26,15 @@ export function useToggleLectureCompletion(courseSlug: string) {
       );
 
       // Optimistically update to the new value
-      queryClient.setQueryData(
+      queryClient.setQueryData<MyCourseLecturesDTO>(
         MY_COURSES_TAGS.sections(courseSlug),
-        (old: any) => {
+        (old) => {
           if (!old) return old;
           return {
             ...old,
-            sections: old.sections.map((section: any) => ({
+            sections: old.sections.map((section) => ({
               ...section,
-              lectures: section.lectures.map((lecture: any) =>
+              lectures: section.lectures.map((lecture) =>
                 lecture.id === lectureId
                   ? { ...lecture, isCompleted }
                   : lecture,

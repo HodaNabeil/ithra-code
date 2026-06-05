@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Redis from 'ioredis';
 import 'dotenv/config';
 

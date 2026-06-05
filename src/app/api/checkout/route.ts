@@ -1,8 +1,12 @@
 import { prisma } from '@/lib/prisma';
 import { stripe } from '@/lib/stripe';
 import { env } from '@/config/env';
-import { Currency } from '@prisma/client';
+import { Currency, Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
+
+type CheckoutLineItem = NonNullable<
+  NonNullable<Parameters<typeof stripe.checkout.sessions.create>[0]>['line_items']
+>[number];
 
 export async function POST(req: Request) {
   try {
@@ -12,9 +16,9 @@ export async function POST(req: Request) {
       return new Response('Missing userId', { status: 400 });
     }
 
-    const line_items: any[] = [];
+    const line_items: CheckoutLineItem[] = [];
     let totalCents = 0;
-    const orderItemsData: any[] = [];
+    const orderItemsData: Prisma.OrderItemCreateManyOrderInput[] = [];
 
     // Handle cart items if provided, or single courseId
     if (items && Array.isArray(items) && items.length > 0) {

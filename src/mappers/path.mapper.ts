@@ -6,6 +6,7 @@ import type {
   PathListDTO,
   PathDetailDTO,
   TrackDetailDTO,
+  PathSectionDTO,
 } from '@/types/path/path.dto';
 import { PathCategoryDTO } from '@/types/path/path.dto';
 
@@ -57,7 +58,7 @@ export function mapPathDetailToDTO(path: DB_PathDetailItem): PathDetailDTO {
     tracks,
     sections: path.pathSections.map((section) => ({
       id: section.id,
-      type: section.type as any,
+      type: section.type as PathSectionDTO['type'],
       content: section.content,
       order: section.order,
     })),
