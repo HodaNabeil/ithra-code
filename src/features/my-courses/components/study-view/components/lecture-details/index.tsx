@@ -17,10 +17,7 @@ export function LectureContentTabs({
   return (
     <Tabs className="w-full px-4 border-b border-border/40" dir="rtl">
       <TabTriggers />
-      <TabPanels
-        description={description || ''}
-        updatedAt={updatedAt}
-      />
+      <TabPanels description={description || ''} updatedAt={updatedAt} />
     </Tabs>
   );
 }

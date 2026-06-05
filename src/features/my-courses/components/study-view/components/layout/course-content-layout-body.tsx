@@ -5,9 +5,7 @@ import React, { useEffect } from 'react';
 import { CourseMainContainer } from './course-main-container';
 import { CourseSidebarWrapper } from './course-sidebar-wrapper';
 import { cn } from '@/lib/utils';
-import {
-  useCourseLearningLayoutStore,
-} from '@/features/my-courses/stores/use-course-learning-layout-store';
+import { useCourseLearningLayoutStore } from '@/features/my-courses/stores/use-course-learning-layout-store';
 
 interface CourseContentLayoutBodyProps {
   courseSlug: string;
@@ -35,15 +33,14 @@ export const CourseContentLayoutBody: React.FC<
       dir="rtl"
     >
       {/* Main Content Area */}
-      <CourseMainContainer>
-        {children}
-      </CourseMainContainer>
+      <CourseMainContainer>{children}</CourseMainContainer>
 
       {/* Sidebar Area */}
-      <CourseSidebarWrapper courseSlug={courseSlug} setSidebarOpen={setSidebarOpen}
-       
-       toggleMaximized={toggleMaximized}/>
-    
+      <CourseSidebarWrapper
+        courseSlug={courseSlug}
+        setSidebarOpen={setSidebarOpen}
+        toggleMaximized={toggleMaximized}
+      />
     </div>
   );
 };

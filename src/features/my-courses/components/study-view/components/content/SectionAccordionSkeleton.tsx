@@ -11,7 +11,7 @@ export function SectionAccordionSkeleton() {
               <Skeleton className="h-4 w-12 bg-primary/10" />
               <Skeleton className="h-4 w-[60%] max-w-[180px]" />
             </div>
-            
+
             {/* Metadata Skeleton */}
             <div className="flex items-center gap-2" dir="ltr">
               <Skeleton className="h-3 w-16" />
@@ -19,7 +19,7 @@ export function SectionAccordionSkeleton() {
               <Skeleton className="h-3 w-8" />
             </div>
           </div>
-          
+
           {/* First item expanded effect */}
           {i === 1 && (
             <div className="mt-4 space-y-4 pr-1">

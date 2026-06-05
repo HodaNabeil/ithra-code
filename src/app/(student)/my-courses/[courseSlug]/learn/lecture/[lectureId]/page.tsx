@@ -1,14 +1,18 @@
-import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
-import { 
-  getLectureDetails, 
-  getLectureNavigation 
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query';
+import {
+  getLectureDetails,
+  getLectureNavigation,
 } from '@/features/my-courses/actions/my-course';
 import { LectureView } from '@/features/my-courses/components/study-view/components/lecture-details';
 import { MY_COURSES_TAGS } from '@/lib/query-keys';
 
 /**
  * LectureDetailsPage (Server Component)
- * 
+ *
  * SRP: This page's only responsibility is to resolve route parameters
  * and hydrate the React Query cache for the client-side LectureView.
  */
@@ -35,10 +39,7 @@ export default async function LectureDetailsPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <LectureView 
-        lectureId={lectureId} 
-        courseSlug={courseSlug} 
-      />
+      <LectureView lectureId={lectureId} courseSlug={courseSlug} />
     </HydrationBoundary>
   );
 }

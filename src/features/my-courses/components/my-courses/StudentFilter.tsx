@@ -1,6 +1,10 @@
 import StudentCoursesFilters from './courses-filters/student-courses-filters';
 import StudentCoursesSearch from './courses-filters/student-courses-search';
-import { StudentFilters, Instructor, StudentCourseItem } from '@/types/course/course.types';
+import {
+  StudentFilters,
+  Instructor,
+  StudentCourseItem,
+} from '@/types/course/course.types';
 
 interface StudentFilterProps {
   categories?: Array<{ value: string; label: string }>;
@@ -29,7 +33,7 @@ export default function StudentFilter({
   }));
 
   return (
-    <section >
+    <section>
       <div className="flex container  flex-row items-center justify-between gap-4">
         <StudentCoursesFilters
           categories={categories}
@@ -42,7 +46,6 @@ export default function StudentFilter({
           onSearch={onLocalSearch}
           suggestions={suggestions}
           placeholder="البحث في دوراتي"
-          
         />
       </div>
     </section>

@@ -8,7 +8,7 @@ import { useToggleLectureCompletion } from '@/features/my-courses/hooks/useMyCou
 export function useLectureItem(id: string, courseSlug: string) {
   const router = useRouter();
   const params = useParams();
-  
+
   const toggleMutation = useToggleLectureCompletion(courseSlug);
 
   const isActive = params.lectureId === id;

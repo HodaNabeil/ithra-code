@@ -11,7 +11,9 @@ type CoursesListingJsonLdProps = {
   query: CoursesPageQuery;
 };
 
-export async function CoursesListingJsonLd({ query }: CoursesListingJsonLdProps) {
+export async function CoursesListingJsonLd({
+  query,
+}: CoursesListingJsonLdProps) {
   let courses: CourseListDTO[] = [];
 
   try {

@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
 import { Tabs, TabsContent } from '@/components/shared/Tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SectionAccordion } from '../content/SectionAccordion';
-import { CourseSidebarHeader } from './CourseSidebarHeader';
-import { CourseSidebarAssistant } from './CourseSidebarAssistant';
+import { CourseSidebarHeader } from './course-sidebar-header';
+import { CourseSidebarAssistant } from './course-sidebar-assistant';
 
 interface CourseSidebarProps {
   courseSlug: string;
@@ -14,13 +13,12 @@ interface CourseSidebarProps {
   isMaximized?: boolean;
 }
 
-export async function CourseSidebar({
+export const CourseSidebar = ({
   courseSlug,
   onClose,
   onMaximize,
   isMaximized,
-}: CourseSidebarProps) {
-}) => {
+}: CourseSidebarProps) => {
   return (
     <Tabs
       defaultValue="content"

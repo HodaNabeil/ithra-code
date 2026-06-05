@@ -46,7 +46,7 @@ export default function NewCoursePage() {
       try {
         const data = await getPaths();
         setPaths(data || []);
-      } catch (error) {
+      } catch (_error) {
         toast.error('فشل في تحميل المسارات');
       } finally {
         setIsLoadingPaths(false);
@@ -60,7 +60,7 @@ export default function NewCoursePage() {
       const course = await createCourse(values.slug, values.pathId);
       toast.success('تم إنشاء الكورس بنجاح');
       router.push(`/admin/courses/${course.slug}/manage/goals`);
-    } catch (error) {
+    } catch (_error) {
       toast.error('حدث خطأ ما، حاول مرة أخرى');
     }
   };

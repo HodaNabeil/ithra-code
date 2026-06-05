@@ -7,7 +7,6 @@ import { getCourseSections } from '@/features/my-courses/actions/my-course';
 import { CourseContentLayoutBody } from '@/features/my-courses/components/study-view/components/layout/course-content-layout-body';
 import { CourseLearningHeader } from '@/features/my-courses/components/study-view/components/layout/course-learning-header';
 
-
 export default async function CourseLearningLayout({
   children,
   params,
@@ -24,11 +23,10 @@ export default async function CourseLearningLayout({
     redirect(`${APP_ROUTES.COURSES}/${courseSlug}?notEnrolled=1`);
   }
 
-
   return (
     <div className="h-screen flex flex-col overflow-hidden" dir="rtl">
       <CourseLearningHeader
-        courseTitle={"mastering-react-hooks"}
+        courseTitle={'mastering-react-hooks'}
         completedCount={10}
         totalCount={20}
       />

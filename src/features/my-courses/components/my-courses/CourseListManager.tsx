@@ -3,8 +3,15 @@
 import { useState, useMemo } from 'react';
 import StudentFilter from './StudentFilter';
 import CourseList from './CourseList';
-import { StudentFilters, StudentCourseItem, Instructor } from '@/types/course/course.types';
-import { filterStudentCourses, sortStudentCourses } from '../../services/client/course-logic';
+import {
+  StudentFilters,
+  StudentCourseItem,
+  Instructor,
+} from '@/types/course/course.types';
+import {
+  filterStudentCourses,
+  sortStudentCourses,
+} from '../../services/client/course-logic';
 
 interface CourseListManagerProps {
   initialCourses: StudentCourseItem[];
@@ -27,7 +34,7 @@ export default function CourseListManager({
 
   const filteredAndSorted = useMemo(() => {
     const filtered = filterStudentCourses(initialCourses, searchQuery, filters);
-    
+
     return sortStudentCourses(filtered, sortBy);
   }, [searchQuery, filters, initialCourses, sortBy]);
 
@@ -53,12 +60,12 @@ export default function CourseListManager({
       />
 
       <section className="section-gap pb-20">
-          <CourseList
-            courses={initialCourses} 
-            filteredCourses={filteredAndSorted}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-          />
+        <CourseList
+          courses={initialCourses}
+          filteredCourses={filteredAndSorted}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+        />
       </section>
     </>
   );

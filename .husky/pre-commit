@@ -1,0 +1,18 @@
+echo "🔍 Running pre-commit checks..."
+
+# Run linting
+echo "📝 Running linter..."
+pnpm lint || {
+  echo "❌ Linting failed. Please fix the errors before committing."
+  exit 1
+}
+
+# Run type checking if available
+echo "🔎 Running type check..."
+if pnpm run --if-present type-check; then
+  echo "✅ Type checking passed!"
+else
+  echo "⚠️  Type checking not available or failed"
+fi
+
+echo "✅ Pre-commit checks passed!"

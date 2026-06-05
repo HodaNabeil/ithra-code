@@ -22,8 +22,11 @@ export const PATH_TAGS = {
 
 export const MY_COURSES_TAGS = {
   all: ['my-courses'] as const,
-  sections: (courseSlug: string) => [...MY_COURSES_TAGS.all, 'sections', courseSlug] as const,
-  lecture: (lectureId: string, courseSlug: string) => [...MY_COURSES_TAGS.all, 'lecture', lectureId, { courseSlug }] as const,
-  navigation: (lectureId: string, courseSlug: string) => [...MY_COURSES_TAGS.all, 'navigation', lectureId, { courseSlug }] as const,
+  sections: (courseSlug: string) =>
+    [...MY_COURSES_TAGS.all, 'sections', courseSlug] as const,
+  lecture: (lectureId: string, courseSlug: string) =>
+    [...MY_COURSES_TAGS.all, 'lecture', lectureId, { courseSlug }] as const,
+  navigation: (lectureId: string, courseSlug: string) =>
+    [...MY_COURSES_TAGS.all, 'navigation', lectureId, { courseSlug }] as const,
   studentCourses: () => [...MY_COURSES_TAGS.all, 'student-enrolled'] as const,
 };

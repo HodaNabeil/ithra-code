@@ -38,7 +38,7 @@ export const CourseSidebarContent: React.FC<CourseSidebarContentProps> = ({
         <TabsContent value="content" className="m-0 h-full flex flex-col">
           <ScrollArea className="flex-1">
             <div className="">
-              <SectionAccordion  courseSlug={courseSlug} />
+              <SectionAccordion courseSlug={courseSlug} />
             </div>
           </ScrollArea>
         </TabsContent>

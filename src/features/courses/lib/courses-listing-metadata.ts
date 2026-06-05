@@ -1,14 +1,10 @@
 import type { Metadata } from 'next';
 import type { CoursesPageQuery } from './courses-page-query';
 
-export function buildCoursesListingMetadata(
-  query: CoursesPageQuery,
-): Metadata {
+export function buildCoursesListingMetadata(query: CoursesPageQuery): Metadata {
   const pageSuffix = query.page > 1 ? ` - صفحة ${query.page}` : '';
   const categorySuffix = query.category ? ` في قسم ${query.category}` : '';
-  const searchSuffix = query.search
-    ? ` - نتائج البحث عن: ${query.search}`
-    : '';
+  const searchSuffix = query.search ? ` - نتائج البحث عن: ${query.search}` : '';
 
   const title = `الدورات التدريبية${categorySuffix}${searchSuffix}${pageSuffix} | منصة إثرالكود`;
   const description = query.category

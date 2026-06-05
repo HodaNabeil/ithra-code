@@ -62,49 +62,49 @@ export function MobileMenu() {
   const closeMenu = () => setIsOpen(false);
 
   return (
-      <div className="flex gap-4 items-center">
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-lg"
-              className="lg:hidden"
-              aria-label="Toggle menu"
-            >
-              <Menu className="w-6 h-6 text-primary" />
-            </Button>
-          </SheetTrigger>
-
-          <SheetContent
-            side="left"
-            className="w-full max-w-none sm:max-w-none p-0"
+    <div className="flex gap-4 items-center">
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon-lg"
+            className="lg:hidden"
+            aria-label="Toggle menu"
           >
-            <SheetHeader className="sr-only">
-              <SheetTitle>القائمة</SheetTitle>
-              <SheetDescription>روابط التصفح الرئيسية</SheetDescription>
-            </SheetHeader>
+            <Menu className="w-6 h-6 text-primary" />
+          </Button>
+        </SheetTrigger>
 
-            <nav className="px-10 py-20 h-full flex flex-col items-start gap-10">
-              {filteredLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={closeMenu}
-                  className={cn(
-                    'block w-full text-base font-medium leading-tight transition-colors',
-                    pathname === link.href
-                      ? 'text-foreground'
-                      : 'text-foreground/85 hover:text-foreground',
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </SheetContent>
-        </Sheet>
+        <SheetContent
+          side="left"
+          className="w-full max-w-none sm:max-w-none p-0"
+        >
+          <SheetHeader className="sr-only">
+            <SheetTitle>القائمة</SheetTitle>
+            <SheetDescription>روابط التصفح الرئيسية</SheetDescription>
+          </SheetHeader>
 
-        <UserNav session={session} />
-      </div>
+          <nav className="px-10 py-20 h-full flex flex-col items-start gap-10">
+            {filteredLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={closeMenu}
+                className={cn(
+                  'block w-full text-base font-medium leading-tight transition-colors',
+                  pathname === link.href
+                    ? 'text-foreground'
+                    : 'text-foreground/85 hover:text-foreground',
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </SheetContent>
+      </Sheet>
+
+      <UserNav session={session} />
+    </div>
   );
 }

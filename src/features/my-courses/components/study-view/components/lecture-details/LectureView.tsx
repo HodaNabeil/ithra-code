@@ -1,7 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useLectureDetails, useLectureNavigation } from '@/features/my-courses/hooks/useMyCoursesQueries';
+import {
+  useLectureDetails,
+  useLectureNavigation,
+} from '@/features/my-courses/hooks/useMyCoursesQueries';
 import { LectureVideoSection } from './LectureVideoSection';
 import { LectureContentTabs } from './index';
 import { DEFAULT_MUX_PLAYBACK_ID } from '@/features/my-courses/constants/video';
@@ -12,18 +15,17 @@ interface LectureViewProps {
   courseSlug: string;
 }
 
-
 export function LectureView({ lectureId, courseSlug }: LectureViewProps) {
-  const { 
-    data: details, 
-    isLoading: isDetailsLoading, 
-    isError: isDetailsError 
+  const {
+    data: details,
+    isLoading: isDetailsLoading,
+    isError: isDetailsError,
   } = useLectureDetails(lectureId, courseSlug);
 
-  const { 
-    data: navigation, 
-    isLoading: isNavLoading 
-  } = useLectureNavigation(lectureId, courseSlug);
+  const { data: navigation, isLoading: isNavLoading } = useLectureNavigation(
+    lectureId,
+    courseSlug,
+  );
 
   if (isDetailsLoading || isNavLoading) {
     return <LectureViewSkeleton />;

@@ -14,9 +14,7 @@ export function CartErrorState() {
         <ShoppingBag className={cn('size-12 text-destructive')} />
       </div>
       <div className="space-y-2">
-        <h2 className={cn('text-2xl font-bold')}>
-          عذراً، حدث خطأ في الاتصال
-        </h2>
+        <h2 className={cn('text-2xl font-bold')}>عذراً، حدث خطأ في الاتصال</h2>
         <p className={cn('text-muted-foreground max-w-xs mx-auto')}>
           لا يمكننا الوصول . يرجى المحاولة مرة أخرى لاحقاً.
         </p>

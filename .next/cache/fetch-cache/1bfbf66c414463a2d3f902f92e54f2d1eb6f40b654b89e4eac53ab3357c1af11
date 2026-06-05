@@ -1,0 +1,1 @@
+{"kind":"FETCH","data":{"headers":{},"body":"[{\"slug\":\"fullstack-web-development\",\"updatedAt\":\"2026-05-05T00:57:35.937Z\"},{\"slug\":\"frontend-development\",\"updatedAt\":\"2026-05-05T00:57:36.006Z\"},{\"slug\":\"backend-development\",\"updatedAt\":\"2026-05-05T00:57:36.070Z\"}]","status":200,"url":""},"revalidate":3600,"tags":["paths"]}

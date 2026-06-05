@@ -16,7 +16,7 @@ export function ThemeProvider({
       if (
         typeof args[0] === 'string' &&
         args[0].includes(
-          'Encountered a script tag while rendering React component'
+          'Encountered a script tag while rendering React component',
         )
       ) {
         return;
@@ -30,9 +30,5 @@ export function ThemeProvider({
     };
   }, []);
 
-  return (
-    <NextThemesProvider {...props}>
-      {children}
-    </NextThemesProvider>
-  );
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

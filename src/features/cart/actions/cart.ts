@@ -63,20 +63,16 @@ export async function addToCart(courseId: string, userId?: string) {
       return { success: true, method: 'database' };
     }
 
-    // --- الحالة الثانية: مستخدم زائر (Cookies) ---
     const cookieStore = await cookies();
     const guestCart = cookieStore.get('guest_cart')?.value;
-    let cartItems: string[] = guestCart ? JSON.parse(guestCart) : [];
-
-    // إضافة الكورس للـ array لو مش موجود
+    const cartItems: string[] = guestCart ? JSON.parse(guestCart) : [];
     if (!cartItems.includes(courseId)) {
       cartItems.push(courseId);
 
-      // حفظ الـ cookie لمدة 7 أيام
       cookieStore.set('guest_cart', JSON.stringify(cartItems), {
         path: '/',
         maxAge: 60 * 60 * 24 * 7,
-        httpOnly: true, // أمان أكثر
+        httpOnly: true,
         sameSite: 'lax',
       });
     }
@@ -124,7 +120,7 @@ export async function mergeCart(userId: string) {
         ),
       );
 
-      cookieStore.delete('guest_cart'); // مسح الكوكيز بعد النجاح
+      cookieStore.delete('guest_cart');
     } catch (e) {
       console.error('Error merging cart:', e);
     }

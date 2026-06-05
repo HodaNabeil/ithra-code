@@ -13,9 +13,9 @@ async function testConnection() {
     await redis.set('ithracode_test', 'working');
     const val = await redis.get('ithracode_test');
     console.log('✅ Data Write/Read Test:', val);
-    await redis.lpush('queue', JSON.stringify({ type: 'test', data: 123 }))
-const job = await redis.rpop('queue')
-console.log('JOB:', JSON.parse(job))
+    await redis.lpush('queue', JSON.stringify({ type: 'test', data: 123 }));
+    const job = await redis.rpop('queue');
+    console.log('JOB:', JSON.parse(job));
   } catch (error) {
     console.error('❌ Redis Connection Failed:', error);
   }

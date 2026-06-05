@@ -26,11 +26,11 @@ export default function SuccessPage() {
 
       setOrder(data);
       setLoading(false);
-      router.refresh()
+      router.refresh();
     };
 
     fetchOrder();
-  }, [orderId]);
+  }, [orderId, router]);
 
   if (loading) {
     return (

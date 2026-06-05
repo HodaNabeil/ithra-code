@@ -32,7 +32,10 @@
 
 ## 📖 Overview
 
-**IthraCode** is a comprehensive, Arabic-first (RTL) online learning platform designed to deliver professional programming and web development courses. The platform supports three core roles — **Student**, **Instructor**, and **Admin** — with an integrated payment system, high-quality video streaming, and live consultation booking.
+**IthraCode** is a comprehensive, Arabic-first (RTL) online learning platform designed to deliver
+professional programming and web development courses. The platform supports three core roles —
+**Student**, **Instructor**, and **Admin** — with an integrated payment system, high-quality video
+streaming, and live consultation booking.
 
 ---
 
@@ -75,20 +78,20 @@
 
 ## 🛠️ Tech Stack
 
-| Layer              | Technology                                                |
-| ------------------ | --------------------------------------------------------- |
-| **Framework**      | [Next.js 16](https://nextjs.org) (App Router)             |
-| **UI**             | React 19 · Tailwind CSS 4 · Radix UI · Lucide Icons       |
-| **Language**       | TypeScript 5                                               |
-| **Database**       | PostgreSQL ([Neon](https://neon.tech)) · Prisma ORM 7      |
-| **Authentication** | NextAuth v5 (Auth.js) · Prisma Adapter                     |
-| **Payments**       | Stripe (Checkout Sessions + Webhooks)                      |
-| **Video**          | [Mux](https://mux.com) (Streaming & Playback)             |
-| **Queue**          | BullMQ + Redis ([Upstash](https://upstash.com))           |
-| **State**          | Zustand · React Query (TanStack)                           |
-| **Forms**          | React Hook Form + Zod                                      |
-| **Code Quality**   | Prettier · ESLint · Husky · Commitlint                     |
-| **Logging**        | Pino + Pino Pretty                                         |
+| Layer              | Technology                                            |
+| ------------------ | ----------------------------------------------------- |
+| **Framework**      | [Next.js 16](https://nextjs.org) (App Router)         |
+| **UI**             | React 19 · Tailwind CSS 4 · Radix UI · Lucide Icons   |
+| **Language**       | TypeScript 5                                          |
+| **Database**       | PostgreSQL ([Neon](https://neon.tech)) · Prisma ORM 7 |
+| **Authentication** | NextAuth v5 (Auth.js) · Prisma Adapter                |
+| **Payments**       | Stripe (Checkout Sessions + Webhooks)                 |
+| **Video**          | [Mux](https://mux.com) (Streaming & Playback)         |
+| **Queue**          | BullMQ + Redis ([Upstash](https://upstash.com))       |
+| **State**          | Zustand · React Query (TanStack)                      |
+| **Forms**          | React Hook Form + Zod                                 |
+| **Code Quality**   | Prettier · ESLint · Husky · Commitlint                |
+| **Logging**        | Pino + Pino Pretty                                    |
 
 ---
 
@@ -260,20 +263,20 @@ MUX_TOKEN_SECRET="..."
 
 ## 📜 Scripts
 
-| Command              | Description                              |
-| -------------------- | ---------------------------------------- |
-| `pnpm dev`           | Start the development server             |
-| `pnpm build`         | Build for production                     |
-| `pnpm start`         | Start the production server              |
-| `pnpm lint`          | Lint the codebase with ESLint            |
-| `pnpm format`        | Format code with Prettier                |
-| `pnpm format:check`  | Check code formatting                    |
-| `pnpm type-check`    | Run TypeScript type checking             |
-| `pnpm seed`          | Seed the database with initial data      |
-| `pnpm db:push`       | Push schema changes to the database      |
-| `pnpm db:reset`      | Reset the database (force)               |
-| `pnpm db:studio`     | Open Prisma Studio                       |
-| `pnpm worker`        | Start the payment processing worker      |
+| Command             | Description                         |
+| ------------------- | ----------------------------------- |
+| `pnpm dev`          | Start the development server        |
+| `pnpm build`        | Build for production                |
+| `pnpm start`        | Start the production server         |
+| `pnpm lint`         | Lint the codebase with ESLint       |
+| `pnpm format`       | Format code with Prettier           |
+| `pnpm format:check` | Check code formatting               |
+| `pnpm type-check`   | Run TypeScript type checking        |
+| `pnpm seed`         | Seed the database with initial data |
+| `pnpm db:push`      | Push schema changes to the database |
+| `pnpm db:reset`     | Reset the database (force)          |
+| `pnpm db:studio`    | Open Prisma Studio                  |
+| `pnpm worker`       | Start the payment processing worker |
 
 ---
 
@@ -339,7 +342,8 @@ sequenceDiagram
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages.
+Contributions are welcome! Please follow the
+[Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages.
 
 ```bash
 # Valid commit message examples

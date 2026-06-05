@@ -14,7 +14,11 @@ export const env = createEnv({
 
     // NextAuth settings
     AUTH_URL: z.string().url().describe('NextAuth base URL'),
-    NEXTAUTH_URL: z.string().url().optional().describe('NextAuth base URL (legacy)'),
+    NEXTAUTH_URL: z
+      .string()
+      .url()
+      .optional()
+      .describe('NextAuth base URL (legacy)'),
     AUTH_SECRET: z.string().describe('NextAuth secret key'),
     AUTH_TRUST_HOST: z.string().optional().default('true'),
 
@@ -42,7 +46,11 @@ export const env = createEnv({
       .describe('Cookie domain for production'),
 
     // Direct database URL (for migrations)
-    DIRECT_URL: z.string().url().optional().describe('Direct database URL for migrations'),
+    DIRECT_URL: z
+      .string()
+      .url()
+      .optional()
+      .describe('Direct database URL for migrations'),
 
     // NextAuth trust host (v5 requirement)
   },

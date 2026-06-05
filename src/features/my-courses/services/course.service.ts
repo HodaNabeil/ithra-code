@@ -49,7 +49,9 @@ export const getStudentCourses = async (
       course: {
         select: {
           track: { select: { id: true, title: true } },
-          instructor: { select: { id: true, firstName: true, lastName: true, email: true } },
+          instructor: {
+            select: { id: true, firstName: true, lastName: true, email: true },
+          },
         },
       },
     },
@@ -61,18 +63,21 @@ export const getStudentCourses = async (
       (acc, section) => acc + section.lectures.length,
       0,
     );
-    const completedLectures = enrollment.progress.filter((p) => p.isCompleted).length;
+    const completedLectures = enrollment.progress.filter(
+      (p) => p.isCompleted,
+    ).length;
     const progressPercentage =
       totalLectures > 0
         ? Math.round((completedLectures / totalLectures) * 100)
         : 0;
 
     const firstLectureId = enrollment.course.sections[0]?.lectures[0]?.id;
-    
+
     // Find the last lecture based on the most recent progress record
-    const lastWatchedProgress = (enrollment.progress || [])
-      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0];
-    
+    const lastWatchedProgress = (enrollment.progress || []).sort(
+      (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
+    )[0];
+
     const lastLectureId = lastWatchedProgress?.lectureId || firstLectureId;
 
     // Find the lecture title
@@ -87,11 +92,12 @@ export const getStudentCourses = async (
       }
     }
 
-
     return {
       ...enrollment.course,
       price: enrollment.course.price ? Number(enrollment.course.price) : null,
-      compareAtPrice: enrollment.course.compareAtPrice ? Number(enrollment.course.compareAtPrice) : null,
+      compareAtPrice: enrollment.course.compareAtPrice
+        ? Number(enrollment.course.compareAtPrice)
+        : null,
       progressPercentage,
       enrolledAt: enrollment.enrolledAt,
       lastActivity: enrollment.updatedAt,

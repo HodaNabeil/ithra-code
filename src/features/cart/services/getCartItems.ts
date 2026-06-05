@@ -73,7 +73,7 @@ export async function getCart(): Promise<{
             },
           },
         });
-      } catch (e) {
+      } catch (_e) {
         cartItemsData = [];
       }
     }

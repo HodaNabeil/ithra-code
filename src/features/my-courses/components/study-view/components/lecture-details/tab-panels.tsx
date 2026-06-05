@@ -12,17 +12,11 @@ interface TabPanelsProps {
   updatedAt?: Date;
 }
 
-export function TabPanels({
-  description,
-  updatedAt,
-}: TabPanelsProps) {
+export function TabPanels({ description, updatedAt }: TabPanelsProps) {
   return (
     <div className="py-8 focus-visible:ring-0">
       <TabsContent value="overview" className="focus-visible:ring-0 mt-0">
-        <OverviewPanel
-          description={description}
-          updatedAt={updatedAt}
-        />
+        <OverviewPanel description={description} updatedAt={updatedAt} />
       </TabsContent>
 
       <TabsContent value="qna" className="focus-visible:ring-0 mt-0">

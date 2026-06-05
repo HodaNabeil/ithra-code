@@ -24,18 +24,17 @@ export default function CourseList({
   sortBy,
   onSortChange,
 }: CourseListProps) {
-
   const [isMobile, setIsMobile] = useState(false);
-useEffect(() => {
-  const handleResize = () => {
-    setIsMobile(window.innerWidth < 640);
-  };
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
 
-  handleResize();
+    handleResize();
 
-  window.addEventListener('resize', handleResize);
-  return () => window.removeEventListener('resize', handleResize);
-}, []);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   if (courses.length === 0) {
     return (
@@ -64,47 +63,49 @@ useEffect(() => {
     );
   }
 
-
   if (filteredCourses.length > 0) {
     return (
       <div className="container">
-                <div className="flex  flex-row sm:items-center justify-between mb-2">
-            <p className="text-base font-bold text-muted-foreground">
-              عدد الكورسات: <span className="text-foreground">{filteredCourses.length}</span>
-            </p>
-            <div className="flex items-center gap-3">
-              <Select
-                options={STUDENT_SORT_OPTIONS.map((opt) => opt)}
-                value={sortBy}
-                onValueChange={onSortChange}
-                placeholder="رتب حسب"
-                className="rounded-lg h-10"
-              />
-            </div>
+        <div className="flex  flex-row sm:items-center justify-between mb-2">
+          <p className="text-base font-bold text-muted-foreground">
+            عدد الكورسات:{' '}
+            <span className="text-foreground">{filteredCourses.length}</span>
+          </p>
+          <div className="flex items-center gap-3">
+            <Select
+              options={STUDENT_SORT_OPTIONS.map((opt) => opt)}
+              value={sortBy}
+              onValueChange={onSortChange}
+              placeholder="رتب حسب"
+              className="rounded-lg h-10"
+            />
           </div>
-        <ul className={cn(
-          isMobile ? " flex  flex-col  justify-center! items-center gap-4 pt-4 " :
-           "mx-auto grid max-w-[calc(350px*4)] grid-rows-auto grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-        )}>
-        {filteredCourses.map((course) => (
-          <CourseCardStudent
-            key={course.id}
-            id={course.id}
-            title={course.title}
-            slug={course.slug}
-            instructor={
-              `${course.instructor?.firstName || ''} ${course.instructor?.lastName || ''}`.trim() ||
-              DEFAULT_VALUES.INSTRUCTOR_NAME
-            }
-            progress={course.progressPercentage}
-            thumbnail={course.thumbnailUrl}
-            lastLectureId={course.lastLectureId}
-            rating={5}
-          />
-        ))}
-      </ul>
+        </div>
+        <ul
+          className={cn(
+            isMobile
+              ? ' flex  flex-col  justify-center! items-center gap-4 pt-4 '
+              : 'mx-auto grid max-w-[calc(350px*4)] grid-rows-auto grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+          )}
+        >
+          {filteredCourses.map((course) => (
+            <CourseCardStudent
+              key={course.id}
+              id={course.id}
+              title={course.title}
+              slug={course.slug}
+              instructor={
+                `${course.instructor?.firstName || ''} ${course.instructor?.lastName || ''}`.trim() ||
+                DEFAULT_VALUES.INSTRUCTOR_NAME
+              }
+              progress={course.progressPercentage}
+              thumbnail={course.thumbnailUrl}
+              lastLectureId={course.lastLectureId}
+              rating={5}
+            />
+          ))}
+        </ul>
       </div>
-     
     );
   }
 

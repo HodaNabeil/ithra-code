@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { 
-  getCourseSections, 
-  getLectureDetails, 
-  getLectureNavigation, 
-  getStudentCourses 
+import {
+  getCourseSections,
+  getLectureDetails,
+  getLectureNavigation,
+  getStudentCourses,
 } from '../actions/my-course';
 import { MY_COURSES_TAGS } from '@/lib/query-keys';
 

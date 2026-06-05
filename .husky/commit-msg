@@ -1,0 +1,27 @@
+# Use commitlint if available, otherwise fall back to simple validation
+if command -v pnpm >/dev/null 2>&1 && pnpm list @commitlint/cli >/dev/null 2>&1; then
+  pnpm exec commitlint --edit "$1"
+else
+  # Fallback: simple conventional commit validation
+  commit_msg=$(cat "$1")
+  
+  if ! echo "$commit_msg" | grep -qE "^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}"; then
+    echo "❌ Invalid commit message format!"
+    echo ""
+    echo "Please use conventional commit format:"
+    echo "  feat: add new feature"
+    echo "  fix: fix a bug"
+    echo "  docs: update documentation"
+    echo "  style: format code"
+    echo "  refactor: refactor code"
+    echo "  perf: improve performance"
+    echo "  test: add tests"
+    echo "  build: update build system"
+    echo "  ci: update CI/CD"
+    echo "  chore: other changes"
+    echo ""
+    exit 1
+  fi
+  
+  echo "✅ Commit message format is valid!"
+fi

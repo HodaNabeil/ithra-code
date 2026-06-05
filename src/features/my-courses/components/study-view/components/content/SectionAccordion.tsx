@@ -14,7 +14,6 @@ import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import { SectionAccordionSkeleton } from './SectionAccordionSkeleton';
 import { MyCourseLectureDTO } from '@/types/my-courses/my-courses.dto';
 
-
 function getSectionLectureSummary(lectures: MyCourseLectureDTO[]): {
   durationLabel: string;
   completedCount: number;
@@ -40,7 +39,12 @@ interface SectionAccordionProps {
 }
 
 export function SectionAccordion({ courseSlug }: SectionAccordionProps) {
-  const { data : DataSections, isLoading : isLoadingSections, isError : isErrorSections, refetch } = useCourseSections(courseSlug);
+  const {
+    data: DataSections,
+    isLoading: isLoadingSections,
+    isError: isErrorSections,
+    refetch,
+  } = useCourseSections(courseSlug);
 
   if (isLoadingSections) {
     return <SectionAccordionSkeleton />;

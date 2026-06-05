@@ -16,7 +16,11 @@ export type LearningPathsPageQuery = {
   category?: PathCategoryDTO;
 };
 
-const SORT_VALUES = ['newest', 'oldest', 'title'] as const satisfies readonly PathSortOption[];
+const SORT_VALUES = [
+  'newest',
+  'oldest',
+  'title',
+] as const satisfies readonly PathSortOption[];
 
 const CATEGORY_VALUES = Object.values(PathCategoryDTO);
 

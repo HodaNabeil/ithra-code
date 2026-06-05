@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'; 
+} from '@/components/ui/dialog';
 
 import Select from '@/components/shared/select';
 import { ListFilter } from 'lucide-react';
@@ -38,16 +38,16 @@ export default function MobileCoursesFilters({
 
   const [tempFilters, setTempFilters] = useState<StudentFilters>(filters);
 
-  useEffect(() => {
-    setTempFilters(filters);
-  }, [filters, isOpen]);
-
-  const handleTempChange = (key: keyof StudentFilters, value: string) => {
-    setTempFilters(prev => ({ ...prev, [key]: value }));
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (open) {
+      setTempFilters(filters);
+    }
   };
 
-
- 
+  const handleTempChange = (key: keyof StudentFilters, value: string) => {
+    setTempFilters((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleApply = () => {
     onFilterChange('category', tempFilters.category);
@@ -55,12 +55,12 @@ export default function MobileCoursesFilters({
     onFilterChange('instructor', tempFilters.instructor);
     setIsOpen(false);
   };
-const isDefault = 
-    tempFilters.category === 'all' && 
-    tempFilters.progress === 'all' && 
+  const isDefault =
+    tempFilters.category === 'all' &&
+    tempFilters.progress === 'all' &&
     tempFilters.instructor === 'all';
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
@@ -69,25 +69,30 @@ const isDefault =
         >
           <div className="flex items-center gap-2">
             <ListFilter className="w-4 h-4 text-primary" />
-            <span className="  hidden sm:flex  text-sm font-semibold">تصفية النتائج</span>
+            <span className="  hidden sm:flex  text-sm font-semibold">
+              تصفية النتائج
+            </span>
           </div>
-          {Object.values(filters).filter(v => v !== 'all').length > 0 && (
-             <span className="bg-primary text-primary-foreground w-5 h-5 rounded-full text-[10px]
-              flex items-center justify-center">
-                {Object.values(filters).filter(v => v !== 'all').length}
-             </span>
+          {Object.values(filters).filter((v) => v !== 'all').length > 0 && (
+            <span
+              className="bg-primary text-primary-foreground w-5 h-5 rounded-full text-[10px]
+              flex items-center justify-center"
+            >
+              {Object.values(filters).filter((v) => v !== 'all').length}
+            </span>
           )}
         </Button>
       </DialogTrigger>
-      
+
       <DialogContent className="max-w-[90%] rounded-2xl border-none" dir="rtl">
         <DialogHeader className="flex flex-row items-center justify-between">
-          <DialogTitle className="text-lg font-medium">كل عوامل التصفية</DialogTitle>
-          <div className="w-8" /> 
+          <DialogTitle className="text-lg font-medium">
+            كل عوامل التصفية
+          </DialogTitle>
+          <div className="w-8" />
         </DialogHeader>
 
         <div className="space-y-2 px-2 py-2">
-          {/* الفئات */}
           <Select
             options={[{ value: 'all', label: 'كل الفئات' }, ...categories]}
             value={tempFilters.category}
@@ -96,7 +101,6 @@ const isDefault =
             className="w-full h-10 rounded-lg font-medium justify-center gap-2 text-base border-primary/20 "
           />
 
-          {/* التقدم */}
           <Select
             options={PROGRESS_OPTIONS}
             value={tempFilters.progress}
@@ -105,12 +109,14 @@ const isDefault =
             className="w-full h-10 rounded-lg font-medium justify-center gap-3 text-base border-primary/20 "
           />
 
-          {/* المحاضرون */}
           {instructors.length > 0 && (
             <Select
               options={[
                 { value: 'all', label: 'كل المحاضرين' },
-                ...instructors.map((ins) => ({ value: ins.id, label: ins.name })),
+                ...instructors.map((ins) => ({
+                  value: ins.id,
+                  label: ins.name,
+                })),
               ]}
               value={tempFilters.instructor}
               onValueChange={(v) => handleTempChange('instructor', v)}
@@ -121,16 +127,18 @@ const isDefault =
         </div>
 
         <DialogFooter className="flex flex-row items-center justify-start! p-4 gap-1 border-none">
-        
           <Button
             variant="ghost"
-            onClick={() => { onReset(); setIsOpen(false); }}
-         disabled={isDefault}
+            onClick={() => {
+              onReset();
+              setIsOpen(false);
+            }}
+            disabled={isDefault}
             className="h-11 text-primary font-bold hover:bg-transparent hover:text-primary/80 disabled:opacity-30"
           >
             مسح عوامل التصفية
           </Button>
-            <Button
+          <Button
             onClick={handleApply}
             className="h-11 rounded-lg font-bold   "
           >

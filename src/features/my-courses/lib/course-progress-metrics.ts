@@ -1,7 +1,4 @@
-import type {
-  MyCourseLectureDTO,
-  MyCourseSectionDTO,
-} from '@/types/my-courses/my-courses.dto';
+import type { MyCourseSectionDTO } from '@/types/my-courses/my-courses.dto';
 
 export type CourseProgressMetrics = {
   completedCount: number;
@@ -42,4 +39,3 @@ export type SectionLectureSummary = {
   completedCount: number;
   lectureCount: number;
 };
-

@@ -42,7 +42,7 @@ export const CourseSidebarWrapper: React.FC<CourseSidebarWrapperProps> = ({
           onClose={() => setSidebarOpen(false)}
           onMaximize={() => toggleMaximized()}
           isMaximized={isMaximized}
-        /> 
+        />
       </div>
     </aside>
   );

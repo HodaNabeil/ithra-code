@@ -28,7 +28,10 @@ import type {
   CourseRequirementsSliceDTO,
   CourseSeoFieldsDTO,
 } from '@/types/course/course.dto';
-import type { GetCoursesResult, GetCoursesParams } from '@/types/course/course.types';
+import type {
+  GetCoursesResult,
+  GetCoursesParams,
+} from '@/types/course/course.types';
 
 // ── Params ─────────────────────────────────────────────────────────
 export type { GetCoursesParams };
@@ -189,6 +192,3 @@ const getAllCoursesForSitemapCached = cache(
 );
 
 export const getAllCoursesForSitemap = () => getAllCoursesForSitemapCached();
-
-
-

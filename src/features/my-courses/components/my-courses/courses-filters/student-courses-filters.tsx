@@ -3,7 +3,11 @@
 import { useMemo } from 'react';
 import Select from '@/components/shared/select';
 import { Button } from '@/components/ui/button';
-import { PROGRESS_OPTIONS, Instructor, StudentFilters } from '@/types/course/course.types';
+import {
+  PROGRESS_OPTIONS,
+  Instructor,
+  StudentFilters,
+} from '@/types/course/course.types';
 import MobileCoursesFilters from './mobile-search/mobile-courses-filters';
 
 interface StudentCoursesFiltersProps {
@@ -72,16 +76,15 @@ export default function StudentCoursesFilters({
         )}
       </div>
 
-
-     <div className="md:hidden w-full">
-       <MobileCoursesFilters
-         categories={categories}
-         instructors={instructors}
-         filters={filters}
-         onFilterChange={onFilterChange}
-         onReset={onReset}
-       />
-     </div>
+      <div className="md:hidden w-full">
+        <MobileCoursesFilters
+          categories={categories}
+          instructors={instructors}
+          filters={filters}
+          onFilterChange={onFilterChange}
+          onReset={onReset}
+        />
+      </div>
     </div>
   );
 }

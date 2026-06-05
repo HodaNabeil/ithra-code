@@ -59,7 +59,9 @@ export function mapCourseListToDTO(course: DB_CourseListItem): CourseListDTO {
 
 // ── Detail row helpers (shared section / review mapping) ────────────
 
-export function mapSectionsFromDetailRow(course: DB_CourseDetailItem): SectionDTO[] {
+export function mapSectionsFromDetailRow(
+  course: DB_CourseDetailItem,
+): SectionDTO[] {
   return (course.sections ?? []).map((section) => ({
     id: section.id,
     title: section.title,
@@ -84,7 +86,9 @@ export function mapSectionsFromDetailRow(course: DB_CourseDetailItem): SectionDT
   }));
 }
 
-export function mapReviewsFromDetailRow(course: DB_CourseDetailItem): ReviewDTO[] {
+export function mapReviewsFromDetailRow(
+  course: DB_CourseDetailItem,
+): ReviewDTO[] {
   return (course.reviews ?? []).map((review) => ({
     id: review.id,
     rating: review.rating,
@@ -122,7 +126,9 @@ function aggregateRatingFromReviews(reviews: ReviewDTO[]): number {
 
 // ── Detail page slice mappers ───────────────────────────────────────
 
-export function mapRowToSeoFields(course: DB_CourseDetailItem): CourseSeoFieldsDTO {
+export function mapRowToSeoFields(
+  course: DB_CourseDetailItem,
+): CourseSeoFieldsDTO {
   const base = mapCourseListToDTO(course);
   return {
     title: base.title,
@@ -131,7 +137,9 @@ export function mapRowToSeoFields(course: DB_CourseDetailItem): CourseSeoFieldsD
   };
 }
 
-export function mapRowToJsonLdFields(course: DB_CourseDetailItem): CourseJsonLdFieldsDTO {
+export function mapRowToJsonLdFields(
+  course: DB_CourseDetailItem,
+): CourseJsonLdFieldsDTO {
   const reviews = mapReviewsFromDetailRow(course);
 
   return {
@@ -144,7 +152,9 @@ export function mapRowToJsonLdFields(course: DB_CourseDetailItem): CourseJsonLdF
   };
 }
 
-export function mapRowToHeroSlice(course: DB_CourseDetailItem): CourseHeroSliceDTO {
+export function mapRowToHeroSlice(
+  course: DB_CourseDetailItem,
+): CourseHeroSliceDTO {
   const sections = mapSectionsFromDetailRow(course);
   const totalDuration = sections.reduce(
     (acc, section) => acc + (section.duration || 0),
@@ -168,7 +178,9 @@ export function mapRowToHeroSlice(course: DB_CourseDetailItem): CourseHeroSliceD
   };
 }
 
-export function mapRowToOutlineSlice(course: DB_CourseDetailItem): CourseOutlineSliceDTO {
+export function mapRowToOutlineSlice(
+  course: DB_CourseDetailItem,
+): CourseOutlineSliceDTO {
   return {
     slug: course.slug,
     sections: mapSectionsFromDetailRow(course),

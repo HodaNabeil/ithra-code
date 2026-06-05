@@ -10,19 +10,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {  signOut } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 
 import { Session } from 'next-auth';
 import { AUTH_ROUTES } from '@/constant/auth';
 
-
 export function UserNav({ session }: { session: Session | null }) {
-
   const user = session?.user;
-  
-
-
 
   if (!user) {
     return (
@@ -37,27 +32,24 @@ export function UserNav({ session }: { session: Session | null }) {
     );
   }
 
-
-
-  const initials =
-    user?.name
-      ?.split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase();
+  const initials = user?.name
+    ?.split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase();
 
   return (
     <DropdownMenu dir="rtl">
       <DropdownMenuTrigger className="outline-none">
-        <Avatar className="h-9 w-9 cursor-pointer border border-zinc-700/50
-         hover:border-primary/50 transition-all duration-300 shadow-md">
+        <Avatar
+          className="h-9 w-9 cursor-pointer border border-zinc-700/50
+         hover:border-primary/50 transition-all duration-300 shadow-md"
+        >
           <AvatarImage
             src={user?.image ?? undefined}
             alt={user?.name || 'User'}
           />
-          <AvatarFallback className="bg-primary/20 ">
-            {initials}
-          </AvatarFallback>
+          <AvatarFallback className="bg-primary/20 ">{initials}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
 

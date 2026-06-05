@@ -7,16 +7,14 @@ const PATH_NOT_FOUND_MESSAGE = 'Path not found';
 function isNextNotFoundError(error: unknown): boolean {
   return Boolean(
     error &&
-      typeof error === 'object' &&
-      'digest' in error &&
-      String((error as { digest?: string }).digest).startsWith('NEXT_NOT_FOUND'),
+    typeof error === 'object' &&
+    'digest' in error &&
+    String((error as { digest?: string }).digest).startsWith('NEXT_NOT_FOUND'),
   );
 }
 
 function isPathNotFoundError(error: unknown): boolean {
-  return (
-    error instanceof Error && error.message === PATH_NOT_FOUND_MESSAGE
-  );
+  return error instanceof Error && error.message === PATH_NOT_FOUND_MESSAGE;
 }
 
 export type LoadPathDetailResult =

@@ -27,7 +27,6 @@ interface SectionHeaderProps {
   lectures: MyCourseLectureDTO[];
 }
 
-
 export function SectionHeader({
   position,
   title,
@@ -40,7 +39,9 @@ export function SectionHeader({
   return (
     <span className="flex flex-col items-start gap-1 text-start">
       <span className="text-sm font-bold flex items-center gap-1.5">
-        <span className="text-primary whitespace-nowrap">القسم {position}:</span>
+        <span className="text-primary whitespace-nowrap">
+          القسم {position}:
+        </span>
         <span className="text-foreground/90 font-medium">{cleanTitle}</span>
       </span>
       <span

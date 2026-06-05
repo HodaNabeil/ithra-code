@@ -15,6 +15,4 @@ export const paymentQueue = new Queue('payment', {
   },
 });
 
-
 import '@/server/workers/payment.worker';
-

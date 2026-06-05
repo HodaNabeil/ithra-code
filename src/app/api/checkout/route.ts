@@ -12,9 +12,9 @@ export async function POST(req: Request) {
       return new Response('Missing userId', { status: 400 });
     }
 
-    let line_items: any[] = [];
+    const line_items: any[] = [];
     let totalCents = 0;
-    let orderItemsData: any[] = [];
+    const orderItemsData: any[] = [];
 
     // Handle cart items if provided, or single courseId
     if (items && Array.isArray(items) && items.length > 0) {

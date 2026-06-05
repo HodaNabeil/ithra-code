@@ -103,4 +103,3 @@ export const handlers = authHandlers;
 export const auth: NextAuthResult['auth'] = authMethod;
 export const signIn: NextAuthResult['signIn'] = authSignIn;
 export const signOut: NextAuthResult['signOut'] = authSignOut;
-

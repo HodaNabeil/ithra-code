@@ -12,9 +12,6 @@ export async function FilterCourseSection({
   const { paths } = await getPublicPaths();
 
   return (
-    <FilterCourse
-      selectedCategory={selectedCategory || ''}
-      paths={paths}
-    />
+    <FilterCourse selectedCategory={selectedCategory || ''} paths={paths} />
   );
 }

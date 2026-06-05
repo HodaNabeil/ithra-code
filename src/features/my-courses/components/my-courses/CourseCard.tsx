@@ -17,7 +17,6 @@ interface CourseCardProps {
   thumbnail?: string | null;
   rating?: number;
   lastLectureId?: string;
-
 }
 
 export const CourseCardStudent = ({
@@ -27,9 +26,8 @@ export const CourseCardStudent = ({
   instructor,
   thumbnail,
   lastLectureId,
-  
 }: CourseCardProps) => {
-  const watchUrl = lastLectureId 
+  const watchUrl = lastLectureId
     ? `${APP_ROUTES.MY_COURSES}/${slug}/learn/lecture/${lastLectureId}`
     : `${APP_ROUTES.MY_COURSES}/${slug}`;
 
@@ -67,7 +65,6 @@ export const CourseCardStudent = ({
 
           {/* Progress Section */}
           <CourseProgress progress={progress} />
-
         </CardContent>
       </Link>
     </li>

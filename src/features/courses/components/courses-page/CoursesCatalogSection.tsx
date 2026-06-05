@@ -13,20 +13,19 @@ type CoursesCatalogSectionProps = {
 export async function CoursesCatalogSection({
   query,
 }: CoursesCatalogSectionProps) {
+  let coursesData;
   try {
-    const coursesData = await getCourses(
-      coursesPageQueryToGetCoursesParams(query),
-    );
-
-    return (
-      <CoursesList
-        courses={coursesData.courses}
-        totalPages={coursesData.totalPages}
-        currentPage={query.page}
-      />
-    );
+    coursesData = await getCourses(coursesPageQueryToGetCoursesParams(query));
   } catch (error) {
     console.error('Error fetching courses catalog:', error);
     return <ErrorRetry />;
   }
+
+  return (
+    <CoursesList
+      courses={coursesData.courses}
+      totalPages={coursesData.totalPages}
+      currentPage={query.page}
+    />
+  );
 }

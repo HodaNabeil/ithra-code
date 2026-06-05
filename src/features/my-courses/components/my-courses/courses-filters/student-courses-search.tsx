@@ -9,7 +9,6 @@ import { InputGroup, InputGroupInput } from '@/components/ui/input-group';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
-
 interface Suggestion {
   id: string;
   title: string;
@@ -52,7 +51,10 @@ export default function StudentCoursesSearch({
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
         if (!query && window.innerWidth < 640) {
           setIsExpanded(false);
@@ -63,9 +65,9 @@ export default function StudentCoursesSearch({
     return () => document.removeEventListener('mousedown', handler);
   }, [query]);
 
-  const filtered = suggestions.filter((s) =>
-    s.title.toLowerCase().includes(query.toLowerCase())
-  ).slice(0, 5);
+  const filtered = suggestions
+    .filter((s) => s.title.toLowerCase().includes(query.toLowerCase()))
+    .slice(0, 5);
 
   const showDropdown = open && query.trim().length > 0 && filtered.length > 0;
 
@@ -101,11 +103,16 @@ export default function StudentCoursesSearch({
 
   return (
     <div ref={containerRef} className="relative w-full max-w-[320px]">
-      <form onSubmit={handleSearch} className="flex items-center justify-end gap-2">
-        <InputGroup className={cn(
-          "flex-1 h-10 rounded-lg border-muted-foreground/20 bg-background/50 overflow-hidden px-1 transition-all duration-300",
-          !isExpanded && "hidden sm:flex"
-        )}>
+      <form
+        onSubmit={handleSearch}
+        className="flex items-center justify-end gap-2"
+      >
+        <InputGroup
+          className={cn(
+            'flex-1 h-10 rounded-lg border-muted-foreground/20 bg-background/50 overflow-hidden px-1 transition-all duration-300',
+            !isExpanded && 'hidden sm:flex',
+          )}
+        >
           <InputGroupInput
             ref={inputRef}
             type="text"
@@ -151,11 +158,13 @@ export default function StudentCoursesSearch({
       </form>
 
       {showDropdown && (
-        <div className="absolute top-[calc(100%+8px)] left-0 right-0 z-50 bg-background 
+        <div
+          className="absolute top-[calc(100%+8px)] left-0 right-0 z-50 bg-background 
 
-        border border-muted-foreground/10 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        border border-muted-foreground/10 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        >
           <ScrollArea className="max-h-64">
-            <ul className="py-2" dir='rtl'>
+            <ul className="py-2" dir="rtl">
               {filtered.map((s) => (
                 <li key={s.id}>
                   <Link
@@ -165,8 +174,8 @@ export default function StudentCoursesSearch({
                     transition-all border-b border-muted/30 last:border-0"
                   >
                     <div className="flex items-center gap-2">
-                       <Search size={14} className="text-muted-foreground/50" />
-                       <span>{highlight(s.title)}</span>
+                      <Search size={14} className="text-muted-foreground/50" />
+                      <span>{highlight(s.title)}</span>
                     </div>
                   </Link>
                 </li>
