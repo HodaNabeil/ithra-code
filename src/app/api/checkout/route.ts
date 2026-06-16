@@ -5,7 +5,9 @@ import { Currency, Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
 
 type CheckoutLineItem = NonNullable<
-  NonNullable<Parameters<typeof stripe.checkout.sessions.create>[0]>['line_items']
+  NonNullable<
+    Parameters<typeof stripe.checkout.sessions.create>[0]
+  >['line_items']
 >[number];
 
 export async function POST(req: Request) {

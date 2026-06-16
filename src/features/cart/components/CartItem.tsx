@@ -3,27 +3,38 @@
 import Image from 'next/image';
 import { formatPrice } from '@/lib/formatters';
 import Link from 'next/link';
-// import type { CartItemType } from '@/types/cart.types';
-// import { useRemoveFromCart } from '@/features/cart/hooks/useCartMutations';
 import { cn } from '../../../lib/utils';
 import { useTransition } from 'react';
-import { removeFromCart } from '../actions/cart';
+import { useRouter } from 'next/navigation';
+import { removeFromCartAction } from '../actions/cart';
+import { useGuestCart } from '../hooks/useGuestCart';
+import { cookieManager } from '@/lib/cookie-manager';
 import { Loader2 } from 'lucide-react';
-// import { extractErrorMessage } from '@/lib';
-// import { toast } from 'sonner';
 
 import type { CartItemType } from '@/types/cart/cart';
 
 interface CartItemProps {
   item: CartItemType;
+  isGuestCart?: boolean;
 }
 
-export function CartItem({ item }: CartItemProps) {
+export function CartItem({ item, isGuestCart = false }: CartItemProps) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const { removeGuestItem } = useGuestCart();
 
   const handleRemove = () => {
+    const isAuthed = !!cookieManager.getAccessToken();
+
+    if (isGuestCart || !isAuthed) {
+      removeGuestItem(item.id);
+      router.refresh();
+      return;
+    }
+
     startTransition(async () => {
-      await removeFromCart(item.id);
+      await removeFromCartAction(item.id);
+      router.refresh();
     });
   };
   return (

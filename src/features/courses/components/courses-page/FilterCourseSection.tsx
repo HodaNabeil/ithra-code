@@ -1,17 +1,18 @@
-import { FilterCourse } from '@/features/courses/components/FilterCourse';
 import { getPublicPaths } from '@/features/learning-paths/services/path.queries';
-import type { CategoryOption } from '@/types/course/course.types';
+import { CoursesFilters } from '../courses-filters';
+import { CoursesSearch } from '../courses-search';
 
-type FilterCourseSectionProps = {
-  selectedCategory: CategoryOption | '';
-};
-
-export async function FilterCourseSection({
-  selectedCategory,
-}: FilterCourseSectionProps) {
+export async function FilterCourseSection() {
   const { paths } = await getPublicPaths();
 
   return (
-    <FilterCourse selectedCategory={selectedCategory || ''} paths={paths} />
+    <section>
+      <div className="container">
+        <div className="mx-auto mb-8 flex max-w-4xl flex-col gap-3 md:flex-row">
+          <CoursesSearch />
+          <CoursesFilters paths={paths} />
+        </div>
+      </div>
+    </section>
   );
 }

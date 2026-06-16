@@ -96,7 +96,11 @@ export async function getCart(): Promise<{
       compareAtPrice: course.compareAtPrice
         ? Number(course.compareAtPrice)
         : null,
+      objectives: course.objectives ?? [],
+      rating: 0,
+      ratingCount: 0,
       lecturesCount: totalLectures,
+      hours: hours > 0 ? hours : null,
       totalDurationText:
         hours > 0 ? `${hours} ساعة و ${minutes} دقيقة` : `${minutes} دقيقة`,
       createdAt: course.createdAt?.toISOString(),

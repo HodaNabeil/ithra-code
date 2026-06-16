@@ -47,6 +47,10 @@ export interface GetCoursesParams extends Record<string, unknown> {
   search?: string;
   page?: number;
   sort?: SortOption;
+  path?: string;
+  level?: CourseLevel;
+  featured?: boolean;
+  /** @deprecated Use `path` (learning path slug) instead. */
   category?: CategoryOption;
 }
 

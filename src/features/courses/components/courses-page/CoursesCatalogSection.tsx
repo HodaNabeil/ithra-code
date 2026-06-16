@@ -1,4 +1,4 @@
-import CoursesList from '@/features/courses/components/courses-list';
+import { CoursesList } from '@/features/courses/components/courses-list';
 import { getCourses } from '@/features/courses/services/course.service';
 import {
   coursesPageQueryToGetCoursesParams,
@@ -24,8 +24,10 @@ export async function CoursesCatalogSection({
   return (
     <CoursesList
       courses={coursesData.courses}
-      totalPages={coursesData.totalPages}
-      currentPage={query.page}
+      pagination={{
+        currentPage: coursesData.currentPage,
+        totalPages: coursesData.totalPages,
+      }}
     />
   );
 }

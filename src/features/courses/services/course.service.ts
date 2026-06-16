@@ -41,18 +41,22 @@ export type { GetCoursesParams };
 // ────────────────────────────────────────────────────────────────────
 const getCoursesCached = cache(
   async (params: GetCoursesParams): Promise<GetCoursesResult> => {
-    const { search = '', sort = 'newest', category } = params;
+    const { search = '', sort = 'newest', path, level, featured, category } =
+      params;
     const page = Number(params.page) || 1;
     const limit = 9;
+    const pathSlug = path ?? category;
 
     const where = {
       title: {
         contains: search,
         mode: 'insensitive' as const,
       },
-      ...(category && {
-        path: { slug: category },
+      ...(pathSlug && {
+        path: { slug: pathSlug },
       }),
+      ...(level && { level }),
+      ...(featured && { isFeatured: true }),
     };
 
     const orderBy = COURSE_ORDER_BY[sort];

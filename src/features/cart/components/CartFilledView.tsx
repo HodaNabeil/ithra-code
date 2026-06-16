@@ -30,7 +30,11 @@ export function CartFilledView({ cartData }: CartFilledViewProps) {
             )}
           >
             {cartItems.map((item) => (
-              <CartItem key={item.id} item={item} />
+              <CartItem
+                key={item.id}
+                item={item}
+                isGuestCart={cartData.id === 'guest'}
+              />
             ))}
           </div>
         </div>

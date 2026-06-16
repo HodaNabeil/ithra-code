@@ -8,7 +8,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/85',
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 dark:hover:bg-destructive/50',
         outline:
@@ -16,7 +16,7 @@ const buttonVariants = cva(
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost:
-          'hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/15 dark:hover:text-primary-foreground',
+          'hover:bg-secondary hover:text-secondary-foreground dark:hover:bg-secondary/50',
         link: 'text-primary underline-offset-4 hover:underline hover:text-primary/90',
       },
       size: {
@@ -36,27 +36,27 @@ const buttonVariants = cva(
   },
 );
 
-export interface ButtonProps
-  extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
+type ButtonProps = React.ComponentProps<'button'> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  };
+
+function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ...props
+}: ButtonProps) {
+  const Comp = asChild ? Slot : 'button';
+
+  return (
+    <Comp
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  );
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button';
-
-    return (
-      <Comp
-        data-slot="button"
-        ref={ref}
-        className={cn(buttonVariants({ variant, size, className }))}
-        {...props}
-      />
-    );
-  },
-);
-Button.displayName = 'Button';
-
-export { Button, buttonVariants };
+export { Button, buttonVariants, type ButtonProps };

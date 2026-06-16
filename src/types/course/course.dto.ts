@@ -64,6 +64,14 @@ export type CourseListDTO = {
   duration: number | null;
   level: string;
 
+  objectives: string[];
+  rating: number;
+  ratingCount: number;
+  lecturesCount: number;
+  hours: number | null;
+  firstLectureId?: string;
+  isPurchased?: boolean;
+
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
@@ -73,16 +81,13 @@ export type CourseListDTO = {
 
 /** Extended course shape for the detail / slug page. */
 export type CourseDetailDTO = CourseListDTO & {
-  objectives: string[];
   requirements: string[];
   targetAudience: string[];
   tags: string[];
 
   sections: SectionDTO[];
   prerequisites: PrerequisiteDTO[];
-  lecturesCount: number;
   reviews: ReviewDTO[];
-  rating: number;
 };
 
 // ── Detail page slices (narrow shapes per UI concern) ───────────────
@@ -110,6 +115,10 @@ export type CourseHeroSliceDTO = {
   duration: number | null;
   lecturesCount: number;
   firstLectureId: string | undefined;
+  thumbnailUrl: string;
+  price: number;
+  compareAtPrice: number | null;
+  currency: CourseListDTO['currency'];
 };
 
 export type CourseOutlineSliceDTO = {

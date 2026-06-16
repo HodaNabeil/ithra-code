@@ -1,54 +1,70 @@
-import CardCourse from './CourseCard';
 import type { CourseListDTO } from '@/types/course/course.dto';
-import { CourseCardSkeleton } from './CoursesListSkeleton/CourseCardSkeleton';
-import { CoursesPagination } from '@/components/shared/CoursesPagination';
+import { CoursesPagination } from '@/components/shared/courses-pagination';
+import { SearchX } from 'lucide-react';
+import { CoursesResetFilters } from './courses-reset-filters';
+import { CourseCard } from './course-card';
+import { cn } from '@/lib/utils';
 
-type CoursesListProps = {
-  courses: CourseListDTO[];
-  totalPages: number;
+export type PaginationInfo = {
   currentPage: number;
+  totalPages: number;
 };
 
-export default function CoursesList({
-  courses,
-  totalPages,
-  currentPage,
-}: CoursesListProps) {
-  const isLoading = !courses;
-  const isEmpty = courses?.length === 0;
+interface CoursesListProps {
+  courses: CourseListDTO[];
+  pagination?: PaginationInfo;
+}
+
+export function CoursesList({ courses, pagination }: CoursesListProps) {
+  if (courses.length === 0) {
+    return (
+      <div
+        className={cn(
+          'text-center',
+          'py-20',
+          'bg-secondary/30',
+          'rounded-2xl',
+          'border',
+          'border-dashed',
+          'border-muted-foreground/20',
+        )}
+      >
+        <div className={cn('flex', 'justify-center', 'mb-4')}>
+          <SearchX className={cn('h-12', 'w-12', 'text-muted-foreground/50')} />
+        </div>
+        <h3 className={cn('text-xl', 'font-semibold', 'mb-2')}>
+          لا توجد نتائج
+        </h3>
+        <p className={cn('text-muted-foreground', 'text-lg', 'mb-6')}>
+          لم نتمكن من العثور على أي دورات تطابق معايير البحث الخاصة بك.
+        </p>
+        <CoursesResetFilters />
+      </div>
+    );
+  }
 
   return (
-    <section>
-      <div className="my-14 md:my-20 container">
-        <ul
-          className="mx-auto grid max-w-[calc(350px*3)] grid-cols-1 
-        gap-8 md:grid-cols-2 lg:grid-cols-3"
-        >
-          {isLoading &&
-            Array.from({ length: 6 }).map((_, index) => (
-              <CourseCardSkeleton key={index} />
-            ))}
-
-          {!isLoading && isEmpty && (
-            <p className="col-span-full text-center text-muted-foreground">
-              لا توجد دورات متاحة حاليا
-            </p>
-          )}
-
-          {!isLoading &&
-            !isEmpty &&
-            courses!.map((course) => (
-              <CardCourse key={course.id} course={course} />
-            ))}
-        </ul>
-
-        {totalPages > 1 && (
-          <CoursesPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-          />
+    <>
+      <div
+        className={cn(
+          'grid',
+          'grid-cols-1',
+          'md:grid-cols-2',
+          'lg:grid-cols-3',
+          'gap-6',
         )}
+      >
+        {courses.map((course) => (
+          <CourseCard key={course.id} course={course} />
+        ))}
       </div>
-    </section>
+
+      {pagination && pagination.totalPages > 1 && (
+        <CoursesPagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+        />
+      )}
+    </>
   );
 }

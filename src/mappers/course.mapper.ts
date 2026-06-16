@@ -31,11 +31,51 @@ function prismaDateToIsoNullable(
 
 // ── List mapper — lightweight, for paginated card views ─────────────
 
+function computeListAggregates(course: DB_CourseListItem) {
+  const sections = course.sections ?? [];
+  const lecturesCount = sections.reduce(
+    (acc, section) => acc + (section.lectures?.length ?? 0),
+    0,
+  );
+  const totalSeconds = sections.reduce(
+    (acc, section) =>
+      acc +
+      (section.lectures ?? []).reduce(
+        (sum, lecture) => sum + (lecture.videoDuration || 0),
+        0,
+      ),
+    0,
+  );
+  const hours =
+    totalSeconds > 0
+      ? Math.round(totalSeconds / 3600)
+      : course.duration
+        ? Math.round(course.duration / 60)
+        : null;
+  const firstLectureId = sections[0]?.lectures?.[0]?.id;
+
+  return { lecturesCount, hours, firstLectureId };
+}
+
+function computeListRating(reviews: { rating: number }[]) {
+  const ratingCount = reviews.length;
+  const rating =
+    ratingCount > 0
+      ? reviews.reduce((acc, review) => acc + review.rating, 0) / ratingCount
+      : 0;
+
+  return { rating, ratingCount };
+}
+
 /**
  * Maps a raw Prisma course row (list select)
  * into a serialisable CourseListDTO for the client.
  */
 export function mapCourseListToDTO(course: DB_CourseListItem): CourseListDTO {
+  const { lecturesCount, hours, firstLectureId } =
+    computeListAggregates(course);
+  const { rating, ratingCount } = computeListRating(course.reviews ?? []);
+
   return {
     id: course.id,
     title: course.title,
@@ -50,6 +90,14 @@ export function mapCourseListToDTO(course: DB_CourseListItem): CourseListDTO {
     currency: course.currency,
     duration: course.duration,
     level: course.level,
+
+    objectives: course.objectives,
+    rating,
+    ratingCount,
+    lecturesCount,
+    hours,
+    firstLectureId,
+    isPurchased: false,
 
     createdAt: prismaDateToIso(course.createdAt),
     updatedAt: prismaDateToIso(course.updatedAt),
@@ -175,6 +223,12 @@ export function mapRowToHeroSlice(
     duration: totalDuration || null,
     lecturesCount,
     firstLectureId,
+    thumbnailUrl: course.thumbnailUrl,
+    price: Number(course.price),
+    compareAtPrice: course.compareAtPrice
+      ? Number(course.compareAtPrice)
+      : null,
+    currency: course.currency,
   };
 }
 

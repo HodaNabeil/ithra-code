@@ -5,7 +5,6 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import { env } from '@/config';
 import { AUTH_ROUTES } from '@/constant/auth';
-import { mergeCart } from '@/features/cart/actions/cart';
 import { Role } from '@prisma/client';
 
 export const config: NextAuthConfig = {
@@ -81,14 +80,6 @@ export const config: NextAuthConfig = {
 
   secret: env.AUTH_SECRET,
   trustHost: true,
-
-  events: {
-    async signIn({ user }) {
-      if (user?.id) {
-        await mergeCart(user.id);
-      }
-    },
-  },
 } satisfies NextAuthConfig;
 
 // ── Export simplified handlers for NextAuth v5

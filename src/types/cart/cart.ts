@@ -1,7 +1,6 @@
 import type { CourseListDTO as Course } from '../course/course.dto';
 
 export interface CartItemType extends Course {
-  lecturesCount: number;
   totalDurationText: string;
 }
 
