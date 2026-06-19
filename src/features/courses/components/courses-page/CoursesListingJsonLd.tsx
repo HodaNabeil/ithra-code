@@ -1,23 +1,20 @@
 import Script from 'next/script';
 import type { CourseListDTO } from '@/types/course/course.dto';
 import { getCourses } from '@/features/courses/services/course.service';
-import {
-  coursesPageQueryToGetCoursesParams,
-  type CoursesPageQuery,
-} from '@/features/courses/lib/courses-page-query';
 import { buildCoursesItemListJsonLd } from '@/features/courses/lib/courses-item-list-jsonld';
+import type { GetCoursesParams } from '@/types/course/course.types';
 
 type CoursesListingJsonLdProps = {
-  query: CoursesPageQuery;
+  params: GetCoursesParams;
 };
 
 export async function CoursesListingJsonLd({
-  query,
+  params,
 }: CoursesListingJsonLdProps) {
   let courses: CourseListDTO[] = [];
 
   try {
-    const data = await getCourses(coursesPageQueryToGetCoursesParams(query));
+    const data = await getCourses(params);
     courses = data.courses;
   } catch {
     courses = [];

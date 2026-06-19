@@ -1,9 +1,9 @@
-import { getPublicPaths } from '@/features/learning-paths/services/path.queries';
+import { getPathsForFilters } from '@/features/learning-paths/api';
 import { CoursesFilters } from '../courses-filters';
 import { CoursesSearch } from '../courses-search';
 
 export async function FilterCourseSection() {
-  const { paths } = await getPublicPaths();
+  const paths = await getPathsForFilters();
 
   return (
     <section>

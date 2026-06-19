@@ -7,6 +7,7 @@ import {
   RequirementsSection,
   TargetAudienceSection,
 } from '@/features/courses/[slug]/components/course-detail-sections';
+import { CourseVideoPreview } from '@/features/courses/[slug]/components/course-video-preview';
 import { loadCourseDetailBySlug } from '@/features/courses/course-detail';
 import { buildCourseDetailJsonLd } from '@/features/courses/lib/course-detail-jsonld';
 import { resolveCourseDetailMetadata } from '@/features/courses/lib/course-detail-metadata';
@@ -57,8 +58,21 @@ export default async function CourseDetailsPage({
       <main>
         <div className="container flex flex-col lg:flex-row gap-2 lg:gap-12 xl:gap-20 pb-10">
           <div className="lg:hidden mt-6 px-4">
-            <CourseBreadCrumbs courseTitle={course.title} courseSlug={slug} />
+            <CourseBreadCrumbs
+              courseTitle={course.title}
+              courseSlug={course.slug}
+            />
           </div>
+
+          <div className="block lg:hidden mt-4">
+            <CourseVideoPreview
+              title={course.title}
+              thumbnailUrl={course.thumbnailUrl}
+              sections={course.sections}
+              previewVideoUrl={course.previewVideo}
+            />
+          </div>
+
           <CourseHero course={course} />
           <ObjectivesCourseSection course={course} />
           <CourseContentSection course={course} />

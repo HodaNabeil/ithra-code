@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useActionState, useState } from 'react';
+import { useCallback, useEffect, useActionState, useState } from 'react';
 import Image from 'next/image';
 import { Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -50,29 +50,32 @@ export function AddToCartButton({
   const isPurchased = !!course.isPurchased;
   const isAuthed = status === 'authenticated' && !!session?.user;
 
-  const { addGuestItem, hasGuestCourse, guestCartHydrated } = useGuestCart();
+  const { addGuestItem, guestIds, guestCartHydrated } = useGuestCart();
 
-  const isInCart =
-    !!course.isInCart || (guestCartHydrated && hasGuestCourse(course.id));
-
-  const addToCartWithId = (
-    prev: ActionResponse<Cart> | null,
-    _formData: FormData,
-  ) => addToCartAction(prev, course.id, _formData);
+  const addToCartWithId = useCallback(
+    (prev: ActionResponse<Cart> | null, formData: FormData) =>
+      addToCartAction(prev, course.id, formData),
+    [course.id],
+  );
 
   const [state, formAction, isPending] = useActionState<
     ActionResponse<Cart> | null,
     FormData
   >(addToCartWithId, null);
 
+  const [isAddedLocally, setIsAddedLocally] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
+  const isInGuestCart = guestCartHydrated && guestIds.includes(course.id);
+  const actionFailed = state?.success === false;
+  const isInCart =
+    !actionFailed &&
+    (!!course.isInCart || isAddedLocally || isInGuestCart);
+
   useEffect(() => {
-    if (!state) return;
-    if (state.success) {
-      setTimeout(() => setShowSuccessDialog(true), 0);
-      queryClient.invalidateQueries({ queryKey: queryKeys.cart.detail() });
-    }
+    if (!state?.success) return;
+    setTimeout(() => setShowSuccessDialog(true), 0);
+    queryClient.invalidateQueries({ queryKey: queryKeys.cart.detail() });
   }, [state, queryClient]);
 
   const openSuccessDialog = () => {
@@ -80,26 +83,29 @@ export function AddToCartButton({
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
     e.stopPropagation();
 
     if (isPurchased) {
+      e.preventDefault();
       router.push(buildLearnHref(course));
       return;
     }
 
     if (isInCart) {
+      e.preventDefault();
       router.push(APP_ROUTES.CART);
       return;
     }
 
     if (!isAuthed) {
+      e.preventDefault();
       addGuestItem(course);
+      setIsAddedLocally(true);
       openSuccessDialog();
       return;
     }
 
-    e.currentTarget.form?.requestSubmit();
+    setIsAddedLocally(true);
   };
 
   return (

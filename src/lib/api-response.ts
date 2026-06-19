@@ -25,3 +25,16 @@ export function apiError(
 ): NextResponse<ApiErrorResponse> {
   return NextResponse.json({ success: false, message }, { status });
 }
+/**
+ * Build URL with dynamic parameters
+ */
+export function buildUrl(
+  endpoint: string,
+  params: Record<string, string>,
+): string {
+  let url = endpoint;
+  Object.entries(params).forEach(([key, value]) => {
+    url = url.replace(`{${key}}`, value);
+  });
+  return url;
+}

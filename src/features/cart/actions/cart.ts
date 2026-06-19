@@ -73,6 +73,7 @@ export async function addToCartAction(
     );
 
     revalidatePath('/cart');
+    revalidatePath('/courses', 'layout');
 
     return {
       success: true,
@@ -102,6 +103,7 @@ export async function removeFromCartAction(
     );
 
     revalidatePath('/cart');
+    revalidatePath('/courses', 'layout');
 
     return {
       success: true,
@@ -149,6 +151,7 @@ export async function syncGuestCartAction(
 
   if (synced > 0) {
     revalidatePath('/cart');
+    revalidatePath('/courses', 'layout');
   }
 
   return {

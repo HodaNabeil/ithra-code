@@ -82,6 +82,7 @@ export type CourseListDTO = {
 
 /** Extended course shape for the detail / slug page. */
 export type CourseDetailDTO = CourseListDTO & {
+  previewVideo: string | null;
   requirements: string[];
   targetAudience: string[];
   tags: string[];

@@ -1,21 +1,18 @@
 import { CoursesList } from '@/features/courses/components/courses-list';
 import { getCourses } from '@/features/courses/services/course.service';
-import {
-  coursesPageQueryToGetCoursesParams,
-  type CoursesPageQuery,
-} from '@/features/courses/lib/courses-page-query';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
+import type { GetCoursesParams } from '@/types/course/course.types';
 
 type CoursesCatalogSectionProps = {
-  query: CoursesPageQuery;
+  params: GetCoursesParams;
 };
 
 export async function CoursesCatalogSection({
-  query,
+  params,
 }: CoursesCatalogSectionProps) {
   let coursesData;
   try {
-    coursesData = await getCourses(coursesPageQueryToGetCoursesParams(query));
+    coursesData = await getCourses(params);
   } catch (error) {
     console.error('Error fetching courses catalog:', error);
     return <ErrorRetry />;

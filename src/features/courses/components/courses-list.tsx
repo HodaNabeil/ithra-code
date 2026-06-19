@@ -59,12 +59,10 @@ export function CoursesList({ courses, pagination }: CoursesListProps) {
         ))}
       </div>
 
-      {pagination && pagination.totalPages > 1 && (
-        <CoursesPagination
-          currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages}
-        />
-      )}
+      <CoursesPagination
+        currentPage={pagination?.currentPage || 1}
+        totalPages={pagination?.totalPages || 1}
+      />
     </>
   );
 }

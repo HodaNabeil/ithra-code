@@ -95,6 +95,7 @@ export function mapCourseDetailEntityToPageDTO(
 
   return {
     ...mapCourseListToDTO(course),
+    previewVideo: course.previewVideo,
     duration: totalDuration,
     lecturesCount,
     sections,

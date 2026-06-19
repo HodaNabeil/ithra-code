@@ -1,7 +1,4 @@
-import type {
-  GetCoursesParams,
-  SortOption,
-} from '@/types/course/course.types';
+import type { SortOption } from '@/types/course/course.types';
 import { CourseLevel } from '@prisma/client';
 
 /** Raw searchParams shape from Next.js `page.tsx`. */
@@ -74,18 +71,5 @@ export function parseCoursesPageSearchParams(
     path,
     level,
     featured,
-  };
-}
-
-export function coursesPageQueryToGetCoursesParams(
-  query: CoursesPageQuery,
-): GetCoursesParams {
-  return {
-    search: query.search,
-    page: query.page,
-    sort: query.sort,
-    path: query.path,
-    level: query.level,
-    featured: query.featured,
   };
 }
