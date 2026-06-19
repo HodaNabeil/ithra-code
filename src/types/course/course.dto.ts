@@ -71,6 +71,7 @@ export type CourseListDTO = {
   hours: number | null;
   firstLectureId?: string;
   isPurchased?: boolean;
+  isInCart?: boolean;
 
   createdAt: string;
   updatedAt: string;

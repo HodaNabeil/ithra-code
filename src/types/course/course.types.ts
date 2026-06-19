@@ -4,7 +4,7 @@ import {
   CourseVisibility,
   Currency,
 } from '@prisma/client';
-import type { CourseListDTO } from './course.dto';
+import type { CourseDetailDTO, CourseListDTO } from './course.dto';
 
 // ── Shared Options ──────────────────────────────────────────────────
 
@@ -61,6 +61,18 @@ export interface GetCoursesResult {
   totalPages: number;
   currentPage: number;
 }
+
+/** Response returned by getCourseBySlug to the page loader. */
+export interface GetCourseBySlugResult {
+  data: {
+    course: CourseDetailDTO;
+  };
+}
+
+export type LoadCourseDetailResult =
+  | { status: 'ok'; course: CourseDetailDTO }
+  | { status: 'not_found' }
+  | { status: 'error'; error: unknown };
 
 /** Props accepted by the public CourseCard component. */
 export type CourseCardProps = {

@@ -2,18 +2,18 @@ import { notFound } from 'next/navigation';
 import { CourseHero } from '@/features/courses/components/CourseHero';
 import {
   CourseContentSection,
+  CourseStickyActionsSection,
   ObjectivesCourseSection,
   RequirementsSection,
   TargetAudienceSection,
 } from '@/features/courses/[slug]/components/course-detail-sections';
-import { Testimonials } from '@/features/courses/[slug]/components/testimonials/Testimonials';
-import {
-  getCourseJsonLdFields,
-  getCourseSeoFields,
-} from '@/features/courses/services/course.service';
+import { loadCourseDetailBySlug } from '@/features/courses/course-detail';
+import { buildCourseDetailJsonLd } from '@/features/courses/lib/course-detail-jsonld';
+import { resolveCourseDetailMetadata } from '@/features/courses/lib/course-detail-metadata';
 import { Metadata } from 'next';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import Script from 'next/script';
+import CourseBreadCrumbs from '@/features/courses/components/course-bread-crumbs';
 
 type CourseSlugPageProps = {
   params: Promise<{
@@ -25,86 +25,26 @@ export async function generateMetadata({
   params,
 }: CourseSlugPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const course = await getCourseSeoFields(slug);
-
-  if (!course) return { title: 'الكورس غير موجود' };
-
-  return {
-    title: `${course.title} | منصة إثرالكود`,
-    description: course.description,
-    openGraph: {
-      title: course.title,
-      description: course.description,
-      images: course.thumbnailUrl
-        ? [{ url: course.thumbnailUrl, width: 1200, height: 630 }]
-        : [{ url: '/default-course.png' }],
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
-    alternates: {
-      canonical: `https://ithracode.com/courses/${slug}`,
-    },
-    metadataBase: new URL('https://ithracode.com'),
-
-    twitter: {
-      card: 'summary_large_image',
-      site: '@ithracode',
-      title: course.title,
-      description: course.description,
-      images: [course.thumbnailUrl || '/default-course.png'],
-    },
-  };
+  return resolveCourseDetailMetadata(slug);
 }
 
-export default async function CourseSlug({ params }: CourseSlugPageProps) {
+export default async function CourseDetailsPage({
+  params,
+}: CourseSlugPageProps) {
   const { slug } = await params;
+  const result = await loadCourseDetailBySlug(slug);
 
-  let jsonLdData;
-  try {
-    jsonLdData = await getCourseJsonLdFields(slug);
-    if (!jsonLdData) {
-      notFound();
-    }
-  } catch (error: unknown) {
-    if (error instanceof Error && error.message.includes('NOT_FOUND')) {
-      notFound();
-    }
-    console.error('Course Slug Page Error:', error);
+  if (result.status === 'not_found') {
+    notFound();
+  }
+
+  if (result.status === 'error') {
+    console.error('Course Slug Page Error:', result.error);
     return <ErrorRetry />;
   }
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Course',
-    name: jsonLdData.title,
-    description: jsonLdData.description,
-    provider: {
-      '@type': 'Organization',
-      name: 'إثرالكود',
-      sameAs: 'https://ithracode.com',
-    },
-    offers: {
-      '@type': 'Offer',
-      price: jsonLdData.price,
-      priceCurrency: jsonLdData.currency || 'EGP',
-      category: 'Paid',
-      availability: 'https://schema.org/InStock',
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: jsonLdData.rating || 0,
-      reviewCount: jsonLdData.reviewCount,
-    },
-  };
+  const { course } = result;
+  const jsonLd = buildCourseDetailJsonLd(course);
 
   return (
     <>
@@ -115,12 +55,18 @@ export default async function CourseSlug({ params }: CourseSlugPageProps) {
       />
 
       <main>
-        <CourseHero slug={slug} />
-        <ObjectivesCourseSection slug={slug} />
-        <CourseContentSection slug={slug} />
-        <TargetAudienceSection slug={slug} />
-        <RequirementsSection slug={slug} />
-        <Testimonials />
+        <div className="container flex flex-col lg:flex-row gap-2 lg:gap-12 xl:gap-20 pb-10">
+          <div className="lg:hidden mt-6 px-4">
+            <CourseBreadCrumbs courseTitle={course.title} courseSlug={slug} />
+          </div>
+          <CourseHero course={course} />
+          <ObjectivesCourseSection course={course} />
+          <CourseContentSection course={course} />
+          <TargetAudienceSection course={course} />
+          <RequirementsSection course={course} />
+        </div>
+
+        <CourseStickyActionsSection course={course} />
       </main>
     </>
   );

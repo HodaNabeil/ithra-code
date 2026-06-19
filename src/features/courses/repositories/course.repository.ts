@@ -1,0 +1,59 @@
+import { CourseStatus } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
+import { isCuid } from '../lib/is-cuid';
+import type { CourseRecord } from '../types/course-record.types';
+
+const courseRecordSelect = {
+  id: true,
+  slug: true,
+  title: true,
+  status: true,
+  instructorId: true,
+  archivedAt: true,
+  createdAt: true,
+  updatedAt: true,
+} as const;
+
+export interface CourseRepository {
+  findById(id: string): Promise<CourseRecord | null>;
+  findBySlug(slug: string): Promise<CourseRecord | null>;
+  findByIdOrSlug(idOrSlug: string): Promise<CourseRecord | null>;
+  archive(id: string): Promise<CourseRecord>;
+}
+
+export class PrismaCourseRepository implements CourseRepository {
+  async findById(id: string): Promise<CourseRecord | null> {
+    return prisma.course.findUnique({
+      where: { id },
+      select: courseRecordSelect,
+    });
+  }
+
+  async findBySlug(slug: string): Promise<CourseRecord | null> {
+    return prisma.course.findUnique({
+      where: { slug },
+      select: courseRecordSelect,
+    });
+  }
+
+  async findByIdOrSlug(idOrSlug: string): Promise<CourseRecord | null> {
+    if (isCuid(idOrSlug)) {
+      return this.findById(idOrSlug);
+    }
+
+    return this.findBySlug(idOrSlug);
+  }
+
+  async archive(id: string): Promise<CourseRecord> {
+    return prisma.course.update({
+      where: { id },
+      data: {
+        status: CourseStatus.ARCHIVED,
+        archivedAt: new Date(),
+      },
+      select: courseRecordSelect,
+    });
+  }
+}
+
+export const courseRepository = new PrismaCourseRepository();

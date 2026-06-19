@@ -10,40 +10,37 @@ import {
 } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { AddToCartButton } from './add-to-cart-button';
-import { prisma } from '@/lib/prisma';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { APP_ROUTES } from '@/constant/enums';
-import { getCourseHeroSlice } from '@/features/courses/services/course.service';
-import { getIsUserEnrolledInCourse } from '@/features/courses/services/enrollment.service';
-import type { AddToCartCourse } from './add-to-cart-button';
+import type { CourseDetailDTO } from '@/types/course/course.dto';
+import type { CourseLevel } from '@/types/course/course.types';
+import {
+  buildAddToCartCourse,
+  resolveCourseEnrollmentState,
+} from '@/features/courses/lib/course-cart-context';
+import { formatCourseLevel } from '@/features/courses/lib/course-formatters';
 
 interface CourseHeroProps {
-  slug: string;
+  course: CourseDetailDTO;
 }
 
-export const CourseHero = async ({ slug }: CourseHeroProps) => {
-  const hero = await getCourseHeroSlice(slug);
-  if (!hero) return null;
-
+export const CourseHero = async ({ course }: CourseHeroProps) => {
   const {
     title,
     description,
-    level = 'مبتدئ',
+    level,
     duration,
     lecturesCount,
     id: courseId,
     slug: courseSlug,
     firstLectureId,
-    thumbnailUrl,
-    price,
-    compareAtPrice,
-    currency,
-  } = hero;
+  } = course;
 
+  const levelLabel = formatCourseLevel(level as CourseLevel);
   const durationLabel = duration ? formatDuration(duration, 'ar', true) : '';
   const overviewItems = [
-    { icon: BarChart2, label: `مستوى ${level}:` },
+    { icon: BarChart2, label: `مستوى ${levelLabel}:` },
     ...(durationLabel
       ? [
           {
@@ -59,51 +56,17 @@ export const CourseHero = async ({ slug }: CourseHeroProps) => {
   ] as const;
 
   const session = await auth();
-  let isInCart = false;
-  let isEnrolled = false;
-
-  if (session?.user?.id) {
-    const userId = session.user.id;
-    const [enrolled, cartItem] = await Promise.all([
-      getIsUserEnrolledInCourse(userId, courseId),
-      prisma.cartItem.findFirst({
-        where: {
-          courseId,
-          cart: { userId },
-        },
-      }),
-    ]);
-    isEnrolled = enrolled;
-    isInCart = !!cartItem;
-  }
+  const enrollmentState = await resolveCourseEnrollmentState(
+    courseId,
+    session?.user?.id,
+  );
+  const { isEnrolled } = enrollmentState;
 
   const learnLink = firstLectureId
     ? `${APP_ROUTES.MY_COURSES}/${courseSlug}/${APP_ROUTES.LEARN}/${APP_ROUTES.LECTURE}/${firstLectureId}`
     : `${APP_ROUTES.MY_COURSES}/${courseSlug}`;
 
-  const courseForCart: AddToCartCourse = {
-    id: courseId,
-    slug: courseSlug,
-    title,
-    description,
-    thumbnailUrl,
-    price,
-    compareAtPrice,
-    currency,
-    duration,
-    level,
-    objectives: [],
-    rating: 0,
-    ratingCount: 0,
-    lecturesCount,
-    hours: null,
-    firstLectureId,
-    isPurchased: isEnrolled,
-    isInCart,
-    createdAt: '',
-    updatedAt: '',
-    publishedAt: null,
-  };
+  const courseForCart = buildAddToCartCourse(course, enrollmentState);
 
   return (
     <section className=" section-gap">

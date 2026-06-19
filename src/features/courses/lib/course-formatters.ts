@@ -3,6 +3,7 @@ import {
   type CourseLevel,
   type SortOption,
 } from '@/types/course/course.types';
+import type { SectionDTO } from '@/types/course/course.dto';
 
 export const getFirstValue = (value?: string | string[]) =>
   Array.isArray(value) ? value[0] : value;
@@ -20,8 +21,6 @@ export function getCourseLevelsOptions() {
 export function formatCourseLevel(level: CourseLevel): string {
   return levelCourse[level] || level;
 }
-
-import { SectionDTO } from '@/types/course/course.dto';
 
 export const totalDuration = (sections: SectionDTO[]) =>
   sections?.reduce((acc, section) => {

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { APP_ROUTES } from '@/constant/enums';
 import { buttonVariants } from '@/components/ui/button';
 import { CourseCardWrapper } from '@/components/shared/course-card-wrapper';
-import { formatCourseLevel } from '@/features/courses/[slug]/services/helper';
+import { formatCourseLevel } from '@/features/courses/lib/course-formatters';
 import { AddToCartButton } from '@/features/courses/components/add-to-cart-button';
 import type { CourseCardProps } from '@/types/course/course.types';
 import type { CourseLevel } from '@/types/course/course.types';

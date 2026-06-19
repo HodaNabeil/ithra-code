@@ -15,7 +15,7 @@ import {
   levelCourse,
   SORT_OPTIONS,
 } from '@/types/course/course.types';
-import { getCourseLevelsOptions } from '@/features/courses/[slug]/services/helper';
+import { getCourseLevelsOptions } from '@/features/courses/lib/course-formatters';
 import { CoursesFiltersSlider } from './courses-filters-slider';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
