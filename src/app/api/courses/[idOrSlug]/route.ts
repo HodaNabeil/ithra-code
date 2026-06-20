@@ -16,13 +16,13 @@ export async function GET(
   try {
     const session = await auth();
     const course = await getCourseDetail({
-      slug: idOrSlug,
+      idOrSlug,
       user: session?.user?.id
         ? { id: session.user.id, role: session.user.role }
         : null,
     });
 
-    return apiSuccess({ course }, 'Course fetched successfully');
+    return apiSuccess({ course }, 'تم جلب الدورة بنجاح');
   } catch (error) {
     if (error instanceof CourseDetailError) {
       return apiError(error.message, error.status);

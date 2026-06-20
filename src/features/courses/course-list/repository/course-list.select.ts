@@ -27,7 +27,11 @@ export const courseListSelect = Prisma.validator<Prisma.CourseSelect>()({
         orderBy: { position: 'asc' },
         select: {
           id: true,
-          videoDuration: true,
+          video: {
+            select: {
+              duration: true,
+            },
+          },
         },
       },
     },

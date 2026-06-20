@@ -11,8 +11,9 @@ export function HeaderWrapper({ children }: { children: React.ReactNode }) {
 
   // Hide the main header on course learning pages (my-courses/[slug]/...)
   const isCourseLearnPage = /^\/my-courses\/[^/]+\//.test(pathname);
+  const isApiDocsPage = pathname === '/api/docs';
 
-  if (isCourseLearnPage) return null;
+  if (isCourseLearnPage || isApiDocsPage) return null;
 
   return <>{children}</>;
 }

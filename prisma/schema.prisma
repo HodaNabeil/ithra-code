@@ -1,14 +1,16 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 model Course {
   id                 String           @id @default(cuid())
   instructorId       String           @map("instructor_id")
+  instructor         User             @relation("InstructorCourses", fields: [instructorId], references: [id], onDelete: Restrict)
   title              String
   description        String
   shortDescription   String?          @map("short_description")
@@ -22,6 +24,7 @@ model Course {
   status             CourseStatus     @default(DRAFT)
   visibility         CourseVisibility @default(PRIVATE)
   isFeatured         Boolean          @default(false) @map("is_featured")
+  duration           Int?
   requirements       String[]
   objectives         String[]
   targetAudience     String[]         @map("target_audience")
@@ -33,514 +36,30 @@ model Course {
   createdAt          DateTime         @default(now()) @map("created_at")
   updatedAt          DateTime         @updatedAt @map("updated_at")
   publishedAt        DateTime?        @map("published_at")
-  archivedAt         DateTime?        @map("archived_at")
-  pathId             String           @map("path_id")
-  trackId            String?          @map("track_id")
-  duration           Int?
-  cartItems          CartItem[]
-  coupons            CouponCourse[]
-  instructor         User             @relation("CourseInstructor", fields: [instructorId], references: [id])
-  path               Path             @relation(fields: [pathId], references: [id])
-  track              Track?           @relation(fields: [trackId], references: [id])
-  orderItems         OrderItem[]
-  reviews            Review[]
-  sections           Section[]
-  enrollments        Enrollment[]
-  prerequisites      Course[]         @relation("CoursePrerequisites")
-  requiredFor        Course[]         @relation("CoursePrerequisites")
+
+  pathId      String       @map("path_id")
+  path        Path         @relation(fields: [pathId], references: [id])
+  trackId     String?      @map("track_id")
+  track       Track?       @relation(fields: [trackId], references: [id])
+  sections    Section[]
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+  reviews     Review[]
+  enrollments Enrollment[]
+
+  prerequisites Course[] @relation("CoursePrerequisites")
+  requiredFor   Course[] @relation("CoursePrerequisites")
 
   @@index([instructorId])
   @@index([status])
   @@index([visibility])
   @@index([pathId])
   @@index([trackId])
-  @@index([slug])
   @@index([isFeatured])
+  @@index([status, visibility])
+  @@index([instructorId, status])
+  @@index([createdAt])
   @@map("courses")
-}
-
-model Account {
-  id                String  @id @default(cuid())
-  userId            String  @map("user_id")
-  type              String
-  provider          String
-  providerAccountId String  @map("provider_account_id")
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
-model Section {
-  id          String    @id @default(cuid())
-  courseId    String    @map("course_id")
-  title       String
-  description String?
-  position    Int
-  isPublished Boolean   @default(false) @map("is_published")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  lectures    Lecture[]
-  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  @@index([courseId])
-  @@index([position])
-  @@map("sections")
-}
-
-model Lecture {
-  id            String       @id @default(cuid())
-  sectionId     String       @map("section_id")
-  title         String
-  description   String?
-  type          LectureType  @default(VIDEO)
-  content       String?
-  videoUrl      String?      @map("video_url")
-  videoDuration Int?         @map("video_duration")
-  position      Int
-  isPublished   Boolean      @default(false) @map("is_published")
-  isFree        Boolean      @default(false) @map("is_free")
-  createdAt     DateTime     @default(now()) @map("created_at")
-  updatedAt     DateTime     @updatedAt @map("updated_at")
-  muxPlaybackId String?      @map("mux_playback_id")
-  attachments   Attachment[]
-  section       Section      @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  progress      Progress[]
-
-  @@index([sectionId])
-  @@index([position])
-  @@map("lectures")
-}
-
-model Attachment {
-  id             String         @id @default(cuid())
-  lectureId      String         @map("lecture_id")
-  name           String
-  description    String?
-  type           AttachmentType
-  url            String
-  content        String?
-  fileSize       Int?           @map("file_size")
-  mimeType       String?        @map("mime_type")
-  isDownloadable Boolean        @default(true) @map("is_downloadable")
-  position       Int            @default(0)
-  createdAt      DateTime       @default(now()) @map("created_at")
-  updatedAt      DateTime       @updatedAt @map("updated_at")
-  lecture        Lecture        @relation(fields: [lectureId], references: [id], onDelete: Cascade)
-
-  @@index([lectureId])
-  @@index([type])
-  @@index([position])
-  @@index([lectureId, position])
-  @@map("attachments")
-}
-
-model Path {
-  id               String        @id @default(cuid())
-  title            String
-  slug             String        @unique
-  tagline          String?
-  shortDescription String?       @map("short_description")
-  description      String
-  thumbnailUrl     String        @map("thumbnail_url")
-  category         PathCategory
-  icon             String?
-  isPublished      Boolean       @default(true) @map("is_published")
-  sortOrder        Int           @default(0) @map("sort_order")
-  metaTitle        String?       @map("meta_title")
-  metaDescription  String?       @map("meta_description")
-  createdAt        DateTime      @default(now()) @map("created_at")
-  updatedAt        DateTime      @updatedAt @map("updated_at")
-  pathSections     PathSection[]
-  courses          Course[]
-  tracks           Track[]
-
-  @@index([slug])
-  @@index([category])
-  @@index([isPublished])
-  @@map("paths")
-}
-
-model PathSection {
-  id      String          @id @default(cuid())
-  pathId  String
-  type    PathSectionType
-  content String
-  order   Int
-  trackId String?
-  path    Path            @relation(fields: [pathId], references: [id])
-  track   Track?          @relation(fields: [trackId], references: [id])
-}
-
-model Track {
-  id               String        @id @default(cuid())
-  pathId           String        @map("path_id")
-  title            String
-  slug             String        @unique
-  shortDescription String        @map("short_description")
-  description      String
-  thumbnailUrl     String?       @map("thumbnail_url")
-  category         PathCategory
-  icon             String?
-  isPublished      Boolean       @default(true) @map("is_published")
-  sortOrder        Int           @default(0) @map("sort_order")
-  metaTitle        String?       @map("meta_title")
-  metaDescription  String?       @map("meta_description")
-  createdAt        DateTime      @default(now()) @map("created_at")
-  updatedAt        DateTime      @updatedAt @map("updated_at")
-  sections         PathSection[]
-  courses          Course[]
-  path             Path          @relation(fields: [pathId], references: [id], onDelete: Cascade)
-
-  @@index([slug])
-  @@index([pathId])
-  @@index([category])
-  @@index([isPublished])
-  @@map("tracks")
-}
-
-model User {
-  id                            String                   @id @default(cuid())
-  email                         String                   @unique
-  password                      String?
-  passwordChangedAt             DateTime?                @map("password_changed_at")
-  firstName                     String?                  @map("first_name")
-  lastName                      String?                  @map("last_name")
-  profilePicture                String?                  @map("profile_picture")
-  bio                           String?
-  role                          Role                     @default(STUDENT)
-  isEmailVerified               Boolean                  @default(false) @map("is_email_verified")
-  isActive                      Boolean                  @default(true) @map("is_active")
-  lastLoginAt                   DateTime?                @map("last_login_at")
-  failedLoginCount              Int                      @default(0) @map("failed_login_count")
-  lockedUntil                   DateTime?                @map("locked_until")
-  emailVerifyToken              String?                  @unique @map("email_verify_token")
-  emailVerifyExpires            DateTime?                @map("email_verify_expires")
-  verificationResendCount       Int                      @default(0) @map("verification_resend_count")
-  verificationResendLastAttempt DateTime?                @map("verification_resend_last_attempt")
-  resetPasswordToken            String?                  @unique @map("reset_password_token")
-  resetPasswordExpires          DateTime?                @map("reset_password_expires")
-  passwordResetRequestCount     Int                      @default(0) @map("password_reset_request_count")
-  passwordResetLastAttempt      DateTime?                @map("password_reset_last_attempt")
-  passwordSetupRequestCount     Int                      @default(0) @map("password_setup_request_count")
-  passwordSetupLastAttempt      DateTime?                @map("password_setup_last_attempt")
-  timezone                      String?                  @default("UTC")
-  language                      String?                  @default("en")
-  oauthProvider                 String?                  @map("oauth_provider")
-  oauthProviderId               String?                  @map("oauth_provider_id")
-  createdAt                     DateTime                 @default(now()) @map("created_at")
-  updatedAt                     DateTime                 @updatedAt @map("updated_at")
-  accounts                      Account[]
-  cart                          Cart?
-  bookings                      ConsultationBooking[]
-  instructedCourses             Course[]                 @relation("CourseInstructor")
-  enrollments                   Enrollment[]
-  googleCalendarToken           GoogleCalendarToken?
-  availabilities                InstructorAvailability[]
-  orders                        Order[]
-  reviews                       Review[]
-  sessions                      Session[]
-
-  @@unique([oauthProvider, oauthProviderId])
-  @@index([email])
-  @@index([emailVerifyToken])
-  @@index([resetPasswordToken])
-  @@map("users")
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  userId       String   @map("user_id")
-  accessToken  String   @unique @map("access_token")
-  refreshToken String   @unique @map("refresh_token")
-  expiresAt    DateTime @map("expires_at")
-  ipAddress    String?  @map("ip_address")
-  userAgent    String?  @map("user_agent")
-  createdAt    DateTime @default(now()) @map("created_at")
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([accessToken])
-  @@index([refreshToken])
-  @@index([expiresAt])
-  @@map("sessions")
-}
-
-model Enrollment {
-  id          String           @id @default(cuid())
-  studentId   String           @map("student_id")
-  courseId    String           @map("course_id")
-  status      EnrollmentStatus @default(ACTIVE)
-  enrolledAt  DateTime         @default(now()) @map("enrolled_at")
-  completedAt DateTime?        @map("completed_at")
-  createdAt   DateTime         @default(now()) @map("created_at")
-  updatedAt   DateTime         @updatedAt @map("updated_at")
-  student     User             @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  course      Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  progress    Progress[]
-
-  @@unique([studentId, courseId])
-  @@index([studentId])
-  @@index([courseId])
-  @@index([status])
-  @@map("enrollments")
-}
-
-model Progress {
-  id             String     @id @default(cuid())
-  enrollmentId   String     @map("enrollment_id")
-  lectureId      String     @map("lecture_id")
-  isCompleted    Boolean    @default(false) @map("is_completed")
-  completedAt    DateTime?  @map("completed_at")
-  lastAccessedAt DateTime   @default(now()) @map("last_accessed_at")
-  timeSpent      Int        @default(0) @map("time_spent")
-  createdAt      DateTime   @default(now()) @map("created_at")
-  updatedAt      DateTime   @updatedAt @map("updated_at")
-  enrollment     Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
-  lectures       Lecture    @relation(fields: [lectureId], references: [id], onDelete: Cascade)
-
-  @@unique([enrollmentId, lectureId])
-  @@index([enrollmentId])
-  @@index([lectureId])
-  @@map("progress")
-}
-
-model Cart {
-  id        String     @id @default(cuid())
-  userId    String     @unique @map("user_id")
-  couponId  String?    @map("coupon_id")
-  subtotal  Decimal    @default(0) @db.Decimal(10, 2)
-  discount  Decimal    @default(0) @db.Decimal(10, 2)
-  total     Decimal    @default(0) @db.Decimal(10, 2)
-  currency  Currency   @default(EGP)
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-  items     CartItem[]
-  coupon    Coupon?    @relation(fields: [couponId], references: [id])
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([couponId])
-  @@map("carts")
-}
-
-model CartItem {
-  id       String   @id @default(cuid())
-  cartId   String   @map("cart_id")
-  courseId String   @map("course_id")
-  price    Decimal  @db.Decimal(10, 2)
-  currency Currency @default(EGP)
-  addedAt  DateTime @default(now()) @map("added_at")
-  cart     Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  @@unique([cartId, courseId])
-  @@index([cartId])
-  @@index([courseId])
-  @@map("cart_items")
-}
-
-model Coupon {
-  id             String         @id @default(cuid())
-  code           String         @unique
-  description    String?
-  type           CouponType
-  value          Decimal        @db.Decimal(10, 2)
-  maxUses        Int?           @map("max_uses")
-  usedCount      Int            @default(0) @map("used_count")
-  maxUsesPerUser Int            @default(1) @map("max_uses_per_user")
-  minOrderAmount Decimal?       @map("min_order_amount") @db.Decimal(10, 2)
-  startsAt       DateTime?      @map("starts_at")
-  expiresAt      DateTime?      @map("expires_at")
-  isActive       Boolean        @default(true) @map("is_active")
-  createdAt      DateTime       @default(now()) @map("created_at")
-  updatedAt      DateTime       @updatedAt @map("updated_at")
-  carts          Cart[]
-  courses        CouponCourse[]
-  orders         Order[]
-
-  @@index([code])
-  @@index([isActive])
-  @@map("coupons")
-}
-
-model CouponCourse {
-  id        String   @id @default(cuid())
-  couponId  String   @map("coupon_id")
-  courseId  String   @map("course_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  coupon    Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  @@unique([couponId, courseId])
-  @@index([couponId])
-  @@index([courseId])
-  @@map("coupon_courses")
-}
-
-model Order {
-  id              String      @id @default(cuid())
-  orderNumber     String      @unique @map("order_number")
-  userId          String      @map("user_id")
-  subtotalCents   Int         @map("subtotal_cents")
-  discountCents   Int         @default(0) @map("discount_cents")
-  taxCents        Int         @default(0) @map("tax_cents")
-  totalCents      Int         @map("total_cents")
-  currency        Currency    @default(EGP)
-  status          OrderStatus @default(PENDING)
-  couponId        String?     @map("coupon_id")
-  couponCode      String?     @map("coupon_code")
-  paymentId       String?     @unique @map("payment_id")
-  createdAt       DateTime    @default(now()) @map("created_at")
-  updatedAt       DateTime    @updatedAt @map("updated_at")
-  completedAt     DateTime?   @map("completed_at")
-  stripeSessionId String?     @map("stripe_session_id")
-  items           OrderItem[]
-  coupon          Coupon?     @relation(fields: [couponId], references: [id])
-  payment         Payment?    @relation(fields: [paymentId], references: [id])
-  user            User        @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-  @@index([status])
-  @@index([orderNumber])
-  @@map("orders")
-}
-
-model OrderItem {
-  id         String   @id @default(cuid())
-  orderId    String   @map("order_id")
-  courseId   String   @map("course_id")
-  priceCents Int      @map("price_cents")
-  currency   Currency @default(EGP)
-  course     Course   @relation(fields: [courseId], references: [id])
-  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
-  @@index([orderId])
-  @@index([courseId])
-  @@map("order_items")
-}
-
-model Payment {
-  id                    String               @id @default(cuid())
-  stripePaymentIntentId String?              @unique @map("stripe_payment_intent_id")
-  stripeSessionId       String?              @map("stripe_session_id")
-  stripeCustomerId      String?              @map("stripe_customer_id")
-  provider              PaymentProvider      @default(STRIPE)
-  providerTransactionId String?              @map("provider_transaction_id")
-  providerMetadata      Json?                @map("provider_metadata")
-  amountCents           Int                  @map("amount_cents")
-  currency              Currency             @default(EGP)
-  status                PaymentStatus        @default(PENDING)
-  paymentMethod         String?
-  last4                 String?
-  brand                 String?
-  createdAt             DateTime             @default(now())
-  updatedAt             DateTime             @updatedAt
-  paidAt                DateTime?
-  consultationBooking   ConsultationBooking?
-  order                 Order?
-  refunds               Refund[]
-}
-
-model Refund {
-  id               String       @id @default(cuid())
-  paymentId        String       @map("payment_id")
-  amountCents      Int          @map("amount_cents")
-  currency         Currency     @default(EGP)
-  reason           String?
-  status           RefundStatus @default(PENDING)
-  providerRefundId String?      @map("provider_refund_id")
-  createdAt        DateTime     @default(now()) @map("created_at")
-  updatedAt        DateTime     @updatedAt @map("updated_at")
-  processedAt      DateTime?    @map("processed_at")
-  payment          Payment      @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-
-  @@index([paymentId])
-  @@index([status])
-  @@map("refunds")
-}
-
-model Review {
-  id        String   @id @default(cuid())
-  courseId  String   @map("course_id")
-  userId    String   @map("user_id")
-  rating    Int
-  comment   String?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([courseId, userId])
-  @@index([courseId])
-  @@index([userId])
-  @@index([rating])
-  @@map("reviews")
-}
-
-model InstructorAvailability {
-  id           String                @id @default(cuid())
-  instructorId String                @map("instructor_id")
-  dayOfWeek    Int                   @map("day_of_week")
-  startTime    String                @map("start_time")
-  endTime      String                @map("end_time")
-  slotDuration Int                   @default(60) @map("slot_duration")
-  pricePerSlot Decimal               @map("price_per_slot") @db.Decimal(10, 2)
-  currency     Currency              @default(EGP)
-  isActive     Boolean               @default(true) @map("is_active")
-  createdAt    DateTime              @default(now()) @map("created_at")
-  updatedAt    DateTime              @updatedAt @map("updated_at")
-  bookings     ConsultationBooking[]
-  instructor   User                  @relation(fields: [instructorId], references: [id], onDelete: Cascade)
-
-  @@unique([instructorId, dayOfWeek])
-  @@index([instructorId])
-  @@index([isActive])
-  @@map("instructor_availabilities")
-}
-
-model ConsultationBooking {
-  id              String                 @id @default(cuid())
-  studentId       String                 @map("student_id")
-  availabilityId  String                 @map("availability_id")
-  paymentId       String?                @unique @map("payment_id")
-  status          BookingStatus          @default(PENDING)
-  scheduledAt     DateTime               @map("scheduled_at")
-  durationMinutes Int                    @map("duration_minutes")
-  googleMeetLink  String?                @map("google_meet_link")
-  notes           String?
-  createdAt       DateTime               @default(now()) @map("created_at")
-  updatedAt       DateTime               @updatedAt @map("updated_at")
-  availability    InstructorAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
-  payment         Payment?               @relation(fields: [paymentId], references: [id])
-  student         User                   @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@index([studentId])
-  @@index([availabilityId])
-  @@index([status])
-  @@index([scheduledAt])
-  @@map("consultation_bookings")
-}
-
-model GoogleCalendarToken {
-  id           String   @id @default(cuid())
-  userId       String   @unique @map("user_id")
-  accessToken  String   @map("access_token")
-  refreshToken String   @map("refresh_token")
-  expiresAt    DateTime @map("expires_at")
-  scope        String?
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("google_calendar_tokens")
 }
 
 enum CourseLevel {
@@ -572,6 +91,79 @@ enum PaymentProvider {
   PAYMOB
   STRIPE
   PAYPAL
+  CASH
+}
+
+model Section {
+  id          String   @id @default(cuid())
+  courseId    String   @map("course_id")
+  title       String
+  description String?
+  position    Int
+  isPublished Boolean  @default(false) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lectures Lecture[]
+
+  @@index([courseId])
+  @@index([position])
+  @@map("sections")
+}
+
+model Lecture {
+  id          String      @id @default(cuid())
+  sectionId   String      @map("section_id")
+  title       String
+  description String?
+  type        LectureType @default(VIDEO)
+  content     String?
+  videoId     String?     @unique @map("video_id")
+  position    Int
+  isPublished Boolean     @default(false) @map("is_published")
+  isFree      Boolean     @default(false) @map("is_free")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  section     Section      @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  video       Video?       @relation(fields: [videoId], references: [id])
+  attachments Attachment[]
+  progress    Progress[]
+
+  @@index([sectionId])
+  @@index([position])
+  @@map("lectures")
+}
+
+model Video {
+  id           String   @id @default(cuid())
+  bunnyVideoId String   @unique @map("bunny_video_id")
+  libraryId    String   @map("library_id")
+  duration     Int?
+  thumbnailUrl String?  @map("thumbnail_url")
+  status       String   @default("processing")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  lecture Lecture?
+
+  @@map("videos")
+}
+
+// Maps a Course to its dedicated Bunny Stream collection (one per course)
+// inside the single shared video library. Owned by the media infrastructure
+// layer to keep Bunny details out of the Course domain model.
+model VideoCollection {
+  id                String   @id @default(cuid())
+  courseId          String   @unique @map("course_id")
+  bunnyCollectionId String   @map("bunny_collection_id")
+  libraryId         String   @map("library_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@index([libraryId])
+  @@map("video_collections")
 }
 
 enum LectureType {
@@ -603,11 +195,81 @@ enum AttachmentType {
   OTHER
 }
 
-enum PathSectionType {
-  TITLE
-  PARAGRAPH
-  IMAGE
-  BUTTON
+model Attachment {
+  id             String         @id @default(cuid())
+  lectureId      String         @map("lecture_id")
+  name           String
+  description    String?
+  type           AttachmentType
+  url            String
+  content        String?
+  fileSize       Int?           @map("file_size")
+  mimeType       String?        @map("mime_type")
+  isDownloadable Boolean        @default(true) @map("is_downloadable")
+  position       Int            @default(0)
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  lecture Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  @@index([lectureId])
+  @@index([type])
+  @@index([position])
+  @@index([lectureId, position])
+  @@map("attachments")
+}
+
+model Path {
+  id               String       @id @default(cuid())
+  title            String
+  slug             String       @unique
+  tagline          String?
+  shortDescription String?      @map("short_description")
+  description      String
+  thumbnailUrl     String       @map("thumbnail_url")
+  category         PathCategory
+  icon             String?
+  isPublished      Boolean      @default(false) @map("is_published")
+  sortOrder        Int          @default(0) @map("sort_order")
+  metaTitle        String?      @map("meta_title")
+  metaDescription  String?      @map("meta_description")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+
+  tracks  Track[]
+  courses Course[]
+
+  @@index([slug])
+  @@index([category])
+  @@index([isPublished])
+  @@map("paths")
+}
+
+model Track {
+  id               String       @id @default(cuid())
+  pathId           String       @map("path_id")
+  title            String
+  slug             String       @unique
+  shortDescription String       @map("short_description")
+  description      String
+  thumbnailUrl     String?      @map("thumbnail_url")
+  category         PathCategory
+  icon             String?
+  isPublished      Boolean      @default(false) @map("is_published")
+  sortOrder        Int          @default(0) @map("sort_order")
+  metaTitle        String?      @map("meta_title")
+  metaDescription  String?      @map("meta_description")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+
+  path    Path     @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  courses Course[]
+
+  @@index([slug])
+  @@index([pathId])
+  @@index([category])
+  @@index([isPublished])
+  @@map("tracks")
 }
 
 enum PathCategory {
@@ -616,21 +278,330 @@ enum PathCategory {
   OTHER
 }
 
+// ─── Auth Models ─────────────────────────────────────────────────────────────
+
+model User {
+  id                            String    @id @default(cuid())
+  email                         String    @unique
+  password                      String?
+  passwordChangedAt             DateTime? @map("password_changed_at")
+  firstName                     String?   @map("first_name")
+  lastName                      String?   @map("last_name")
+  profilePicture                String?   @map("profile_picture")
+  bio                           String?
+  role                          Role      @default(STUDENT)
+  isEmailVerified               Boolean   @default(false) @map("is_email_verified")
+  isActive                      Boolean   @default(true) @map("is_active")
+  lastLoginAt                   DateTime? @map("last_login_at")
+  failedLoginCount              Int       @default(0) @map("failed_login_count")
+  lockedUntil                   DateTime? @map("locked_until")
+  emailVerifyToken              String?   @unique @map("email_verify_token")
+  emailVerifyExpires            DateTime? @map("email_verify_expires")
+  verificationResendCount       Int       @default(0) @map("verification_resend_count")
+  verificationResendLastAttempt DateTime? @map("verification_resend_last_attempt")
+  resetPasswordToken            String?   @unique @map("reset_password_token")
+  resetPasswordExpires          DateTime? @map("reset_password_expires")
+  passwordResetRequestCount     Int       @default(0) @map("password_reset_request_count")
+  passwordResetLastAttempt      DateTime? @map("password_reset_last_attempt")
+  passwordSetupRequestCount     Int       @default(0) @map("password_setup_request_count")
+  passwordSetupLastAttempt      DateTime? @map("password_setup_last_attempt")
+  timezone                      String?   @default("UTC")
+  language                      String?   @default("en")
+  oauthProvider                 String?   @map("oauth_provider")
+  oauthProviderId               String?   @map("oauth_provider_id")
+  createdAt                     DateTime  @default(now()) @map("created_at")
+  updatedAt                     DateTime  @updatedAt @map("updated_at")
+
+  sessions            Session[]
+  courses             Course[]                    @relation("InstructorCourses")
+  enrollments         Enrollment[]
+  cart                Cart?
+  orders              Order[]
+  reviews             Review[]
+  availabilities      InstructorAvailability[]
+  dateOverrides       AvailabilityDateOverride[]
+  scheduleSettings    InstructorScheduleSettings?
+  studentBookings     ConsultationBooking[]       @relation("StudentBookings")
+  instructorBookings  ConsultationBooking[]       @relation("InstructorBookings")
+  googleCalendarToken GoogleCalendarToken?
+  refundRequests      RefundRequest[]             @relation("UserRefundRequests")
+  instructorEarnings  InstructorEarning[]         @relation("InstructorEarnings")
+  trackedDevices      TrackedDevice[]
+  tokenFamilies       TokenFamily[]
+
+  @@unique([oauthProvider, oauthProviderId])
+  @@index([email])
+  @@index([emailVerifyToken])
+  @@index([resetPasswordToken])
+  @@map("users")
+}
+
 enum Role {
   STUDENT
   INSTRUCTOR
   ADMIN
 }
 
+model Session {
+  id           String   @id @default(cuid())
+  userId       String   @map("user_id")
+  accessToken  String   @unique @map("access_token")
+  refreshToken String   @unique @map("refresh_token")
+  expiresAt    DateTime @map("expires_at")
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([accessToken])
+  @@index([refreshToken])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model TrackedDevice {
+  id               String   @id @default(cuid())
+  deviceId         String   @unique @map("device_id")
+  userId           String   @map("user_id")
+  deviceName       String   @map("device_name")
+  deviceType       String   @map("device_type")
+  os               String
+  browser          String
+  ipAddress        String   @map("ip_address")
+  timezone         String
+  screenResolution String?  @map("screen_resolution")
+  language         String
+  fingerprint      String
+  isTrusted        Boolean  @default(false) @map("is_trusted")
+  isActive         Boolean  @default(true) @map("is_active")
+  loginCount       Int      @default(1) @map("login_count")
+  firstSeen        DateTime @default(now()) @map("first_seen")
+  lastSeen         DateTime @default(now()) @map("last_seen")
+  expiresAt        DateTime @map("expires_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fingerprint])
+  @@index([userId, isActive])
+  @@index([fingerprint])
+  @@index([expiresAt])
+  @@map("tracked_devices")
+}
+
+model TokenFamily {
+  id          String   @id @default(cuid())
+  tokenFamily String   @unique @map("token_family")
+  userId      String   @map("user_id")
+  deviceId    String?  @map("device_id")
+  isRevoked   Boolean  @default(false) @map("is_revoked")
+  expiresAt   DateTime @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, deviceId])
+  @@index([expiresAt])
+  @@map("token_families")
+}
+
+model Enrollment {
+  id          String           @id @default(cuid())
+  studentId   String           @map("student_id")
+  courseId    String           @map("course_id")
+  status      EnrollmentStatus @default(ACTIVE)
+  enrolledAt  DateTime         @default(now()) @map("enrolled_at")
+  completedAt DateTime?        @map("completed_at")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  student  User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course   Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress Progress[]
+
+  @@unique([studentId, courseId])
+  @@index([studentId])
+  @@index([courseId])
+  @@index([status])
+  @@map("enrollments")
+}
+
 enum EnrollmentStatus {
   ACTIVE
   COMPLETED
   DROPPED
+  REVOKED
+}
+
+model Progress {
+  id             String    @id @default(cuid())
+  enrollmentId   String    @map("enrollment_id")
+  lectureId      String    @map("lecture_id")
+  isCompleted    Boolean   @default(false) @map("is_completed")
+  completedAt    DateTime? @map("completed_at")
+  lastAccessedAt DateTime  @default(now()) @map("last_accessed_at")
+  timeSpent      Int       @default(0) @map("time_spent")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lecture    Lecture    @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  @@unique([enrollmentId, lectureId])
+  @@index([enrollmentId])
+  @@index([lectureId])
+  @@map("progress")
+}
+
+// ─── Shopping Cart Models ─────────────────────────────────────────────────────
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String   @unique @map("user_id")
+  couponId  String?  @map("coupon_id")
+  subtotal  Decimal  @default(0) @db.Decimal(10, 2)
+  discount  Decimal  @default(0) @db.Decimal(10, 2)
+  total     Decimal  @default(0) @db.Decimal(10, 2)
+  currency  Currency @default(EGP)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupon Coupon?    @relation(fields: [couponId], references: [id])
+  items  CartItem[]
+
+  @@index([userId])
+  @@index([couponId])
+  @@map("carts")
+}
+
+model CartItem {
+  id       String   @id @default(cuid())
+  cartId   String   @map("cart_id")
+  courseId String   @map("course_id")
+  price    Decimal  @db.Decimal(10, 2)
+  currency Currency @default(EGP)
+  addedAt  DateTime @default(now()) @map("added_at")
+
+  cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, courseId])
+  @@index([cartId])
+  @@index([courseId])
+  @@map("cart_items")
+}
+
+model Coupon {
+  id             String     @id @default(cuid())
+  code           String     @unique
+  description    String?
+  type           CouponType
+  value          Decimal    @db.Decimal(10, 2)
+  maxUses        Int?       @map("max_uses")
+  usedCount      Int        @default(0) @map("used_count")
+  maxUsesPerUser Int        @default(1) @map("max_uses_per_user")
+  minOrderAmount Decimal?   @map("min_order_amount") @db.Decimal(10, 2)
+  startsAt       DateTime?  @map("starts_at")
+  expiresAt      DateTime?  @map("expires_at")
+  isActive       Boolean    @default(true) @map("is_active")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+
+  carts   Cart[]
+  courses CouponCourse[]
+
+  @@index([code])
+  @@index([isActive])
+  @@map("coupons")
+}
+
+model CouponCourse {
+  id        String   @id @default(cuid())
+  couponId  String   @map("coupon_id")
+  courseId  String   @map("course_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+
+  @@unique([couponId, courseId])
+  @@index([couponId])
+  @@index([courseId])
+  @@map("coupon_courses")
 }
 
 enum CouponType {
   PERCENTAGE
   FIXED
+}
+
+// ─── Order & Payment Models ───────────────────────────────────────────────────
+
+model Order {
+  id          String @id @default(cuid())
+  orderNumber String @unique @map("order_number")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  subtotalCents Int      @map("subtotal_cents")
+  discountCents Int      @default(0) @map("discount_cents")
+  taxCents      Int      @default(0) @map("tax_cents")
+  totalCents    Int      @map("total_cents")
+  currency      Currency @default(EGP)
+
+  status OrderStatus @default(PENDING)
+
+  couponId   String? @map("coupon_id")
+  couponCode String? @map("coupon_code")
+
+  paymentId String?  @unique @map("payment_id")
+  payment   Payment? @relation(fields: [paymentId], references: [id])
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  completedAt DateTime? @map("completed_at")
+
+  items OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([orderNumber])
+  @@map("orders")
+}
+
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String @map("order_id")
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  courseId String @map("course_id")
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Restrict)
+
+  priceCents Int             @map("price_cents")
+  currency   Currency        @default(EGP)
+  status     OrderItemStatus @default(ACTIVE)
+  refundedAt DateTime?       @map("refunded_at")
+
+  refundRequest RefundRequest?
+  earning       InstructorEarning?
+
+  @@index([orderId])
+  @@index([courseId])
+  @@index([status])
+  @@map("order_items")
+}
+
+enum OrderItemStatus {
+  ACTIVE
+  REFUND_PENDING
+  REFUNDED
+  FINALIZED
 }
 
 enum OrderStatus {
@@ -641,6 +612,40 @@ enum OrderStatus {
   REFUNDED
   PARTIALLY_REFUNDED
   VOIDED
+}
+
+model Payment {
+  id String @id @default(cuid())
+
+  paymobTransactionId String? @unique @map("paymob_transaction_id")
+  paymobOrderId       String? @map("paymob_order_id")
+  paymobIntentionId   String? @map("paymob_intention_id")
+
+  provider              PaymentProvider @default(PAYMOB)
+  providerTransactionId String?         @map("provider_transaction_id")
+  providerMetadata      Json?           @map("provider_metadata")
+
+  amountCents Int      @map("amount_cents")
+  currency    Currency @default(EGP)
+
+  status PaymentStatus @default(PENDING)
+
+  paymentMethod String? @map("payment_method")
+  integrationId Int?    @map("integration_id")
+  last4         String?
+  brand         String?
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  paidAt    DateTime? @map("paid_at")
+
+  order               Order?
+  consultationBooking ConsultationBooking?
+  refunds             Refund[]
+
+  @@index([status])
+  @@index([provider])
+  @@map("payments")
 }
 
 enum PaymentStatus {
@@ -654,11 +659,182 @@ enum PaymentStatus {
   VOIDED
 }
 
+model Refund {
+  id        String  @id @default(cuid())
+  paymentId String  @map("payment_id")
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  amountCents Int          @map("amount_cents")
+  currency    Currency     @default(EGP)
+  reason      String?
+  status      RefundStatus @default(PENDING)
+
+  providerRefundId String? @map("provider_refund_id")
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  processedAt DateTime? @map("processed_at")
+
+  @@index([paymentId])
+  @@index([status])
+  @@map("refunds")
+}
+
 enum RefundStatus {
   PENDING
   PROCESSING
   SUCCEEDED
   FAILED
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  courseId  String   @map("course_id")
+  userId    String   @map("user_id")
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId])
+  @@index([courseId])
+  @@index([userId])
+  @@index([rating])
+  @@map("reviews")
+}
+
+// ─── Consultation Models ──────────────────────────────────────────────────────
+
+enum Frequency {
+  ONCE
+  DAILY
+  WEEKLY
+}
+
+// Layer 2: Date-first availability template.
+// startDate is the anchor date; if isRecurring=true the rule repeats weekly on that same weekday.
+model InstructorAvailability {
+  id           String    @id @default(cuid())
+  instructorId String    @map("instructor_id")
+  startAt      DateTime  @map("start_at")
+  endAt        DateTime  @map("end_at")
+  frequency    Frequency @default(ONCE) @map("frequency")
+  timezone     String    @default("UTC")
+  durations    Int[]     @default([60]) @map("durations")
+  price        Decimal   @map("price") @db.Decimal(10, 2)
+  currency     Currency  @default(EGP)
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  instructor User                  @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  bookings   ConsultationBooking[]
+
+  @@index([instructorId])
+  @@index([isActive])
+  @@index([instructorId, startAt])
+  @@index([instructorId, frequency])
+  @@index([instructorId, isActive])
+  @@map("instructor_availabilities")
+}
+
+// Layer 1: Date-specific overrides (highest priority).
+// isAvailable=false → full day off; isAvailable=true → custom hours for that date.
+// Multiple rows per date are allowed to define multiple available blocks.
+model AvailabilityDateOverride {
+  id           String   @id @default(cuid())
+  instructorId String   @map("instructor_id")
+  overrideDate DateTime @map("override_date") @db.Date
+  startTime    String?  @map("start_time") // null when isAvailable=false (full-day block)
+  endTime      String?  @map("end_time") // null when isAvailable=false
+  isAvailable  Boolean  @map("is_available")
+  reason       String? // e.g. "vacation", "conference", "extra hours"
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  instructor User @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  @@index([instructorId])
+  @@index([overrideDate])
+  @@index([instructorId, overrideDate])
+  @@map("availability_date_overrides")
+}
+
+// Per-instructor scheduling policy (min notice, buffer, booking window, etc.).
+model InstructorScheduleSettings {
+  id                String   @id @default(cuid())
+  instructorId      String   @unique @map("instructor_id")
+  minNoticeHours    Int      @default(12) @map("min_notice_hours") // minimum hours before a slot can be booked
+  bufferMinutes     Int      @default(15) @map("buffer_minutes") // gap enforced between consecutive sessions
+  maxBookingsPerDay Int?     @map("max_bookings_per_day") // null = unlimited
+  bookingWindowDays Int      @default(30) @map("booking_window_days") // how far ahead students can book
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  instructor User @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  @@map("instructor_schedule_settings")
+}
+
+model ConsultationBooking {
+  id             String        @id @default(cuid())
+  instructorId   String        @map("instructor_id")
+  studentId      String        @map("student_id")
+  // Nullable: null when the slot originates from a date override rather than the weekly template
+  availabilityId String?       @map("availability_id")
+  paymentId      String?       @unique @map("payment_id")
+  status         BookingStatus @default(PENDING)
+
+  // Temporal bounds (UTC)
+  startsAt        DateTime @map("starts_at")
+  endsAt          DateTime @map("ends_at")
+  durationMinutes Int      @map("duration_minutes")
+
+  // Price snapshot captured at booking time (consistent with OrderItem pattern)
+  amountCents Int      @map("amount_cents")
+  currency    Currency @default(EGP)
+
+  // Google Calendar / Meet
+  googleMeetLink String? @map("google_meet_link")
+  googleEventId  String? @map("google_event_id")
+
+  // Notes
+  studentNotes    String? @map("student_notes")
+  instructorNotes String? @map("instructor_notes")
+
+  // Cancellation audit trail
+  cancellationReason String?      @map("cancellation_reason")
+  cancelledBy        CancelledBy? @map("cancelled_by")
+  cancelledAt        DateTime?    @map("cancelled_at")
+
+  completedAt DateTime? @map("completed_at")
+
+  // Proposed reschedule (populated when status = RESCHEDULE_PENDING)
+  rescheduledStartsAt        DateTime?      @map("rescheduled_starts_at")
+  rescheduledAvailabilityId  String?        @map("rescheduled_availability_id")
+  rescheduledDurationMinutes Int?           @map("rescheduled_duration_minutes")
+  rescheduledBy              RescheduledBy? @map("rescheduled_by")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  instructor   User                    @relation("InstructorBookings", fields: [instructorId], references: [id], onDelete: Restrict)
+  student      User                    @relation("StudentBookings", fields: [studentId], references: [id], onDelete: Cascade)
+  availability InstructorAvailability? @relation(fields: [availabilityId], references: [id], onDelete: SetNull)
+  payment      Payment?                @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  @@index([instructorId])
+  @@index([studentId])
+  @@index([availabilityId])
+  @@index([status])
+  @@index([startsAt])
+  @@index([instructorId, startsAt])
+  @@index([instructorId, status])
+  @@index([studentId, status])
+  @@map("consultation_bookings")
 }
 
 enum BookingStatus {
@@ -667,4 +843,138 @@ enum BookingStatus {
   COMPLETED
   CANCELLED
   NO_SHOW
+  RESCHEDULE_PENDING
+}
+
+enum CancelledBy {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+  SYSTEM
+}
+
+enum RescheduledBy {
+  STUDENT
+  INSTRUCTOR
+}
+
+model GoogleCalendarToken {
+  id           String   @id @default(cuid())
+  userId       String   @unique @map("user_id")
+  accessToken  String   @map("access_token")
+  refreshToken String   @map("refresh_token")
+  expiresAt    DateTime @map("expires_at")
+  scope        String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("google_calendar_tokens")
+}
+
+// ─── Refund System Models ─────────────────────────────────────────────────────
+
+model RefundRequest {
+  id               String              @id @default(cuid())
+  userId           String              @map("user_id")
+  user             User                @relation("UserRefundRequests", fields: [userId], references: [id], onDelete: Restrict)
+  orderItemId      String              @map("order_item_id")
+  orderItem        OrderItem           @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
+  reasonCode       RefundReasonCode    @map("reason_code")
+  amountCents      Int                 @map("amount_cents")
+  currency         Currency            @default(EGP)
+  status           RefundRequestStatus @default(PENDING_REVIEW)
+  autoApproved     Boolean             @default(false) @map("auto_approved")
+  progressPercent  Decimal             @map("progress_percent") @db.Decimal(5, 2)
+  reviewNote       String?             @map("review_note")
+  resolvedAt       DateTime?           @map("resolved_at")
+  providerRefundId String?             @map("provider_refund_id")
+  createdAt        DateTime            @default(now()) @map("created_at")
+  updatedAt        DateTime            @updatedAt @map("updated_at")
+
+  @@unique([orderItemId])
+  @@index([userId])
+  @@index([status])
+  @@index([userId, createdAt])
+  @@index([providerRefundId])
+  @@map("refund_requests")
+}
+
+enum RefundReasonCode {
+  NOT_AS_DESCRIBED
+  TECHNICAL_ISSUE
+  ACCIDENTAL_PURCHASE
+  FOUND_BETTER_ALTERNATIVE
+  OTHER
+}
+
+enum RefundRequestStatus {
+  PENDING_REVIEW
+  AUTO_APPROVED
+  APPROVED
+  REJECTED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model InstructorEarning {
+  id           String                  @id @default(cuid())
+  instructorId String                  @map("instructor_id")
+  instructor   User                    @relation("InstructorEarnings", fields: [instructorId], references: [id], onDelete: Cascade)
+  orderItemId  String                  @unique @map("order_item_id")
+  orderItem    OrderItem               @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  amountCents  Int                     @map("amount_cents")
+  currency     Currency                @default(EGP)
+  status       InstructorEarningStatus @default(HELD)
+  heldUntil    DateTime                @map("held_until")
+  releasedAt   DateTime?               @map("released_at")
+  voidedAt     DateTime?               @map("voided_at")
+  createdAt    DateTime                @default(now()) @map("created_at")
+  updatedAt    DateTime                @updatedAt @map("updated_at")
+
+  @@index([instructorId])
+  @@index([status, heldUntil])
+  @@map("instructor_earnings")
+}
+
+enum InstructorEarningStatus {
+  HELD
+  AVAILABLE
+  VOIDED
+}
+
+// ─── Testimonials ─────────────────────────────────────────────────────────────
+
+model Testimonial {
+  id             String   @id @default(cuid())
+  name           String
+  avatarUrl      String?  @map("avatar_url")
+  content        String
+  rating         Int
+  isActive       Boolean  @default(true) @map("is_active")
+  sourceReviewId String?  @unique @map("source_review_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@index([rating])
+  @@map("testimonials")
+}
+
+// ─── FAQs ─────────────────────────────────────────────────────────────────────
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  sortOrder Int      @default(0) @map("sort_order")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@index([sortOrder])
+  @@map("faqs")
 }

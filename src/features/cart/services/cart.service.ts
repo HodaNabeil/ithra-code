@@ -19,7 +19,7 @@ const cartInclude = {
       course: {
         include: {
           sections: {
-            include: { lectures: { select: { videoDuration: true } } },
+            include: { lectures: { select: { video: { select: { duration: true } } } } },
           },
         },
       },
@@ -34,7 +34,7 @@ export type CartWithItems = Prisma.CartGetPayload<{
 type CourseWithContent = Prisma.CourseGetPayload<{
   include: {
     sections: {
-      include: { lectures: { select: { videoDuration: true } } };
+      include: { lectures: { select: { video: { select: { duration: true } } } } };
     };
   };
 }>;
@@ -43,7 +43,7 @@ function serializeCourseItem(course: CourseWithContent) {
   const allLectures = course.sections?.flatMap((s) => s.lectures) || [];
   const totalLectures = allLectures.length;
   const totalSeconds = allLectures.reduce(
-    (acc, lec) => acc + (lec.videoDuration || 0),
+    (acc, lec) => acc + (lec.video?.duration ?? 0),
     0,
   );
 

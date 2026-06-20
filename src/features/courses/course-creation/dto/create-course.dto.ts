@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/zod-openapi';
 import type { CourseStatus, CourseVisibility } from '@prisma/client';
 
 const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;

@@ -4,6 +4,36 @@ import {
   CourseCreationError,
   createCourseUseCase,
 } from '@/features/courses/course-creation';
+import { getCourseCatalog } from '@/features/courses/catalog/use-cases/get-course-catalog.use-case';
+import { parseCourseCatalogSearchParams } from '@/features/courses/catalog/lib/catalog-api-query';
+
+export async function GET(req: Request) {
+  try {
+    const session = await auth();
+    const { searchParams } = new URL(req.url);
+
+    const data = await getCourseCatalog({
+      query: parseCourseCatalogSearchParams({
+        page: searchParams.get('page') ?? undefined,
+        limit: searchParams.get('limit') ?? undefined,
+        search: searchParams.get('search') ?? undefined,
+        sort: searchParams.get('sort') ?? undefined,
+        path: searchParams.get('path') ?? undefined,
+        category: searchParams.get('category') ?? undefined,
+        level: searchParams.get('level') ?? undefined,
+        featured: searchParams.get('featured') ?? undefined,
+      }),
+      viewer: session?.user?.id
+        ? { id: session.user.id, role: session.user.role }
+        : null,
+    });
+
+    return apiSuccess(data, 'Courses fetched successfully');
+  } catch (error) {
+    console.error('[COURSE_CATALOG_ERROR]', error);
+    return apiError('Internal Error', 500);
+  }
+}
 
 export async function POST(req: Request) {
   const session = await auth();

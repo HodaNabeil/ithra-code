@@ -22,6 +22,17 @@ export function formatCourseLevel(level: CourseLevel): string {
   return levelCourse[level] || level;
 }
 
+const courseLevelApiLabels: Record<CourseLevel, string> = {
+  BEGINNER: 'Beginner',
+  INTERMEDIATE: 'Intermediate',
+  ADVANCED: 'Advanced',
+  ALL_LEVELS: 'All Levels',
+};
+
+export function formatCourseLevelForApi(level: CourseLevel): string {
+  return courseLevelApiLabels[level] || level;
+}
+
 export const totalDuration = (sections: SectionDTO[]) =>
   sections?.reduce((acc, section) => {
     return (

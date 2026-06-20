@@ -16,7 +16,7 @@ function computeListAggregates(course: DB_CourseCatalogItem) {
     (acc, section) =>
       acc +
       (section.lectures ?? []).reduce(
-        (sum, lecture) => sum + (lecture.videoDuration || 0),
+        (sum, lecture) => sum + (lecture.video?.duration || 0),
         0,
       ),
     0,

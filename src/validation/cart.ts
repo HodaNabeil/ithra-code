@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/zod-openapi';
 
 export const courseIdSchema = z.string().cuid('معرّف الدورة غير صالح');
 

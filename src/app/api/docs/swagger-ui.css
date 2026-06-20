@@ -1,0 +1,33 @@
+.api-docs-ltr .swagger-ui {
+  direction: ltr;
+  text-align: left;
+}
+
+.api-docs-ltr .swagger-ui .opblock-summary {
+  flex-direction: row;
+}
+
+.api-docs-ltr .swagger-ui .opblock-summary-method {
+  margin-right: 0.75rem;
+  margin-left: 0;
+}
+
+.api-docs-ltr .swagger-ui table thead tr th,
+.api-docs-ltr .swagger-ui table tbody tr td {
+  text-align: left;
+}
+
+.api-docs-ltr .swagger-ui .parameter__name,
+.api-docs-ltr .swagger-ui .parameter__type,
+.api-docs-ltr .swagger-ui .response-col_status,
+.api-docs-ltr .swagger-ui .response-col_description {
+  text-align: left;
+}
+
+.api-docs-ltr .swagger-ui .info .title,
+.api-docs-ltr .swagger-ui .info .description,
+.api-docs-ltr .swagger-ui .opblock-tag,
+.api-docs-ltr .swagger-ui .opblock-description-wrapper,
+.api-docs-ltr .swagger-ui .opblock-title {
+  text-align: left;
+}

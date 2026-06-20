@@ -5,6 +5,7 @@ export type {
   CourseDetailApiDTO,
   CourseDetailPublicDTO,
   GetCourseDetailResponse,
+  LectureApiDTO,
   LessonApiDTO,
   PrerequisiteApiDTO,
   SectionApiDTO,

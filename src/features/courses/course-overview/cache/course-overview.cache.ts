@@ -4,7 +4,7 @@ import type {
   CourseOverviewDTO,
 } from '../dto/course-overview.dto';
 
-const CACHE_PREFIX = 'course:overview';
+const CACHE_PREFIX = 'course:overview:v2';
 const CACHE_TTL_SECONDS = 300;
 
 function buildCacheKey(

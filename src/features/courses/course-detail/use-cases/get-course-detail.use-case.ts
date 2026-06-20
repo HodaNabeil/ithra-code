@@ -1,3 +1,4 @@
+import { isCuid } from '@/features/courses/lib/is-cuid';
 import { courseDetailCache } from '../cache/course-detail.cache';
 import type {
   CourseDetailApiDTO,
@@ -20,24 +21,24 @@ import {
 export type CourseDetailUser = CourseVisibilityUser;
 
 export type GetCourseDetailInput = {
-  slug: string;
+  idOrSlug: string;
   user?: CourseDetailUser | null;
 };
 
 async function loadPublicCourse(
-  slug: string,
+  idOrSlug: string,
   repository: CourseDetailRepository,
 ): Promise<CourseDetailPublicDTO> {
-  const cached = await courseDetailCache.get(slug);
+  const cached = isCuid(idOrSlug) ? null : await courseDetailCache.get(idOrSlug);
   if (cached) return cached;
 
-  const entity = await repository.findCourseBySlug(slug);
+  const entity = await repository.findCourseByIdOrSlug(idOrSlug);
   if (!entity) {
     throw new CourseDetailError(404, COURSE_NOT_FOUND_MESSAGE, 'COURSE_NOT_FOUND');
   }
 
   const publicDto = mapCourseDetailEntityToPublicDTO(entity);
-  await courseDetailCache.set(slug, publicDto);
+  await courseDetailCache.set(entity.slug, publicDto);
   return publicDto;
 }
 
@@ -48,7 +49,6 @@ function withDefaultUserFields(
     ...course,
     isPurchased: false,
     isInCart: false,
-    enrollmentStatus: null,
   };
 }
 
@@ -57,8 +57,8 @@ export async function getCourseDetail(
   input: GetCourseDetailInput,
   repository: CourseDetailRepository = courseDetailRepository,
 ): Promise<CourseDetailApiDTO> {
-  const { slug, user } = input;
-  const publicDto = await loadPublicCourse(slug, repository);
+  const { idOrSlug, user } = input;
+  const publicDto = await loadPublicCourse(idOrSlug, repository);
 
   assertCourseVisible(publicDto, user);
 
@@ -72,6 +72,5 @@ export async function getCourseDetail(
     ...publicDto,
     isPurchased: signals.isPurchased,
     isInCart: signals.isInCart,
-    enrollmentStatus: signals.enrollmentStatus,
   };
 }

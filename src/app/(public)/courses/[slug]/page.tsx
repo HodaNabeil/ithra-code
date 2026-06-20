@@ -1,20 +1,12 @@
 import { notFound } from 'next/navigation';
-import { CourseHero } from '@/features/courses/components/CourseHero';
-import {
-  CourseContentSection,
-  CourseStickyActionsSection,
-  ObjectivesCourseSection,
-  RequirementsSection,
-  TargetAudienceSection,
-} from '@/features/courses/[slug]/components/course-detail-sections';
-import { CourseVideoPreview } from '@/features/courses/[slug]/components/course-video-preview';
+
 import { loadCourseDetailBySlug } from '@/features/courses/course-detail';
 import { buildCourseDetailJsonLd } from '@/features/courses/lib/course-detail-jsonld';
 import { resolveCourseDetailMetadata } from '@/features/courses/lib/course-detail-metadata';
 import { Metadata } from 'next';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import Script from 'next/script';
-import CourseBreadCrumbs from '@/features/courses/components/course-bread-crumbs';
+import { CourseInfo } from '@/features/courses/[slug]/components/course-info';
 
 type CourseSlugPageProps = {
   params: Promise<{
@@ -47,6 +39,8 @@ export default async function CourseDetailsPage({
   const { course } = result;
   const jsonLd = buildCourseDetailJsonLd(course);
 
+  console.log('course', course);
+
   return (
     <>
       <Script
@@ -56,31 +50,18 @@ export default async function CourseDetailsPage({
       />
 
       <main>
-        <div className="container flex flex-col lg:flex-row gap-2 lg:gap-12 xl:gap-20 pb-10">
+        {/* <div className="container flex flex-col lg:flex-row gap-2 lg:gap-12 xl:gap-20 pb-10">
           <div className="lg:hidden mt-6 px-4">
             <CourseBreadCrumbs
               courseTitle={course.title}
               courseSlug={course.slug}
             />
           </div>
+        </div> */}
 
-          <div className="block lg:hidden mt-4">
-            <CourseVideoPreview
-              title={course.title}
-              thumbnailUrl={course.thumbnailUrl}
-              sections={course.sections}
-              previewVideoUrl={course.previewVideo}
-            />
-          </div>
+        {/* <CourseStickyActions course={course} /> */}
 
-          <CourseHero course={course} />
-          <ObjectivesCourseSection course={course} />
-          <CourseContentSection course={course} />
-          <TargetAudienceSection course={course} />
-          <RequirementsSection course={course} />
-        </div>
-
-        <CourseStickyActionsSection course={course} />
+        <CourseInfo course={course} />
       </main>
     </>
   );

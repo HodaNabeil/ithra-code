@@ -11,7 +11,7 @@ type CartWithItems = Prisma.CartGetPayload<{
         course: {
           include: {
             sections: {
-              include: { lectures: { select: { videoDuration: true } } };
+              include: { lectures: { select: { video: { select: { duration: true } } } } };
             };
           };
         };
@@ -23,7 +23,7 @@ type CartWithItems = Prisma.CartGetPayload<{
 type CourseWithContent = Prisma.CourseGetPayload<{
   include: {
     sections: {
-      include: { lectures: { select: { videoDuration: true } } };
+      include: { lectures: { select: { video: { select: { duration: true } } } } };
     };
   };
 }>;
@@ -48,7 +48,7 @@ export async function getCart(): Promise<{
             course: {
               include: {
                 sections: {
-                  include: { lectures: { select: { videoDuration: true } } },
+                  include: { lectures: { select: { video: { select: { duration: true } } } } },
                 },
               },
             },
@@ -69,7 +69,7 @@ export async function getCart(): Promise<{
           where: { id: { in: courseIds } },
           include: {
             sections: {
-              include: { lectures: { select: { videoDuration: true } } },
+              include: { lectures: { select: { video: { select: { duration: true } } } } },
             },
           },
         });
@@ -83,7 +83,7 @@ export async function getCart(): Promise<{
     const allLectures = course.sections?.flatMap((s) => s.lectures) || [];
     const totalLectures = allLectures.length;
     const totalSeconds = allLectures.reduce(
-      (acc: number, lec) => acc + (lec.videoDuration || 0),
+      (acc: number, lec) => acc + (lec.video?.duration ?? 0),
       0,
     );
 

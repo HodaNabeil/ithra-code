@@ -21,7 +21,7 @@ export async function GET(
       return apiError('Unauthorized', 401);
     }
 
-    const entity = await courseDetailRepository.findCourseBySlug(idOrSlug);
+    const entity = await courseDetailRepository.findCourseByIdOrSlug(idOrSlug);
     if (!entity) {
       return apiError('Course not found', 404);
     }

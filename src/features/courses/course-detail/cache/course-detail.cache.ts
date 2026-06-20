@@ -1,7 +1,7 @@
 import { redis } from '@/lib/redis';
 import type { CourseDetailPublicDTO } from '../dto/course-detail.dto';
 
-const CACHE_PREFIX = 'course:detail:v1';
+const CACHE_PREFIX = 'course:detail:v2';
 const CACHE_TTL_SECONDS = 300;
 
 function buildCacheKey(slug: string): string {

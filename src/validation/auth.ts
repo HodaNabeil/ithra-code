@@ -1,7 +1,7 @@
 /**
  * Authentication validation schemas using Zod
  */
-import { z } from 'zod';
+import { z } from '@/lib/zod-openapi';
 
 // Email validation
 export const emailSchema = z.string().email('البريد الإلكتروني غير صالح');

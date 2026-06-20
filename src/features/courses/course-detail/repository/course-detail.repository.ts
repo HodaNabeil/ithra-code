@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { isCuid } from '@/features/courses/lib/is-cuid';
 import { findUserCourseSignals } from '@/features/courses/services/user-course-signals.service';
 import type { UserCourseSignals } from '../dto/course-detail.dto';
 import {
@@ -8,6 +9,9 @@ import {
 
 export interface CourseDetailRepository {
   findCourseBySlug(slug: string): Promise<DB_CourseDetailEntity | null>;
+  findCourseByIdOrSlug(
+    idOrSlug: string,
+  ): Promise<DB_CourseDetailEntity | null>;
   findUserSignals(
     userId: string,
     courseId: string,
@@ -20,6 +24,19 @@ export class PrismaCourseDetailRepository implements CourseDetailRepository {
       where: { slug },
       select: courseDetailSelect,
     });
+  }
+
+  async findCourseByIdOrSlug(
+    idOrSlug: string,
+  ): Promise<DB_CourseDetailEntity | null> {
+    if (isCuid(idOrSlug)) {
+      return prisma.course.findUnique({
+        where: { id: idOrSlug },
+        select: courseDetailSelect,
+      });
+    }
+
+    return this.findCourseBySlug(idOrSlug);
   }
 
   async findUserSignals(

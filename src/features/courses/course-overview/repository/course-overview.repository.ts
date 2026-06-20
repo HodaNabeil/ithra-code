@@ -58,13 +58,15 @@ export class PrismaCourseOverviewRepository implements CourseOverviewRepository 
       reviewAggregate,
       lecturesCount,
     ] = await Promise.all([
-      prisma.lecture.aggregate({
+      prisma.video.aggregate({
         where: {
-          section: { courseId },
-          videoDuration: { not: null },
-          ...(options.publishedLecturesOnly ? { isPublished: true } : {}),
+          lecture: {
+            section: { courseId },
+            ...(options.publishedLecturesOnly ? { isPublished: true } : {}),
+          },
+          duration: { not: null },
         },
-        _sum: { videoDuration: true },
+        _sum: { duration: true },
       }),
       prisma.enrollment.count({
         where: {
@@ -83,7 +85,7 @@ export class PrismaCourseOverviewRepository implements CourseOverviewRepository 
     ]);
 
     return {
-      totalVideoDurationSeconds: videoDurationAggregate._sum.videoDuration ?? 0,
+      totalVideoDurationSeconds: videoDurationAggregate._sum.duration ?? 0,
       totalStudents,
       averageRating: reviewAggregate._avg.rating,
       ratingsCount: reviewAggregate._count.rating,

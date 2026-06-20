@@ -1,4 +1,4 @@
-import { formatCourseLevel } from '@/features/courses/lib/course-formatters';
+import { formatCourseLevelForApi } from '@/features/courses/lib/course-formatters';
 import type {
   CourseOverviewDTO,
   CourseOverviewIdentity,
@@ -31,7 +31,7 @@ export function mapCourseOverviewRecordToDTO(
     ratingsCount: record.ratingsCount,
     lastUpdated: formatLastUpdated(record.updatedAt),
     lecturesCount: record.lecturesCount,
-    skillLevel: formatCourseLevel(record.level),
+    skillLevel: formatCourseLevelForApi(record.level),
     description: record.description,
   };
 }

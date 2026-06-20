@@ -22,7 +22,7 @@ export function mapSectionsFromDetailEntity(
     position: section.position,
     duration: Math.round(
       (section.lectures ?? []).reduce(
-        (acc, lecture) => acc + (lecture.videoDuration || 0),
+        (acc, lecture) => acc + (lecture.video?.duration ?? 0),
         0,
       ) / 60,
     ),
@@ -31,8 +31,8 @@ export function mapSectionsFromDetailEntity(
       title: lecture.title,
       description: lecture.description,
       type: lecture.type,
-      videoDuration: lecture.videoDuration,
-      muxPlaybackId: lecture.muxPlaybackId,
+      videoDuration: lecture.video?.duration ?? null,
+      muxPlaybackId: null,
       position: lecture.position,
       isFree: lecture.isFree,
     })),

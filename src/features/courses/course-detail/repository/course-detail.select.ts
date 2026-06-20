@@ -16,11 +16,17 @@ export const courseDetailSelect = Prisma.validator<Prisma.CourseSelect>()({
   level: true,
   status: true,
   visibility: true,
+  isFeatured: true,
   duration: true,
-  objectives: true,
   requirements: true,
+  objectives: true,
   targetAudience: true,
   tags: true,
+  metaTitle: true,
+  metaDescription: true,
+  certificateEnabled: true,
+  maxStudents: true,
+  pathId: true,
   createdAt: true,
   updatedAt: true,
   publishedAt: true,
@@ -57,20 +63,32 @@ export const courseDetailSelect = Prisma.validator<Prisma.CourseSelect>()({
     orderBy: { position: 'asc' },
     select: {
       id: true,
+      courseId: true,
       title: true,
       description: true,
       position: true,
+      isPublished: true,
+      createdAt: true,
+      updatedAt: true,
       lectures: {
         orderBy: { position: 'asc' },
         select: {
           id: true,
+          sectionId: true,
           title: true,
           description: true,
           type: true,
-          videoDuration: true,
-          muxPlaybackId: true,
+          video: {
+            select: {
+              duration: true,
+              bunnyVideoId: true,
+            },
+          },
           position: true,
+          isPublished: true,
           isFree: true,
+          createdAt: true,
+          updatedAt: true,
           attachments: {
             orderBy: { position: 'asc' },
             select: {
@@ -83,6 +101,8 @@ export const courseDetailSelect = Prisma.validator<Prisma.CourseSelect>()({
               mimeType: true,
               isDownloadable: true,
               position: true,
+              createdAt: true,
+              updatedAt: true,
             },
           },
         },
@@ -97,8 +117,19 @@ export const courseDetailSelect = Prisma.validator<Prisma.CourseSelect>()({
       thumbnailUrl: true,
       price: true,
       currency: true,
+      level: true,
       duration: true,
       description: true,
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
+      _count: {
+        select: {
+          enrollments: true,
+        },
+      },
     },
   },
 });

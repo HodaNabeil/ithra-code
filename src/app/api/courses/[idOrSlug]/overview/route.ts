@@ -21,7 +21,7 @@ export async function GET(
         : null,
     });
 
-    return apiSuccess(data, 'Course overview retrieved successfully');
+    return apiSuccess(data, 'تم جلب نظرة عامة على الدورة بنجاح');
   } catch (error) {
     if (error instanceof CourseOverviewError) {
       return apiError(error.message, error.status);
