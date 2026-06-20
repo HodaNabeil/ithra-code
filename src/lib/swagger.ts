@@ -15,7 +15,112 @@ import { createCourseSchema } from '@/features/courses/course-creation/dto/creat
 
 const registry = new OpenAPIRegistry();
 
-// ─── Shared enums ─────────────────────────────────────────────────────────────
+// ─── Swagger examples (match seeded data) ─────────────────────────────────────
+
+const EX = {
+  courseSlug: 'nodejs-complete-guide',
+  courseId: 'clg2v3z5f000008l5d6e3k1n',
+  pathSlug: 'full-stack-web-development',
+  pathId: 'clpath2k4m000008l5d6e3k1n',
+  trackId: 'cltrack2k4m00008l5d6e3k1n',
+  orderId: 'clorder2k4m00008l5d6e3k1n',
+  instructorId: 'clinstr2k4m00008l5d6e3k1n',
+  email: 'student@example.com',
+  password: 'SecurePass1!',
+} as const;
+
+const idOrSlugParams = z.object({
+  idOrSlug: z.string().openapi({
+    example: EX.courseSlug,
+    description: 'Course UUID or URL slug',
+  }),
+});
+
+const pathSlugParams = z.object({
+  slug: z.string().openapi({
+    example: EX.pathSlug,
+    description: 'Learning path URL slug',
+  }),
+});
+
+const orderIdParams = z.object({
+  id: z.string().openapi({
+    example: EX.orderId,
+    description: 'Order UUID',
+  }),
+});
+
+const courseIdParams = z.object({
+  courseId: courseIdSchema,
+});
+
+const courseExample = {
+  id: EX.courseId,
+  instructorId: EX.instructorId,
+  title: 'Node.js - دورة شاملة لتعلم تطوير الخلفية',
+  description: 'دورة شاملة لتعلم Node.js من البداية حتى الاحتراف.',
+  shortDescription: 'تعلم Node.js من الصفر وابن تطبيقات خلفية احترافية',
+  slug: EX.courseSlug,
+  thumbnailUrl:
+    'https://images.unsplash.com/photo-1619410283995-43d9134e7656?w=800',
+  previewVideo: 'https://example.com/videos/nodejs-preview.mp4',
+  price: 499,
+  compareAtPrice: 799,
+  currency: 'EGP' as const,
+  level: 'BEGINNER' as const,
+  status: 'PUBLISHED' as const,
+  visibility: 'PUBLIC' as const,
+  isFeatured: true,
+  duration: 1800,
+  requirements: ['معرفة أساسية بـ JavaScript'],
+  objectives: ['إتقان أساسيات Node.js و npm'],
+  targetAudience: ['مطورو الويب المبتدئين'],
+  tags: ['nodejs', 'javascript', 'backend'],
+  pathId: EX.pathId,
+  trackId: null,
+  publishedAt: '2026-01-15T10:00:00.000Z',
+  createdAt: '2026-01-01T10:00:00.000Z',
+  updatedAt: '2026-01-15T10:00:00.000Z',
+};
+
+const pathExample = {
+  id: EX.pathId,
+  title: 'تطوير الويب الشامل',
+  slug: EX.pathSlug,
+  tagline: 'من الصفر إلى الاحتراف',
+  shortDescription: 'مسار شامل لتعلم تطوير الويب',
+  description: 'تعلم HTML و CSS و JavaScript و React و Node.js',
+  thumbnailUrl:
+    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800',
+  category: 'WEB' as const,
+  icon: 'code',
+  isPublished: true,
+  sortOrder: 1,
+  createdAt: '2026-01-01T10:00:00.000Z',
+  updatedAt: '2026-01-15T10:00:00.000Z',
+};
+
+const paginationExample = {
+  page: 1,
+  limit: 12,
+  total: 24,
+  totalPages: 2,
+};
+
+const apiSuccessExample = <T>(message: string, data: T) => ({
+  success: true as const,
+  message,
+  data,
+});
+
+const apiErrorExample = {
+  success: false as const,
+  message: 'المورد غير موجود',
+};
+
+const cartErrorExample = {
+  error: 'غير مصرح',
+};
 
 const currencySchema = z.enum(['USD', 'EGP']);
 const courseLevelSchema = z.enum([
@@ -210,22 +315,48 @@ const PaginationMetaSchema = registry.register(
 // ─── Query schemas ────────────────────────────────────────────────────────────
 
 const courseCatalogQuerySchema = z.object({
-  page: z.string().optional(),
-  limit: z.string().optional(),
-  search: z.string().optional(),
-  sort: z.string().optional(),
-  path: z.string().optional(),
-  category: z.string().optional(),
-  level: courseLevelSchema.optional(),
-  featured: z.string().optional(),
+  page: z
+    .string()
+    .optional()
+    .openapi({ example: '1', description: 'Page number (1-based)' }),
+  limit: z
+    .string()
+    .optional()
+    .openapi({ example: '12', description: 'Items per page' }),
+  search: z
+    .string()
+    .optional()
+    .openapi({ example: 'node', description: 'Search in title and description' }),
+  sort: z
+    .string()
+    .optional()
+    .openapi({ example: 'newest', description: 'Sort order' }),
+  path: z
+    .string()
+    .optional()
+    .openapi({ example: EX.pathSlug, description: 'Filter by path slug' }),
+  category: z
+    .string()
+    .optional()
+    .openapi({ example: 'WEB', description: 'Category filter' }),
+  level: courseLevelSchema
+    .optional()
+    .openapi({ example: 'BEGINNER', description: 'Course level' }),
+  featured: z
+    .string()
+    .optional()
+    .openapi({ example: 'true', description: 'Featured courses only' }),
 });
 
 const pathCatalogQuerySchema = z.object({
-  page: z.string().optional(),
-  limit: z.string().optional(),
-  search: z.string().optional(),
-  sort: z.enum(['newest', 'oldest', 'title']).optional(),
-  category: pathCategorySchema.optional(),
+  page: z.string().optional().openapi({ example: '1' }),
+  limit: z.string().optional().openapi({ example: '12' }),
+  search: z.string().optional().openapi({ example: 'web' }),
+  sort: z
+    .enum(['newest', 'oldest', 'title'])
+    .optional()
+    .openapi({ example: 'newest' }),
+  category: pathCategorySchema.optional().openapi({ example: 'WEB' }),
 });
 
 // ─── Security ─────────────────────────────────────────────────────────────────
@@ -259,12 +390,21 @@ registry.registerPath({
               meta: PaginationMetaSchema,
             }),
           ),
+          example: apiSuccessExample('تم جلب الدورات بنجاح', {
+            items: [courseExample],
+            meta: paginationExample,
+          }),
         },
       },
     },
     500: {
       description: 'Internal server error',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
   },
 });
@@ -277,7 +417,16 @@ registry.registerPath({
   security: authenticated,
   request: {
     body: {
-      content: { 'application/json': { schema: createCourseSchema } },
+      content: {
+        'application/json': {
+          schema: createCourseSchema,
+          example: {
+            slug: 'my-new-course',
+            pathId: EX.pathId,
+            trackId: EX.trackId,
+          },
+        },
+      },
       required: true,
     },
   },
@@ -290,16 +439,36 @@ registry.registerPath({
             'CreateCourseSuccess',
             z.object({ course: CreateCourseResponseSchema }),
           ),
+          example: apiSuccessExample('تم إنشاء الدورة بنجاح', {
+            course: {
+              id: EX.courseId,
+              slug: 'my-new-course',
+              status: 'DRAFT',
+              visibility: 'PRIVATE',
+              title: 'دورة جديدة',
+              price: 0,
+            },
+          }),
         },
       },
     },
     401: {
       description: 'Unauthorized',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
     500: {
       description: 'Internal server error',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
   },
 });
@@ -310,7 +479,7 @@ registry.registerPath({
   tags: ['Courses'],
   summary: 'Get course details',
   request: {
-    params: z.object({ idOrSlug: z.string() }),
+    params: idOrSlugParams,
   },
   responses: {
     200: {
@@ -321,16 +490,29 @@ registry.registerPath({
             'CourseDetailResponse',
             z.object({ course: z.record(z.string(), z.unknown()) }),
           ),
+          example: apiSuccessExample('تم جلب تفاصيل الدورة بنجاح', {
+            course: courseExample,
+          }),
         },
       },
     },
     404: {
       description: 'Course not found',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
     500: {
       description: 'Internal server error',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
   },
 });
@@ -341,11 +523,16 @@ registry.registerPath({
   tags: ['Courses'],
   summary: 'Update a course',
   request: {
-    params: z.object({ idOrSlug: z.string() }),
+    params: idOrSlugParams,
     body: {
       content: {
         'application/json': {
           schema: z.record(z.string(), z.unknown()),
+          example: {
+            title: 'Node.js - دورة محدّثة',
+            price: 549,
+            shortDescription: 'وصف مختصر محدّث للدورة',
+          },
         },
       },
       required: true,
@@ -354,7 +541,12 @@ registry.registerPath({
   responses: {
     200: {
       description: 'Updated course',
-      content: { 'application/json': { schema: CourseSchema } },
+      content: {
+        'application/json': {
+          schema: CourseSchema,
+          example: { ...courseExample, title: 'Node.js - دورة محدّثة', price: 549 },
+        },
+      },
     },
     500: { description: 'Update failed or course not found' },
   },
@@ -367,7 +559,7 @@ registry.registerPath({
   summary: 'Archive a course',
   security: authenticated,
   request: {
-    params: z.object({ idOrSlug: z.string() }),
+    params: idOrSlugParams,
   },
   responses: {
     200: {
@@ -382,16 +574,31 @@ registry.registerPath({
               status: courseStatusSchema,
             }),
           ),
+          example: apiSuccessExample('تم أرشفة الدورة بنجاح', {
+            id: EX.courseId,
+            slug: EX.courseSlug,
+            status: 'ARCHIVED',
+          }),
         },
       },
     },
     401: {
       description: 'Unauthorized',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
     500: {
       description: 'Internal server error',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
   },
 });
@@ -403,7 +610,7 @@ registry.registerPath({
   summary: 'Check enrollment access for a course',
   security: authenticated,
   request: {
-    params: z.object({ idOrSlug: z.string() }),
+    params: idOrSlugParams,
   },
   responses: {
     200: {
@@ -414,20 +621,38 @@ registry.registerPath({
             'CourseAccessResponse',
             z.object({ isEnrolled: z.boolean() }),
           ),
+          example: apiSuccessExample('تم التحقق من الوصول بنجاح', {
+            isEnrolled: true,
+          }),
         },
       },
     },
     401: {
       description: 'Unauthorized',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
     404: {
       description: 'Course not found',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
     500: {
       description: 'Internal server error',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
   },
 });
@@ -487,12 +712,7 @@ registry.registerPath({
   description:
     'Returns aggregated course stats (duration, students, rating, lectures) and the full course description. Works with a course ID or slug — e.g. `GET /api/courses/nodejs-complete-guide/overview`.',
   request: {
-    params: z.object({
-      idOrSlug: z.string().openapi({
-        example: 'nodejs-complete-guide',
-        description: 'Course UUID or URL slug',
-      }),
-    }),
+    params: idOrSlugParams,
   },
   responses: {
     200: {
@@ -509,11 +729,21 @@ registry.registerPath({
     },
     404: {
       description: 'Course not found',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
     500: {
       description: 'Internal server error',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
   },
 });
@@ -536,12 +766,21 @@ registry.registerPath({
               meta: PaginationMetaSchema,
             }),
           ),
+          example: apiSuccessExample('تم جلب المسارات بنجاح', {
+            items: [pathExample],
+            meta: paginationExample,
+          }),
         },
       },
     },
     500: {
       description: 'Internal server error',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
   },
 });
@@ -552,7 +791,7 @@ registry.registerPath({
   tags: ['Paths'],
   summary: 'Get learning path details',
   request: {
-    params: z.object({ slug: z.string() }),
+    params: pathSlugParams,
   },
   responses: {
     200: {
@@ -563,16 +802,27 @@ registry.registerPath({
             'PathDetailResponse',
             z.record(z.string(), z.unknown()),
           ),
+          example: apiSuccessExample('تم جلب تفاصيل المسار بنجاح', pathExample),
         },
       },
     },
     404: {
       description: 'Path not found',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
     500: {
       description: 'Internal server error',
-      content: { 'application/json': { schema: ApiErrorSchema } },
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
     },
   },
 });
@@ -588,6 +838,7 @@ registry.registerPath({
       content: {
         'application/json': {
           schema: z.object({ courseId: courseIdSchema }),
+          example: { courseId: EX.courseId },
         },
       },
       required: true,
@@ -599,20 +850,41 @@ registry.registerPath({
       content: {
         'application/json': {
           schema: z.object({ data: z.record(z.string(), z.unknown()) }),
+          example: {
+            data: {
+              items: [{ courseId: EX.courseId, course: courseExample }],
+              itemCount: 1,
+            },
+          },
         },
       },
     },
     400: {
       description: 'Invalid courseId',
-      content: { 'application/json': { schema: CartErrorSchema } },
+      content: {
+        'application/json': {
+          schema: CartErrorSchema,
+          example: cartErrorExample,
+        },
+      },
     },
     401: {
       description: 'Unauthorized',
-      content: { 'application/json': { schema: CartErrorSchema } },
+      content: {
+        'application/json': {
+          schema: CartErrorSchema,
+          example: cartErrorExample,
+        },
+      },
     },
     500: {
       description: 'Internal server error',
-      content: { 'application/json': { schema: CartErrorSchema } },
+      content: {
+        'application/json': {
+          schema: CartErrorSchema,
+          example: cartErrorExample,
+        },
+      },
     },
   },
 });
@@ -624,7 +896,7 @@ registry.registerPath({
   summary: 'Remove a course from the cart',
   security: authenticated,
   request: {
-    params: z.object({ courseId: courseIdSchema }),
+    params: courseIdParams,
   },
   responses: {
     200: {
@@ -632,23 +904,67 @@ registry.registerPath({
       content: {
         'application/json': {
           schema: z.object({ data: z.record(z.string(), z.unknown()) }),
+          example: { data: { items: [], itemCount: 0 } },
         },
       },
     },
     400: {
       description: 'Invalid courseId',
-      content: { 'application/json': { schema: CartErrorSchema } },
+      content: {
+        'application/json': {
+          schema: CartErrorSchema,
+          example: cartErrorExample,
+        },
+      },
     },
     401: {
       description: 'Unauthorized',
-      content: { 'application/json': { schema: CartErrorSchema } },
+      content: {
+        'application/json': {
+          schema: CartErrorSchema,
+          example: cartErrorExample,
+        },
+      },
     },
     500: {
       description: 'Internal server error',
-      content: { 'application/json': { schema: CartErrorSchema } },
+      content: {
+        'application/json': {
+          schema: CartErrorSchema,
+          example: cartErrorExample,
+        },
+      },
     },
   },
 });
+
+const orderExample = {
+  id: EX.orderId,
+  orderNumber: 'ORD-2026-0001',
+  userId: 'cluser2k4m000008l5d6e3k1n',
+  subtotalCents: 49900,
+  discountCents: 0,
+  taxCents: 0,
+  totalCents: 49900,
+  currency: 'EGP' as const,
+  status: 'COMPLETED' as const,
+  couponCode: null,
+  createdAt: '2026-06-01T10:00:00.000Z',
+  updatedAt: '2026-06-01T10:05:00.000Z',
+  completedAt: '2026-06-01T10:05:00.000Z',
+  items: [
+    {
+      id: 'clitem2k4m000008l5d6e3k1n',
+      orderId: EX.orderId,
+      courseId: EX.courseId,
+      priceCents: 49900,
+      currency: 'EGP' as const,
+      status: 'ACTIVE' as const,
+      refundedAt: null,
+      course: courseExample,
+    },
+  ],
+};
 
 registry.registerPath({
   method: 'get',
@@ -656,12 +972,17 @@ registry.registerPath({
   tags: ['Orders'],
   summary: 'Get order by ID',
   request: {
-    params: z.object({ id: z.string() }),
+    params: orderIdParams,
   },
   responses: {
     200: {
       description: 'Order details',
-      content: { 'application/json': { schema: OrderSchema } },
+      content: {
+        'application/json': {
+          schema: OrderSchema,
+          example: orderExample,
+        },
+      },
     },
     404: { description: 'Order not found' },
   },

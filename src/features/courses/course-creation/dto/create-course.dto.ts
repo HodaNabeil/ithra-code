@@ -7,9 +7,17 @@ export const createCourseSchema = z.object({
   slug: z
     .string()
     .min(1, 'Slug is required')
-    .regex(SLUG_REGEX, 'Invalid slug format'),
-  pathId: z.string().min(1, 'pathId is required'),
-  trackId: z.string().min(1).optional(),
+    .regex(SLUG_REGEX, 'Invalid slug format')
+    .openapi({ example: 'my-new-course' }),
+  pathId: z
+    .string()
+    .min(1, 'pathId is required')
+    .openapi({ example: 'clpath2k4m000008l5d6e3k1n' }),
+  trackId: z
+    .string()
+    .min(1)
+    .optional()
+    .openapi({ example: 'cltrack2k4m00008l5d6e3k1n' }),
 });
 
 export type CreateCourseInputDTO = z.infer<typeof createCourseSchema>;
