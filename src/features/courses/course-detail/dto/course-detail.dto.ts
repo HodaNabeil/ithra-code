@@ -22,6 +22,13 @@ export type AttachmentApiDTO = {
   updatedAt: string;
 };
 
+export type LectureVideoApiDTO = {
+  duration: number | null;
+  bunnyVideoId: string;
+  thumbnailUrl?: string | null;
+  hlsUrl?: string | null;
+};
+
 export type LectureApiDTO = {
   id: string;
   sectionId: string;
@@ -32,6 +39,7 @@ export type LectureApiDTO = {
   position: number;
   isPublished: boolean;
   isFree: boolean;
+  video: LectureVideoApiDTO | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -54,9 +62,11 @@ export type PrerequisiteApiDTO = {
   slug: string;
   thumbnailUrl: string;
   price: number;
+  currency: Currency;
   rating: number;
   level: CourseLevel;
-  duration: number | null;
+  /** Course duration in minutes. */
+  duration: number;
   studentCount: number;
 };
 

@@ -2,54 +2,23 @@
 
 import { useMemo, useState } from 'react';
 import { Play, X } from 'lucide-react';
-import MuxPlayer from '@mux/mux-player-react';
 import { cn } from '@/lib/utils';
-import type { SectionDTO } from '@/types/course/course.dto';
-
-type PreviewItem = {
-  id: string;
-  url?: string;
-  playbackId?: string;
-};
-
-function buildPreviewItems(
-  sections: SectionDTO[],
-  previewVideoUrl?: string | null,
-): PreviewItem[] {
-  const items: PreviewItem[] = [];
-
-  if (previewVideoUrl) {
-    items.push({ id: 'course-preview', url: previewVideoUrl });
-  }
-
-  for (const section of sections) {
-    for (const lecture of section.lectures) {
-      if (lecture.isFree && lecture.muxPlaybackId) {
-        items.push({ id: lecture.id, playbackId: lecture.muxPlaybackId });
-      }
-    }
-  }
-
-  return items;
-}
-
-function isYoutubeUrl(url: string): boolean {
-  return /youtube\.com|youtu\.be/.test(url);
-}
-
-function toYoutubeEmbedUrl(url: string): string {
-  const match = url.match(
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/,
-  );
-  return match ? `https://www.youtube.com/embed/${match[1]}` : url;
-}
+import { VideoPlayer } from '@/components/shared/video-player';
+import type { Course } from '@/types/course/course.types';
+import { useCoursePreviewStore } from '../stores/course-preview-store';
+import { buildFreePreviewVideosFromSections } from '../utils/build-free-preview-videos';
 
 interface CourseVideoPreviewProps {
   title: string;
   thumbnailUrl?: string | null;
-  sections: SectionDTO[];
+  sections: Course['sections'];
   previewVideoUrl?: string | null;
   className?: string;
+  /**
+   * 'auto' (default): plays inline when only one preview exists, otherwise opens the dialog.
+   * 'dialog': always opens the shared preview dialog.
+   */
+  mode?: 'auto' | 'dialog';
 }
 
 export function CourseVideoPreview({
@@ -58,18 +27,35 @@ export function CourseVideoPreview({
   sections,
   previewVideoUrl,
   className,
+  mode = 'auto',
 }: CourseVideoPreviewProps) {
+  const { openPreview } = useCoursePreviewStore();
   const [isPlayingInline, setIsPlayingInline] = useState(false);
 
-  const previewItems = useMemo(
-    () => buildPreviewItems(sections, previewVideoUrl),
-    [sections, previewVideoUrl],
+  const previewVideos = useMemo(
+    () =>
+      buildFreePreviewVideosFromSections(sections, {
+        previewVideoUrl,
+        courseTitle: title,
+        courseThumbnailUrl: thumbnailUrl ?? null,
+      }),
+    [sections, previewVideoUrl, title, thumbnailUrl],
   );
 
-  const first = previewItems[0];
-  const hasPreviews = previewItems.length > 0;
+  const first = previewVideos[0];
+  const hasPreviews = previewVideos.length > 0;
+  const singlePreview = previewVideos.length === 1 && Boolean(first?.url);
 
-  if (isPlayingInline && first) {
+  function handleActivatePreview() {
+    if (!hasPreviews || !first) return;
+    if (mode === 'auto' && singlePreview && first.url) {
+      setIsPlayingInline(true);
+      return;
+    }
+    openPreview(title, previewVideos, first.id);
+  }
+
+  if (isPlayingInline && singlePreview && first?.url) {
     return (
       <div
         className={cn(
@@ -77,36 +63,25 @@ export function CourseVideoPreview({
           className,
         )}
       >
-        {first.playbackId ? (
-          <MuxPlayer
-            key={first.id}
-            playbackId={first.playbackId}
-            metadataVideoTitle={title}
-            accentColor="#ea580c"
-            className="size-full"
-            streamType="on-demand"
-            autoPlay
-          />
-        ) : first.url && isYoutubeUrl(first.url) ? (
-          <iframe
-            key={first.id}
-            src={toYoutubeEmbedUrl(first.url)}
-            title={title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="size-full"
-          />
-        ) : first.url ? (
+        {first.kind === 'video' ? (
           <video
             key={first.id}
             src={first.url}
-            poster={thumbnailUrl ?? undefined}
+            poster={first.thumbnailUrl ?? thumbnailUrl ?? undefined}
             controls
             autoPlay
             playsInline
             className="size-full bg-black object-contain"
           />
-        ) : null}
+        ) : (
+          <VideoPlayer
+            key={first.id}
+            src={first.url}
+            poster={first.thumbnailUrl ?? thumbnailUrl ?? undefined}
+            autoPlay
+            className="size-full"
+          />
+        )}
 
         <button
           type="button"
@@ -145,7 +120,7 @@ export function CourseVideoPreview({
   return (
     <button
       type="button"
-      onClick={() => setIsPlayingInline(true)}
+      onClick={handleActivatePreview}
       className={rootClass}
       aria-label="معاينة هذه الدورة"
     >

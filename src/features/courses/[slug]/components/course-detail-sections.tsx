@@ -6,10 +6,11 @@ import {
   resolveCourseEnrollmentState,
 } from '@/features/courses/lib/course-cart-context';
 import { CourseStickyActions } from './course-sticky-actions';
-import { ObjectivesCourse } from './Objectives';
-import { CourseContent } from './CourseContent';
-import { TargetAudience } from './TargetAudience';
-import { Requirements } from './Requirements';
+import { CourseObjectives } from './course-objectives';
+import CourseContent from './course-content';
+import { CourseTargetAudience } from './course-info/course-target-audience';
+import { CourseRequirements } from './course-info/course-requirements';
+import { CoursePrerequisites } from './course-prerequisites';
 
 export async function ObjectivesCourseSection({
   course,
@@ -17,7 +18,7 @@ export async function ObjectivesCourseSection({
   course: CourseDetailDTO;
 }) {
   if (!course.objectives?.length) return null;
-  return <ObjectivesCourse objectives={course.objectives} />;
+  return <CourseObjectives objectives={course.objectives} />;
 }
 
 export async function CourseContentSection({
@@ -26,8 +27,18 @@ export async function CourseContentSection({
   course: CourseDetailDTO;
 }) {
   if (!course.sections?.length) return null;
+  const lecturesCount = course.sections.reduce(
+    (acc, section) => acc + section.lectures.length,
+    0,
+  );
   return (
-    <CourseContent sections={course.sections} courseSlug={course.slug} />
+    <CourseContent
+      sections={course.sections}
+      lecturesCount={lecturesCount}
+      courseTitle={course.title}
+      courseSlug={course.slug}
+      isPurchased={!!course.isPurchased}
+    />
   );
 }
 
@@ -37,7 +48,7 @@ export async function TargetAudienceSection({
   course: CourseDetailDTO;
 }) {
   if (!course.targetAudience?.length) return null;
-  return <TargetAudience targets={course.targetAudience} />;
+  return <CourseTargetAudience targetAudience={course.targetAudience} />;
 }
 
 export async function RequirementsSection({
@@ -49,10 +60,14 @@ export async function RequirementsSection({
     return null;
   }
   return (
-    <Requirements
-      requirements={course.requirements}
-      prerequisites={course.prerequisites}
-    />
+    <>
+      {course.requirements?.length ? (
+        <CourseRequirements requirements={course.requirements} />
+      ) : null}
+      {course.prerequisites?.length ? (
+        <CoursePrerequisites prerequisites={course.prerequisites} />
+      ) : null}
+    </>
   );
 }
 

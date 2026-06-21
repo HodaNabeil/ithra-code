@@ -18,10 +18,23 @@ import type { ActionResponse } from '@/types/action';
 import { useGuestCart } from '@/features/cart/hooks/useGuestCart';
 import { addToCartAction } from '@/features/cart/actions/cart';
 
-export type AddToCartCourse = CourseListDTO & {
+import type { Course } from '@/types/course/course.types';
+
+export type AddToCartCourse = Omit<CourseListDTO, 'duration' | 'sections'> & {
+  duration?: number | null;
   isInCart?: boolean;
-  sections?: SectionDTO[];
+  sections?: SectionDTO[] | Course['sections'];
 };
+
+function toGuestCartCourse(course: AddToCartCourse): CourseListDTO {
+  const duration =
+    course.duration ??
+    ('hours' in course && typeof course.hours === 'number'
+      ? course.hours * 60
+      : null);
+
+  return { ...course, duration };
+}
 
 interface AddToCartButtonProps {
   course: AddToCartCourse;
@@ -99,7 +112,7 @@ export function AddToCartButton({
 
     if (!isAuthed) {
       e.preventDefault();
-      addGuestItem(course);
+      addGuestItem(toGuestCartCourse(course));
       setIsAddedLocally(true);
       openSuccessDialog();
       return;

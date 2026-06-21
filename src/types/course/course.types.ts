@@ -4,7 +4,15 @@ import {
   CourseVisibility,
   Currency,
 } from '@prisma/client';
+import type { CourseDetailApiDTO } from '@/features/courses/course-detail/dto/course-detail.dto';
+import type { CourseOverviewDTO } from '@/features/courses/course-overview/dto/course-overview.dto';
 import type { CourseDetailDTO, CourseListDTO } from './course.dto';
+
+/** Course detail returned by `getCourseDetail`. */
+export type Course = CourseDetailApiDTO;
+
+/** Overview stats returned by `getCourseOverview`. */
+export type CourseOverview = CourseOverviewDTO;
 
 // ── Shared Options ──────────────────────────────────────────────────
 

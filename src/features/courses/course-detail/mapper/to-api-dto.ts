@@ -42,6 +42,12 @@ function mapLectures(
     position: lecture.position,
     isPublished: lecture.isPublished,
     isFree: lecture.isFree,
+    video: lecture.video
+      ? {
+          duration: lecture.video.duration,
+          bunnyVideoId: lecture.video.bunnyVideoId,
+        }
+      : null,
     createdAt: prismaDateToIso(lecture.createdAt),
     updatedAt: prismaDateToIso(lecture.updatedAt),
   }));
@@ -71,9 +77,10 @@ function mapPrerequisites(course: DB_CourseDetailEntity): PrerequisiteApiDTO[] {
       slug: prerequisite.slug,
       thumbnailUrl: prerequisite.thumbnailUrl,
       price: Number(prerequisite.price),
+      currency: prerequisite.currency,
       rating,
       level: prerequisite.level,
-      duration: prerequisite.duration,
+      duration: prerequisite.duration ?? 0,
       studentCount: prerequisite._count.enrollments,
     };
   });
