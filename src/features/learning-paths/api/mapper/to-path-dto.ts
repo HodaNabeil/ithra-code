@@ -90,12 +90,7 @@ export function mapPathDetailEntityToDTO(
     .map((track) => mapDetailTrack(track, viewer))
     .filter((track): track is PathDetailTrackItem => track !== null);
 
-  const sections: PathDetailSectionItem[] = path.pathSections.map((section) => ({
-    id: section.id,
-    type: section.type as PathDetailSectionItem['type'],
-    content: section.content,
-    order: section.order,
-  }));
+  const sections: PathDetailSectionItem[] = [];
 
   return {
     id: path.id,

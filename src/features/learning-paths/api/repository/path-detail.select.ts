@@ -43,17 +43,6 @@ export const pathDetailSelect = Prisma.validator<Prisma.PathSelect>()({
       },
     },
   },
-  pathSections: {
-    select: {
-      id: true,
-      type: true,
-      content: true,
-      order: true,
-    },
-    orderBy: {
-      order: 'asc',
-    },
-  },
 });
 
 export type DB_PathDetailEntity = Prisma.PathGetPayload<{
