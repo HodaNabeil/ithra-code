@@ -35,7 +35,7 @@ export const courseDetailSelect = Prisma.validator<Prisma.CourseSelect>()({
       id: true,
       firstName: true,
       lastName: true,
-      profilePicture: true,
+      image: true,
     },
   },
   reviews: {
@@ -49,7 +49,7 @@ export const courseDetailSelect = Prisma.validator<Prisma.CourseSelect>()({
           id: true,
           firstName: true,
           lastName: true,
-          profilePicture: true,
+          image: true,
         },
       },
     },

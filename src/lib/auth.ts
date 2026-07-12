@@ -11,14 +11,12 @@ export const config: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
 
   providers: [
-    // ── Google ───────────────────────────────────────
     GoogleProvider({
       clientId: env.AUTH_GOOGLE_ID,
       clientSecret: env.AUTH_GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
 
-    // ── GitHub ───────────────────────────────────────
     GithubProvider({
       clientId: env.AUTH_GITHUB_ID,
       clientSecret: env.AUTH_GITHUB_SECRET,
@@ -30,18 +28,36 @@ export const config: NextAuthConfig = {
     strategy: 'jwt',
   },
 
-  callbacks: {
-    // ── JWT Callback
+  events: {
+    async createUser({ user }) {
+      const [firstName, ...rest] = (user.name ?? '').split(' ');
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          firstName: firstName || null,
+          lastName: rest.join(' ') || null,
+          isEmailVerified: !!user.emailVerified,
+          role: Role.STUDENT,
+        },
+      });
+    },
+  },
 
+  callbacks: {
     async jwt({ token, user }) {
-      if (user) {
+      if (user?.id) {
         token.id = user.id;
-        token.role = user.role || Role.STUDENT;
+
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { role: true },
+        });
+        token.role = dbUser?.role ?? Role.STUDENT;
       }
+
       return token;
     },
 
-    // ── Session Callback
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
@@ -49,27 +65,6 @@ export const config: NextAuthConfig = {
         session.user.image = token.picture as string;
       }
       return session;
-    },
-
-    async signIn({ user, account }) {
-      if (account?.provider === 'google' || account?.provider === 'github') {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email as string },
-        });
-
-        if (!existingUser) {
-          await prisma.user.create({
-            data: {
-              firstName: user.name?.split(' ')[0] || '',
-              lastName: user.name?.split(' ')[1] || '',
-              email: user.email as string,
-              profilePicture: user.image,
-              role: Role.STUDENT,
-            },
-          });
-        }
-      }
-      return true;
     },
   },
 
@@ -82,7 +77,6 @@ export const config: NextAuthConfig = {
   trustHost: true,
 } satisfies NextAuthConfig;
 
-// ── Export simplified handlers for NextAuth v5
 const {
   handlers: authHandlers,
   auth: authMethod,

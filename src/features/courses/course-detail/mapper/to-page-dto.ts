@@ -51,7 +51,7 @@ export function mapReviewsFromDetailEntity(
       id: review.user.id,
       firstName: review.user.firstName,
       lastName: review.user.lastName,
-      profilePicture: review.user.profilePicture,
+      profilePicture: review.user.image,
     },
   }));
 }
