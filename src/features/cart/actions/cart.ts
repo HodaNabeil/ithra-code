@@ -22,7 +22,11 @@ import type {
 import type { CartDataType } from '@/types/cart/cart';
 import { courseIdSchema, courseIdsSchema } from '@/validation/cart';
 
-type CartApiResponse = { data: CartDataType };
+type CartApiResponse = {
+  success: true;
+  message: string;
+  data: CartDataType;
+};
 
 function mapCartError(
   error: unknown,
@@ -78,7 +82,7 @@ export async function addToCartAction(
     return {
       success: true,
       data: response.data,
-      message: 'تمت إضافة الدورة إلى السلة',
+      message: response.message ?? 'تمت إضافة الدورة إلى السلة',
     };
   } catch (error) {
     console.error('[ADD_TO_CART_ACTION]', error);

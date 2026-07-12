@@ -4,20 +4,23 @@ export interface CartItemType extends Course {
   totalDurationText: string;
 }
 
+export interface CartCouponType {
+  code: string;
+  type: string;
+  value: number;
+  description: string | null;
+}
+
 export interface CartDataType {
-  id: string;
-  userId: string | null;
+  id: string | null;
+  userId: string;
   subtotal: number;
   discount: number;
   total: number;
   currency: string;
   items: CartItemType[];
-  coupon: {
-    code: string;
-    type: string;
-    value: number;
-    description: string;
-  };
+  coupon: CartCouponType | null;
   createdAt: string;
   updatedAt: string;
+  warnings?: string[];
 }

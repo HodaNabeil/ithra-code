@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { SwaggerUIClient } from './swagger-ui-client';
 
-export default function DocsRedirectPage() {
-  redirect('/api/docs');
+export default function ApiDocsPage() {
+  return <SwaggerUIClient />;
 }

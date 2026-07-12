@@ -13,7 +13,10 @@ export default async function proxy(req: NextRequest) {
   const pathname = nextUrl.pathname;
 
   const isPublicRoute =
-    pathname === '/' || pathname.startsWith('/courses') || pathname === '/cart';
+    pathname === '/' ||
+    pathname.startsWith('/courses') ||
+    pathname === '/cart' ||
+    pathname === '/docs';
 
   if (isPublicRoute) return NextResponse.next();
 

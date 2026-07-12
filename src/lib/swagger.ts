@@ -11,6 +11,8 @@ import {
   verifyEmailSchema,
 } from '@/validation/auth';
 import { courseIdSchema } from '@/validation/cart';
+import { cartApiResponseSchema } from '@/features/cart/dto/cart.dto';
+import { addCartItemBodySchema } from '@/features/cart/presentation/validators/add-cart-item.validator';
 import { createCourseSchema } from '@/features/courses/course-creation/dto/create-course.dto';
 
 const registry = new OpenAPIRegistry();
@@ -828,43 +830,31 @@ registry.registerPath({
 });
 
 registry.registerPath({
-  method: 'post',
-  path: '/cart/items',
+  method: 'get',
+  path: '/cart',
   tags: ['Cart'],
-  summary: 'Add a course to the cart',
+  summary: 'Get current user cart',
   security: authenticated,
-  request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: z.object({ courseId: courseIdSchema }),
-          example: { courseId: EX.courseId },
-        },
-      },
-      required: true,
-    },
-  },
   responses: {
     200: {
-      description: 'Cart updated',
+      description: 'Cart retrieved (may be empty)',
       content: {
         'application/json': {
-          schema: z.object({ data: z.record(z.string(), z.unknown()) }),
+          schema: cartApiResponseSchema,
           example: {
             data: {
-              items: [{ courseId: EX.courseId, course: courseExample }],
-              itemCount: 1,
+              id: null,
+              userId: EX.instructorId,
+              subtotal: 0,
+              discount: 0,
+              total: 0,
+              currency: 'EGP',
+              items: [],
+              coupon: null,
+              createdAt: '2026-01-01T00:00:00.000Z',
+              updatedAt: '2026-01-01T00:00:00.000Z',
             },
           },
-        },
-      },
-    },
-    400: {
-      description: 'Invalid courseId',
-      content: {
-        'application/json': {
-          schema: CartErrorSchema,
-          example: cartErrorExample,
         },
       },
     },
@@ -883,6 +873,72 @@ registry.registerPath({
         'application/json': {
           schema: CartErrorSchema,
           example: cartErrorExample,
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/cart/items',
+  tags: ['Cart'],
+  summary: 'Add a course to the cart',
+  security: authenticated,
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: addCartItemBodySchema,
+          example: { courseId: EX.courseId },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Cart updated',
+      content: {
+        'application/json': {
+          schema: cartApiResponseSchema,
+        },
+      },
+    },
+    400: {
+      description:
+        'Validation error, course not published, free course, already enrolled, already in cart, or currency mismatch',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+    404: {
+      description: 'Course not found',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
         },
       },
     },
@@ -998,10 +1054,9 @@ export function getOpenApiDocument(): ReturnType<
   return generator.generateDocument({
     openapi: '3.0.0',
     info: {
-      title: 'Ithracode API',
-      version: '1.0.0',
-      description:
-        'REST API for Ithracode — courses, learning paths, cart, and orders. Request/response schemas are generated from Zod validation schemas.',
+      title: 'thracode',
+      version: '1.0',
+      description: 'API Documentation',
     },
     servers: [{ url: '/api', description: 'API base path' }],
     tags: [

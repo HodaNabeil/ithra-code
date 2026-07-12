@@ -1,183 +1,145 @@
-import { prisma } from '@/lib/prisma';
-import { EnrollmentStatus, Prisma } from '@prisma/client';
 import type { CartDataType } from '@/types/cart/cart';
+import {
+  calculateDiscount,
+  emptyCartDto,
+  isCouponValid,
+  isCourseAvailable,
+  mapCartToDto,
+} from '../mappers/cart.mapper';
+import type { CartRepository } from '../domain/repositories/cart.repository';
+import { cartRepository } from '../infrastructure/prisma/repositories/prisma-cart.repository';
+import { addCartItemUseCase } from '../application/use-cases/add-cart-item.use-case';
 
-/** Thrown by cart service; API routes map `status` to HTTP responses. */
-export class CartServiceError extends Error {
-  constructor(
-    public readonly status: number,
-    message: string,
-  ) {
-    super(message);
-    this.name = 'CartServiceError';
-  }
-}
+export { CartError, CartServiceError } from '../domain/errors/cart.errors';
+import type { DB_CartWithItems } from '../infrastructure/prisma/cart.select';
 
-const cartInclude = {
-  items: {
-    include: {
-      course: {
-        include: {
-          sections: {
-            include: { lectures: { select: { video: { select: { duration: true } } } } },
-          },
-        },
-      },
-    },
-  },
-} satisfies Prisma.CartInclude;
+async function reconcileCart(
+  userId: string,
+  dbCart: DB_CartWithItems,
+  repository: CartRepository = cartRepository,
+): Promise<CartDataType> {
+  const warnings: string[] = [];
+  const courseIds = dbCart.items.map((item) => item.courseId);
 
-export type CartWithItems = Prisma.CartGetPayload<{
-  include: typeof cartInclude;
-}>;
-
-type CourseWithContent = Prisma.CourseGetPayload<{
-  include: {
-    sections: {
-      include: { lectures: { select: { video: { select: { duration: true } } } } };
-    };
-  };
-}>;
-
-function serializeCourseItem(course: CourseWithContent) {
-  const allLectures = course.sections?.flatMap((s) => s.lectures) || [];
-  const totalLectures = allLectures.length;
-  const totalSeconds = allLectures.reduce(
-    (acc, lec) => acc + (lec.video?.duration ?? 0),
-    0,
+  const enrolledCourseIds = await repository.findActiveEnrollmentCourseIds(
+    userId,
+    courseIds,
   );
 
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const staleCourseIds = dbCart.items
+    .filter((item) => {
+      if (enrolledCourseIds.has(item.courseId)) return true;
+      return !isCourseAvailable(item.course);
+    })
+    .map((item) => item.courseId);
 
-  return {
-    ...course,
-    price: Number(course.price),
-    compareAtPrice: course.compareAtPrice ? Number(course.compareAtPrice) : null,
-    objectives: course.objectives ?? [],
-    rating: 0,
-    ratingCount: 0,
-    lecturesCount: totalLectures,
-    hours: hours > 0 ? hours : null,
-    totalDurationText:
-      hours > 0 ? `${hours} ساعة و ${minutes} دقيقة` : `${minutes} دقيقة`,
-    createdAt: course.createdAt?.toISOString(),
-    updatedAt: course.updatedAt?.toISOString(),
-    publishedAt: course.publishedAt?.toISOString() || null,
-    sections: undefined,
-  };
+  if (staleCourseIds.length > 0) {
+    await repository.removeItems(dbCart.id, staleCourseIds);
+
+    const removedEnrolled = staleCourseIds.filter((id) =>
+      enrolledCourseIds.has(id),
+    );
+    const removedUnavailable = staleCourseIds.filter(
+      (id) => !enrolledCourseIds.has(id),
+    );
+
+    if (removedEnrolled.length > 0) {
+      warnings.push('تمت إزالة دورات سبق شراؤها من السلة');
+    }
+    if (removedUnavailable.length > 0) {
+      warnings.push('تمت إزالة دورات غير متاحة من السلة');
+    }
+  }
+
+  const refreshedCart = await repository.findByUserId(userId);
+  if (!refreshedCart || refreshedCart.items.length === 0) {
+    if (refreshedCart && (refreshedCart.couponId || staleCourseIds.length > 0)) {
+      await repository.updateTotals(refreshedCart.id, {
+        subtotal: 0,
+        discount: 0,
+        total: 0,
+      });
+      if (refreshedCart.couponId) {
+        await repository.clearCoupon(refreshedCart.id);
+      }
+    }
+
+    const empty = emptyCartDto(userId);
+    return warnings.length > 0 ? { ...empty, warnings } : empty;
+  }
+
+  const subtotal = parseFloat(
+    refreshedCart.items
+      .reduce((acc, item) => acc + Number(item.price), 0)
+      .toFixed(2),
+  );
+
+  let discount = 0;
+  let coupon = refreshedCart.coupon;
+
+  if (coupon) {
+    if (isCouponValid(coupon, subtotal)) {
+      discount = calculateDiscount(subtotal, coupon);
+    } else {
+      await repository.clearCoupon(refreshedCart.id);
+      coupon = null;
+      warnings.push('انتهت صلاحية كود الخصم وتمت إزالته');
+    }
+  }
+
+  const total = parseFloat(Math.max(subtotal - discount, 0).toFixed(2));
+  const storedSubtotal = Number(refreshedCart.subtotal);
+  const storedDiscount = Number(refreshedCart.discount);
+  const storedTotal = Number(refreshedCart.total);
+
+  if (
+    storedSubtotal !== subtotal ||
+    storedDiscount !== discount ||
+    storedTotal !== total
+  ) {
+    await repository.updateTotals(refreshedCart.id, {
+      subtotal,
+      discount,
+      total,
+    });
+  }
+
+  return mapCartToDto(refreshedCart, userId, {
+    discount,
+    coupon,
+    warnings: warnings.length > 0 ? warnings : undefined,
+  });
 }
 
-export function serializeCart(
-  dbCart: CartWithItems | null,
+export async function getCartForUser(
   userId: string,
-): CartDataType {
-  const courses =
-    dbCart?.items.map((item) => item.course as CourseWithContent) ?? [];
-  const serializedItems = courses.map(serializeCourseItem);
+  repository: CartRepository = cartRepository,
+): Promise<CartDataType> {
+  const dbCart = await repository.findByUserId(userId);
+  if (!dbCart) {
+    return emptyCartDto(userId);
+  }
 
-  const subtotal = serializedItems.reduce((acc, item) => acc + item.price, 0);
-  const discount = dbCart ? Number(dbCart.discount) : 0;
-  const total = dbCart ? Number(dbCart.total) : subtotal - discount;
-
-  return {
-    id: dbCart?.id ?? 'guest',
-    userId,
-    subtotal: parseFloat(subtotal.toFixed(2)),
-    discount: parseFloat(discount.toFixed(2)),
-    total: parseFloat(total.toFixed(2)),
-    currency: serializedItems[0]?.currency || dbCart?.currency || 'EGP',
-    items: serializedItems,
-    coupon: {
-      code: 'NONE',
-      type: 'PERCENTAGE',
-      value: 0,
-      description: 'لا يوجد كود خصم',
-    },
-    createdAt: dbCart?.createdAt?.toISOString() ?? new Date().toISOString(),
-    updatedAt: dbCart?.updatedAt?.toISOString() ?? new Date().toISOString(),
-  };
+  return reconcileCart(userId, dbCart, repository);
 }
 
-async function getOrCreateCart(userId: string): Promise<CartWithItems> {
-  const existing = await prisma.cart.findUnique({
-    where: { userId },
-    include: cartInclude,
-  });
-
-  if (existing) return existing;
-
-  return prisma.cart.create({
-    data: { userId },
-    include: cartInclude,
-  });
-}
-
-async function loadCart(userId: string): Promise<CartWithItems | null> {
-  return prisma.cart.findUnique({
-    where: { userId },
-    include: cartInclude,
-  });
-}
-
+/** @deprecated Prefer addCartItemUseCase directly. Delegates to clean-architecture use case. */
 export async function addCartItem(
   userId: string,
   courseId: string,
 ): Promise<CartDataType> {
-  const course = await prisma.course.findUnique({
-    where: { id: courseId },
-    select: { id: true, price: true },
-  });
-
-  if (!course) {
-    throw new CartServiceError(404, 'هذه الدورة غير موجودة');
-  }
-
-  const enrollment = await prisma.enrollment.findUnique({
-    where: {
-      studentId_courseId: { studentId: userId, courseId },
-    },
-    select: { status: true },
-  });
-
-  if (enrollment?.status === EnrollmentStatus.ACTIVE) {
-    throw new CartServiceError(409, 'لقد اشتريت هذه الدورة مسبقاً');
-  }
-
-  const cart = await getOrCreateCart(userId);
-
-  const existingItem = cart.items.find((item) => item.courseId === courseId);
-  if (existingItem) {
-    throw new CartServiceError(409, 'هذه الدورة موجودة بالفعل في السلة');
-  }
-
-  await prisma.cartItem.create({
-    data: {
-      cartId: cart.id,
-      courseId,
-      price: course.price,
-    },
-  });
-
-  const updatedCart = await loadCart(userId);
-  return serializeCart(updatedCart, userId);
+  return addCartItemUseCase({ userId, courseId });
 }
 
 export async function removeCartItem(
   userId: string,
   courseId: string,
 ): Promise<CartDataType> {
-  const cart = await prisma.cart.findUnique({
-    where: { userId },
-    select: { id: true },
-  });
+  const cart = await cartRepository.findByUserId(userId);
 
   if (cart) {
-    await prisma.cartItem.deleteMany({
-      where: { cartId: cart.id, courseId },
-    });
+    await cartRepository.removeItems(cart.id, [courseId]);
   }
 
-  const updatedCart = await loadCart(userId);
-  return serializeCart(updatedCart, userId);
+  return getCartForUser(userId);
 }

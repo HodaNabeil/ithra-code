@@ -1,4 +1,4 @@
-export default function ApiDocsLayout({
+export default function DocsLayout({
   children,
 }: {
   children: React.ReactNode;

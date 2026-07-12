@@ -147,13 +147,16 @@ export function useGuestCart() {
 
     return {
       id: 'guest',
+      userId: '',
       items,
       total,
       subtotal,
       discount,
       currency,
       coupon: null,
-    } as unknown as Cart;
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
   };
 
   return {
