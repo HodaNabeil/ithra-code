@@ -9,7 +9,6 @@ const courseRecordSelect = {
   title: true,
   status: true,
   instructorId: true,
-  archivedAt: true,
   createdAt: true,
   updatedAt: true,
 } as const;
@@ -49,7 +48,6 @@ export class PrismaCourseRepository implements CourseRepository {
       where: { id },
       data: {
         status: CourseStatus.ARCHIVED,
-        archivedAt: new Date(),
       },
       select: courseRecordSelect,
     });

@@ -3,7 +3,7 @@ import {
   CourseStatus,
   CourseVisibility,
   Currency,
-} from '@prisma/client';
+} from '@/generated/prisma/enums';
 import type { CourseDetailApiDTO } from '@/features/courses/course-detail/dto/course-detail.dto';
 import type { CourseOverviewDTO } from '@/features/courses/course-overview/dto/course-overview.dto';
 import type { CourseDetailDTO, CourseListDTO } from './course.dto';

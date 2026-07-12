@@ -6,12 +6,10 @@ export type CourseRecord = {
   title: string;
   status: CourseStatus;
   instructorId: string;
-  archivedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 };
 
 export type CourseArchiveUpdate = {
   status: CourseStatus;
-  archivedAt: Date;
 };

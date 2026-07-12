@@ -10,7 +10,7 @@ import type { CourseListDTO } from '@/types/course/course.dto';
 import type { PathListDTO } from '@/types/path/path.dto';
 import type { PaginationInfo } from '@/features/courses/components/courses-list';
 import type { SortOption } from '@/types/course/course.types';
-import type { CourseLevel } from '@prisma/client';
+import type { CourseLevel } from '@/generated/prisma/enums';
 
 interface CoursesPageProps {
   searchParams: Promise<{

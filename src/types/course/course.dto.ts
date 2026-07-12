@@ -1,4 +1,4 @@
-import type { Currency } from '@prisma/client';
+import type { Currency } from '@/generated/prisma/enums';
 
 // types/course/course.dto.ts
 

@@ -36,7 +36,7 @@ export const config: NextAuthConfig = {
         data: {
           firstName: firstName || null,
           lastName: rest.join(' ') || null,
-          isEmailVerified: !!user.emailVerified,
+          isEmailVerified: !!(user as { emailVerified?: Date | null }).emailVerified,
           role: Role.STUDENT,
         },
       });

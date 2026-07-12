@@ -7,6 +7,10 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+generator client_js {
+  provider = "prisma-client-js"
+}
+
 model Course {
   id                 String           @id @default(cuid())
   instructorId       String           @map("instructor_id")
