@@ -16,7 +16,7 @@ export class PaymentService {
         where: { id: paymentId },
         data: {
           status: 'SUCCEEDED',
-          stripePaymentIntentId: stripePaymentIntent,
+          providerTransactionId: stripePaymentIntent,
           paidAt: new Date(),
         },
       });

@@ -106,14 +106,6 @@ export async function POST(req: Request) {
       },
     });
 
-    // 3️⃣ Store session ID in order
-    await prisma.order.update({
-      where: { id: order.id },
-      data: {
-        stripeSessionId: session.id,
-      },
-    });
-
     return Response.json({ url: session.url });
   } catch (error) {
     console.error('[CHECKOUT_ERROR]', error);

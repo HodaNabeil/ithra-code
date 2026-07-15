@@ -14,8 +14,8 @@ const worker = new Worker(
         // 1. Create the Payment record
         const payment = await tx.payment.create({
           data: {
-            stripePaymentIntentId: paymentIntentId,
-            stripeSessionId: sessionId,
+            providerTransactionId: paymentIntentId,
+            providerMetadata: { stripeSessionId: sessionId },
             amountCents: amountTotal,
             status: 'SUCCEEDED',
             provider: 'STRIPE',

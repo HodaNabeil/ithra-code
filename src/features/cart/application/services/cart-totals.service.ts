@@ -19,7 +19,11 @@ export async function recalculateCartTotals(
 ): Promise<CartTotalsResult> {
   const subtotal = parseFloat(
     cart.items
-      .reduce((acc, item) => acc + Number(item.price), 0)
+      .reduce(
+        (acc: number, item: DB_CartWithItems['items'][number]) =>
+          acc + Number(item.price),
+        0,
+      )
       .toFixed(2),
   );
 

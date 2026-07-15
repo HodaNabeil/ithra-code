@@ -40,7 +40,7 @@ export function LectureView({ lectureId, courseSlug }: LectureViewProps) {
   }
 
   const { lecture, nextLectureId } = details;
-  const playbackId = lecture.muxPlaybackId || DEFAULT_MUX_PLAYBACK_ID;
+  const playbackId = DEFAULT_MUX_PLAYBACK_ID;
 
   return (
     <div className="flex flex-col gap-8 pb-10">

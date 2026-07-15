@@ -66,7 +66,7 @@ export async function createCartCheckout(userId: string, userEmail: string) {
           currency,
           provider: 'STRIPE',
           status: 'PENDING',
-          stripeSessionId: stripeSession.id,
+          providerMetadata: { stripeSessionId: stripeSession.id },
         },
       });
 
@@ -79,7 +79,6 @@ export async function createCartCheckout(userId: string, userEmail: string) {
           currency,
           status: 'PENDING',
           paymentId: payment.id,
-          stripeSessionId: stripeSession.id,
           items: {
             create: userCart.items.map((item) => ({
               courseId: item.course.id,
