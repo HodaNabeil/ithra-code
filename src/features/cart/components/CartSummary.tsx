@@ -1,13 +1,7 @@
-'use client';
-
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { formatPrice } from '@/lib/formatters';
-import { cn } from '../../../lib/utils';
-
-import { CartCheckoutButton } from './CheckoutButton';
-import { CartItemType } from '@/types/cart/cart';
+import { cn } from '@/lib/utils';
+import type { CartItemType } from '@/types/cart/cart';
+import { CheckoutButton } from './CheckoutButton';
 
 interface CartSummaryProps {
   total: number;
@@ -20,88 +14,49 @@ interface CartSummaryProps {
 export function CartSummary({
   total,
   originalTotal,
-  discount,
   currency,
-  items,
 }: CartSummaryProps) {
-  const [showCoupon, setShowCoupon] = useState(false);
+  const hasDiscount = originalTotal > total;
+  const discountPercent = hasDiscount
+    ? Math.round(((originalTotal - total) / originalTotal) * 100)
+    : 0;
 
   return (
     <div
       className={cn(
-        'pt-8',
-        'lg:pt-0',
-        'flex',
-        'flex-col',
-        'gap-6',
-        'top-24',
-        'text-right',
+        'pt-8 lg:pt-0 flex flex-col gap-6 lg:sticky lg:top-24 text-right',
       )}
+      dir="rtl"
     >
       <div className="space-y-4">
         <div
           className={cn(
-            'mb-2',
-            'flex',
-            'lg:flex-col',
-            'gap-2',
-            'lg:gap-0',
-            'flex-wrap',
-            'sm:flex-nowrap',
+            'mb-2 flex lg:flex-col gap-2 lg:gap-1 flex-wrap sm:flex-nowrap',
           )}
         >
-          <span
-            className={cn(
-              'text-muted-foreground',
-              'text-base',
-              'font-medium',
-              'block',
-              'mb-1',
-            )}
-          >
+          <span className="text-sm text-muted-foreground font-normal">
             الإجمالي:
           </span>
-
           <div
             className={cn(
-              'flex',
-              'flex-row',
-              'lg:flex-col',
-              'gap-2',
-              'lg:gap-0',
-              'items-start',
-              'text-right',
+              'flex flex-row lg:flex-col gap-2 lg:gap-1 items-start text-right',
             )}
           >
-            <span
-              className={cn(
-                'text-xl',
-                'sm:text-3xl',
-                'font-medium',
-                'tracking-tight',
-                'text-primary',
-              )}
-            >
+            <span className="text-4xl sm:text-5xl font-bold text-foreground leading-none">
               {formatPrice(total, currency)}
             </span>
-            {originalTotal > total && (
+
+            {hasDiscount && (
               <div
                 className={cn(
-                  'flex',
-                  'flex-row',
-                  'lg:flex-col',
-                  'gap-2',
-                  'lg:gap-0',
-                  'items-start',
-                  'text-muted-foreground',
-                  'mt-0.5',
+                  'flex flex-row lg:flex-col gap-2 lg:gap-0 items-start mt-0.5',
                 )}
               >
-                <span className={cn('text-base', 'line-through', 'opacity-80')}>
+                <span className="text-sm text-muted-foreground line-through">
                   {formatPrice(originalTotal, currency)}
                 </span>
-                <span className={cn('text-base', 'font-light')}>
-                  خصم بنسبة {discount}%
+                <span className="text-sm text-primary font-medium">
+                  {discountPercent}% خصم
                 </span>
               </div>
             )}
@@ -109,60 +64,23 @@ export function CartSummary({
         </div>
 
         <div className="space-y-4">
-          <CartCheckoutButton items={items} />
-          <p className={cn('text-xs', 'text-muted-foreground', 'text-center')}>
+          <CheckoutButton />
+          <p className="text-center text-xs text-muted-foreground leading-relaxed">
             لن يتم خصم أي مبلغ منك حتى الآن
           </p>
         </div>
       </div>
 
-      <div className={cn('pt-6', 'border-t', 'border-border')}>
-        {showCoupon ? (
-          <div className="space-y-4">
-            <h3 className={cn('text-lg', 'font-bold', 'text-foreground')}>
-              عروض ترويجية
-            </h3>
-            <div className={cn('flex', 'gap-2', 'items-center')} dir="rtl">
-              <Input
-                placeholder="إدخال القسيمة"
-                className={cn(
-                  'flex-1',
-                  'h-10',
-                  'border-border',
-                  'bg-background',
-                )}
-              />
-              <Button
-                className={cn(
-                  'h-10',
-                  'px-6',
-                  'font-bold',
-                  'rounded-lg',
-                  'shrink-0',
-                )}
-              >
-                قدم
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <Button
-            variant="outline"
-            onClick={() => setShowCoupon(true)}
-            className={cn(
-              'w-full',
-              'h-10',
-              'text-base',
-              'font-bold',
-              'text-primary',
-              'border-primary',
-              'hover:bg-primary/5',
-              'rounded-lg',
-            )}
-          >
-            تطبيق القسيمة
-          </Button>
-        )}
+      <div className={cn('pt-6 border-t border-border')}>
+        <button
+          type="button"
+          className={cn(
+            'w-full h-10 rounded-lg border border-dashed border-border bg-transparent',
+            'text-sm text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors',
+          )}
+        >
+          تطبيق الكوبون
+        </button>
       </div>
     </div>
   );

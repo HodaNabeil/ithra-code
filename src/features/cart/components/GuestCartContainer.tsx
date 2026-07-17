@@ -2,7 +2,8 @@
 
 import { useGuestCart } from '../hooks/useGuestCart';
 import { CartEmptyState } from './CartEmptyState';
-import { CartFilledView } from './CartFilledView';
+import { CartWithItemsView } from './CartWithItemsView';
+import { CartHero } from './cart-hero';
 
 /**
  * Client-side cart view for unauthenticated users (localStorage source of truth).
@@ -17,8 +18,13 @@ export function GuestCartContainer() {
   const guestCart = buildGuestCart();
 
   if (!guestCart || guestCart.items.length === 0) {
-    return <CartEmptyState />;
+    return (
+      <>
+        <CartHero />
+        <CartEmptyState />
+      </>
+    );
   }
 
-  return <CartFilledView cartData={guestCart} />;
+  return <CartWithItemsView cartData={guestCart} />;
 }

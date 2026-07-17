@@ -1,15 +1,16 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { auth } from '@/lib/auth';
+import NextAuth from 'next-auth';
+import { NextResponse, type NextMiddleware } from 'next/server';
+import { authConfig } from '@/lib/auth.config';
 import { AUTH_ROUTES } from '@/constant/auth';
 import { Role } from '@prisma/client';
 
-export default async function proxy(req: NextRequest) {
-  const session = await auth();
+const { auth } = NextAuth(authConfig);
+
+const proxy = auth((req) => {
   const { nextUrl } = req;
 
-  const isLoggedIn = !!session;
-  const role = session?.user?.role || Role.STUDENT;
+  const isLoggedIn = !!req.auth;
+  const role = req.auth?.user?.role || Role.STUDENT;
   const pathname = nextUrl.pathname;
 
   const isPublicRoute =
@@ -30,6 +31,7 @@ export default async function proxy(req: NextRequest) {
   if (!isLoggedIn && isProtectedRoute) {
     return NextResponse.redirect(new URL(AUTH_ROUTES.SIGN_IN, nextUrl));
   }
+
   if (isLoggedIn && isAuthRoute) {
     const callbackUrl = nextUrl.searchParams.get('callbackUrl');
     if (callbackUrl) {
@@ -37,17 +39,23 @@ export default async function proxy(req: NextRequest) {
     }
     return NextResponse.redirect(new URL(`/${role.toLowerCase()}`, nextUrl));
   }
-  if (isAdminRoute && role !== Role.ADMIN)
-    return NextResponse.redirect(new URL('/', nextUrl));
 
-  if (isInstructorRoute && role !== Role.INSTRUCTOR)
+  if (isAdminRoute && role !== Role.ADMIN) {
     return NextResponse.redirect(new URL('/', nextUrl));
+  }
 
-  if (isStudentRoute && role !== Role.STUDENT)
+  if (isInstructorRoute && role !== Role.INSTRUCTOR) {
     return NextResponse.redirect(new URL('/', nextUrl));
+  }
+
+  if (isStudentRoute && role !== Role.STUDENT) {
+    return NextResponse.redirect(new URL('/', nextUrl));
+  }
 
   return NextResponse.next();
-}
+});
+
+export default proxy as unknown as NextMiddleware;
 
 export const config = {
   matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico).*)'],

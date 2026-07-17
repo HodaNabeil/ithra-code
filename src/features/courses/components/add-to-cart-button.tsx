@@ -16,6 +16,7 @@ import { queryKeys } from '@/constant/query-keys';
 import type { CartDataType as Cart } from '@/types/cart/cart';
 import type { ActionResponse } from '@/types/action';
 import { useGuestCart } from '@/features/cart/hooks/useGuestCart';
+import { useCartStore } from '@/features/cart/stores/use-cart-store';
 import { addToCartAction } from '@/features/cart/actions/cart';
 
 import type { Course } from '@/types/course/course.types';
@@ -64,6 +65,7 @@ export function AddToCartButton({
   const isAuthed = status === 'authenticated' && !!session?.user;
 
   const { addGuestItem, guestIds, guestCartHydrated } = useGuestCart();
+  const incrementItemCount = useCartStore((state) => state.incrementItemCount);
 
   const addToCartWithId = useCallback(
     (prev: ActionResponse<Cart> | null, formData: FormData) =>
@@ -87,9 +89,10 @@ export function AddToCartButton({
 
   useEffect(() => {
     if (!state?.success) return;
+    if (isAuthed) incrementItemCount();
     setTimeout(() => setShowSuccessDialog(true), 0);
     queryClient.invalidateQueries({ queryKey: queryKeys.cart.detail() });
-  }, [state, queryClient]);
+  }, [state, queryClient, isAuthed, incrementItemCount]);
 
   const openSuccessDialog = () => {
     setTimeout(() => setShowSuccessDialog(true), 0);

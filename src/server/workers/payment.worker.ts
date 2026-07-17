@@ -2,38 +2,79 @@ import { Worker } from 'bullmq';
 import { prisma } from '@/lib/prisma';
 import { redis } from '@/lib/redis';
 import { logger } from '@/lib/logger';
+import { buildStripeMetadata } from '@/types/payment/payment-metadata';
+
 const worker = new Worker(
   'payment',
   async (job) => {
     logger.info({ jobId: job.id }, '🚀 Worker started processing payment job');
-    const { orderId, userId, sessionId, paymentIntentId, amountTotal } =
-      job.data;
+    const {
+      orderId,
+      userId,
+      sessionId,
+      paymentIntentId,
+      amountTotal,
+      brand,
+      last4,
+      paymentMethod,
+    } = job.data;
 
     try {
+      const existingOrder = await prisma.order.findUnique({
+        where: { id: orderId },
+        select: {
+          status: true,
+          paymentId: true,
+          payment: { select: { status: true } },
+        },
+      });
+
+      if (
+        existingOrder?.status === 'COMPLETED' &&
+        existingOrder.payment?.status === 'SUCCEEDED'
+      ) {
+        logger.info({ orderId }, 'Payment job already processed; skipping');
+        return;
+      }
+
       await prisma.$transaction(async (tx) => {
-        // 1. Create the Payment record
-        const payment = await tx.payment.create({
+        const order = await tx.order.findUnique({
+          where: { id: orderId },
+          select: { paymentId: true },
+        });
+
+        if (!order?.paymentId) {
+          throw new Error(`Order ${orderId} has no linked payment`);
+        }
+
+        await tx.payment.update({
+          where: { id: order.paymentId },
           data: {
             providerTransactionId: paymentIntentId,
-            providerMetadata: { stripeSessionId: sessionId },
-            amountCents: amountTotal,
+            providerMetadata: buildStripeMetadata({
+              ...(sessionId ? { stripeSessionId: sessionId } : {}),
+              paymentIntentId,
+            }),
+            ...(amountTotal != null ? { amountCents: amountTotal } : {}),
             status: 'SUCCEEDED',
             provider: 'STRIPE',
             paidAt: new Date(),
+            failureCode: null,
+            failureMessage: null,
+            ...(brand ? { brand } : {}),
+            ...(last4 ? { last4 } : {}),
+            ...(paymentMethod ? { paymentMethod } : {}),
           },
         });
 
-        // 2. Update the Order
         await tx.order.update({
           where: { id: orderId },
           data: {
             status: 'COMPLETED',
-            paymentId: payment.id,
             completedAt: new Date(),
           },
         });
 
-        // 3. Create Enrollments
         const orderItems = await tx.orderItem.findMany({
           where: { orderId },
           include: { course: { select: { slug: true } } },
@@ -57,9 +98,8 @@ const worker = new Worker(
           });
         }
 
-        // 4. Clear the Cart
         await tx.cartItem.deleteMany({
-          where: { cart: { userId: userId } },
+          where: { cart: { userId } },
         });
       });
 
@@ -69,7 +109,7 @@ const worker = new Worker(
         { error, orderId, jobId: job.id },
         '❌ Failed to process payment job',
       );
-      throw error; // Let BullMQ handle the retry
+      throw error;
     }
   },
   { connection: redis },
@@ -78,5 +118,5 @@ const worker = new Worker(
 export default worker;
 
 worker.on('failed', (job, err) => {
-  console.error(`❌ Job ${job?.id} failed with error:`, err); // غيري السطر ده عشان تشوفي التفاصيل
+  console.error(`❌ Job ${job?.id} failed with error:`, err);
 });

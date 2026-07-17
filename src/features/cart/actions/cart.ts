@@ -7,7 +7,7 @@
  * - Client components never call API routes directly; they invoke these actions.
  * - Actions communicate with backend via `httpServer` (server-side HTTP client).
  * - Guest cart add/remove stays client-side (localStorage via useGuestCart).
- * - On login, GuestCartSync calls syncGuestCartAction to merge guest items.
+ * - On login/register, GuestCartSync calls syncGuestCartAction to merge guest items.
  */
 
 import { revalidatePath } from 'next/cache';

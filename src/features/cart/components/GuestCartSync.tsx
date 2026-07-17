@@ -2,29 +2,31 @@
 
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { cookieManager } from '@/lib/cookie-manager';
+import { useSession } from 'next-auth/react';
 import { syncGuestCartAction } from '@/features/cart/actions/cart';
 import { useGuestCart } from '@/features/cart/hooks/useGuestCart';
 
 /**
- * Merges localStorage guest cart into the API cart after login.
- * Mounted on the cart page — runs once when authed + guest IDs exist.
+ * Merges localStorage guest cart into the API cart after login/register.
+ * Mounted globally — runs once when the session is authenticated and guest IDs exist.
  */
 export function GuestCartSync() {
   const router = useRouter();
+  const { status } = useSession();
+  const isAuthed = status === 'authenticated';
   const { guestIds, guestCartHydrated, clearGuestCart } = useGuestCart();
   const syncingRef = useRef(false);
 
   useEffect(() => {
-    if (!guestCartHydrated || syncingRef.current) return;
-    if (!cookieManager.getAccessToken()) return;
+    if (!isAuthed || !guestCartHydrated || syncingRef.current) return;
     if (guestIds.length === 0) return;
 
     syncingRef.current = true;
+    const idsToSync = [...guestIds];
 
     (async () => {
       try {
-        await syncGuestCartAction(guestIds);
+        await syncGuestCartAction(idsToSync);
         clearGuestCart();
         router.refresh();
       } catch (error) {
@@ -33,7 +35,7 @@ export function GuestCartSync() {
         syncingRef.current = false;
       }
     })();
-  }, [guestCartHydrated, guestIds, clearGuestCart, router]);
+  }, [isAuthed, guestCartHydrated, guestIds, clearGuestCart, router]);
 
   return null;
 }

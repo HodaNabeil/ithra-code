@@ -6,10 +6,13 @@ import Link from 'next/link';
 import { cn } from '../../../lib/utils';
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { removeFromCartAction } from '../actions/cart';
 import { useGuestCart } from '../hooks/useGuestCart';
-import { cookieManager } from '@/lib/cookie-manager';
-import { Loader2 } from 'lucide-react';
+import { useCartStore } from '../stores/use-cart-store';
+import { Loader2, Star } from 'lucide-react';
+import { formatCourseLevel } from '@/features/courses/lib/course-formatters';
+import type { CourseLevel } from '@/types/course/course.types';
 
 import type { CartItemType } from '@/types/cart/cart';
 
@@ -21,10 +24,12 @@ interface CartItemProps {
 export function CartItem({ item, isGuestCart = false }: CartItemProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const { status } = useSession();
+  const isAuthed = status === 'authenticated';
   const { removeGuestItem } = useGuestCart();
+  const decrementItemCount = useCartStore((state) => state.decrementItemCount);
 
   const handleRemove = () => {
-    const isAuthed = !!cookieManager.getAccessToken();
 
     if (isGuestCart || !isAuthed) {
       removeGuestItem(item.id);
@@ -33,7 +38,8 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
     }
 
     startTransition(async () => {
-      await removeFromCartAction(item.id);
+      const result = await removeFromCartAction(item.id);
+      if (result.success) decrementItemCount();
       router.refresh();
     });
   };
@@ -101,11 +107,9 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
             <Link href={`/courses/${item?.slug}`}>
               <h3
                 className={cn(
-                  'font-light',
-                  'sm:font-bold',
-                  'text-base',
-                  'sm:text-[17px]',
-                  'sm:leading-tight',
+                  'font-bold',
+                  'text-lg',
+                  'leading-snug',
                   'hover:text-primary',
                   'transition-colors',
                   'line-clamp-2',
@@ -120,23 +124,27 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
                         </p> */}
           </div>
 
-          <div className={cn('flex', 'gap-x-4', 'gap-y-2', 'flex-col', 'my-4')}>
-            {/* Rating */}
-            {/* <div className={cn('flex', 'gap-1', "items-center")}>
-                            <span className={cn('text-sm', 'font-bold', 'text-star')}>{item?.rating}</span>
-                            <div className={cn('flex', 'items-center')}>
-                                {[...Array(5)].map((_, i) => (
-                                    <Star
-                                        key={i}
-                                        className={`size-3 ${i < Math.floor(item?.rating || 0)
-                                            ? 'fill-star text-star'
-                                            : 'text-muted-foreground/30'
-                                            }`}
-                                    />
-                                ))}
-                            </div>
-                            <span className={cn('text-xs', 'text-muted-foreground')}>({item?.course?.ratingCount} من التقييمات)</span>
-                        </div> */}
+          <div className={cn('flex', 'gap-x-4', 'gap-y-1.5', 'flex-col', 'my-3')}>
+            <div className={cn('flex', 'gap-1.5', 'items-center')}>
+              <span className={cn('text-xs', 'font-semibold', 'text-foreground')}>
+                {(item?.rating ?? 0).toFixed(1)}
+              </span>
+              <div className={cn('flex', 'items-center')}>
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`size-3.5 ${
+                      i < Math.floor(item?.rating || 0)
+                        ? 'fill-star text-star'
+                        : 'text-muted-foreground/30'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className={cn('text-xs', 'text-muted-foreground')}>
+                ({item?.ratingCount ?? 0} من التقييمات)
+              </span>
+            </div>
 
             <ul
               className={cn(
@@ -147,8 +155,13 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
                 'font-normal',
               )}
             >
-              <li>• {item?.totalDurationText} في المجمل</li>
-              <li>• {item?.lecturesCount} من المحاضرات</li>
+              <li>{item?.lecturesCount ?? 0} من المحاضرات</li>
+              {item?.level && (
+                <>
+                  <li>•</li>
+                  <li>{formatCourseLevel(item.level as CourseLevel)}</li>
+                </>
+              )}
             </ul>
           </div>
         </div>
@@ -167,8 +180,9 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
         >
           <button
             className={cn(
-              'text-primary',
-              'font-light',
+              'text-sm',
+              'text-foreground',
+              'font-normal',
               'hover:underline',
               'cursor-pointer',
             )}
@@ -205,8 +219,9 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
       >
         <button
           className={cn(
-            'text-primary',
-            'font-light',
+            'text-sm',
+            'text-foreground',
+            'font-normal',
             'hover:underline',
             'cursor-pointer',
           )}
@@ -217,10 +232,6 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
           ) : (
             'إزالة'
           )}
-        </button>
-
-        <button className={cn('text-primary', 'font-light', 'hover:underline')}>
-          نقل إلى قائمة الرغبات
         </button>
       </div>
 
@@ -245,8 +256,7 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
             'flex',
             'items-center',
             'gap-1.5',
-            'font-light',
-            'sm:font-medium',
+            'font-semibold',
           )}
         >
           <span className="text-base">

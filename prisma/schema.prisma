@@ -664,10 +664,6 @@ enum OrderStatus {
 model Payment {
   id String @id @default(cuid())
 
-  paymobTransactionId String? @unique @map("paymob_transaction_id")
-  paymobOrderId       String? @map("paymob_order_id")
-  paymobIntentionId   String? @map("paymob_intention_id")
-
   provider              PaymentProvider @default(PAYMOB)
   providerTransactionId String?         @map("provider_transaction_id")
   providerMetadata      Json?           @map("provider_metadata")
@@ -682,6 +678,9 @@ model Payment {
   last4         String?
   brand         String?
 
+  failureCode    String? @map("failure_code")
+  failureMessage String? @map("failure_message")
+
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   paidAt    DateTime? @map("paid_at")
@@ -690,6 +689,7 @@ model Payment {
   consultationBooking ConsultationBooking?
   refunds             Refund[]
 
+  @@unique([provider, providerTransactionId])
   @@index([status])
   @@index([provider])
   @@map("payments")

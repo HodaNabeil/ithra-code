@@ -4,10 +4,12 @@ import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import { env } from '@/config';
-import { AUTH_ROUTES } from '@/constant/auth';
+import { authConfig } from '@/lib/auth.config';
 import { Role } from '@prisma/client';
 
 export const config: NextAuthConfig = {
+  ...authConfig,
+
   adapter: PrismaAdapter(prisma),
 
   providers: [
@@ -24,10 +26,6 @@ export const config: NextAuthConfig = {
     }),
   ],
 
-  session: {
-    strategy: 'jwt',
-  },
-
   events: {
     async createUser({ user }) {
       const [firstName, ...rest] = (user.name ?? '').split(' ');
@@ -36,7 +34,8 @@ export const config: NextAuthConfig = {
         data: {
           firstName: firstName || null,
           lastName: rest.join(' ') || null,
-          isEmailVerified: !!(user as { emailVerified?: Date | null }).emailVerified,
+          isEmailVerified: !!(user as { emailVerified?: Date | null })
+            .emailVerified,
           role: Role.STUDENT,
         },
       });
@@ -44,6 +43,8 @@ export const config: NextAuthConfig = {
   },
 
   callbacks: {
+    ...authConfig.callbacks,
+
     async jwt({ token, user }) {
       if (user?.id) {
         token.id = user.id;
@@ -57,25 +58,10 @@ export const config: NextAuthConfig = {
 
       return token;
     },
-
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
-        session.user.image = token.picture as string;
-      }
-      return session;
-    },
-  },
-
-  pages: {
-    signIn: AUTH_ROUTES.SIGN_IN,
-    error: AUTH_ROUTES.SIGN_IN,
   },
 
   secret: env.AUTH_SECRET,
-  trustHost: true,
-} satisfies NextAuthConfig;
+};
 
 const {
   handlers: authHandlers,

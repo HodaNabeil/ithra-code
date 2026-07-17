@@ -38,9 +38,6 @@ export type PaymentSumAggregateOutputType = {
 
 export type PaymentMinAggregateOutputType = {
   id: string | null
-  paymobTransactionId: string | null
-  paymobOrderId: string | null
-  paymobIntentionId: string | null
   provider: $Enums.PaymentProvider | null
   providerTransactionId: string | null
   amountCents: number | null
@@ -50,6 +47,8 @@ export type PaymentMinAggregateOutputType = {
   integrationId: number | null
   last4: string | null
   brand: string | null
+  failureCode: string | null
+  failureMessage: string | null
   createdAt: Date | null
   updatedAt: Date | null
   paidAt: Date | null
@@ -57,9 +56,6 @@ export type PaymentMinAggregateOutputType = {
 
 export type PaymentMaxAggregateOutputType = {
   id: string | null
-  paymobTransactionId: string | null
-  paymobOrderId: string | null
-  paymobIntentionId: string | null
   provider: $Enums.PaymentProvider | null
   providerTransactionId: string | null
   amountCents: number | null
@@ -69,6 +65,8 @@ export type PaymentMaxAggregateOutputType = {
   integrationId: number | null
   last4: string | null
   brand: string | null
+  failureCode: string | null
+  failureMessage: string | null
   createdAt: Date | null
   updatedAt: Date | null
   paidAt: Date | null
@@ -76,9 +74,6 @@ export type PaymentMaxAggregateOutputType = {
 
 export type PaymentCountAggregateOutputType = {
   id: number
-  paymobTransactionId: number
-  paymobOrderId: number
-  paymobIntentionId: number
   provider: number
   providerTransactionId: number
   providerMetadata: number
@@ -89,6 +84,8 @@ export type PaymentCountAggregateOutputType = {
   integrationId: number
   last4: number
   brand: number
+  failureCode: number
+  failureMessage: number
   createdAt: number
   updatedAt: number
   paidAt: number
@@ -108,9 +105,6 @@ export type PaymentSumAggregateInputType = {
 
 export type PaymentMinAggregateInputType = {
   id?: true
-  paymobTransactionId?: true
-  paymobOrderId?: true
-  paymobIntentionId?: true
   provider?: true
   providerTransactionId?: true
   amountCents?: true
@@ -120,6 +114,8 @@ export type PaymentMinAggregateInputType = {
   integrationId?: true
   last4?: true
   brand?: true
+  failureCode?: true
+  failureMessage?: true
   createdAt?: true
   updatedAt?: true
   paidAt?: true
@@ -127,9 +123,6 @@ export type PaymentMinAggregateInputType = {
 
 export type PaymentMaxAggregateInputType = {
   id?: true
-  paymobTransactionId?: true
-  paymobOrderId?: true
-  paymobIntentionId?: true
   provider?: true
   providerTransactionId?: true
   amountCents?: true
@@ -139,6 +132,8 @@ export type PaymentMaxAggregateInputType = {
   integrationId?: true
   last4?: true
   brand?: true
+  failureCode?: true
+  failureMessage?: true
   createdAt?: true
   updatedAt?: true
   paidAt?: true
@@ -146,9 +141,6 @@ export type PaymentMaxAggregateInputType = {
 
 export type PaymentCountAggregateInputType = {
   id?: true
-  paymobTransactionId?: true
-  paymobOrderId?: true
-  paymobIntentionId?: true
   provider?: true
   providerTransactionId?: true
   providerMetadata?: true
@@ -159,6 +151,8 @@ export type PaymentCountAggregateInputType = {
   integrationId?: true
   last4?: true
   brand?: true
+  failureCode?: true
+  failureMessage?: true
   createdAt?: true
   updatedAt?: true
   paidAt?: true
@@ -253,9 +247,6 @@ export type PaymentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type PaymentGroupByOutputType = {
   id: string
-  paymobTransactionId: string | null
-  paymobOrderId: string | null
-  paymobIntentionId: string | null
   provider: $Enums.PaymentProvider
   providerTransactionId: string | null
   providerMetadata: runtime.JsonValue | null
@@ -266,6 +257,8 @@ export type PaymentGroupByOutputType = {
   integrationId: number | null
   last4: string | null
   brand: string | null
+  failureCode: string | null
+  failureMessage: string | null
   createdAt: Date
   updatedAt: Date
   paidAt: Date | null
@@ -296,9 +289,6 @@ export type PaymentWhereInput = {
   OR?: Prisma.PaymentWhereInput[]
   NOT?: Prisma.PaymentWhereInput | Prisma.PaymentWhereInput[]
   id?: Prisma.StringFilter<"Payment"> | string
-  paymobTransactionId?: Prisma.StringNullableFilter<"Payment"> | string | null
-  paymobOrderId?: Prisma.StringNullableFilter<"Payment"> | string | null
-  paymobIntentionId?: Prisma.StringNullableFilter<"Payment"> | string | null
   provider?: Prisma.EnumPaymentProviderFilter<"Payment"> | $Enums.PaymentProvider
   providerTransactionId?: Prisma.StringNullableFilter<"Payment"> | string | null
   providerMetadata?: Prisma.JsonNullableFilter<"Payment">
@@ -309,6 +299,8 @@ export type PaymentWhereInput = {
   integrationId?: Prisma.IntNullableFilter<"Payment"> | number | null
   last4?: Prisma.StringNullableFilter<"Payment"> | string | null
   brand?: Prisma.StringNullableFilter<"Payment"> | string | null
+  failureCode?: Prisma.StringNullableFilter<"Payment"> | string | null
+  failureMessage?: Prisma.StringNullableFilter<"Payment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   paidAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
@@ -319,9 +311,6 @@ export type PaymentWhereInput = {
 
 export type PaymentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  paymobTransactionId?: Prisma.SortOrderInput | Prisma.SortOrder
-  paymobOrderId?: Prisma.SortOrderInput | Prisma.SortOrder
-  paymobIntentionId?: Prisma.SortOrderInput | Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerTransactionId?: Prisma.SortOrderInput | Prisma.SortOrder
   providerMetadata?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -332,6 +321,8 @@ export type PaymentOrderByWithRelationInput = {
   integrationId?: Prisma.SortOrderInput | Prisma.SortOrder
   last4?: Prisma.SortOrderInput | Prisma.SortOrder
   brand?: Prisma.SortOrderInput | Prisma.SortOrder
+  failureCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  failureMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   paidAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -342,12 +333,10 @@ export type PaymentOrderByWithRelationInput = {
 
 export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  paymobTransactionId?: string
+  provider_providerTransactionId?: Prisma.PaymentProviderProviderTransactionIdCompoundUniqueInput
   AND?: Prisma.PaymentWhereInput | Prisma.PaymentWhereInput[]
   OR?: Prisma.PaymentWhereInput[]
   NOT?: Prisma.PaymentWhereInput | Prisma.PaymentWhereInput[]
-  paymobOrderId?: Prisma.StringNullableFilter<"Payment"> | string | null
-  paymobIntentionId?: Prisma.StringNullableFilter<"Payment"> | string | null
   provider?: Prisma.EnumPaymentProviderFilter<"Payment"> | $Enums.PaymentProvider
   providerTransactionId?: Prisma.StringNullableFilter<"Payment"> | string | null
   providerMetadata?: Prisma.JsonNullableFilter<"Payment">
@@ -358,19 +347,18 @@ export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   integrationId?: Prisma.IntNullableFilter<"Payment"> | number | null
   last4?: Prisma.StringNullableFilter<"Payment"> | string | null
   brand?: Prisma.StringNullableFilter<"Payment"> | string | null
+  failureCode?: Prisma.StringNullableFilter<"Payment"> | string | null
+  failureMessage?: Prisma.StringNullableFilter<"Payment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   paidAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
   consultationBooking?: Prisma.XOR<Prisma.ConsultationBookingNullableScalarRelationFilter, Prisma.ConsultationBookingWhereInput> | null
   refunds?: Prisma.RefundListRelationFilter
-}, "id" | "paymobTransactionId">
+}, "id" | "provider_providerTransactionId">
 
 export type PaymentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  paymobTransactionId?: Prisma.SortOrderInput | Prisma.SortOrder
-  paymobOrderId?: Prisma.SortOrderInput | Prisma.SortOrder
-  paymobIntentionId?: Prisma.SortOrderInput | Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerTransactionId?: Prisma.SortOrderInput | Prisma.SortOrder
   providerMetadata?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -381,6 +369,8 @@ export type PaymentOrderByWithAggregationInput = {
   integrationId?: Prisma.SortOrderInput | Prisma.SortOrder
   last4?: Prisma.SortOrderInput | Prisma.SortOrder
   brand?: Prisma.SortOrderInput | Prisma.SortOrder
+  failureCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  failureMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   paidAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -396,9 +386,6 @@ export type PaymentScalarWhereWithAggregatesInput = {
   OR?: Prisma.PaymentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PaymentScalarWhereWithAggregatesInput | Prisma.PaymentScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Payment"> | string
-  paymobTransactionId?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
-  paymobOrderId?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
-  paymobIntentionId?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
   provider?: Prisma.EnumPaymentProviderWithAggregatesFilter<"Payment"> | $Enums.PaymentProvider
   providerTransactionId?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
   providerMetadata?: Prisma.JsonNullableWithAggregatesFilter<"Payment">
@@ -409,6 +396,8 @@ export type PaymentScalarWhereWithAggregatesInput = {
   integrationId?: Prisma.IntNullableWithAggregatesFilter<"Payment"> | number | null
   last4?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
   brand?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
+  failureCode?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
+  failureMessage?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Payment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Payment"> | Date | string
   paidAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
@@ -416,9 +405,6 @@ export type PaymentScalarWhereWithAggregatesInput = {
 
 export type PaymentCreateInput = {
   id?: string
-  paymobTransactionId?: string | null
-  paymobOrderId?: string | null
-  paymobIntentionId?: string | null
   provider?: $Enums.PaymentProvider
   providerTransactionId?: string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -429,6 +415,8 @@ export type PaymentCreateInput = {
   integrationId?: number | null
   last4?: string | null
   brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
@@ -439,9 +427,6 @@ export type PaymentCreateInput = {
 
 export type PaymentUncheckedCreateInput = {
   id?: string
-  paymobTransactionId?: string | null
-  paymobOrderId?: string | null
-  paymobIntentionId?: string | null
   provider?: $Enums.PaymentProvider
   providerTransactionId?: string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -452,6 +437,8 @@ export type PaymentUncheckedCreateInput = {
   integrationId?: number | null
   last4?: string | null
   brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
@@ -462,9 +449,6 @@ export type PaymentUncheckedCreateInput = {
 
 export type PaymentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  paymobTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobIntentionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
   providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -475,6 +459,8 @@ export type PaymentUpdateInput = {
   integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -485,9 +471,6 @@ export type PaymentUpdateInput = {
 
 export type PaymentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  paymobTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobIntentionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
   providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -498,6 +481,8 @@ export type PaymentUncheckedUpdateInput = {
   integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -508,9 +493,6 @@ export type PaymentUncheckedUpdateInput = {
 
 export type PaymentCreateManyInput = {
   id?: string
-  paymobTransactionId?: string | null
-  paymobOrderId?: string | null
-  paymobIntentionId?: string | null
   provider?: $Enums.PaymentProvider
   providerTransactionId?: string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -521,6 +503,8 @@ export type PaymentCreateManyInput = {
   integrationId?: number | null
   last4?: string | null
   brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
@@ -528,9 +512,6 @@ export type PaymentCreateManyInput = {
 
 export type PaymentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  paymobTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobIntentionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
   providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -541,6 +522,8 @@ export type PaymentUpdateManyMutationInput = {
   integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -548,9 +531,6 @@ export type PaymentUpdateManyMutationInput = {
 
 export type PaymentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  paymobTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobIntentionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
   providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -561,6 +541,8 @@ export type PaymentUncheckedUpdateManyInput = {
   integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -571,11 +553,13 @@ export type PaymentNullableScalarRelationFilter = {
   isNot?: Prisma.PaymentWhereInput | null
 }
 
+export type PaymentProviderProviderTransactionIdCompoundUniqueInput = {
+  provider: $Enums.PaymentProvider
+  providerTransactionId: string
+}
+
 export type PaymentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  paymobTransactionId?: Prisma.SortOrder
-  paymobOrderId?: Prisma.SortOrder
-  paymobIntentionId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerTransactionId?: Prisma.SortOrder
   providerMetadata?: Prisma.SortOrder
@@ -586,6 +570,8 @@ export type PaymentCountOrderByAggregateInput = {
   integrationId?: Prisma.SortOrder
   last4?: Prisma.SortOrder
   brand?: Prisma.SortOrder
+  failureCode?: Prisma.SortOrder
+  failureMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
@@ -598,9 +584,6 @@ export type PaymentAvgOrderByAggregateInput = {
 
 export type PaymentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  paymobTransactionId?: Prisma.SortOrder
-  paymobOrderId?: Prisma.SortOrder
-  paymobIntentionId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerTransactionId?: Prisma.SortOrder
   amountCents?: Prisma.SortOrder
@@ -610,6 +593,8 @@ export type PaymentMaxOrderByAggregateInput = {
   integrationId?: Prisma.SortOrder
   last4?: Prisma.SortOrder
   brand?: Prisma.SortOrder
+  failureCode?: Prisma.SortOrder
+  failureMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
@@ -617,9 +602,6 @@ export type PaymentMaxOrderByAggregateInput = {
 
 export type PaymentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  paymobTransactionId?: Prisma.SortOrder
-  paymobOrderId?: Prisma.SortOrder
-  paymobIntentionId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerTransactionId?: Prisma.SortOrder
   amountCents?: Prisma.SortOrder
@@ -629,6 +611,8 @@ export type PaymentMinOrderByAggregateInput = {
   integrationId?: Prisma.SortOrder
   last4?: Prisma.SortOrder
   brand?: Prisma.SortOrder
+  failureCode?: Prisma.SortOrder
+  failureMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
@@ -700,9 +684,6 @@ export type PaymentUpdateOneWithoutConsultationBookingNestedInput = {
 
 export type PaymentCreateWithoutOrderInput = {
   id?: string
-  paymobTransactionId?: string | null
-  paymobOrderId?: string | null
-  paymobIntentionId?: string | null
   provider?: $Enums.PaymentProvider
   providerTransactionId?: string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -713,6 +694,8 @@ export type PaymentCreateWithoutOrderInput = {
   integrationId?: number | null
   last4?: string | null
   brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
@@ -722,9 +705,6 @@ export type PaymentCreateWithoutOrderInput = {
 
 export type PaymentUncheckedCreateWithoutOrderInput = {
   id?: string
-  paymobTransactionId?: string | null
-  paymobOrderId?: string | null
-  paymobIntentionId?: string | null
   provider?: $Enums.PaymentProvider
   providerTransactionId?: string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -735,6 +715,8 @@ export type PaymentUncheckedCreateWithoutOrderInput = {
   integrationId?: number | null
   last4?: string | null
   brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
@@ -760,9 +742,6 @@ export type PaymentUpdateToOneWithWhereWithoutOrderInput = {
 
 export type PaymentUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  paymobTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobIntentionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
   providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -773,6 +752,8 @@ export type PaymentUpdateWithoutOrderInput = {
   integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -782,9 +763,6 @@ export type PaymentUpdateWithoutOrderInput = {
 
 export type PaymentUncheckedUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  paymobTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobIntentionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
   providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -795,6 +773,8 @@ export type PaymentUncheckedUpdateWithoutOrderInput = {
   integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -804,9 +784,6 @@ export type PaymentUncheckedUpdateWithoutOrderInput = {
 
 export type PaymentCreateWithoutRefundsInput = {
   id?: string
-  paymobTransactionId?: string | null
-  paymobOrderId?: string | null
-  paymobIntentionId?: string | null
   provider?: $Enums.PaymentProvider
   providerTransactionId?: string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -817,6 +794,8 @@ export type PaymentCreateWithoutRefundsInput = {
   integrationId?: number | null
   last4?: string | null
   brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
@@ -826,9 +805,6 @@ export type PaymentCreateWithoutRefundsInput = {
 
 export type PaymentUncheckedCreateWithoutRefundsInput = {
   id?: string
-  paymobTransactionId?: string | null
-  paymobOrderId?: string | null
-  paymobIntentionId?: string | null
   provider?: $Enums.PaymentProvider
   providerTransactionId?: string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -839,6 +815,8 @@ export type PaymentUncheckedCreateWithoutRefundsInput = {
   integrationId?: number | null
   last4?: string | null
   brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
@@ -864,9 +842,6 @@ export type PaymentUpdateToOneWithWhereWithoutRefundsInput = {
 
 export type PaymentUpdateWithoutRefundsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  paymobTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobIntentionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
   providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -877,6 +852,8 @@ export type PaymentUpdateWithoutRefundsInput = {
   integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -886,9 +863,6 @@ export type PaymentUpdateWithoutRefundsInput = {
 
 export type PaymentUncheckedUpdateWithoutRefundsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  paymobTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobIntentionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
   providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -899,6 +873,8 @@ export type PaymentUncheckedUpdateWithoutRefundsInput = {
   integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -908,9 +884,6 @@ export type PaymentUncheckedUpdateWithoutRefundsInput = {
 
 export type PaymentCreateWithoutConsultationBookingInput = {
   id?: string
-  paymobTransactionId?: string | null
-  paymobOrderId?: string | null
-  paymobIntentionId?: string | null
   provider?: $Enums.PaymentProvider
   providerTransactionId?: string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -921,6 +894,8 @@ export type PaymentCreateWithoutConsultationBookingInput = {
   integrationId?: number | null
   last4?: string | null
   brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
@@ -930,9 +905,6 @@ export type PaymentCreateWithoutConsultationBookingInput = {
 
 export type PaymentUncheckedCreateWithoutConsultationBookingInput = {
   id?: string
-  paymobTransactionId?: string | null
-  paymobOrderId?: string | null
-  paymobIntentionId?: string | null
   provider?: $Enums.PaymentProvider
   providerTransactionId?: string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -943,6 +915,8 @@ export type PaymentUncheckedCreateWithoutConsultationBookingInput = {
   integrationId?: number | null
   last4?: string | null
   brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
@@ -968,9 +942,6 @@ export type PaymentUpdateToOneWithWhereWithoutConsultationBookingInput = {
 
 export type PaymentUpdateWithoutConsultationBookingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  paymobTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobIntentionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
   providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -981,6 +952,8 @@ export type PaymentUpdateWithoutConsultationBookingInput = {
   integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -990,9 +963,6 @@ export type PaymentUpdateWithoutConsultationBookingInput = {
 
 export type PaymentUncheckedUpdateWithoutConsultationBookingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  paymobTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobOrderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymobIntentionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
   providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1003,6 +973,8 @@ export type PaymentUncheckedUpdateWithoutConsultationBookingInput = {
   integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1043,9 +1015,6 @@ export type PaymentCountOutputTypeCountRefundsArgs<ExtArgs extends runtime.Types
 
 export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  paymobTransactionId?: boolean
-  paymobOrderId?: boolean
-  paymobIntentionId?: boolean
   provider?: boolean
   providerTransactionId?: boolean
   providerMetadata?: boolean
@@ -1056,6 +1025,8 @@ export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   integrationId?: boolean
   last4?: boolean
   brand?: boolean
+  failureCode?: boolean
+  failureMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   paidAt?: boolean
@@ -1067,9 +1038,6 @@ export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 
 export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  paymobTransactionId?: boolean
-  paymobOrderId?: boolean
-  paymobIntentionId?: boolean
   provider?: boolean
   providerTransactionId?: boolean
   providerMetadata?: boolean
@@ -1080,6 +1048,8 @@ export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   integrationId?: boolean
   last4?: boolean
   brand?: boolean
+  failureCode?: boolean
+  failureMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   paidAt?: boolean
@@ -1087,9 +1057,6 @@ export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  paymobTransactionId?: boolean
-  paymobOrderId?: boolean
-  paymobIntentionId?: boolean
   provider?: boolean
   providerTransactionId?: boolean
   providerMetadata?: boolean
@@ -1100,6 +1067,8 @@ export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   integrationId?: boolean
   last4?: boolean
   brand?: boolean
+  failureCode?: boolean
+  failureMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   paidAt?: boolean
@@ -1107,9 +1076,6 @@ export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type PaymentSelectScalar = {
   id?: boolean
-  paymobTransactionId?: boolean
-  paymobOrderId?: boolean
-  paymobIntentionId?: boolean
   provider?: boolean
   providerTransactionId?: boolean
   providerMetadata?: boolean
@@ -1120,12 +1086,14 @@ export type PaymentSelectScalar = {
   integrationId?: boolean
   last4?: boolean
   brand?: boolean
+  failureCode?: boolean
+  failureMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   paidAt?: boolean
 }
 
-export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "paymobTransactionId" | "paymobOrderId" | "paymobIntentionId" | "provider" | "providerTransactionId" | "providerMetadata" | "amountCents" | "currency" | "status" | "paymentMethod" | "integrationId" | "last4" | "brand" | "createdAt" | "updatedAt" | "paidAt", ExtArgs["result"]["payment"]>
+export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "provider" | "providerTransactionId" | "providerMetadata" | "amountCents" | "currency" | "status" | "paymentMethod" | "integrationId" | "last4" | "brand" | "failureCode" | "failureMessage" | "createdAt" | "updatedAt" | "paidAt", ExtArgs["result"]["payment"]>
 export type PaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.Payment$orderArgs<ExtArgs>
   consultationBooking?: boolean | Prisma.Payment$consultationBookingArgs<ExtArgs>
@@ -1144,9 +1112,6 @@ export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    paymobTransactionId: string | null
-    paymobOrderId: string | null
-    paymobIntentionId: string | null
     provider: $Enums.PaymentProvider
     providerTransactionId: string | null
     providerMetadata: runtime.JsonValue | null
@@ -1157,6 +1122,8 @@ export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     integrationId: number | null
     last4: string | null
     brand: string | null
+    failureCode: string | null
+    failureMessage: string | null
     createdAt: Date
     updatedAt: Date
     paidAt: Date | null
@@ -1587,9 +1554,6 @@ export interface Prisma__PaymentClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface PaymentFieldRefs {
   readonly id: Prisma.FieldRef<"Payment", 'String'>
-  readonly paymobTransactionId: Prisma.FieldRef<"Payment", 'String'>
-  readonly paymobOrderId: Prisma.FieldRef<"Payment", 'String'>
-  readonly paymobIntentionId: Prisma.FieldRef<"Payment", 'String'>
   readonly provider: Prisma.FieldRef<"Payment", 'PaymentProvider'>
   readonly providerTransactionId: Prisma.FieldRef<"Payment", 'String'>
   readonly providerMetadata: Prisma.FieldRef<"Payment", 'Json'>
@@ -1600,6 +1564,8 @@ export interface PaymentFieldRefs {
   readonly integrationId: Prisma.FieldRef<"Payment", 'Int'>
   readonly last4: Prisma.FieldRef<"Payment", 'String'>
   readonly brand: Prisma.FieldRef<"Payment", 'String'>
+  readonly failureCode: Prisma.FieldRef<"Payment", 'String'>
+  readonly failureMessage: Prisma.FieldRef<"Payment", 'String'>
   readonly createdAt: Prisma.FieldRef<"Payment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Payment", 'DateTime'>
   readonly paidAt: Prisma.FieldRef<"Payment", 'DateTime'>

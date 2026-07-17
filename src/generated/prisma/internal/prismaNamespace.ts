@@ -3472,9 +3472,6 @@ export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof t
 
 export const PaymentScalarFieldEnum = {
   id: 'id',
-  paymobTransactionId: 'paymobTransactionId',
-  paymobOrderId: 'paymobOrderId',
-  paymobIntentionId: 'paymobIntentionId',
   provider: 'provider',
   providerTransactionId: 'providerTransactionId',
   providerMetadata: 'providerMetadata',
@@ -3485,6 +3482,8 @@ export const PaymentScalarFieldEnum = {
   integrationId: 'integrationId',
   last4: 'last4',
   brand: 'brand',
+  failureCode: 'failureCode',
+  failureMessage: 'failureMessage',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   paidAt: 'paidAt'

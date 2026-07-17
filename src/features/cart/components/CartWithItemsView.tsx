@@ -4,26 +4,23 @@ import { CartHero } from './cart-hero';
 import { CartItem } from './CartItem';
 import { CartSummary } from './CartSummary';
 
-type CartFilledViewProps = {
+type CartWithItemsViewProps = {
   cartData: CartDataType;
 };
 
-export function CartFilledView({ cartData }: CartFilledViewProps) {
+export function CartWithItemsView({ cartData }: CartWithItemsViewProps) {
   const cartItems = cartData.items;
 
   return (
     <>
-      <CartHero />
+      <CartHero itemCount={cartItems.length} />
       <div
         className={cn(
           'flex flex-col-reverse lg:flex-row gap-6 lg:gap-12 container px-4 pb-32 lg:pb-0',
         )}
         dir="rtl"
       >
-        <div className={cn('flex-1 space-y-2')}>
-          <p className={cn('text-base mb-2')}>
-            يوجد {cartItems.length} من الدورات في السلة
-          </p>
+        <div className={cn('flex-1')}>
           <div
             className={cn(
               'border-t border-border flex flex-col gap-4 sm:flex-none sm:gap-0',
