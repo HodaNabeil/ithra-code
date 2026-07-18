@@ -120,6 +120,11 @@ const apiErrorExample = {
   message: 'المورد غير موجود',
 };
 
+const alreadyInCartErrorExample = {
+  success: false as const,
+  message: 'هذه الدورة موجودة بالفعل في سلتك',
+};
+
 const cartErrorExample = {
   error: 'غير مصرح',
 };
@@ -911,7 +916,19 @@ registry.registerPath({
       content: {
         'application/json': {
           schema: ApiErrorSchema,
-          example: apiErrorExample,
+          examples: {
+            alreadyInCart: {
+              summary: 'Already in cart',
+              value: alreadyInCartErrorExample,
+            },
+            validationError: {
+              summary: 'Validation error',
+              value: {
+                success: false,
+                message: 'معرف الدورة غير صالح (تنسيق CUID مطلوب)',
+              },
+            },
+          },
         },
       },
     },
