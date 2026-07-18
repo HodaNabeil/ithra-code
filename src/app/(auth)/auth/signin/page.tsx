@@ -1,5 +1,5 @@
 import { AuthCard } from '@/features/auth/components/AuthCard';
-import { cn } from '../../../lib/utils';
+import { cn } from '@/lib/utils';
 
 export default function Login() {
   return (
