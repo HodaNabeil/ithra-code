@@ -88,8 +88,9 @@ export async function POST(req: Request) {
         }
 
         // 3.6. Currency Consistency (Prevent mixed currency checkout errors)
-        if (userCart.items.length > 0) {
-          const firstItemCurrency = userCart.items[0].currency;
+        const firstItem = userCart.items[0];
+        if (firstItem) {
+          const firstItemCurrency = firstItem.currency;
           if (course.currency !== firstItemCurrency) {
             throw new Error('CURRENCY_MISMATCH');
           }
