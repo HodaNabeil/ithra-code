@@ -143,3 +143,23 @@ export async function removeCartItem(
 
   return getCartForUser(userId);
 }
+
+export async function clearCart(userId: string): Promise<CartDataType> {
+  const cart = await cartRepository.findByUserId(userId);
+
+  if (cart) {
+    await cartRepository.clearItems(cart.id);
+    // Reset stored financials explicitly: reconcile only rewrites totals when
+    // it removed stale items itself or a coupon was attached.
+    await cartRepository.updateTotals(cart.id, {
+      subtotal: 0,
+      discount: 0,
+      total: 0,
+    });
+    if (cart.couponId) {
+      await cartRepository.clearCoupon(cart.id);
+    }
+  }
+
+  return getCartForUser(userId);
+}

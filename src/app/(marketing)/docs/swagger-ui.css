@@ -1,3 +1,32 @@
+.api-docs-ltr {
+  color-scheme: light;
+}
+
+.swagger-docs {
+  background: #fff;
+  min-height: 100vh;
+}
+
+/* Classic Swagger UI top bar (standalone preset look) */
+.swagger-docs .swagger-topbar {
+  background-color: #1b1b1b;
+  padding: 8px 30px;
+}
+
+.swagger-docs .swagger-topbar-wrapper {
+  max-width: 1460px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+}
+
+.swagger-docs .swagger-topbar-wrapper img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
 .api-docs-ltr .swagger-ui {
   direction: ltr;
   text-align: left;

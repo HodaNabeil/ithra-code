@@ -12,6 +12,12 @@ const SwaggerUI = dynamic(
 export function SwaggerUIClient() {
   return (
     <div className="swagger-docs">
+      <div className="swagger-topbar">
+        <div className="swagger-topbar-wrapper">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/swagger-logo.svg" alt="Swagger" height={40} />
+        </div>
+      </div>
       <SwaggerUI
         url="/api/openapi"
         docExpansion="list"

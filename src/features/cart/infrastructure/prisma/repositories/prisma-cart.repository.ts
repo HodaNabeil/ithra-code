@@ -75,6 +75,12 @@ export class PrismaCartRepository implements CartRepository {
     });
   }
 
+  async clearItems(cartId: string): Promise<void> {
+    await prisma.cartItem.deleteMany({
+      where: { cartId },
+    });
+  }
+
   async findActiveEnrollmentCourseIds(
     userId: string,
     courseIds: string[],

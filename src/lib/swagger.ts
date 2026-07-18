@@ -885,6 +885,58 @@ registry.registerPath({
 });
 
 registry.registerPath({
+  method: 'delete',
+  path: '/cart',
+  tags: ['Cart'],
+  summary: 'Clear the cart',
+  description:
+    'Removes all items from the current user cart, clears any applied coupon, and resets totals to 0. Idempotent: returns the empty cart even if the cart is already empty or does not exist.',
+  security: authenticated,
+  responses: {
+    200: {
+      description: 'Cart cleared (empty cart returned)',
+      content: {
+        'application/json': {
+          schema: cartApiResponseSchema,
+          example: {
+            data: {
+              id: null,
+              userId: EX.instructorId,
+              subtotal: 0,
+              discount: 0,
+              total: 0,
+              currency: 'EGP',
+              items: [],
+              coupon: null,
+              createdAt: '2026-01-01T00:00:00.000Z',
+              updatedAt: '2026-01-01T00:00:00.000Z',
+            },
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: CartErrorSchema,
+          example: cartErrorExample,
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: CartErrorSchema,
+          example: cartErrorExample,
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
   method: 'post',
   path: '/cart/items',
   tags: ['Cart'],
@@ -1071,7 +1123,7 @@ export function getOpenApiDocument(): ReturnType<
   return generator.generateDocument({
     openapi: '3.0.0',
     info: {
-      title: 'thracode',
+      title: 'Ithrcode API',
       version: '1.0',
       description: 'API Documentation',
     },

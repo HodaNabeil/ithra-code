@@ -22,6 +22,7 @@ export interface CartRepository {
   updateTotals(cartId: string, totals: CartTotals): Promise<void>;
   clearCoupon(cartId: string): Promise<void>;
   removeItems(cartId: string, courseIds: string[]): Promise<void>;
+  clearItems(cartId: string): Promise<void>;
   findActiveEnrollmentCourseIds(
     userId: string,
     courseIds: string[],
