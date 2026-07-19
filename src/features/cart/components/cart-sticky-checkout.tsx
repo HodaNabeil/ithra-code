@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckoutButton } from './CheckoutButton';
+import { CheckoutButton } from './checkout-button';
 
 export function CartStickyCheckout() {
   return (

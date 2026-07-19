@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
-import { CoursesListingJsonLd } from '@/features/courses/components/courses-page/CoursesListingJsonLd';
+import { CoursesListingJsonLd } from '@/features/courses/components/courses-page/courses-listing-json-ld';
 import { CoursesContainer } from '@/features/courses/components/courses-page/courses-container';
 import { CoursesHero } from '@/features/courses/components/courses-hero';
 import { buildCoursesListingMetadata } from '@/features/courses/lib/courses-listing-metadata';

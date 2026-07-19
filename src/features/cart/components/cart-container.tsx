@@ -1,5 +1,5 @@
 import type { CartDataType } from '@/types/cart/cart';
-import { CartContents } from './CartContents';
+import { CartContents } from './cart-contents';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/components/shared/link';
 import { APP_ROUTES } from '@/constants/enums';

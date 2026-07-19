@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { CartDataType } from '@/types/cart/cart';
 import { CartHero } from './cart-hero';
-import { CartItem } from './CartItem';
-import { CartStickyCheckout } from './CartStickyCheckout';
-import { CartSummary } from './CartSummary';
+import { CartItem } from './cart-item';
+import { CartStickyCheckout } from './cart-sticky-checkout';
+import { CartSummary } from './cart-summary';
 
 type CartContentsProps = {
   cart: CartDataType;

@@ -1,6 +1,6 @@
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
-import { CartContainer } from '@/features/cart/components/CartContainer';
-import { GuestCartContainer } from '@/features/cart/components/GuestCartContainer';
+import { CartContainer } from '@/features/cart/components/cart-container';
+import { GuestCartContainer } from '@/features/cart/components/guest-cart-container';
 import { getCart } from '@/features/cart/services/getCartItems';
 import { auth } from '@/lib/auth';
 import type { CartDataType } from '@/types/cart/cart';

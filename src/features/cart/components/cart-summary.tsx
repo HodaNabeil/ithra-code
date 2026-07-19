@@ -3,8 +3,8 @@
 import { formatPrice } from '@/lib/formatters';
 import { cn } from '@/lib/utils';
 import type { CartItemType } from '@/types/cart/cart';
-import { CartCouponSection } from './CartCouponSection';
-import { CheckoutButton } from './CheckoutButton';
+import { CartCouponSection } from './cart-coupon-section';
+import { CheckoutButton } from './checkout-button';
 
 interface CartSummaryProps {
   total: number;
