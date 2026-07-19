@@ -8,6 +8,10 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
+import {
+  AUTH_SESSION_STATUS,
+  isAuthenticatedStatus,
+} from '@/constants/states';
 
 interface ShoppingCartButtonClientProps {
   initialCount: number;
@@ -18,7 +22,7 @@ export function ShoppingCartButtonClient({
 }: ShoppingCartButtonClientProps) {
   const router = useRouter();
   const { status } = useSession();
-  const isAuthed = status === 'authenticated';
+  const isAuthed = isAuthenticatedStatus(status);
   const prevStatusRef = useRef(status);
 
   const itemCount = useCartStore((state) => state.itemCount);
@@ -34,21 +38,16 @@ export function ShoppingCartButtonClient({
 
   useEffect(() => {
     if (
-      prevStatusRef.current !== 'authenticated' &&
-      status === 'authenticated'
+      prevStatusRef.current !== AUTH_SESSION_STATUS.AUTHENTICATED &&
+      isAuthenticatedStatus(status)
     ) {
       router.refresh();
     }
     prevStatusRef.current = status;
   }, [status, router]);
 
-  const hasPendingGuestItems =
-    isAuthed && guestCartHydrated && guestIds.length > 0;
-
   const count = isAuthed
-    ? hasPendingGuestItems
-      ? itemCount + guestIds.length
-      : itemCount
+    ? itemCount
     : guestCartHydrated
       ? guestIds.length
       : 0;

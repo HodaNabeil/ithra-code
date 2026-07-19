@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useLayoutEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { isAuthenticatedStatus } from '@/constants/states';
 import { create } from 'zustand';
 import type { CourseListDTO as Course } from '@/types/course/course.dto';
 import type { CartDataType as Cart, CartItemType } from '@/types/cart/cart';
@@ -11,9 +13,10 @@ const useClientLayoutEffect =
 
 // localStorage is the single source of truth for the guest cart. Stores
 // { ids, cache } where `ids` is the ordered list of course IDs and `cache`
-// holds the full Course objects keyed by id for offline rendering. On login,
-// the cart page reads the ids from this store and forwards them to the API
-// via syncGuestCartAction, then clears the store.
+// holds the full Course objects keyed by id for offline rendering. Before
+// login, course IDs are staged in an httpOnly cookie via
+// stageGuestCartForLoginAction; the NextAuth signIn event merges them
+// server-side. After authentication, stale localStorage entries are cleared.
 
 type CourseCache = Record<string, Course>;
 
@@ -115,10 +118,20 @@ const hydrate = useGuestCartStore.getState().hydrate;
 
 export function useGuestCart() {
   const store = useGuestCartStore();
+  const { status } = useSession();
+  const isAuthed = isAuthenticatedStatus(status);
+  const clearGuestCart = store.clearGuestCart;
+  const guestIdsLength = store.ids.length;
 
   useClientLayoutEffect(() => {
     hydrate();
   }, []);
+
+  useEffect(() => {
+    if (isAuthed && guestIdsLength > 0) {
+      clearGuestCart();
+    }
+  }, [isAuthed, guestIdsLength, clearGuestCart]);
 
   const buildGuestCart = (): Cart | null => {
     const { ids, cache } = store;

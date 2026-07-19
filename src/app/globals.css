@@ -1,6 +1,6 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "@tailwindcss/typography";
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -318,8 +318,10 @@
   --chart-success-stroke: hsl(140 100% 40%);
   --chart-error-fill: hsl(1 100% 98%);
   --chart-error-stroke: hsl(1 100% 51%);
-  --shadow-popover-sm: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-popover-lg: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-popover-sm:
+    0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-popover-lg:
+    0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
   --spacing: 0.25rem;
   --breakpoint-sm: 40rem;
   --breakpoint-lg: 64rem;
@@ -369,7 +371,9 @@
   --default-font-family: var(--font-noto-kufi);
   --default-mono-font-family: var(--font-mono);
   --default-mono-font-feature-settings: var(--font-mono--font-feature-settings);
-  --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
+  --default-mono-font-variation-settings: var(
+    --font-mono--font-variation-settings
+  );
   --shiki-dark: #fff;
   --spacing-page-padding: var(--page-padding);
   --color-black: #000;
@@ -388,19 +392,27 @@
   --animate-slide-down: slide-down 0.4s var(--ease-slide);
   --animate-thumb-rock: thumb-rock 0.5s both;
   --animate-overlay-show: overlay-show 0.15s var(--ease-shift);
-  --animate-content-show-from-bottom: content-show-from-bottom 0.5s var(--ease-shift);
+  --animate-content-show-from-bottom: content-show-from-bottom 0.5s
+    var(--ease-shift);
   --radius-3\/2: calc(var(--radius) * 1.5);
   --radius-1: var(--radius);
   --radius-3: calc(var(--radius) * 3);
   --radius-full: calc(var(--radius) * 9999);
   --color-background: var(--background);
-  --color-background-a9: color-mix(in oklab, var(--color-background) 47.1%, transparent);
+  --color-background-a9: color-mix(
+    in oklab,
+    var(--color-background) 47.1%,
+    transparent
+  );
   --color-border-default: var(--border, var(--grayscale-a5));
   --spacing-page-width: var(--page-width, 88rem);
   --spacing-content-width: var(--content-width, 40rem);
   --spacing-sidebar-width: var(--sidebar-width, 18rem);
   --spacing-header-height-real: var(--header-height-real);
-  --spacing-header-height: var(--header-height, var(--spacing-header-height-real));
+  --spacing-header-height: var(
+    --header-height,
+    var(--spacing-header-height-real)
+  );
   --spacing-content-height: calc(100dvh - var(--spacing-header-height));
   --accent-1: oklch(99.4% 0 none);
   --accent-2: oklch(98.5% 0 none);
@@ -520,8 +532,10 @@
   --chart-success-stroke: hsl(140 100% 45%);
   --chart-error-fill: hsl(1 100% 10%);
   --chart-error-stroke: hsl(1 100% 55%);
-  --shadow-popover-sm: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.25);
-  --shadow-popover-lg: 0 4px 16px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-popover-sm:
+    0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-popover-lg:
+    0 4px 16px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
   --accent-1: oklch(23.5% 0 none);
   --accent-2: oklch(26.3% 0 none);
   --accent-3: oklch(29.8% 0 none);
@@ -947,16 +961,24 @@
   }
 
   .dialog-overlay {
-    background-color: color-mix(in oklab, var(--color-background) 6.27%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-background) 6.27%,
+      transparent
+    );
     inset: calc(var(--spacing) * 0);
     z-index: 40;
     --tw-backdrop-blur: blur(var(--blur-md));
-    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
-      var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
-      var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
-      var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
-      var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+    -webkit-backdrop-filter: var(--tw-backdrop-blur,)
+      var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
+      var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
+      var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,)
+      var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)
+      var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,)
+      var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
+      var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,)
+      var(--tw-backdrop-sepia,);
     position: fixed;
     z-index: 40;
   }

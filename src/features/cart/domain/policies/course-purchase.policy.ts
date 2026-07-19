@@ -4,7 +4,7 @@ import {
   EnrollmentStatus,
   type Currency,
 } from '@/generated/prisma/enums';
-import { CartError } from '../errors/cart.errors';
+import { CartError, CART_ERROR_CODES } from '../errors/cart.errors';
 
 export type CourseForPurchase = {
   id: string;
@@ -69,7 +69,7 @@ export function assertNotDuplicate(
     throw new CartError(
       400,
       'هذه الدورة موجودة بالفعل في السلة',
-      'ALREADY_IN_CART',
+      CART_ERROR_CODES.ALREADY_IN_CART,
     );
   }
 }

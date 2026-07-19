@@ -12,7 +12,8 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import type { CourseListDTO } from '@/types/course/course.dto';
 import type { SectionDTO } from '@/types/course/course.dto';
 import { APP_ROUTES } from '@/constants/enums';
-import { queryKeys } from '@/constants/query-keys';
+import { isAuthenticatedStatus } from '@/constants/states';
+import { queryKeys } from '@/lib/query-keys';
 import type { CartDataType as Cart } from '@/types/cart/cart';
 import type { ActionResponse } from '@/types/action';
 import { useGuestCart } from '@/features/cart/hooks/useGuestCart';
@@ -62,7 +63,7 @@ export function AddToCartButton({
   const { data: session, status } = useSession();
 
   const isPurchased = !!course.isPurchased;
-  const isAuthed = status === 'authenticated' && !!session?.user;
+  const isAuthed = isAuthenticatedStatus(status) && !!session?.user;
 
   const { addGuestItem, guestIds, guestCartHydrated } = useGuestCart();
   const incrementItemCount = useCartStore((state) => state.incrementItemCount);

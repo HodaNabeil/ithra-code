@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/formatters';
 import { cn } from '@/lib/utils';
 import type { CartItemType } from '@/types/cart/cart';
@@ -28,59 +29,39 @@ export function CartSummary({
       )}
       dir="rtl"
     >
-      <div className="space-y-4">
-        <div
-          className={cn(
-            'mb-2 flex lg:flex-col gap-2 lg:gap-1 flex-wrap sm:flex-nowrap',
-          )}
-        >
-          <span className="text-sm text-muted-foreground font-normal">
-            الإجمالي:
-          </span>
-          <div
-            className={cn(
-              'flex flex-row lg:flex-col gap-2 lg:gap-1 items-start text-right',
-            )}
-          >
-            <span className="text-4xl sm:text-5xl font-bold text-foreground leading-none">
-              {formatPrice(total, currency)}
+      <div className="flex flex-col gap-1">
+        <span className="text-sm text-muted-foreground">الإجمالي:</span>
+        <span className="text-4xl sm:text-5xl font-bold text-foreground leading-none">
+          {formatPrice(total, currency)}
+        </span>
+
+        {hasDiscount && (
+          <div className="flex flex-col gap-0.5 items-start mt-1">
+            <span className="text-sm text-muted-foreground line-through">
+              {formatPrice(originalTotal, currency)}
             </span>
-
-            {hasDiscount && (
-              <div
-                className={cn(
-                  'flex flex-row lg:flex-col gap-2 lg:gap-0 items-start mt-0.5',
-                )}
-              >
-                <span className="text-sm text-muted-foreground line-through">
-                  {formatPrice(originalTotal, currency)}
-                </span>
-                <span className="text-sm text-primary font-medium">
-                  {discountPercent}% خصم
-                </span>
-              </div>
-            )}
+            <span className="text-sm text-primary font-medium">
+              {discountPercent}% خصم
+            </span>
           </div>
-        </div>
-
-        <div className="space-y-4">
-          <CheckoutButton />
-          <p className="text-center text-xs text-muted-foreground leading-relaxed">
-            لن يتم خصم أي مبلغ منك حتى الآن
-          </p>
-        </div>
+        )}
       </div>
 
-      <div className={cn('pt-6 border-t border-border')}>
-        <button
+      <div className="flex flex-col gap-4">
+        <CheckoutButton />
+        <p className="text-center text-xs text-muted-foreground leading-relaxed">
+          لن يتم خصم أي مبلغ منك حتى الآن
+        </p>
+      </div>
+
+      <div className="pt-6 border-t border-border">
+        <Button
           type="button"
-          className={cn(
-            'w-full h-10 rounded-lg border border-dashed border-border bg-transparent',
-            'text-sm text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors',
-          )}
+          variant="outline"
+          className="w-full h-12 rounded-lg border-primary text-primary hover:bg-primary/5 hover:text-primary hover:border-primary"
         >
-          تطبيق الكوبون
-        </button>
+          تطبيق القسيمة
+        </Button>
       </div>
     </div>
   );

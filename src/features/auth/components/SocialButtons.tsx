@@ -5,6 +5,8 @@ import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
+import { stageGuestCartForLoginAction } from '@/features/cart/actions/cart';
+import { useGuestCart } from '@/features/cart/hooks/useGuestCart';
 
 interface SocialButtonsProps {
   isLoading?: boolean;
@@ -20,11 +22,16 @@ export function SocialButtons({
   onLoadingChange,
 }: SocialButtonsProps) {
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
+  const { guestIds } = useGuestCart();
 
   const handleSocialSignIn = async (provider: string) => {
     setSocialLoading(provider);
     onLoadingChange?.(provider);
     try {
+      if (guestIds.length > 0) {
+        await stageGuestCartForLoginAction(guestIds);
+      }
+
       await signIn(provider, { callbackUrl: callbackUrl || '/' });
     } catch (_err) {
       onError?.(

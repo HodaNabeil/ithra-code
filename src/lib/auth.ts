@@ -5,6 +5,8 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import { env } from '@/config';
 import { authConfig } from '@/lib/auth.config';
+import { syncGuestCartUseCase } from '@/features/cart/application/use-cases/sync-guest-cart.use-case';
+import { readAndClearPendingGuestCartCookie } from '@/features/cart/lib/pending-guest-cart.cookie';
 import { Role } from '@prisma/client';
 
 export const config: NextAuthConfig = {
@@ -27,6 +29,19 @@ export const config: NextAuthConfig = {
   ],
 
   events: {
+    async signIn({ user }) {
+      if (!user.id) return;
+
+      const courseIds = await readAndClearPendingGuestCartCookie();
+      if (courseIds.length === 0) return;
+
+      try {
+        await syncGuestCartUseCase(user.id, courseIds);
+      } catch (error) {
+        console.error('[GUEST_CART_SYNC_ON_SIGNIN]', error);
+      }
+    },
+
     async createUser({ user }) {
       const [firstName, ...rest] = (user.name ?? '').split(' ');
       await prisma.user.update({

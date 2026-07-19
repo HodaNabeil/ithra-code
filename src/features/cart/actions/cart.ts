@@ -7,11 +7,15 @@
  * - Client components never call API routes directly; they invoke these actions.
  * - Actions communicate with backend via `httpServer` (server-side HTTP client).
  * - Guest cart add/remove stays client-side (localStorage via useGuestCart).
- * - On login/register, GuestCartSync calls syncGuestCartAction to merge guest items.
+ * - On login, guest cart IDs are staged in a cookie before OAuth; the NextAuth
+ *   signIn event merges them via syncGuestCartUseCase.
  */
 
 import { revalidatePath } from 'next/cache';
 import { CART_ENDPOINTS } from '@/constants/cart';
+import { syncGuestCartUseCase } from '@/features/cart/application/use-cases/sync-guest-cart.use-case';
+import { setPendingGuestCartCookie } from '@/features/cart/lib/pending-guest-cart.cookie';
+import { auth } from '@/lib/auth';
 import { HttpError } from '@/lib/http-error';
 import { httpServer } from '@/lib/http-server';
 import { extractErrorMessage } from '@/lib/error-extractor';
@@ -114,9 +118,44 @@ export async function removeFromCartAction(
   }
 }
 
+export async function stageGuestCartForLoginAction(
+  courseIds: string[],
+): Promise<ActionResponse<{ staged: number }>> {
+  const uniqueIds = [...new Set(courseIds)];
+
+  if (uniqueIds.length === 0) {
+    return { success: true, data: { staged: 0 } };
+  }
+
+  const parsed = courseIdsSchema.safeParse(uniqueIds);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message ?? 'قائمة الدورات غير صالحة',
+    };
+  }
+
+  await setPendingGuestCartCookie(parsed.data);
+
+  return {
+    success: true,
+    data: { staged: parsed.data.length },
+  };
+}
+
 export async function syncGuestCartAction(
   courseIds: string[],
 ): Promise<ActionResponse<GuestCartSyncSummary>> {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return {
+      success: false,
+      error: 'يجب تسجيل الدخول لمزامنة السلة',
+    };
+  }
+
   const uniqueIds = [...new Set(courseIds)];
 
   if (uniqueIds.length === 0) {
@@ -131,33 +170,19 @@ export async function syncGuestCartAction(
     };
   }
 
-  // Never fail the whole operation if one item fails — report a summary instead.
-  const results = await Promise.allSettled(
-    parsed.data.map((id) => addToCartAction(null, id)),
-  );
+  const summary = await syncGuestCartUseCase(userId, parsed.data);
 
-  let synced = 0;
-  let failed = 0;
-
-  for (const result of results) {
-    if (result.status === 'fulfilled' && result.value.success) {
-      synced++;
-    } else {
-      failed++;
-    }
-  }
-
-  if (synced > 0) {
+  if (summary.synced > 0) {
     revalidatePath('/cart');
     revalidatePath('/courses', 'layout');
   }
 
   return {
     success: true,
-    data: { synced, failed },
+    data: summary,
     message:
-      failed > 0
-        ? `تمت مزامنة ${synced} دورة، فشلت ${failed}`
-        : `تمت مزامنة ${synced} دورة بنجاح`,
+      summary.failed > 0
+        ? `تمت مزامنة ${summary.synced} دورة، فشلت ${summary.failed}`
+        : `تمت مزامنة ${summary.synced} دورة بنجاح`,
   };
 }

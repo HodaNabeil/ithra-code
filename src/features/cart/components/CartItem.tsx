@@ -7,6 +7,7 @@ import { cn } from '../../../lib/utils';
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { isAuthenticatedStatus } from '@/constants/states';
 import { removeFromCartAction } from '../actions/cart';
 import { useGuestCart } from '../hooks/useGuestCart';
 import { useCartStore } from '../stores/use-cart-store';
@@ -25,7 +26,7 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const { status } = useSession();
-  const isAuthed = status === 'authenticated';
+  const isAuthed = isAuthenticatedStatus(status);
   const { removeGuestItem } = useGuestCart();
   const decrementItemCount = useCartStore((state) => state.decrementItemCount);
 
