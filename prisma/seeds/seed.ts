@@ -61,7 +61,7 @@ async function main() {
 
   const adminUser = await prisma.user.create({
     data: {
-      email: 'admin@simplearabcode.com',
+      email: 'admin@ithracode.com',
       password: hashedPassword,
       firstName: 'Admin',
       lastName: 'User',
@@ -81,7 +81,7 @@ async function main() {
 
   const instructorUser = await prisma.user.create({
     data: {
-      email: 'instructor@simplearabcode.com',
+      email: 'instructor@ithracode.com',
       password: instructorPassword,
       firstName: 'محمد',
       lastName: 'أحمد',
@@ -101,7 +101,7 @@ async function main() {
 
   const studentUser = await prisma.user.create({
     data: {
-      email: 'student@simplearabcode.com',
+      email: 'student@ithracode.com',
       password: studentPassword,
       firstName: 'أحمد',
       lastName: 'خالد',
@@ -133,7 +133,7 @@ async function main() {
       icon: '💻',
       ...publishedCatalogFields,
       sortOrder: 1,
-      metaTitle: 'مسار تطوير الويب الكامل - Simple Arab Code',
+      metaTitle: 'مسار تطوير الويب الكامل - IthraCode',
       metaDescription:
         'تعلم تطوير تطبيقات الويب الحديثة من البداية حتى الاحتراف',
     },
@@ -154,7 +154,7 @@ async function main() {
       icon: '⚙️',
       ...publishedCatalogFields,
       sortOrder: 2,
-      metaTitle: 'مسار تطوير الخلفية - Simple Arab Code',
+      metaTitle: 'مسار تطوير الخلفية - IthraCode',
       metaDescription: 'تعلم بناء تطبيقات خلفية احترافية',
     },
   });
@@ -186,7 +186,7 @@ async function main() {
       icon: '🎨',
       ...publishedCatalogFields,
       sortOrder: 1,
-      metaTitle: 'مسار أساسيات تطوير الواجهات الأمامية - Simple Arab Code',
+      metaTitle: 'مسار أساسيات تطوير الواجهات الأمامية - IthraCode',
       metaDescription: 'تعلم HTML، CSS، وJavaScript من الصفر',
     },
   });
@@ -216,7 +216,7 @@ async function main() {
       icon: '⚛️',
       ...publishedCatalogFields,
       sortOrder: 2,
-      metaTitle: 'مسار JavaScript الحديث وأطر العمل - Simple Arab Code',
+      metaTitle: 'مسار JavaScript الحديث وأطر العمل - IthraCode',
       metaDescription: 'تعلم React، Vue، وTypeScript',
     },
   });
@@ -246,7 +246,7 @@ async function main() {
       icon: '⚙️',
       ...publishedCatalogFields,
       sortOrder: 3,
-      metaTitle: 'مسار تطوير الخلفية والخوادم - Simple Arab Code',
+      metaTitle: 'مسار تطوير الخلفية والخوادم - IthraCode',
       metaDescription: 'تعلم Node.js وبناء APIs احترافية',
     },
   });
@@ -276,7 +276,7 @@ async function main() {
       icon: '🗄️',
       ...publishedCatalogFields,
       sortOrder: 4,
-      metaTitle: 'مسار قواعد البيانات وإدارة البيانات - Simple Arab Code',
+      metaTitle: 'مسار قواعد البيانات وإدارة البيانات - IthraCode',
       metaDescription: 'تعلم PostgreSQL، MongoDB، وPrisma',
     },
   });
@@ -306,7 +306,7 @@ async function main() {
       icon: '🚀',
       ...publishedCatalogFields,
       sortOrder: 5,
-      metaTitle: 'مسار DevOps والنشر على السحابة - Simple Arab Code',
+      metaTitle: 'مسار DevOps والنشر على السحابة - IthraCode',
       metaDescription: 'تعلم Docker، AWS، وCI/CD',
     },
   });
@@ -335,7 +335,7 @@ async function main() {
       icon: '✅',
       ...publishedCatalogFields,
       sortOrder: 6,
-      metaTitle: 'مسار الاختبارات وضمان الجودة - Simple Arab Code',
+      metaTitle: 'مسار الاختبارات وضمان الجودة - IthraCode',
       metaDescription: 'تعلم Jest، Cypress، وTDD',
     },
   });
@@ -1430,11 +1430,11 @@ async function main() {
   console.log('📋 Summary:');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log(`👤 Users created: 3`);
-  console.log(`   - Admin: admin@simplearabcode.com / Admin@123`);
+  console.log(`   - Admin: admin@ithracode.com / Admin@123`);
   console.log(
-    `   - Instructor: instructor@simplearabcode.com / Instructor@123`,
+    `   - Instructor: instructor@ithracode.com / Instructor@123`,
   );
-  console.log(`   - Student: student@simplearabcode.com / Student@123`);
+  console.log(`   - Student: student@ithracode.com / Student@123`);
   console.log(`\n🛤️  Paths created: 2`);
   console.log(`📚 Courses created: 2`);
   console.log(`📑 Sections created: 5`);
@@ -1449,11 +1449,11 @@ async function main() {
   console.log('📋 Summary:');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('👤 Users created: 3');
-  console.log('   - Admin: admin@simplearabcode.com / Admin@123');
+  console.log('   - Admin: admin@ithracode.com / Admin@123');
   console.log(
-    '   - Instructor: instructor@simplearabcode.com / Instructor@123',
+    '   - Instructor: instructor@ithracode.com / Instructor@123',
   );
-  console.log('   - Student: student@simplearabcode.com / Student@123');
+  console.log('   - Student: student@ithracode.com / Student@123');
   console.log('');
   console.log('🛤️  Paths created: 2');
   console.log('📚 Courses created: 14');

@@ -270,7 +270,7 @@ async function seedReviews() {
     if (!reviewer) continue;
 
     const { firstName, lastName } = reviewer;
-    const email = `reviewer${i + 1}@simplearabcode.com`;
+    const email = `reviewer${i + 1}@ithracode.com`;
 
     const user = await prisma.user.upsert({
       where: { email },
