@@ -62,12 +62,15 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
   return (
     <div
       className={cn(
-        'flex gap-3 sm:gap-4 py-4 sm:py-5',
+        'flex flex-nowrap gap-3 sm:gap-4 py-4 sm:py-5',
         'group animate-in fade-in slide-in-from-bottom-2 duration-500',
       )}
       dir="rtl"
     >
-      <div className="relative w-[100px] sm:w-[120px] h-[56px] sm:h-[68px] shrink-0 overflow-hidden rounded">
+      <Link
+        href={`/courses/${item.slug}`}
+        className="relative block w-[100px] sm:w-[120px] h-[56px] sm:h-[68px] shrink-0 overflow-hidden rounded"
+      >
         {item.thumbnailUrl && (
           <Image
             src={item.thumbnailUrl}
@@ -77,7 +80,7 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
             className="object-cover"
           />
         )}
-      </div>
+      </Link>
 
       <div className="flex-1 min-w-0 flex flex-col gap-2">
         <Link href={`/courses/${item.slug}`}>
@@ -113,24 +116,9 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
             {metadataParts.join(' • ')}
           </p>
         )}
-
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            className="text-sm text-primary hover:underline cursor-pointer disabled:opacity-50"
-            onClick={handleRemove}
-            disabled={isPending}
-          >
-            {isPending ? (
-              <Loader2 className="size-3.5 animate-spin" />
-            ) : (
-              'إزالة'
-            )}
-          </button>
-        </div>
       </div>
 
-      <div className="shrink-0 flex flex-col items-end gap-1 min-w-[80px] sm:min-w-[100px]">
+      <div className="shrink-0 flex flex-col items-end gap-2 min-w-[80px] sm:min-w-[100px] self-center">
         <div className="flex items-center gap-1 font-bold text-primary">
           <Tag className="size-3.5 shrink-0" />
           <span className="text-sm sm:text-base whitespace-nowrap">
@@ -142,6 +130,18 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
             {formatPrice(item.compareAtPrice, item.currency)}
           </span>
         )}
+        <button
+          type="button"
+          className="text-sm text-foreground hover:text-primary transition-colors cursor-pointer disabled:opacity-50"
+          onClick={handleRemove}
+          disabled={isPending}
+        >
+          {isPending ? (
+            <Loader2 className="size-3.5 animate-spin" />
+          ) : (
+            'إزالة'
+          )}
+        </button>
       </div>
     </div>
   );
