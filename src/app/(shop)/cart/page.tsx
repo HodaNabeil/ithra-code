@@ -1,6 +1,5 @@
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import { CartContainer } from '@/features/cart/components/CartContainer';
-import { CartHero } from '@/features/cart/components/cart-hero';
 import { GuestCartContainer } from '@/features/cart/components/GuestCartContainer';
 import { getCart } from '@/features/cart/services/getCartItems';
 import { auth } from '@/lib/auth';
@@ -31,7 +30,6 @@ export default async function CartPage() {
 
   return (
     <main className="pb-6">
-      <CartHero itemCount={cart?.items.length} />
       {!hasError && cart && <CartContainer cart={cart} />}
       {hasError && <ErrorRetry />}
     </main>

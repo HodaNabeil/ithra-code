@@ -1,21 +1,20 @@
 'use client';
 
 import Image from 'next/image';
-import { formatPrice } from '@/lib/formatters';
 import Link from 'next/link';
-import { cn } from '../../../lib/utils';
-import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { Loader2, Star, Tag } from 'lucide-react';
+import { useTransition } from 'react';
+import { formatPrice } from '@/lib/formatters';
+import { cn } from '@/lib/utils';
 import { isAuthenticatedStatus } from '@/constants/states';
+import { formatCourseLevel } from '@/features/courses/lib/course-formatters';
+import type { CourseLevel } from '@/types/course/course.types';
+import type { CartItemType } from '@/types/cart/cart';
 import { removeFromCartAction } from '../actions/cart';
 import { useGuestCart } from '../hooks/useGuestCart';
 import { useCartStore } from '../stores/use-cart-store';
-import { Loader2, Star } from 'lucide-react';
-import { formatCourseLevel } from '@/features/courses/lib/course-formatters';
-import type { CourseLevel } from '@/types/course/course.types';
-
-import type { CartItemType } from '@/types/cart/cart';
 
 interface CartItemProps {
   item: CartItemType;
@@ -31,7 +30,6 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
   const decrementItemCount = useCartStore((state) => state.decrementItemCount);
 
   const handleRemove = () => {
-
     if (isGuestCart || !isAuthed) {
       removeGuestItem(item.id);
       router.refresh();
@@ -44,251 +42,104 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
       router.refresh();
     });
   };
+
+  const metadataParts: string[] = [];
+
+  if (item.hours) {
+    metadataParts.push(`${item.hours} من الساعات في المجمل`);
+  } else if (item.totalDurationText) {
+    metadataParts.push(item.totalDurationText);
+  }
+
+  if (item.lecturesCount) {
+    metadataParts.push(`${item.lecturesCount} من المحاضرات`);
+  }
+
+  if (item.level) {
+    metadataParts.push(formatCourseLevel(item.level as CourseLevel));
+  }
+
   return (
     <div
       className={cn(
-        'flex',
-        'flex-col',
-        'sm:flex-row',
-        'gap-4',
-        'sm:py-4!',
-        'border',
-        'border-border',
-        'pb-4',
-        'sm:pb-0',
-        'sm:border-t-0',
-        'sm:border-x-0',
-        'sm:border-b',
-        'last:border-0',
-        'sm:last:border-b-0',
-        'group',
-        'animate-in',
-        'fade-in',
-        'slide-in-from-bottom-2',
-        'duration-500',
+        'flex gap-3 sm:gap-4 py-4 sm:py-5',
+        'group animate-in fade-in slide-in-from-bottom-2 duration-500',
       )}
       dir="rtl"
     >
-      {/* Image (Visually Right in RTL) */}
-      <div
-        className={cn(
-          'relative',
-          'h-42',
-          ' w-full',
-          'sm:w-[120px]',
-          'sm:h-[68px]',
-          'overflow-hidden',
-          'rounded',
-        )}
-      >
-        {item?.thumbnailUrl && (
+      <div className="relative w-[100px] sm:w-[120px] h-[56px] sm:h-[68px] shrink-0 overflow-hidden rounded">
+        {item.thumbnailUrl && (
           <Image
-            src={item?.thumbnailUrl}
-            alt={item?.title}
+            src={item.thumbnailUrl}
+            alt={item.title}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className={cn('object-cover ')}
+            sizes="(max-width: 640px) 100px, 120px"
+            className="object-cover"
           />
         )}
       </div>
-      {/* Details (Visually Middle in RTL) */}
-      <div
-        className={cn(
-          'flex-1',
-          'flex',
-          'gap-2',
-          'lg:justify-between',
-          'flex-col',
-          'px-4',
-          'sm:px-0',
-        )}
-      >
-        <div>
-          <div className="space-y-1">
-            <Link href={`/courses/${item?.slug}`}>
-              <h3
+
+      <div className="flex-1 min-w-0 flex flex-col gap-2">
+        <Link href={`/courses/${item.slug}`}>
+          <h3 className="font-bold text-sm sm:text-base leading-snug hover:text-primary transition-colors line-clamp-2">
+            {item.title}
+          </h3>
+        </Link>
+
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-xs font-semibold text-star">
+            {(item.rating ?? 0).toFixed(1)}
+          </span>
+          <div className="flex items-center">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
                 className={cn(
-                  'font-bold',
-                  'text-lg',
-                  'leading-snug',
-                  'hover:text-primary',
-                  'transition-colors',
-                  'line-clamp-2',
+                  'size-3',
+                  i < Math.floor(item.rating || 0)
+                    ? 'fill-star text-star'
+                    : 'text-star/30',
                 )}
-              >
-                {item?.title ||
-                  'دورة في البرمجة اختبار التطبيقات - Unit, Integration, E2E'}
-              </h3>
-            </Link>
-            {/* <p className={cn('text-sm', 'text-muted-foreground', 'font-medium')}>
-                            بواسطة {item?.instructorName || 'هدي نصر'}
-                        </p> */}
+              />
+            ))}
           </div>
-
-          <div className={cn('flex', 'gap-x-4', 'gap-y-1.5', 'flex-col', 'my-3')}>
-            <div className={cn('flex', 'gap-1.5', 'items-center')}>
-              <span className={cn('text-xs', 'font-semibold', 'text-foreground')}>
-                {(item?.rating ?? 0).toFixed(1)}
-              </span>
-              <div className={cn('flex', 'items-center')}>
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`size-3.5 ${
-                      i < Math.floor(item?.rating || 0)
-                        ? 'fill-star text-star'
-                        : 'text-muted-foreground/30'
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className={cn('text-xs', 'text-muted-foreground')}>
-                ({item?.ratingCount ?? 0} من التقييمات)
-              </span>
-            </div>
-
-            <ul
-              className={cn(
-                'flex',
-                'gap-1',
-                'text-xs',
-                'text-muted-foreground',
-                'font-normal',
-              )}
-            >
-              <li>{item?.lecturesCount ?? 0} من المحاضرات</li>
-              {item?.level && (
-                <>
-                  <li>•</li>
-                  <li>{formatCourseLevel(item.level as CourseLevel)}</li>
-                </>
-              )}
-            </ul>
-          </div>
+          <span className="text-xs text-muted-foreground">
+            ({item.ratingCount ?? 0} من التقييمات)
+          </span>
         </div>
 
-        <div
-          className={cn(
-            'flex',
-            'flex-row',
-            'xl:hidden',
-            'gap-4',
-            'lg:items-end',
-            'items-start',
-            'order-2 ',
-            'text-xs',
-          )}
-        >
+        {metadataParts.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {metadataParts.join(' • ')}
+          </p>
+        )}
+
+        <div className="flex items-center gap-4">
           <button
-            className={cn(
-              'text-sm',
-              'text-foreground',
-              'font-normal',
-              'hover:underline',
-              'cursor-pointer',
-            )}
+            type="button"
+            className="text-sm text-primary hover:underline cursor-pointer disabled:opacity-50"
             onClick={handleRemove}
             disabled={isPending}
           >
             {isPending ? (
-              <Loader2 className={cn('size-3', 'animate-spin')} />
+              <Loader2 className="size-3.5 animate-spin" />
             ) : (
               'إزالة'
             )}
           </button>
-
-          {/* <button className={cn('text-primary', "font-light", 'hover:underline')}>
-                        نقل إلى قائمة الرغبات
-                    </button> */}
         </div>
       </div>
 
-      <div
-        className={cn(
-          'hidden',
-          'xl:flex',
-          'gap-1!',
-          'flex-col',
-
-          'pb-4',
-          'lg:gap-1',
-          'lg:items-end',
-          'items-start',
-          'order-2 ',
-          'text-base',
-        )}
-      >
-        <button
-          className={cn(
-            'text-sm',
-            'text-foreground',
-            'font-normal',
-            'hover:underline',
-            'cursor-pointer',
-          )}
-          onClick={handleRemove}
-        >
-          {isPending ? (
-            <Loader2 className={cn('size-3', 'animate-spin')} />
-          ) : (
-            'إزالة'
-          )}
-        </button>
-      </div>
-
-      {/* Price Area (Visually Left in RTL) */}
-      <div
-        className={cn(
-          'px-4',
-          'sm:px-0',
-          'flex',
-          'flex-col',
-          'lg:mr-8',
-          'items-start',
-          'md:items-end',
-          'gap-1',
-          'min-w-[120px]',
-          'text-right',
-          'order-last',
-        )}
-      >
-        <div
-          className={cn(
-            'flex',
-            'items-center',
-            'gap-1.5',
-            'font-semibold',
-          )}
-        >
-          <span className="text-base">
-            {formatPrice(item?.price, item?.currency)}
+      <div className="shrink-0 flex flex-col items-end gap-1 min-w-[80px] sm:min-w-[100px]">
+        <div className="flex items-center gap-1 font-bold text-primary">
+          <Tag className="size-3.5 shrink-0" />
+          <span className="text-sm sm:text-base whitespace-nowrap">
+            {formatPrice(item.price, item.currency)}
           </span>
-
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={cn('text-primary', 'mr-1')}
-          >
-            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-            <line x1="7" y1="7" x2="7.01" y2="7"></line>
-          </svg>
         </div>
-        {item?.compareAtPrice && (
-          <span
-            className={cn(
-              'text-xs',
-              'text-muted-foreground',
-              'line-through',
-              'font-light',
-            )}
-          >
-            {formatPrice(item?.compareAtPrice, item?.currency)}
+        {item.compareAtPrice && item.compareAtPrice > item.price && (
+          <span className="text-xs text-muted-foreground line-through">
+            {formatPrice(item.compareAtPrice, item.currency)}
           </span>
         )}
       </div>

@@ -1,7 +1,9 @@
-import { Button } from '@/components/ui/button';
+'use client';
+
 import { formatPrice } from '@/lib/formatters';
 import { cn } from '@/lib/utils';
 import type { CartItemType } from '@/types/cart/cart';
+import { CartCouponSection } from './CartCouponSection';
 import { CheckoutButton } from './CheckoutButton';
 
 interface CartSummaryProps {
@@ -10,12 +12,24 @@ interface CartSummaryProps {
   discount: number;
   currency: string;
   items: CartItemType[];
+  showTotal?: boolean;
+  showCheckout?: boolean;
+  showCoupon?: boolean;
+  couponOpen?: boolean;
+  onCouponToggle?: (open: boolean) => void;
+  className?: string;
 }
 
 export function CartSummary({
   total,
   originalTotal,
   currency,
+  showTotal = true,
+  showCheckout = true,
+  showCoupon = true,
+  couponOpen,
+  onCouponToggle,
+  className,
 }: CartSummaryProps) {
   const hasDiscount = originalTotal > total;
   const discountPercent = hasDiscount
@@ -25,44 +39,57 @@ export function CartSummary({
   return (
     <div
       className={cn(
-        'pt-8 lg:pt-0 flex flex-col gap-6 lg:sticky lg:top-24 text-right',
+        'flex flex-col gap-6 lg:sticky lg:top-24 text-right',
+        showTotal && 'lg:mt-1.5',
+        !showTotal && 'lg:pt-6',
+        className,
       )}
       dir="rtl"
     >
-      <div className="flex flex-col gap-1">
-        <span className="text-sm text-muted-foreground">الإجمالي:</span>
-        <span className="text-4xl sm:text-5xl font-bold text-foreground leading-none">
-          {formatPrice(total, currency)}
-        </span>
+      {showTotal && (
+        <div className="flex flex-col gap-1">
+          <span className="text-base font-medium text-muted-foreground">
+            الإجمالي:
+          </span>
+          <span className="text-3xl sm:text-4xl font-bold text-foreground leading-none">
+            {formatPrice(total, currency)}
+          </span>
 
-        {hasDiscount && (
-          <div className="flex flex-col gap-0.5 items-start mt-1">
-            <span className="text-sm text-muted-foreground line-through">
-              {formatPrice(originalTotal, currency)}
-            </span>
-            <span className="text-sm text-primary font-medium">
-              {discountPercent}% خصم
-            </span>
-          </div>
-        )}
-      </div>
+          {hasDiscount && (
+            <div className="flex flex-col gap-0.5 items-start">
+              <span className="text-sm text-muted-foreground line-through">
+                {formatPrice(originalTotal, currency)}
+              </span>
+              <span className="text-sm text-primary font-medium">
+                {discountPercent}% خصم
+              </span>
+            </div>
+          )}
 
-      <div className="flex flex-col gap-4">
-        <CheckoutButton />
-        <p className="text-center text-xs text-muted-foreground leading-relaxed">
-          لن يتم خصم أي مبلغ منك حتى الآن
-        </p>
-      </div>
+          {couponOpen && onCouponToggle && (
+            <button
+              type="button"
+              onClick={() => onCouponToggle(false)}
+              className="text-sm text-primary hover:underline w-fit mt-1"
+            >
+              إخفاء الرموز
+            </button>
+          )}
+        </div>
+      )}
 
-      <div className="pt-6 border-t border-border">
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full h-12 rounded-lg border-primary text-primary hover:bg-primary/5 hover:text-primary hover:border-primary"
-        >
-          تطبيق القسيمة
-        </Button>
-      </div>
+      {showCheckout && (
+        <div className="hidden lg:flex flex-col gap-4">
+          <CheckoutButton />
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            لن يتم خصم أي مبلغ منك حتى الآن
+          </p>
+        </div>
+      )}
+
+      {showCoupon && (
+        <CartCouponSection isOpen={couponOpen} onOpenChange={onCouponToggle} />
+      )}
     </div>
   );
 }

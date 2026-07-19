@@ -12,7 +12,10 @@ type CartContainerProps = {
 export function CartContainer({ cart }: CartContainerProps) {
   if (cart.items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 px-4 text-center space-y-6">
+      <div
+        className="flex flex-col items-center justify-center
+       py-20 px-4 text-center space-y-6"
+      >
         <div className="w-24 h-24 bg-sidebar-background rounded-full flex items-center justify-center">
           <ShoppingBag className="w-12 h-12 text-muted-foreground" />
         </div>
