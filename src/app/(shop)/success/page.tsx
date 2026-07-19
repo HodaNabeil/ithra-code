@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
-import { ORDER_ENDPOINTS } from '@/constant/order';
+import { ORDER_ENDPOINTS } from '@/constants/order';
 import { Order } from '@/types/order/order.ui';
 import { Link } from '@/components/shared/link';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 import { useRouter } from 'next/navigation';
 
 export default function SuccessPage() {

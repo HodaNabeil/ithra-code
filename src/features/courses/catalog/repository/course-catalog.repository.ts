@@ -1,6 +1,6 @@
 import { EnrollmentStatus, Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { COURSE_ORDER_BY } from '@/constant/course';
+import { COURSE_ORDER_BY } from '@/constants/course';
 import type { CourseCatalogQuery } from '../dto/course-catalog.dto';
 import {
   courseCatalogSelect,

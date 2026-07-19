@@ -11,8 +11,8 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import type { CourseListDTO } from '@/types/course/course.dto';
 import type { SectionDTO } from '@/types/course/course.dto';
-import { APP_ROUTES } from '@/constant/enums';
-import { queryKeys } from '@/constant/query-keys';
+import { APP_ROUTES } from '@/constants/enums';
+import { queryKeys } from '@/constants/query-keys';
 import type { CartDataType as Cart } from '@/types/cart/cart';
 import type { ActionResponse } from '@/types/action';
 import { useGuestCart } from '@/features/cart/hooks/useGuestCart';
@@ -84,8 +84,7 @@ export function AddToCartButton({
   const isInGuestCart = guestCartHydrated && guestIds.includes(course.id);
   const actionFailed = state?.success === false;
   const isInCart =
-    !actionFailed &&
-    (!!course.isInCart || isAddedLocally || isInGuestCart);
+    !actionFailed && (!!course.isInCart || isAddedLocally || isInGuestCart);
 
   useEffect(() => {
     if (!state?.success) return;

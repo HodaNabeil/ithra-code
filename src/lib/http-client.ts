@@ -4,7 +4,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 import { cookieManager } from '@/lib/cookie-manager';
-import { AUTH_ENDPOINTS } from '@/constant/auth';
+import { AUTH_ENDPOINTS } from '@/constants/auth';
 import { env } from '@/config/env';
 
 /**

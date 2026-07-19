@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth'; // Path to your auth.ts file
 import Link from 'next/link';
 import { Menu } from 'lucide-react';
-import { AUTH_ROUTES } from '@/constant/auth';
+import { AUTH_ROUTES } from '@/constants/auth';
 import { UserNavClient } from './UserNavClient';
 
 export default async function UserNav() {

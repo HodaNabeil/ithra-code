@@ -2,7 +2,7 @@ import React from 'react';
 import { redirect } from 'next/navigation';
 
 import { requireAuth } from '@/features/my-courses/lib/require-auth';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 import { getCourseSections } from '@/features/my-courses/actions/my-course';
 import { CourseContentLayoutBody } from '@/features/my-courses/components/study-view/components/layout/course-content-layout-body';
 import { CourseLearningHeader } from '@/features/my-courses/components/study-view/components/layout/course-learning-header';

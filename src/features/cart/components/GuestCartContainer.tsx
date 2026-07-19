@@ -1,8 +1,8 @@
 'use client';
 
+import { emptyCartDto } from '../mappers/cart.mapper';
 import { useGuestCart } from '../hooks/useGuestCart';
-import { CartEmptyState } from './CartEmptyState';
-import { CartWithItemsView } from './CartWithItemsView';
+import { CartContainer } from './CartContainer';
 import { CartHero } from './cart-hero';
 
 /**
@@ -15,16 +15,12 @@ export function GuestCartContainer() {
     return null;
   }
 
-  const guestCart = buildGuestCart();
+  const cart = buildGuestCart() ?? emptyCartDto('');
 
-  if (!guestCart || guestCart.items.length === 0) {
-    return (
-      <>
-        <CartHero />
-        <CartEmptyState />
-      </>
-    );
-  }
-
-  return <CartWithItemsView cartData={guestCart} />;
+  return (
+    <>
+      <CartHero itemCount={cart.items.length || undefined} />
+      <CartContainer cart={cart} />
+    </>
+  );
 }

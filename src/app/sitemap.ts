@@ -1,7 +1,7 @@
 import { getAllCoursesForSitemap } from '@/features/courses/services/course.service';
 import { getAllPathsForSitemap } from '@/features/learning-paths/services/path.queries';
 import { env } from '@/config/env';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 import { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

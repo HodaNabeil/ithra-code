@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect } from 'react';
 import { create } from 'zustand';
 import type { CourseListDTO as Course } from '@/types/course/course.dto';
 import type { CartDataType as Cart, CartItemType } from '@/types/cart/cart';
-import { STORAGE_KEYS } from '@/constant/storage';
+import { STORAGE_KEYS } from '@/constants/storage';
 
 const useClientLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;

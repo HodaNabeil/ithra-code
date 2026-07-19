@@ -8,7 +8,7 @@ import { formatPrice } from '@/lib/formatters';
 import { formatCourseLevel } from '@/features/courses/lib/course-formatters';
 import Link from 'next/link';
 import { AddToCartButton } from '@/features/courses/components/add-to-cart-button';
-import { PUBLIC_ROUTES, STUDENT_ROUTES } from '@/constant/routes';
+import { PUBLIC_ROUTES, STUDENT_ROUTES } from '@/constants/routes';
 import { buttonVariants } from '@/components/ui/button';
 import { CourseCardWrapper } from '@/components/shared/course-card-wrapper';
 // Hover Card Component

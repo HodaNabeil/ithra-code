@@ -4,7 +4,7 @@ import MuxPlayer from '@mux/mux-player-react';
 import { toggleLectureCompletion } from '@/features/my-courses/actions/my-course';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 
 interface MuxVideoPlayerProps {
   playbackId: string;

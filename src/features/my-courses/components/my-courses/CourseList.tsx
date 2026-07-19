@@ -6,10 +6,10 @@ import { BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { CourseCardStudent } from './CourseCard';
-import { EMPTY_STATES, DEFAULT_VALUES } from '@/constant/my-courses';
+import { EMPTY_STATES, DEFAULT_VALUES } from '@/constants/my-courses';
 import { StudentCourseItem } from '@/types/course/course.types';
 import Select from '@/components/shared/select';
-import { STUDENT_SORT_OPTIONS } from '@/constant/course';
+import { STUDENT_SORT_OPTIONS } from '@/constants/course';
 
 interface CourseListProps {
   courses: StudentCourseItem[];

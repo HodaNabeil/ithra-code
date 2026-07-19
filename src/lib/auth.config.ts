@@ -1,5 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
-import { AUTH_ROUTES } from '@/constant/auth';
+import { AUTH_ROUTES } from '@/constants/auth';
 
 /**
  * Edge-safe Auth.js config shared by middleware and the full server auth module.

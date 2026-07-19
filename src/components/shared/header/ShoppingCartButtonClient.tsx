@@ -1,6 +1,6 @@
 'use client';
 
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 import { useGuestCart } from '@/features/cart/hooks/useGuestCart';
 import { useCartStore } from '@/features/cart/stores/use-cart-store';
 import { ShoppingCart } from 'lucide-react';

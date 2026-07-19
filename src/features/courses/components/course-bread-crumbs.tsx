@@ -1,4 +1,4 @@
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 import type { CourseListDTO } from '@/types/course/course.dto';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';

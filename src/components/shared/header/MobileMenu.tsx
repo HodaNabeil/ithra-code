@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 import { Menu } from 'lucide-react';
-import { APP_LINK_ROLES, APP_ROUTES, APP_USER_ROLES } from '@/constant/enums';
+import { APP_LINK_ROLES, APP_ROUTES, APP_USER_ROLES } from '@/constants/enums';
 import { UserNav } from './UserNav';
 import { Button } from '@/components/ui/button';
 import {

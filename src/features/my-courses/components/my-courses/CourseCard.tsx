@@ -5,7 +5,7 @@ import { CardContent } from '@/components/ui/card';
 import { Play } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 import { CourseProgress } from './CourseProgress';
 
 interface CourseCardProps {

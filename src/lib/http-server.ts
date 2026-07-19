@@ -1,7 +1,7 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import { cookies } from 'next/headers';
 import { env } from '@/config/env';
-import { AUTH_TOKEN_KEY } from '@/constant/auth';
+import { AUTH_TOKEN_KEY } from '@/constants/auth';
 import { HttpError } from '@/lib/http-error';
 
 const API_URL = env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
@@ -58,10 +58,7 @@ async function request<T>(
         | { message?: string; error?: string }
         | undefined;
       const message =
-        body?.message ||
-        body?.error ||
-        error.message ||
-        'حدث خطأ غير متوقع';
+        body?.message || body?.error || error.message || 'حدث خطأ غير متوقع';
       throw new HttpError(error.response.status, message, body);
     }
     throw error;

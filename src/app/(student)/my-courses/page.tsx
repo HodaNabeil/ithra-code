@@ -6,8 +6,8 @@ import { Suspense } from 'react';
 import { FullPageSkeleton } from '@/features/my-courses/components/CoursesListSkeleton';
 
 import CoursesDataWrapper from '@/features/my-courses/components/my-courses/CoursesDataWrapper';
-import { AUTH_ENDPOINTS } from '@/constant/auth';
-import { APP_ROUTES } from '@/constant/enums';
+import { AUTH_ENDPOINTS } from '@/constants/auth';
+import { APP_ROUTES } from '@/constants/enums';
 
 export default async function StudentCoursesPage({
   searchParams,

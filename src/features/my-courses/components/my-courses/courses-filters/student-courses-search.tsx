@@ -3,7 +3,7 @@
 import { Search, X } from 'lucide-react';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { Link } from '@/components/shared/link';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupInput } from '@/components/ui/input-group';
 import { ScrollArea } from '@/components/ui/scroll-area';

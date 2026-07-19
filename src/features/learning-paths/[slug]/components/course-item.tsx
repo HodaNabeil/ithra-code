@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 import { formatCourseLevel } from '@/features/courses/lib/course-formatters';
 import { formatDuration } from '@/lib/formatters';
 import { CourseDetailDTO } from '@/types/path/path.dto';

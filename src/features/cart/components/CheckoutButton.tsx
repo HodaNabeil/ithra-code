@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import { AUTH_ENDPOINTS } from '@/constant/auth';
-import { APP_ROUTES } from '@/constant/enums';
+import { AUTH_ENDPOINTS } from '@/constants/auth';
+import { APP_ROUTES } from '@/constants/enums';
 
 export function CheckoutButton() {
   const { status } = useSession();

@@ -11,14 +11,11 @@
  */
 
 import { revalidatePath } from 'next/cache';
-import { CART_ENDPOINTS } from '@/constant/cart';
+import { CART_ENDPOINTS } from '@/constants/cart';
 import { HttpError } from '@/lib/http-error';
 import { httpServer } from '@/lib/http-server';
 import { extractErrorMessage } from '@/lib/error-extractor';
-import type {
-  ActionResponse,
-  GuestCartSyncSummary,
-} from '@/types/action';
+import type { ActionResponse, GuestCartSyncSummary } from '@/types/action';
 import type { CartDataType } from '@/types/cart/cart';
 import { courseIdSchema, courseIdsSchema } from '@/validation/cart';
 
@@ -28,10 +25,7 @@ type CartApiResponse = {
   data: CartDataType;
 };
 
-function mapCartError(
-  error: unknown,
-  fallback: string,
-): ActionResponse<never> {
+function mapCartError(error: unknown, fallback: string): ActionResponse<never> {
   if (error instanceof HttpError) {
     if (error.status === 401) {
       return {

@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import { NextResponse, type NextMiddleware } from 'next/server';
 import { authConfig } from '@/lib/auth.config';
-import { AUTH_ROUTES } from '@/constant/auth';
+import { AUTH_ROUTES } from '@/constants/auth';
 import { Role } from '@prisma/client';
 
 const { auth } = NextAuth(authConfig);

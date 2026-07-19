@@ -12,7 +12,7 @@ import { auth } from '@/lib/auth';
 import { AddToCartButton } from './add-to-cart-button';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 import type { CourseDetailDTO } from '@/types/course/course.dto';
 import type { CourseLevel } from '@/types/course/course.types';
 import {

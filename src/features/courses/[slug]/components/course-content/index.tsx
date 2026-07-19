@@ -10,7 +10,7 @@ import {
 import Link from 'next/link';
 import { MonitorPlay, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { STUDENT_ROUTES } from '@/constant/routes';
+import { STUDENT_ROUTES } from '@/constants/routes';
 import type { Course, CourseOverview } from '@/types/course/course.types';
 import {
   formatDuration,

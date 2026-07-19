@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Star, Users, Clock, ArrowLeft } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { PUBLIC_ROUTES } from '@/constant/routes';
+import { PUBLIC_ROUTES } from '@/constants/routes';
 import { formatPrice } from '@/lib/formatters';
 import { formatCourseLevel } from '@/features/courses/lib/course-formatters';
 import type { Course } from '@/types/course/course.types';

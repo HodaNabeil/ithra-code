@@ -1,4 +1,4 @@
-import { InputTypes } from '@/constant/enums';
+import { InputTypes } from '@/constants/enums';
 
 export interface IOption {
   label: string;
