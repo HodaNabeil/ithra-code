@@ -14,9 +14,14 @@ import * as dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
+const connectionString = process.env.DATABASE_URL!.replace(
+  /([?&]sslmode=)(require|prefer|verify-ca)\b/gi,
+  '$1verify-full'
+);
+
 // Use PrismaClient with PostgreSQL adapter (same as PrismaService)
 const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
+  connectionString,
 });
 
 const prisma = new PrismaClient({

@@ -233,8 +233,8 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 NEXT_PUBLIC_API_URL="http://localhost:3000/api"
 
 # ── Database (PostgreSQL) ──
-DATABASE_URL="postgresql://user:password@host:5432/dbname?sslmode=require"
-DIRECT_URL="postgresql://user:password@host:5432/dbname?sslmode=require"
+DATABASE_URL="postgresql://user:password@host:5432/dbname?sslmode=verify-full"
+DIRECT_URL="postgresql://user:password@host:5432/dbname?sslmode=verify-full"
 
 # ── Redis (BullMQ) ──
 REDIS_URL="redis://localhost:6380"
