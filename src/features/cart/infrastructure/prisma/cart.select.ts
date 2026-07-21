@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 
 export const cartItemCourseSelect = Prisma.validator<Prisma.CourseSelect>()({
   id: true,
+  instructorId: true,
   title: true,
   slug: true,
   description: true,

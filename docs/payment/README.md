@@ -12,7 +12,7 @@ To keep the documentation organized and sequential, the main index and all speci
 
 1.  **[00 - Documentation Index](./00-index.md)**: Overview and map of all documents.
 2.  **[01 - Payment Architecture Specification](./01-payment-architecture.md)**: Core architectural blueprint and layer responsibilities.
-3.  **[02 - Payment Platform Implementation Plan](./02-payment-implementation-plan.md)**: 8-phase engineering roadmap from setup to go-live.
+3.  **[02 - Payment Platform Implementation Plan](./02-payment-implementation-plan.md)**: Corrected 11-phase engineering roadmap from setup to go-live.
 4.  **[03 - Create Checkout Use Case Specification](./03-create-checkout-usecase.md)**: Technical specification for initiating a checkout session.
 5.  **[04 - Sprint 2 Infrastructure Specification](./04-sprint-2-infrastructure.md)**: Scope, deliverables, and guidelines for Sprint 2.
 6.  **[05 - Unit of Work Pattern Specification](./05-unit-of-work.md)**: Transaction boundaries and concurrency control.
@@ -21,3 +21,4 @@ To keep the documentation organized and sequential, the main index and all speci
 9.  **[08 - Webhook Processing Specification](./08-webhook.md)**: Secure webhook ingestion and cryptographic verification.
 10. **[09 - Fulfillment Specification](./09-fulfillment.md)**: Post-payment delivery engine and background jobs.
 11. **[10 - Payment Platform Security Specification](./10-security.md)**: Security controls, fraud prevention, and compliance.
+12. **[11 - Go-Live Checklist](./11-go-live-checklist.md)**: Staging E2E suite and production cutover checklist.

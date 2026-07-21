@@ -1,8 +1,12 @@
 export type { CreateCheckoutRequest } from './contracts/create-checkout.request';
 export type { CreateCheckoutResponse } from './contracts/create-checkout.response';
+export type { ProcessWebhookRequest } from './contracts/process-webhook.request';
+export type { ProcessWebhookResponse } from './contracts/process-webhook.response';
 
 export { CheckoutError, isCheckoutError } from './errors/checkout.errors';
 export type { CheckoutErrorCode } from './errors/checkout.errors';
+export { WebhookError, isWebhookError } from './errors/webhook.errors';
+export type { WebhookErrorCode } from './errors/webhook.errors';
 
 export {
   CheckoutValidator,
@@ -39,14 +43,30 @@ export type {
 export { PaymentProviderResolver } from './providers/payment-provider.resolver';
 export type { PaymentProviderRegistry } from './providers/payment-provider.resolver';
 
+export type {
+  CartFulfillmentRepository,
+  CheckoutSessionRepository,
+  EnrollmentRepository,
+  MarkPaymentFailedInput,
+  MarkPaymentSucceededInput,
+  OrderCompletedPublisher,
+  OrderRepository,
+  PaymentRepository,
+  TransactionalRepositories,
+  UnitOfWork,
+  WebhookEventRepository,
+} from './ports';
+
+export type { OrderCompletedEvent } from './events/order-completed.event';
+
 export {
   CreateCheckoutUseCase,
 } from './use-cases/create-checkout.use-case';
-export type {
-  CheckoutSessionRepository,
-  CreateCheckoutUseCaseDeps,
-  OrderRepository,
-  PaymentRepository,
-} from './use-cases/create-checkout.use-case';
+export type { CreateCheckoutUseCaseDeps } from './use-cases/create-checkout.use-case';
+
+export {
+  ProcessWebhookUseCase,
+} from './use-cases/process-webhook.use-case';
+export type { ProcessWebhookUseCaseDeps } from './use-cases/process-webhook.use-case';
 
 export { mapCartToCheckoutSnapshot } from './mappers/checkout-cart.mapper';

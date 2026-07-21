@@ -20,7 +20,8 @@ docs/payment/
 ├── 07-paymob-provider.md             # Paymob Gateway Integration
 ├── 08-webhook.md                     # Webhook Ingestion & Idempotency
 ├── 09-fulfillment.md                 # Post-Payment Delivery Engine
-└── 10-security.md                    # Security Controls & Compliance
+├── 10-security.md                    # Security Controls & Compliance
+└── 11-go-live-checklist.md           # Phase 10 Staging & Production Checklist
 ```
 
 ---
@@ -36,9 +37,9 @@ docs/payment/
     *   Transaction boundaries and failure recovery strategies.
 
 ### [02 - Payment Platform Implementation Plan](./02-payment-implementation-plan.md)
-*   **Purpose**: Outlines the 8-phase engineering roadmap (Phase 0 to Phase 7) for building the payment platform.
+*   **Purpose**: Outlines the corrected 11-phase engineering roadmap (Phase 0 to Phase 10) for building the payment platform.
 *   **Key Topics**:
-    *   Phased breakdown from Domain Setup to Go-Live.
+    *   Phased breakdown from Domain Setup to Go-Live (repositories before UoW; API before Paymob).
     *   Concrete deliverables, dependencies, and exit criteria for each phase.
     *   Risk mitigation strategies.
 
@@ -98,6 +99,13 @@ docs/payment/
     *   Defense in Depth across API, application, database, and network layers.
     *   Strict card handling rules (no raw PAN/CVV storage).
     *   Rate limiting, secret management, and audit logging.
+
+### [11 - Go-Live Checklist](./11-go-live-checklist.md)
+*   **Purpose**: Operational checklist for staging E2E sign-off and production cutover (Phase 10).
+*   **Key Topics**:
+    *   End-to-end staging suite (checkout, webhook, duplicates, rate limits).
+    *   Security hardening and secret rotation.
+    *   Monitoring log events and production cutover steps.
 
 ---
 

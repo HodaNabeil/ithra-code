@@ -10,7 +10,8 @@ export type CheckoutErrorCode =
   | 'UNSUPPORTED_CURRENCY'
   | 'UNSUPPORTED_PROVIDER'
   | 'PROVIDER_UNAVAILABLE'
-  | 'VALIDATION_ERROR';
+  | 'VALIDATION_ERROR'
+  | 'RATE_LIMIT_EXCEEDED';
 
 /** Thrown by checkout application services; presentation maps to HTTP responses. */
 export class CheckoutError extends Error {

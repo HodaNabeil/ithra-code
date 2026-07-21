@@ -174,6 +174,15 @@ export const RefundStatus = {
 export type RefundStatus = (typeof RefundStatus)[keyof typeof RefundStatus]
 
 
+export const CheckoutSessionStatus = {
+  OPEN: 'OPEN',
+  COMPLETE: 'COMPLETE',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type CheckoutSessionStatus = (typeof CheckoutSessionStatus)[keyof typeof CheckoutSessionStatus]
+
+
 export const Frequency = {
   ONCE: 'ONCE',
   DAILY: 'DAILY',

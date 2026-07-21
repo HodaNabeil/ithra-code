@@ -9,6 +9,7 @@ import type { CreateCheckoutResponse } from '../contracts/create-checkout.respon
 import { randomUUID } from 'node:crypto';
 import { OrderFactory } from '../factories/order.factory';
 import { PaymentFactory } from '../factories/payment.factory';
+import type { UnitOfWork } from '../ports';
 import type { PaymentProviderGateway } from '../providers/payment-provider.gateway';
 import { PaymentProviderResolver } from '../providers/payment-provider.resolver';
 import { PriceCalculatorService } from '../services/price-calculator.service';
@@ -18,23 +19,9 @@ import {
 } from '../validators/checkout.validator';
 import { mapCartToCheckoutSnapshot } from '../mappers/checkout-cart.mapper';
 
-export interface OrderRepository {
-  save(order: OrderEntity): Promise<OrderEntity>;
-}
-
-export interface PaymentRepository {
-  save(payment: PaymentEntity): Promise<PaymentEntity>;
-}
-
-export interface CheckoutSessionRepository {
-  save(session: CheckoutSessionEntity): Promise<CheckoutSessionEntity>;
-}
-
 export type CreateCheckoutUseCaseDeps = {
   cartRepository: CartRepository;
-  orderRepository: OrderRepository;
-  paymentRepository: PaymentRepository;
-  checkoutSessionRepository: CheckoutSessionRepository;
+  unitOfWork: UnitOfWork;
   checkoutValidator?: CheckoutValidator;
   priceCalculator?: PriceCalculatorService;
   orderFactory?: OrderFactory;
@@ -99,31 +86,42 @@ export class CreateCheckoutUseCase {
       paymentId: payment.id,
     };
 
-    // TODO: Wrap order + payment persistence in a database transaction.
-    const savedOrder = await this.deps.orderRepository.save(orderWithPayment);
-    const savedPayment = await this.deps.paymentRepository.save(payment);
+    // Tx1: persist payment then order atomically, and COMMIT before the
+    // external provider call. `payments.id` is the FK target of
+    // `orders.payment_id`, so the payment must be inserted first.
+    await this.deps.unitOfWork.execute(async ({ orders, payments }) => {
+      await payments.save(payment);
+      await orders.save(orderWithPayment);
+    });
 
     const providerGateway = this.paymentProviderResolver.resolve(
       request.provider,
     );
 
     const providerSession = await providerGateway.createCheckoutSession({
-      orderId: savedOrder.id,
+      orderId: order.id,
       userId: request.userId,
       provider: request.provider,
-      amountCents: savedOrder.totalCents,
-      currency: savedOrder.currency,
+      amountCents: order.totalCents,
+      currency: order.currency,
       successUrl: request.successUrl,
       cancelUrl: request.cancelUrl,
     });
 
-    const checkoutSession = await this.deps.checkoutSessionRepository.save(
-      this.buildCheckoutSession({
-        order: savedOrder,
-        payment: savedPayment,
-        provider: request.provider,
-        providerSession,
-      }),
+    // Tx2: record the checkout session and move the payment to PROCESSING.
+    const checkoutSession = await this.deps.unitOfWork.execute(
+      async ({ checkoutSessions, payments }) => {
+        await payments.markProcessing(payment.id);
+
+        return checkoutSessions.save(
+          this.buildCheckoutSession({
+            order: orderWithPayment,
+            payment,
+            provider: request.provider,
+            providerSession,
+          }),
+        );
+      },
     );
 
     return {

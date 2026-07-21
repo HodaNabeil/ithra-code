@@ -32,6 +32,29 @@ export const env = createEnv({
     STRIPE_API_KEY: z.string().describe('Stripe Secret API Key'),
     STRIPE_WEBHOOK_SECRET: z.string().describe('Stripe Webhook Secret'),
 
+    // Paymob (optional: gateway registers only when configured)
+    PAYMOB_API_URL: z
+      .string()
+      .url()
+      .default('https://accept.paymob.com')
+      .describe('Paymob API base URL'),
+    PAYMOB_SECRET_KEY: z
+      .string()
+      .optional()
+      .describe('Paymob secret key (Intention API auth)'),
+    PAYMOB_PUBLIC_KEY: z
+      .string()
+      .optional()
+      .describe('Paymob public key (unified checkout redirect)'),
+    PAYMOB_HMAC_SECRET: z
+      .string()
+      .optional()
+      .describe('Paymob HMAC secret (webhook signature verification)'),
+    PAYMOB_INTEGRATION_IDS: z
+      .string()
+      .optional()
+      .describe('Comma-separated Paymob payment integration IDs'),
+
     // Redis
     REDIS_URL: z.string().url().describe('Redis connection URL'),
 
@@ -80,6 +103,11 @@ export const env = createEnv({
     AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    PAYMOB_API_URL: process.env.PAYMOB_API_URL,
+    PAYMOB_SECRET_KEY: process.env.PAYMOB_SECRET_KEY,
+    PAYMOB_PUBLIC_KEY: process.env.PAYMOB_PUBLIC_KEY,
+    PAYMOB_HMAC_SECRET: process.env.PAYMOB_HMAC_SECRET,
+    PAYMOB_INTEGRATION_IDS: process.env.PAYMOB_INTEGRATION_IDS,
     REDIS_URL: process.env.REDIS_URL,
     MUX_TOKEN_ID: process.env.MUX_TOKEN_ID,
     MUX_TOKEN_SECRET: process.env.MUX_TOKEN_SECRET,

@@ -3,7 +3,7 @@ import type { CheckoutCartSnapshot } from '../validators/checkout.validator';
 
 /**
  * Maps the persisted cart model into a checkout validation snapshot.
- * TODO: Include `instructorId` in the cart query select for checkout.
+ * `instructorId` is provided by the cart course select.
  */
 export function mapCartToCheckoutSnapshot(
   cart: DB_CartWithItems,
@@ -20,8 +20,7 @@ export function mapCartToCheckoutSnapshot(
       course: item.course
         ? {
             id: item.course.id,
-            // TODO: Load instructorId from cart/course repository at infrastructure layer.
-            instructorId: readInstructorId(item.course),
+            instructorId: item.course.instructorId,
             price: Number(item.course.price),
             currency: item.course.currency,
             status: item.course.status,
@@ -30,16 +29,4 @@ export function mapCartToCheckoutSnapshot(
         : null,
     })),
   };
-}
-
-function readInstructorId(
-  course: DB_CartWithItems['items'][number]['course'],
-): string {
-  const instructorId = (course as { instructorId?: string }).instructorId;
-
-  if (!instructorId) {
-    return '';
-  }
-
-  return instructorId;
 }

@@ -17,7 +17,9 @@
     "db:push": "npx prisma db push",
     "db:reset": "npx prisma migrate reset --force",
     "db:studio": "npx prisma studio",
-    "worker": "tsx src/server/workers/payment.worker.ts"
+    "worker": "tsx src/server/workers/payment.worker.ts",
+    "worker:order-completed": "tsx src/server/workers/order-completed.worker.ts",
+    "payment:e2e": "tsx scripts/payment/e2e.ts"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^8.5.0",

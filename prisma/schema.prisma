@@ -336,6 +336,7 @@ model User {
   instructorEarnings  InstructorEarning[]         @relation("InstructorEarnings")
   trackedDevices      TrackedDevice[]
   tokenFamilies       TokenFamily[]
+  checkoutSessions    CheckoutSession[]
 
   @@unique([oauthProvider, oauthProviderId])
   @@index([email])
@@ -614,7 +615,8 @@ model Order {
   updatedAt   DateTime  @updatedAt @map("updated_at")
   completedAt DateTime? @map("completed_at")
 
-  items OrderItem[]
+  items            OrderItem[]
+  checkoutSessions CheckoutSession[]
 
   @@index([userId])
   @@index([status])
@@ -732,6 +734,52 @@ enum RefundStatus {
   PROCESSING
   SUCCEEDED
   FAILED
+}
+
+model CheckoutSession {
+  id String @id @default(cuid())
+
+  orderId String @map("order_id")
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  provider          PaymentProvider
+  providerSessionId String                @map("provider_session_id")
+  status            CheckoutSessionStatus @default(OPEN)
+
+  amountCents Int      @map("amount_cents")
+  currency    Currency @default(EGP)
+
+  url       String?
+  expiresAt DateTime? @map("expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@index([userId])
+  @@index([status])
+  @@index([provider, providerSessionId])
+  @@map("checkout_sessions")
+}
+
+enum CheckoutSessionStatus {
+  OPEN
+  COMPLETE
+  EXPIRED
+}
+
+model WebhookEvent {
+  id              String          @id
+  provider        PaymentProvider
+  type            String
+  providerEventId String          @map("provider_event_id")
+  payload         Json
+  receivedAt      DateTime        @default(now()) @map("received_at")
+
+  @@unique([provider, providerEventId])
+  @@index([provider])
+  @@map("webhook_events")
 }
 
 model Review {

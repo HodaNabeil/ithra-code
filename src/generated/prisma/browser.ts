@@ -143,6 +143,16 @@ export type Payment = Prisma.PaymentModel
  */
 export type Refund = Prisma.RefundModel
 /**
+ * Model CheckoutSession
+ * 
+ */
+export type CheckoutSession = Prisma.CheckoutSessionModel
+/**
+ * Model WebhookEvent
+ * 
+ */
+export type WebhookEvent = Prisma.WebhookEventModel
+/**
  * Model Review
  * 
  */
