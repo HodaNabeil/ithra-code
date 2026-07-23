@@ -89,6 +89,8 @@ export class PaymobGateway implements PaymentProviderGateway {
         providerSessionId: String(data.id ?? input.orderId),
         redirectUrl,
         expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+        clientSecret: data.client_secret,
+        publicKey: this.config.publicKey,
       };
     } catch (error) {
       if (error instanceof CheckoutError) {

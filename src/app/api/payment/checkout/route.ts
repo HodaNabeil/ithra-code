@@ -58,6 +58,8 @@ export async function POST(req: Request) {
           redirectUrl: result.redirectUrl,
           expiresAt: result.expiresAt,
           checkoutSession: result.checkoutSession,
+          clientSecret: result.clientSecret,
+          publicKey: result.publicKey,
         },
       },
       { status: 201 },

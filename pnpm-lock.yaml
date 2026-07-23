@@ -104,6 +104,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      paymob-pixel:
+        specifier: ^1.2.7
+        version: 1.2.7
       pg:
         specifier: ^8.20.0
         version: 8.20.0
@@ -3947,6 +3950,9 @@ packages:
 
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
+
+  paymob-pixel@1.2.7:
+    resolution: {integrity: sha512-Yz4JOEQhPcYvOLVIDdJH4xEWQRb1wHS3jiG6aadnSeQsHL/wfD54DTO5bSlFG3/jxpROO5qv5J3F8sKTtR1GoQ==}
 
   perfect-debounce@1.0.0:
     resolution: {integrity: sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA==}
@@ -8942,6 +8948,8 @@ snapshots:
   path-parse@1.0.7: {}
 
   pathe@2.0.3: {}
+
+  paymob-pixel@1.2.7: {}
 
   perfect-debounce@1.0.0: {}
 

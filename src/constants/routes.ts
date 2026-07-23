@@ -57,7 +57,9 @@ export const ONBOARDING_ROUTES = {
 export const PROTECTED_ROUTES = {
   DASHBOARD: '/dashboard',
   SETTINGS: '/settings',
-  CHECKOUT_SUCCESS: '/checkout/success',
+  CHECKOUT: '/payment/checkout',
+  CHECKOUT_SUCCESS: '/payment/success',
+  CHECKOUT_CANCEL: '/payment/cancel',
   ORDERS: '/orders',
 } as const;
 
@@ -85,7 +87,8 @@ export const PROFILE_ROUTES = {
 export const ORDER_ROUTES = {
   LIST: '/orders',
   DETAIL: '/orders/:id',
-  SUCCESS: '/checkout/success',
+  SUCCESS: '/payment/success',
+  CANCEL: '/payment/cancel',
 } as const;
 
 // Student routes

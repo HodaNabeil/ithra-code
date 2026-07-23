@@ -15,6 +15,9 @@ export type ProviderCheckoutResult = {
   providerSessionId: string;
   redirectUrl: string;
   expiresAt: Date;
+  /** Paymob Pixel embed — safe to expose to the client. */
+  clientSecret?: string;
+  publicKey?: string;
 };
 
 /**

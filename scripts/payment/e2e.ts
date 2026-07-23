@@ -266,7 +266,7 @@ async function runFailedPaymentScenario(
   const checkout = await createCheckoutUseCase().execute({
     userId: studentId,
     provider,
-    successUrl: 'http://localhost:3000/checkout/success',
+    successUrl: 'http://localhost:3000/payment/success',
     cancelUrl: 'http://localhost:3000/cart',
   });
 
@@ -332,7 +332,7 @@ async function runSuccessAndDuplicateScenarios(
   const checkout = await createCheckoutUseCase().execute({
     userId: studentId,
     provider,
-    successUrl: 'http://localhost:3000/checkout/success',
+    successUrl: 'http://localhost:3000/payment/success',
     cancelUrl: 'http://localhost:3000/cart',
   });
 

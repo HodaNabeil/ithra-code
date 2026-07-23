@@ -128,6 +128,8 @@ export class CreateCheckoutUseCase {
       checkoutSession,
       redirectUrl: providerSession.redirectUrl,
       expiresAt: providerSession.expiresAt,
+      clientSecret: providerSession.clientSecret,
+      publicKey: providerSession.publicKey,
     };
   }
 

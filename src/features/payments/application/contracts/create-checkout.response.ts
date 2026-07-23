@@ -5,4 +5,7 @@ export type CreateCheckoutResponse = {
   checkoutSession: CheckoutSessionEntity;
   redirectUrl: string;
   expiresAt: Date;
+  /** Present when the provider supports embedded checkout (Paymob Pixel). */
+  clientSecret?: string;
+  publicKey?: string;
 };
