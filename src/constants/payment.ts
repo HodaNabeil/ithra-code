@@ -8,8 +8,6 @@ export const PAYMENT_ENDPOINTS = {
 /** Providers exposed in the checkout UI. Values match the API schema. */
 export const CHECKOUT_PROVIDERS = {
   PAYMOB: 'PAYMOB',
-  /** Dev-only UI option — sends CASH (backed by FakePaymentGateway). */
-  FAKE: 'CASH',
 } as const;
 
 export type CheckoutProviderApiValue =

@@ -7,6 +7,11 @@ settings:
 overrides:
   '@auth/core': 0.41.0
 
+patchedDependencies:
+  next-themes@0.4.6:
+    hash: fea250eeae733b8ebec5b043a4c79b5d2290ce5043b86b9dede1755d99b2be05
+    path: patches/next-themes@0.4.6.patch
+
 importers:
 
   .:
@@ -103,7 +108,7 @@ importers:
         version: 5.0.0-beta.30(next@16.2.1(@babel/core@7.29.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
       next-themes:
         specifier: ^0.4.6
-        version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 0.4.6(patch_hash=fea250eeae733b8ebec5b043a4c79b5d2290ce5043b86b9dede1755d99b2be05)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       paymob-pixel:
         specifier: ^1.2.7
         version: 1.2.7
@@ -8773,7 +8778,7 @@ snapshots:
       next: 16.2.1(@babel/core@7.29.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
 
-  next-themes@0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  next-themes@0.4.6(patch_hash=fea250eeae733b8ebec5b043a4c79b5d2290ce5043b86b9dede1755d99b2be05)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)

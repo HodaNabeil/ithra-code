@@ -51,7 +51,6 @@ export default async function CheckoutPage() {
     <main>
       <CheckoutView
         cart={cart}
-        isDevelopment={env.NODE_ENV === 'development'}
         paymobSession={paymobSession}
         paymobError={paymobError}
       />

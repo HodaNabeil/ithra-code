@@ -997,3 +997,14 @@ media-player video {
 media-player video {
   object-fit: contain;
 }
+
+/* Paymob Pixel embed host — keep block layout; field height comes from SDK styles. */
+[id^='paymob-checkout-embed'] {
+  display: block;
+  width: 100%;
+}
+
+[id^='paymob-checkout-embed'] > * {
+  display: block;
+  width: 100%;
+}

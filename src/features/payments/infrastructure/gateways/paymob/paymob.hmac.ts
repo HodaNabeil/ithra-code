@@ -54,6 +54,20 @@ function readField(transaction: PaymobTransaction, path: string): string {
   return String(value);
 }
 
+/** Builds the HMAC-SHA512 hex digest Paymob sends on processed-transaction webhooks. */
+export function computePaymobTransactionHmac(input: {
+  transaction: PaymobTransaction;
+  hmacSecret: string;
+}): string {
+  const concatenated = TRANSACTION_HMAC_FIELDS.map((field) =>
+    readField(input.transaction, field),
+  ).join('');
+
+  return createHmac('sha512', input.hmacSecret)
+    .update(concatenated)
+    .digest('hex');
+}
+
 /**
  * Verifies a Paymob transaction callback HMAC (HMAC-SHA512) using a
  * constant-time comparison. Verification is provider-specific and intentionally
@@ -64,13 +78,10 @@ export function verifyPaymobTransactionHmac(input: {
   receivedHmac: string;
   hmacSecret: string;
 }): boolean {
-  const concatenated = TRANSACTION_HMAC_FIELDS.map((field) =>
-    readField(input.transaction, field),
-  ).join('');
-
-  const computed = createHmac('sha512', input.hmacSecret)
-    .update(concatenated)
-    .digest('hex');
+  const computed = computePaymobTransactionHmac({
+    transaction: input.transaction,
+    hmacSecret: input.hmacSecret,
+  });
 
   const received = input.receivedHmac.trim().toLowerCase();
 

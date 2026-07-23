@@ -19,7 +19,8 @@
     "db:studio": "npx prisma studio",
     "worker": "tsx src/server/workers/payment.worker.ts",
     "worker:order-completed": "tsx src/server/workers/order-completed.worker.ts",
-    "payment:e2e": "tsx scripts/payment/e2e.ts"
+    "payment:e2e": "tsx scripts/payment/e2e.ts",
+    "payment:webhook-smoke": "tsx scripts/payment/paymob-webhook-smoke.ts"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^8.5.0",
@@ -104,6 +105,9 @@
   "pnpm": {
     "overrides": {
       "@auth/core": "0.41.0"
+    },
+    "patchedDependencies": {
+      "next-themes@0.4.6": "patches/next-themes@0.4.6.patch"
     }
   },
   "prisma": {
