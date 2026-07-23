@@ -10,6 +10,9 @@ import { cn } from '@/lib/utils';
 /**
  * Paymob's `Vertical_Padding` is misnamed — the SDK uses it as the
  * **input field height in px** (default 40). Setting it to 0 collapses the form.
+ *
+ * Colors mirror the checkout reference: neutral surfaces, silver CTA in dark mode.
+ * Input backgrounds must be opaque hex — `transparent` lets PCI iframes fall back to white.
  */
 function buildPaymobStyle(isDark: boolean): Record<string, unknown> {
   return {
@@ -43,31 +46,34 @@ function buildPaymobStyle(isDark: boolean): Record<string, unknown> {
     Button_Text: {
       payBtn: 'ادفع',
     },
-    Font_Size_Label: '14',
+    Font_Size_Label: '15',
     Font_Size_Input_Fields: '15',
     Font_Size_Payment_Button: '16',
     Font_Weight_Label: 600,
     Font_Weight_Input_Fields: 400,
     Font_Weight_Payment_Button: 600,
-    Text_Color_For_Label: isDark ? '#f4f4f5' : '#18181b',
+    Text_Color_For_Label: isDark ? '#fafafa' : '#0f0f10',
     Color_Container: 'transparent',
-    Color_Input_Fields: 'transparent',
+    Color_Input_Fields: isDark ? '#161617' : '#ffffff',
     Color_Border_Input_Fields: isDark
-      ? 'rgba(255, 255, 255, 0.12)'
+      ? 'rgba(255, 255, 255, 0.14)'
       : 'rgba(0, 0, 0, 0.12)',
-    Radius_Border: '10',
-    Text_Color_For_Input_Fields: isDark ? '#ffffff' : '#18181b',
+    Radius_Border: '12',
+    Text_Color_For_Input_Fields: isDark ? '#fafafa' : '#0f0f10',
     Color_For_Text_Placeholder: isDark
-      ? 'rgba(255, 255, 255, 0.45)'
-      : 'rgba(0, 0, 0, 0.45)',
-    Color_Primary: isDark ? '#d4d4d4' : '#e5e5e5',
-    Text_Color_For_Payment_Button: '#0f0f0f',
+      ? 'rgba(255, 255, 255, 0.42)'
+      : 'rgba(0, 0, 0, 0.42)',
+    // Reference: light silver CTA in dark; solid near-black in light.
+    Color_Primary: isDark ? '#e4e4e7' : '#18181b',
+    Text_Color_For_Payment_Button: isDark ? '#18181b' : '#fafafa',
     Color_Border_Payment_Button: 'transparent',
+    Color_Error: isDark ? '#f87171' : '#dc2626',
+    // Keep dark text readable on the muted disabled fill.
+    Color_Disabled: isDark ? '#a1a1aa' : '#d4d4d8',
     Width_of_Container: '100%',
-    // Field height (px) — not CSS padding. Matches Paymob's grouped mock (~48–52).
     Vertical_Padding: '48',
     Container_Padding: '0',
-    Vertical_Spacing_between_components: '24',
+    Vertical_Spacing_between_components: '20',
   };
 }
 
