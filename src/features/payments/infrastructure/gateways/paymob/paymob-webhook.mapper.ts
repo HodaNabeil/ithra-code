@@ -1,6 +1,7 @@
 import type { ProcessWebhookRequest } from '@/features/payments/application/contracts/process-webhook.request';
 import { WebhookError } from '@/features/payments/application/errors/webhook.errors';
 import { PaymentProvider } from '@/features/payments/domain';
+import type { Currency } from '@/generated/prisma/enums';
 
 type PaymobSourceData = {
   pan?: string;
@@ -72,6 +73,32 @@ function resolveOrderId(obj: PaymobTransactionObj): string | null {
   return null;
 }
 
+function resolveCurrency(value: unknown): Currency | null {
+  if (typeof value !== 'string' || value.length === 0) {
+    return null;
+  }
+
+  const upper = value.toUpperCase();
+  if (upper === 'EGP' || upper === 'USD') {
+    return upper as Currency;
+  }
+
+  return null;
+}
+
+function resolveAmountCents(value: unknown): number | null {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return Math.trunc(value);
+  }
+
+  if (typeof value === 'string' && value.trim().length > 0) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? Math.trunc(parsed) : null;
+  }
+
+  return null;
+}
+
 /**
  * Maps a verified Paymob processed-transaction payload into the
  * application-layer `ProcessWebhookRequest`. Provider-specific parsing stays
@@ -83,6 +110,7 @@ export function mapPaymobWebhookToProcessRequest(input: {
 }): {
   request: ProcessWebhookRequest;
   transaction: Record<string, unknown>;
+  eventCreatedAt: Date | null;
 } {
   const payload = input.payload as PaymobWebhookPayload;
   const obj = payload?.obj;
@@ -116,8 +144,14 @@ export function mapPaymobWebhookToProcessRequest(input: {
   const success = asBoolean(obj.success) && !asBoolean(obj.error_occured);
   const type = payload.type ?? 'TRANSACTION';
 
+  const eventCreatedAt =
+    typeof obj.created_at === 'string' && obj.created_at.length > 0
+      ? new Date(obj.created_at)
+      : null;
+
   return {
     transaction: obj as Record<string, unknown>,
+    eventCreatedAt,
     request: {
       provider: PaymentProvider.PAYMOB,
       providerEventId: `${type}_${providerTransactionId}`,
@@ -126,6 +160,8 @@ export function mapPaymobWebhookToProcessRequest(input: {
       outcome: success ? 'succeeded' : 'failed',
       orderId,
       providerTransactionId,
+      amountCents: resolveAmountCents(obj.amount_cents),
+      currency: resolveCurrency(obj.currency),
       paymentMethod: obj.source_data?.type ?? null,
       last4: obj.source_data?.pan ?? null,
       brand: obj.source_data?.sub_type ?? null,

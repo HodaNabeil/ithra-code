@@ -20,7 +20,9 @@ import { prisma } from '@/lib/prisma';
 import {
   createCheckoutUseCase,
   createProcessWebhookUseCase,
+  createReconcilePaymentsUseCase,
 } from '@/features/payments/infrastructure/di/payments.container';
+import { FakePaymentGateway } from '@/features/payments/infrastructure/gateways/fake-payment.gateway';
 import {
   PaymentProvider,
   isSupportedPaymentProvider,
@@ -415,6 +417,66 @@ async function runSuccessAndDuplicateScenarios(
   console.log('  OK — duplicate=true, single WebhookEvent, no extra enrollment');
 }
 
+async function runReconcileScenario(
+  provider: PaymentProvider,
+  studentId: string,
+  course: { courseId: string; price: number; currency: 'EGP' | 'USD' },
+): Promise<void> {
+  console.log('\n[4/4] Reconciliation scenario (stuck PROCESSING → provider succeeded)');
+  FakePaymentGateway.clearReconcileOutcomes();
+  await ensureCartWithCourse(studentId, course);
+
+  const checkout = await createCheckoutUseCase().execute({
+    userId: studentId,
+    provider,
+    successUrl: 'http://localhost:3000/payment/success',
+    cancelUrl: 'http://localhost:3000/cart',
+  });
+
+  const orderId = checkout.checkoutSession.orderId;
+  const mid = await assertPostCheckoutState(orderId);
+
+  FakePaymentGateway.setReconcileOutcome(orderId, {
+    outcome: 'succeeded',
+    providerTransactionId: `e2e_reconcile_${orderId}`,
+    paymentMethod: 'card',
+    last4: '4242',
+    brand: 'visa',
+  });
+
+  const staleAt = new Date(Date.now() - 31 * 60 * 1000);
+  await prisma.payment.update({
+    where: { id: mid.paymentId },
+    data: { updatedAt: staleAt },
+  });
+
+  const summary = await createReconcilePaymentsUseCase().execute();
+
+  assert(summary.scanned >= 1, 'Reconcile should scan at least one stale payment', summary);
+  assert(summary.fulfilled >= 1, 'Reconcile should fulfill succeeded payment', summary);
+
+  const order = await prisma.order.findUniqueOrThrow({
+    where: { id: orderId },
+    include: { payment: true },
+  });
+
+  assert(order.status === OrderStatus.COMPLETED, 'Order must be COMPLETED after reconcile');
+  assert(
+    order.payment?.status === PaymentStatus.SUCCEEDED,
+    'Payment must be SUCCEEDED after reconcile',
+  );
+  assert(
+    (await countActiveEnrollments(studentId, mid.courseIds)) === mid.courseIds.length,
+    'Reconcile must enroll purchased courses',
+  );
+  assert(
+    (await countCartItems(studentId)) === 0,
+    'Cart must be cleared after reconcile fulfillment',
+  );
+
+  console.log('  OK — reconcile fulfilled stuck PROCESSING payment');
+}
+
 async function main(): Promise<void> {
   const provider = resolveProvider();
   console.log(`Payment engine E2E (provider config → ${provider})`);
@@ -430,6 +492,9 @@ async function main(): Promise<void> {
 
   const successCourse = await findPurchasableCourseId(studentId);
   await runSuccessAndDuplicateScenarios(provider, studentId, successCourse);
+
+  const reconcileCourse = await findPurchasableCourseId(studentId);
+  await runReconcileScenario(provider, studentId, reconcileCourse);
 
   console.log('\nAll payment engine E2E scenarios passed.');
 }

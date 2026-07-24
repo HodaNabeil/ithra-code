@@ -29,11 +29,15 @@ export type AggregatePayment = {
 export type PaymentAvgAggregateOutputType = {
   amountCents: number | null
   integrationId: number | null
+  reconcileAttemptCount: number | null
+  consecutiveNotFoundCount: number | null
 }
 
 export type PaymentSumAggregateOutputType = {
   amountCents: number | null
   integrationId: number | null
+  reconcileAttemptCount: number | null
+  consecutiveNotFoundCount: number | null
 }
 
 export type PaymentMinAggregateOutputType = {
@@ -49,6 +53,14 @@ export type PaymentMinAggregateOutputType = {
   brand: string | null
   failureCode: string | null
   failureMessage: string | null
+  reconcileStatus: $Enums.PaymentReconcileStatus | null
+  reconcileAttemptCount: number | null
+  consecutiveNotFoundCount: number | null
+  nextReconcileAt: Date | null
+  reconcileLeaseExpiresAt: Date | null
+  lastReconciledAt: Date | null
+  lastProviderOutcome: string | null
+  lastProviderDetail: string | null
   createdAt: Date | null
   updatedAt: Date | null
   paidAt: Date | null
@@ -67,6 +79,14 @@ export type PaymentMaxAggregateOutputType = {
   brand: string | null
   failureCode: string | null
   failureMessage: string | null
+  reconcileStatus: $Enums.PaymentReconcileStatus | null
+  reconcileAttemptCount: number | null
+  consecutiveNotFoundCount: number | null
+  nextReconcileAt: Date | null
+  reconcileLeaseExpiresAt: Date | null
+  lastReconciledAt: Date | null
+  lastProviderOutcome: string | null
+  lastProviderDetail: string | null
   createdAt: Date | null
   updatedAt: Date | null
   paidAt: Date | null
@@ -86,6 +106,14 @@ export type PaymentCountAggregateOutputType = {
   brand: number
   failureCode: number
   failureMessage: number
+  reconcileStatus: number
+  reconcileAttemptCount: number
+  consecutiveNotFoundCount: number
+  nextReconcileAt: number
+  reconcileLeaseExpiresAt: number
+  lastReconciledAt: number
+  lastProviderOutcome: number
+  lastProviderDetail: number
   createdAt: number
   updatedAt: number
   paidAt: number
@@ -96,11 +124,15 @@ export type PaymentCountAggregateOutputType = {
 export type PaymentAvgAggregateInputType = {
   amountCents?: true
   integrationId?: true
+  reconcileAttemptCount?: true
+  consecutiveNotFoundCount?: true
 }
 
 export type PaymentSumAggregateInputType = {
   amountCents?: true
   integrationId?: true
+  reconcileAttemptCount?: true
+  consecutiveNotFoundCount?: true
 }
 
 export type PaymentMinAggregateInputType = {
@@ -116,6 +148,14 @@ export type PaymentMinAggregateInputType = {
   brand?: true
   failureCode?: true
   failureMessage?: true
+  reconcileStatus?: true
+  reconcileAttemptCount?: true
+  consecutiveNotFoundCount?: true
+  nextReconcileAt?: true
+  reconcileLeaseExpiresAt?: true
+  lastReconciledAt?: true
+  lastProviderOutcome?: true
+  lastProviderDetail?: true
   createdAt?: true
   updatedAt?: true
   paidAt?: true
@@ -134,6 +174,14 @@ export type PaymentMaxAggregateInputType = {
   brand?: true
   failureCode?: true
   failureMessage?: true
+  reconcileStatus?: true
+  reconcileAttemptCount?: true
+  consecutiveNotFoundCount?: true
+  nextReconcileAt?: true
+  reconcileLeaseExpiresAt?: true
+  lastReconciledAt?: true
+  lastProviderOutcome?: true
+  lastProviderDetail?: true
   createdAt?: true
   updatedAt?: true
   paidAt?: true
@@ -153,6 +201,14 @@ export type PaymentCountAggregateInputType = {
   brand?: true
   failureCode?: true
   failureMessage?: true
+  reconcileStatus?: true
+  reconcileAttemptCount?: true
+  consecutiveNotFoundCount?: true
+  nextReconcileAt?: true
+  reconcileLeaseExpiresAt?: true
+  lastReconciledAt?: true
+  lastProviderOutcome?: true
+  lastProviderDetail?: true
   createdAt?: true
   updatedAt?: true
   paidAt?: true
@@ -259,6 +315,14 @@ export type PaymentGroupByOutputType = {
   brand: string | null
   failureCode: string | null
   failureMessage: string | null
+  reconcileStatus: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount: number
+  consecutiveNotFoundCount: number
+  nextReconcileAt: Date | null
+  reconcileLeaseExpiresAt: Date | null
+  lastReconciledAt: Date | null
+  lastProviderOutcome: string | null
+  lastProviderDetail: string | null
   createdAt: Date
   updatedAt: Date
   paidAt: Date | null
@@ -301,12 +365,22 @@ export type PaymentWhereInput = {
   brand?: Prisma.StringNullableFilter<"Payment"> | string | null
   failureCode?: Prisma.StringNullableFilter<"Payment"> | string | null
   failureMessage?: Prisma.StringNullableFilter<"Payment"> | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFilter<"Payment"> | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFilter<"Payment"> | number
+  consecutiveNotFoundCount?: Prisma.IntFilter<"Payment"> | number
+  nextReconcileAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  lastReconciledAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  lastProviderOutcome?: Prisma.StringNullableFilter<"Payment"> | string | null
+  lastProviderDetail?: Prisma.StringNullableFilter<"Payment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   paidAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
   consultationBooking?: Prisma.XOR<Prisma.ConsultationBookingNullableScalarRelationFilter, Prisma.ConsultationBookingWhereInput> | null
   refunds?: Prisma.RefundListRelationFilter
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptListRelationFilter
+  disputes?: Prisma.PaymentDisputeListRelationFilter
 }
 
 export type PaymentOrderByWithRelationInput = {
@@ -323,12 +397,22 @@ export type PaymentOrderByWithRelationInput = {
   brand?: Prisma.SortOrderInput | Prisma.SortOrder
   failureCode?: Prisma.SortOrderInput | Prisma.SortOrder
   failureMessage?: Prisma.SortOrderInput | Prisma.SortOrder
+  reconcileStatus?: Prisma.SortOrder
+  reconcileAttemptCount?: Prisma.SortOrder
+  consecutiveNotFoundCount?: Prisma.SortOrder
+  nextReconcileAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reconcileLeaseExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastReconciledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastProviderOutcome?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastProviderDetail?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   paidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.OrderOrderByWithRelationInput
   consultationBooking?: Prisma.ConsultationBookingOrderByWithRelationInput
   refunds?: Prisma.RefundOrderByRelationAggregateInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptOrderByRelationAggregateInput
+  disputes?: Prisma.PaymentDisputeOrderByRelationAggregateInput
 }
 
 export type PaymentWhereUniqueInput = Prisma.AtLeast<{
@@ -349,12 +433,22 @@ export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   brand?: Prisma.StringNullableFilter<"Payment"> | string | null
   failureCode?: Prisma.StringNullableFilter<"Payment"> | string | null
   failureMessage?: Prisma.StringNullableFilter<"Payment"> | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFilter<"Payment"> | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFilter<"Payment"> | number
+  consecutiveNotFoundCount?: Prisma.IntFilter<"Payment"> | number
+  nextReconcileAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  lastReconciledAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
+  lastProviderOutcome?: Prisma.StringNullableFilter<"Payment"> | string | null
+  lastProviderDetail?: Prisma.StringNullableFilter<"Payment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   paidAt?: Prisma.DateTimeNullableFilter<"Payment"> | Date | string | null
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
   consultationBooking?: Prisma.XOR<Prisma.ConsultationBookingNullableScalarRelationFilter, Prisma.ConsultationBookingWhereInput> | null
   refunds?: Prisma.RefundListRelationFilter
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptListRelationFilter
+  disputes?: Prisma.PaymentDisputeListRelationFilter
 }, "id" | "provider_providerTransactionId">
 
 export type PaymentOrderByWithAggregationInput = {
@@ -371,6 +465,14 @@ export type PaymentOrderByWithAggregationInput = {
   brand?: Prisma.SortOrderInput | Prisma.SortOrder
   failureCode?: Prisma.SortOrderInput | Prisma.SortOrder
   failureMessage?: Prisma.SortOrderInput | Prisma.SortOrder
+  reconcileStatus?: Prisma.SortOrder
+  reconcileAttemptCount?: Prisma.SortOrder
+  consecutiveNotFoundCount?: Prisma.SortOrder
+  nextReconcileAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reconcileLeaseExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastReconciledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastProviderOutcome?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastProviderDetail?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   paidAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -398,6 +500,14 @@ export type PaymentScalarWhereWithAggregatesInput = {
   brand?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
   failureCode?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
   failureMessage?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusWithAggregatesFilter<"Payment"> | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntWithAggregatesFilter<"Payment"> | number
+  consecutiveNotFoundCount?: Prisma.IntWithAggregatesFilter<"Payment"> | number
+  nextReconcileAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
+  lastReconciledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
+  lastProviderOutcome?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
+  lastProviderDetail?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Payment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Payment"> | Date | string
   paidAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
@@ -417,12 +527,22 @@ export type PaymentCreateInput = {
   brand?: string | null
   failureCode?: string | null
   failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
   order?: Prisma.OrderCreateNestedOneWithoutPaymentInput
   consultationBooking?: Prisma.ConsultationBookingCreateNestedOneWithoutPaymentInput
   refunds?: Prisma.RefundCreateNestedManyWithoutPaymentInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptCreateNestedManyWithoutPaymentInput
+  disputes?: Prisma.PaymentDisputeCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUncheckedCreateInput = {
@@ -439,12 +559,22 @@ export type PaymentUncheckedCreateInput = {
   brand?: string | null
   failureCode?: string | null
   failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutPaymentInput
   consultationBooking?: Prisma.ConsultationBookingUncheckedCreateNestedOneWithoutPaymentInput
   refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutPaymentInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUncheckedCreateNestedManyWithoutPaymentInput
+  disputes?: Prisma.PaymentDisputeUncheckedCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUpdateInput = {
@@ -461,12 +591,22 @@ export type PaymentUpdateInput = {
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   order?: Prisma.OrderUpdateOneWithoutPaymentNestedInput
   consultationBooking?: Prisma.ConsultationBookingUpdateOneWithoutPaymentNestedInput
   refunds?: Prisma.RefundUpdateManyWithoutPaymentNestedInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUpdateManyWithoutPaymentNestedInput
+  disputes?: Prisma.PaymentDisputeUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentUncheckedUpdateInput = {
@@ -483,12 +623,22 @@ export type PaymentUncheckedUpdateInput = {
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   order?: Prisma.OrderUncheckedUpdateOneWithoutPaymentNestedInput
   consultationBooking?: Prisma.ConsultationBookingUncheckedUpdateOneWithoutPaymentNestedInput
   refunds?: Prisma.RefundUncheckedUpdateManyWithoutPaymentNestedInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUncheckedUpdateManyWithoutPaymentNestedInput
+  disputes?: Prisma.PaymentDisputeUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentCreateManyInput = {
@@ -505,6 +655,14 @@ export type PaymentCreateManyInput = {
   brand?: string | null
   failureCode?: string | null
   failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
@@ -524,6 +682,14 @@ export type PaymentUpdateManyMutationInput = {
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -543,6 +709,14 @@ export type PaymentUncheckedUpdateManyInput = {
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -572,6 +746,14 @@ export type PaymentCountOrderByAggregateInput = {
   brand?: Prisma.SortOrder
   failureCode?: Prisma.SortOrder
   failureMessage?: Prisma.SortOrder
+  reconcileStatus?: Prisma.SortOrder
+  reconcileAttemptCount?: Prisma.SortOrder
+  consecutiveNotFoundCount?: Prisma.SortOrder
+  nextReconcileAt?: Prisma.SortOrder
+  reconcileLeaseExpiresAt?: Prisma.SortOrder
+  lastReconciledAt?: Prisma.SortOrder
+  lastProviderOutcome?: Prisma.SortOrder
+  lastProviderDetail?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
@@ -580,6 +762,8 @@ export type PaymentCountOrderByAggregateInput = {
 export type PaymentAvgOrderByAggregateInput = {
   amountCents?: Prisma.SortOrder
   integrationId?: Prisma.SortOrder
+  reconcileAttemptCount?: Prisma.SortOrder
+  consecutiveNotFoundCount?: Prisma.SortOrder
 }
 
 export type PaymentMaxOrderByAggregateInput = {
@@ -595,6 +779,14 @@ export type PaymentMaxOrderByAggregateInput = {
   brand?: Prisma.SortOrder
   failureCode?: Prisma.SortOrder
   failureMessage?: Prisma.SortOrder
+  reconcileStatus?: Prisma.SortOrder
+  reconcileAttemptCount?: Prisma.SortOrder
+  consecutiveNotFoundCount?: Prisma.SortOrder
+  nextReconcileAt?: Prisma.SortOrder
+  reconcileLeaseExpiresAt?: Prisma.SortOrder
+  lastReconciledAt?: Prisma.SortOrder
+  lastProviderOutcome?: Prisma.SortOrder
+  lastProviderDetail?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
@@ -613,6 +805,14 @@ export type PaymentMinOrderByAggregateInput = {
   brand?: Prisma.SortOrder
   failureCode?: Prisma.SortOrder
   failureMessage?: Prisma.SortOrder
+  reconcileStatus?: Prisma.SortOrder
+  reconcileAttemptCount?: Prisma.SortOrder
+  consecutiveNotFoundCount?: Prisma.SortOrder
+  nextReconcileAt?: Prisma.SortOrder
+  reconcileLeaseExpiresAt?: Prisma.SortOrder
+  lastReconciledAt?: Prisma.SortOrder
+  lastProviderOutcome?: Prisma.SortOrder
+  lastProviderDetail?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
@@ -621,6 +821,8 @@ export type PaymentMinOrderByAggregateInput = {
 export type PaymentSumOrderByAggregateInput = {
   amountCents?: Prisma.SortOrder
   integrationId?: Prisma.SortOrder
+  reconcileAttemptCount?: Prisma.SortOrder
+  consecutiveNotFoundCount?: Prisma.SortOrder
 }
 
 export type PaymentScalarRelationFilter = {
@@ -650,6 +852,38 @@ export type EnumPaymentProviderFieldUpdateOperationsInput = {
 
 export type EnumPaymentStatusFieldUpdateOperationsInput = {
   set?: $Enums.PaymentStatus
+}
+
+export type EnumPaymentReconcileStatusFieldUpdateOperationsInput = {
+  set?: $Enums.PaymentReconcileStatus
+}
+
+export type PaymentCreateNestedOneWithoutReconcileAttemptsInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutReconcileAttemptsInput, Prisma.PaymentUncheckedCreateWithoutReconcileAttemptsInput>
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutReconcileAttemptsInput
+  connect?: Prisma.PaymentWhereUniqueInput
+}
+
+export type PaymentUpdateOneRequiredWithoutReconcileAttemptsNestedInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutReconcileAttemptsInput, Prisma.PaymentUncheckedCreateWithoutReconcileAttemptsInput>
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutReconcileAttemptsInput
+  upsert?: Prisma.PaymentUpsertWithoutReconcileAttemptsInput
+  connect?: Prisma.PaymentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PaymentUpdateToOneWithWhereWithoutReconcileAttemptsInput, Prisma.PaymentUpdateWithoutReconcileAttemptsInput>, Prisma.PaymentUncheckedUpdateWithoutReconcileAttemptsInput>
+}
+
+export type PaymentCreateNestedOneWithoutDisputesInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutDisputesInput, Prisma.PaymentUncheckedCreateWithoutDisputesInput>
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutDisputesInput
+  connect?: Prisma.PaymentWhereUniqueInput
+}
+
+export type PaymentUpdateOneRequiredWithoutDisputesNestedInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutDisputesInput, Prisma.PaymentUncheckedCreateWithoutDisputesInput>
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutDisputesInput
+  upsert?: Prisma.PaymentUpsertWithoutDisputesInput
+  connect?: Prisma.PaymentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PaymentUpdateToOneWithWhereWithoutDisputesInput, Prisma.PaymentUpdateWithoutDisputesInput>, Prisma.PaymentUncheckedUpdateWithoutDisputesInput>
 }
 
 export type PaymentCreateNestedOneWithoutRefundsInput = {
@@ -696,11 +930,21 @@ export type PaymentCreateWithoutOrderInput = {
   brand?: string | null
   failureCode?: string | null
   failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
   consultationBooking?: Prisma.ConsultationBookingCreateNestedOneWithoutPaymentInput
   refunds?: Prisma.RefundCreateNestedManyWithoutPaymentInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptCreateNestedManyWithoutPaymentInput
+  disputes?: Prisma.PaymentDisputeCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUncheckedCreateWithoutOrderInput = {
@@ -717,11 +961,21 @@ export type PaymentUncheckedCreateWithoutOrderInput = {
   brand?: string | null
   failureCode?: string | null
   failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
   consultationBooking?: Prisma.ConsultationBookingUncheckedCreateNestedOneWithoutPaymentInput
   refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutPaymentInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUncheckedCreateNestedManyWithoutPaymentInput
+  disputes?: Prisma.PaymentDisputeUncheckedCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentCreateOrConnectWithoutOrderInput = {
@@ -754,11 +1008,21 @@ export type PaymentUpdateWithoutOrderInput = {
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   consultationBooking?: Prisma.ConsultationBookingUpdateOneWithoutPaymentNestedInput
   refunds?: Prisma.RefundUpdateManyWithoutPaymentNestedInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUpdateManyWithoutPaymentNestedInput
+  disputes?: Prisma.PaymentDisputeUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutOrderInput = {
@@ -775,11 +1039,301 @@ export type PaymentUncheckedUpdateWithoutOrderInput = {
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   consultationBooking?: Prisma.ConsultationBookingUncheckedUpdateOneWithoutPaymentNestedInput
   refunds?: Prisma.RefundUncheckedUpdateManyWithoutPaymentNestedInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUncheckedUpdateManyWithoutPaymentNestedInput
+  disputes?: Prisma.PaymentDisputeUncheckedUpdateManyWithoutPaymentNestedInput
+}
+
+export type PaymentCreateWithoutReconcileAttemptsInput = {
+  id?: string
+  provider?: $Enums.PaymentProvider
+  providerTransactionId?: string | null
+  providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amountCents: number
+  currency?: $Enums.Currency
+  status?: $Enums.PaymentStatus
+  paymentMethod?: string | null
+  integrationId?: number | null
+  last4?: string | null
+  brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  paidAt?: Date | string | null
+  order?: Prisma.OrderCreateNestedOneWithoutPaymentInput
+  consultationBooking?: Prisma.ConsultationBookingCreateNestedOneWithoutPaymentInput
+  refunds?: Prisma.RefundCreateNestedManyWithoutPaymentInput
+  disputes?: Prisma.PaymentDisputeCreateNestedManyWithoutPaymentInput
+}
+
+export type PaymentUncheckedCreateWithoutReconcileAttemptsInput = {
+  id?: string
+  provider?: $Enums.PaymentProvider
+  providerTransactionId?: string | null
+  providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amountCents: number
+  currency?: $Enums.Currency
+  status?: $Enums.PaymentStatus
+  paymentMethod?: string | null
+  integrationId?: number | null
+  last4?: string | null
+  brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  paidAt?: Date | string | null
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutPaymentInput
+  consultationBooking?: Prisma.ConsultationBookingUncheckedCreateNestedOneWithoutPaymentInput
+  refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutPaymentInput
+  disputes?: Prisma.PaymentDisputeUncheckedCreateNestedManyWithoutPaymentInput
+}
+
+export type PaymentCreateOrConnectWithoutReconcileAttemptsInput = {
+  where: Prisma.PaymentWhereUniqueInput
+  create: Prisma.XOR<Prisma.PaymentCreateWithoutReconcileAttemptsInput, Prisma.PaymentUncheckedCreateWithoutReconcileAttemptsInput>
+}
+
+export type PaymentUpsertWithoutReconcileAttemptsInput = {
+  update: Prisma.XOR<Prisma.PaymentUpdateWithoutReconcileAttemptsInput, Prisma.PaymentUncheckedUpdateWithoutReconcileAttemptsInput>
+  create: Prisma.XOR<Prisma.PaymentCreateWithoutReconcileAttemptsInput, Prisma.PaymentUncheckedCreateWithoutReconcileAttemptsInput>
+  where?: Prisma.PaymentWhereInput
+}
+
+export type PaymentUpdateToOneWithWhereWithoutReconcileAttemptsInput = {
+  where?: Prisma.PaymentWhereInput
+  data: Prisma.XOR<Prisma.PaymentUpdateWithoutReconcileAttemptsInput, Prisma.PaymentUncheckedUpdateWithoutReconcileAttemptsInput>
+}
+
+export type PaymentUpdateWithoutReconcileAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
+  providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amountCents?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
+  status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.OrderUpdateOneWithoutPaymentNestedInput
+  consultationBooking?: Prisma.ConsultationBookingUpdateOneWithoutPaymentNestedInput
+  refunds?: Prisma.RefundUpdateManyWithoutPaymentNestedInput
+  disputes?: Prisma.PaymentDisputeUpdateManyWithoutPaymentNestedInput
+}
+
+export type PaymentUncheckedUpdateWithoutReconcileAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
+  providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amountCents?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
+  status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.OrderUncheckedUpdateOneWithoutPaymentNestedInput
+  consultationBooking?: Prisma.ConsultationBookingUncheckedUpdateOneWithoutPaymentNestedInput
+  refunds?: Prisma.RefundUncheckedUpdateManyWithoutPaymentNestedInput
+  disputes?: Prisma.PaymentDisputeUncheckedUpdateManyWithoutPaymentNestedInput
+}
+
+export type PaymentCreateWithoutDisputesInput = {
+  id?: string
+  provider?: $Enums.PaymentProvider
+  providerTransactionId?: string | null
+  providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amountCents: number
+  currency?: $Enums.Currency
+  status?: $Enums.PaymentStatus
+  paymentMethod?: string | null
+  integrationId?: number | null
+  last4?: string | null
+  brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  paidAt?: Date | string | null
+  order?: Prisma.OrderCreateNestedOneWithoutPaymentInput
+  consultationBooking?: Prisma.ConsultationBookingCreateNestedOneWithoutPaymentInput
+  refunds?: Prisma.RefundCreateNestedManyWithoutPaymentInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptCreateNestedManyWithoutPaymentInput
+}
+
+export type PaymentUncheckedCreateWithoutDisputesInput = {
+  id?: string
+  provider?: $Enums.PaymentProvider
+  providerTransactionId?: string | null
+  providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amountCents: number
+  currency?: $Enums.Currency
+  status?: $Enums.PaymentStatus
+  paymentMethod?: string | null
+  integrationId?: number | null
+  last4?: string | null
+  brand?: string | null
+  failureCode?: string | null
+  failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  paidAt?: Date | string | null
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutPaymentInput
+  consultationBooking?: Prisma.ConsultationBookingUncheckedCreateNestedOneWithoutPaymentInput
+  refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutPaymentInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUncheckedCreateNestedManyWithoutPaymentInput
+}
+
+export type PaymentCreateOrConnectWithoutDisputesInput = {
+  where: Prisma.PaymentWhereUniqueInput
+  create: Prisma.XOR<Prisma.PaymentCreateWithoutDisputesInput, Prisma.PaymentUncheckedCreateWithoutDisputesInput>
+}
+
+export type PaymentUpsertWithoutDisputesInput = {
+  update: Prisma.XOR<Prisma.PaymentUpdateWithoutDisputesInput, Prisma.PaymentUncheckedUpdateWithoutDisputesInput>
+  create: Prisma.XOR<Prisma.PaymentCreateWithoutDisputesInput, Prisma.PaymentUncheckedCreateWithoutDisputesInput>
+  where?: Prisma.PaymentWhereInput
+}
+
+export type PaymentUpdateToOneWithWhereWithoutDisputesInput = {
+  where?: Prisma.PaymentWhereInput
+  data: Prisma.XOR<Prisma.PaymentUpdateWithoutDisputesInput, Prisma.PaymentUncheckedUpdateWithoutDisputesInput>
+}
+
+export type PaymentUpdateWithoutDisputesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
+  providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amountCents?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
+  status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.OrderUpdateOneWithoutPaymentNestedInput
+  consultationBooking?: Prisma.ConsultationBookingUpdateOneWithoutPaymentNestedInput
+  refunds?: Prisma.RefundUpdateManyWithoutPaymentNestedInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUpdateManyWithoutPaymentNestedInput
+}
+
+export type PaymentUncheckedUpdateWithoutDisputesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
+  providerTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amountCents?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
+  status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  integrationId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  last4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  order?: Prisma.OrderUncheckedUpdateOneWithoutPaymentNestedInput
+  consultationBooking?: Prisma.ConsultationBookingUncheckedUpdateOneWithoutPaymentNestedInput
+  refunds?: Prisma.RefundUncheckedUpdateManyWithoutPaymentNestedInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentCreateWithoutRefundsInput = {
@@ -796,11 +1350,21 @@ export type PaymentCreateWithoutRefundsInput = {
   brand?: string | null
   failureCode?: string | null
   failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
   order?: Prisma.OrderCreateNestedOneWithoutPaymentInput
   consultationBooking?: Prisma.ConsultationBookingCreateNestedOneWithoutPaymentInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptCreateNestedManyWithoutPaymentInput
+  disputes?: Prisma.PaymentDisputeCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUncheckedCreateWithoutRefundsInput = {
@@ -817,11 +1381,21 @@ export type PaymentUncheckedCreateWithoutRefundsInput = {
   brand?: string | null
   failureCode?: string | null
   failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutPaymentInput
   consultationBooking?: Prisma.ConsultationBookingUncheckedCreateNestedOneWithoutPaymentInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUncheckedCreateNestedManyWithoutPaymentInput
+  disputes?: Prisma.PaymentDisputeUncheckedCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentCreateOrConnectWithoutRefundsInput = {
@@ -854,11 +1428,21 @@ export type PaymentUpdateWithoutRefundsInput = {
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   order?: Prisma.OrderUpdateOneWithoutPaymentNestedInput
   consultationBooking?: Prisma.ConsultationBookingUpdateOneWithoutPaymentNestedInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUpdateManyWithoutPaymentNestedInput
+  disputes?: Prisma.PaymentDisputeUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutRefundsInput = {
@@ -875,11 +1459,21 @@ export type PaymentUncheckedUpdateWithoutRefundsInput = {
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   order?: Prisma.OrderUncheckedUpdateOneWithoutPaymentNestedInput
   consultationBooking?: Prisma.ConsultationBookingUncheckedUpdateOneWithoutPaymentNestedInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUncheckedUpdateManyWithoutPaymentNestedInput
+  disputes?: Prisma.PaymentDisputeUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentCreateWithoutConsultationBookingInput = {
@@ -896,11 +1490,21 @@ export type PaymentCreateWithoutConsultationBookingInput = {
   brand?: string | null
   failureCode?: string | null
   failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
   order?: Prisma.OrderCreateNestedOneWithoutPaymentInput
   refunds?: Prisma.RefundCreateNestedManyWithoutPaymentInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptCreateNestedManyWithoutPaymentInput
+  disputes?: Prisma.PaymentDisputeCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentUncheckedCreateWithoutConsultationBookingInput = {
@@ -917,11 +1521,21 @@ export type PaymentUncheckedCreateWithoutConsultationBookingInput = {
   brand?: string | null
   failureCode?: string | null
   failureMessage?: string | null
+  reconcileStatus?: $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: number
+  consecutiveNotFoundCount?: number
+  nextReconcileAt?: Date | string | null
+  reconcileLeaseExpiresAt?: Date | string | null
+  lastReconciledAt?: Date | string | null
+  lastProviderOutcome?: string | null
+  lastProviderDetail?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   paidAt?: Date | string | null
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutPaymentInput
   refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutPaymentInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUncheckedCreateNestedManyWithoutPaymentInput
+  disputes?: Prisma.PaymentDisputeUncheckedCreateNestedManyWithoutPaymentInput
 }
 
 export type PaymentCreateOrConnectWithoutConsultationBookingInput = {
@@ -954,11 +1568,21 @@ export type PaymentUpdateWithoutConsultationBookingInput = {
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   order?: Prisma.OrderUpdateOneWithoutPaymentNestedInput
   refunds?: Prisma.RefundUpdateManyWithoutPaymentNestedInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUpdateManyWithoutPaymentNestedInput
+  disputes?: Prisma.PaymentDisputeUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutConsultationBookingInput = {
@@ -975,11 +1599,21 @@ export type PaymentUncheckedUpdateWithoutConsultationBookingInput = {
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reconcileStatus?: Prisma.EnumPaymentReconcileStatusFieldUpdateOperationsInput | $Enums.PaymentReconcileStatus
+  reconcileAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveNotFoundCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextReconcileAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reconcileLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastReconciledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastProviderOutcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastProviderDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   order?: Prisma.OrderUncheckedUpdateOneWithoutPaymentNestedInput
   refunds?: Prisma.RefundUncheckedUpdateManyWithoutPaymentNestedInput
+  reconcileAttempts?: Prisma.PaymentReconcileAttemptUncheckedUpdateManyWithoutPaymentNestedInput
+  disputes?: Prisma.PaymentDisputeUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
 
@@ -989,10 +1623,14 @@ export type PaymentUncheckedUpdateWithoutConsultationBookingInput = {
 
 export type PaymentCountOutputType = {
   refunds: number
+  reconcileAttempts: number
+  disputes: number
 }
 
 export type PaymentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   refunds?: boolean | PaymentCountOutputTypeCountRefundsArgs
+  reconcileAttempts?: boolean | PaymentCountOutputTypeCountReconcileAttemptsArgs
+  disputes?: boolean | PaymentCountOutputTypeCountDisputesArgs
 }
 
 /**
@@ -1012,6 +1650,20 @@ export type PaymentCountOutputTypeCountRefundsArgs<ExtArgs extends runtime.Types
   where?: Prisma.RefundWhereInput
 }
 
+/**
+ * PaymentCountOutputType without action
+ */
+export type PaymentCountOutputTypeCountReconcileAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentReconcileAttemptWhereInput
+}
+
+/**
+ * PaymentCountOutputType without action
+ */
+export type PaymentCountOutputTypeCountDisputesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentDisputeWhereInput
+}
+
 
 export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1027,12 +1679,22 @@ export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   brand?: boolean
   failureCode?: boolean
   failureMessage?: boolean
+  reconcileStatus?: boolean
+  reconcileAttemptCount?: boolean
+  consecutiveNotFoundCount?: boolean
+  nextReconcileAt?: boolean
+  reconcileLeaseExpiresAt?: boolean
+  lastReconciledAt?: boolean
+  lastProviderOutcome?: boolean
+  lastProviderDetail?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   paidAt?: boolean
   order?: boolean | Prisma.Payment$orderArgs<ExtArgs>
   consultationBooking?: boolean | Prisma.Payment$consultationBookingArgs<ExtArgs>
   refunds?: boolean | Prisma.Payment$refundsArgs<ExtArgs>
+  reconcileAttempts?: boolean | Prisma.Payment$reconcileAttemptsArgs<ExtArgs>
+  disputes?: boolean | Prisma.Payment$disputesArgs<ExtArgs>
   _count?: boolean | Prisma.PaymentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
 
@@ -1050,6 +1712,14 @@ export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   brand?: boolean
   failureCode?: boolean
   failureMessage?: boolean
+  reconcileStatus?: boolean
+  reconcileAttemptCount?: boolean
+  consecutiveNotFoundCount?: boolean
+  nextReconcileAt?: boolean
+  reconcileLeaseExpiresAt?: boolean
+  lastReconciledAt?: boolean
+  lastProviderOutcome?: boolean
+  lastProviderDetail?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   paidAt?: boolean
@@ -1069,6 +1739,14 @@ export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   brand?: boolean
   failureCode?: boolean
   failureMessage?: boolean
+  reconcileStatus?: boolean
+  reconcileAttemptCount?: boolean
+  consecutiveNotFoundCount?: boolean
+  nextReconcileAt?: boolean
+  reconcileLeaseExpiresAt?: boolean
+  lastReconciledAt?: boolean
+  lastProviderOutcome?: boolean
+  lastProviderDetail?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   paidAt?: boolean
@@ -1088,16 +1766,26 @@ export type PaymentSelectScalar = {
   brand?: boolean
   failureCode?: boolean
   failureMessage?: boolean
+  reconcileStatus?: boolean
+  reconcileAttemptCount?: boolean
+  consecutiveNotFoundCount?: boolean
+  nextReconcileAt?: boolean
+  reconcileLeaseExpiresAt?: boolean
+  lastReconciledAt?: boolean
+  lastProviderOutcome?: boolean
+  lastProviderDetail?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   paidAt?: boolean
 }
 
-export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "provider" | "providerTransactionId" | "providerMetadata" | "amountCents" | "currency" | "status" | "paymentMethod" | "integrationId" | "last4" | "brand" | "failureCode" | "failureMessage" | "createdAt" | "updatedAt" | "paidAt", ExtArgs["result"]["payment"]>
+export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "provider" | "providerTransactionId" | "providerMetadata" | "amountCents" | "currency" | "status" | "paymentMethod" | "integrationId" | "last4" | "brand" | "failureCode" | "failureMessage" | "reconcileStatus" | "reconcileAttemptCount" | "consecutiveNotFoundCount" | "nextReconcileAt" | "reconcileLeaseExpiresAt" | "lastReconciledAt" | "lastProviderOutcome" | "lastProviderDetail" | "createdAt" | "updatedAt" | "paidAt", ExtArgs["result"]["payment"]>
 export type PaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.Payment$orderArgs<ExtArgs>
   consultationBooking?: boolean | Prisma.Payment$consultationBookingArgs<ExtArgs>
   refunds?: boolean | Prisma.Payment$refundsArgs<ExtArgs>
+  reconcileAttempts?: boolean | Prisma.Payment$reconcileAttemptsArgs<ExtArgs>
+  disputes?: boolean | Prisma.Payment$disputesArgs<ExtArgs>
   _count?: boolean | Prisma.PaymentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PaymentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1109,6 +1797,8 @@ export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     order: Prisma.$OrderPayload<ExtArgs> | null
     consultationBooking: Prisma.$ConsultationBookingPayload<ExtArgs> | null
     refunds: Prisma.$RefundPayload<ExtArgs>[]
+    reconcileAttempts: Prisma.$PaymentReconcileAttemptPayload<ExtArgs>[]
+    disputes: Prisma.$PaymentDisputePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1124,6 +1814,17 @@ export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     brand: string | null
     failureCode: string | null
     failureMessage: string | null
+    /**
+     * Reconcile control plane (not money state)
+     */
+    reconcileStatus: $Enums.PaymentReconcileStatus
+    reconcileAttemptCount: number
+    consecutiveNotFoundCount: number
+    nextReconcileAt: Date | null
+    reconcileLeaseExpiresAt: Date | null
+    lastReconciledAt: Date | null
+    lastProviderOutcome: string | null
+    lastProviderDetail: string | null
     createdAt: Date
     updatedAt: Date
     paidAt: Date | null
@@ -1524,6 +2225,8 @@ export interface Prisma__PaymentClient<T, Null = never, ExtArgs extends runtime.
   order<T extends Prisma.Payment$orderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$orderArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   consultationBooking<T extends Prisma.Payment$consultationBookingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$consultationBookingArgs<ExtArgs>>): Prisma.Prisma__ConsultationBookingClient<runtime.Types.Result.GetResult<Prisma.$ConsultationBookingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   refunds<T extends Prisma.Payment$refundsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$refundsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reconcileAttempts<T extends Prisma.Payment$reconcileAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$reconcileAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentReconcileAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  disputes<T extends Prisma.Payment$disputesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$disputesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentDisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1566,6 +2269,14 @@ export interface PaymentFieldRefs {
   readonly brand: Prisma.FieldRef<"Payment", 'String'>
   readonly failureCode: Prisma.FieldRef<"Payment", 'String'>
   readonly failureMessage: Prisma.FieldRef<"Payment", 'String'>
+  readonly reconcileStatus: Prisma.FieldRef<"Payment", 'PaymentReconcileStatus'>
+  readonly reconcileAttemptCount: Prisma.FieldRef<"Payment", 'Int'>
+  readonly consecutiveNotFoundCount: Prisma.FieldRef<"Payment", 'Int'>
+  readonly nextReconcileAt: Prisma.FieldRef<"Payment", 'DateTime'>
+  readonly reconcileLeaseExpiresAt: Prisma.FieldRef<"Payment", 'DateTime'>
+  readonly lastReconciledAt: Prisma.FieldRef<"Payment", 'DateTime'>
+  readonly lastProviderOutcome: Prisma.FieldRef<"Payment", 'String'>
+  readonly lastProviderDetail: Prisma.FieldRef<"Payment", 'String'>
   readonly createdAt: Prisma.FieldRef<"Payment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Payment", 'DateTime'>
   readonly paidAt: Prisma.FieldRef<"Payment", 'DateTime'>
@@ -2021,6 +2732,54 @@ export type Payment$refundsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.RefundScalarFieldEnum | Prisma.RefundScalarFieldEnum[]
+}
+
+/**
+ * Payment.reconcileAttempts
+ */
+export type Payment$reconcileAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PaymentReconcileAttempt
+   */
+  select?: Prisma.PaymentReconcileAttemptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PaymentReconcileAttempt
+   */
+  omit?: Prisma.PaymentReconcileAttemptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentReconcileAttemptInclude<ExtArgs> | null
+  where?: Prisma.PaymentReconcileAttemptWhereInput
+  orderBy?: Prisma.PaymentReconcileAttemptOrderByWithRelationInput | Prisma.PaymentReconcileAttemptOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentReconcileAttemptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentReconcileAttemptScalarFieldEnum | Prisma.PaymentReconcileAttemptScalarFieldEnum[]
+}
+
+/**
+ * Payment.disputes
+ */
+export type Payment$disputesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PaymentDispute
+   */
+  select?: Prisma.PaymentDisputeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PaymentDispute
+   */
+  omit?: Prisma.PaymentDisputeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentDisputeInclude<ExtArgs> | null
+  where?: Prisma.PaymentDisputeWhereInput
+  orderBy?: Prisma.PaymentDisputeOrderByWithRelationInput | Prisma.PaymentDisputeOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentDisputeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentDisputeScalarFieldEnum | Prisma.PaymentDisputeScalarFieldEnum[]
 }
 
 /**

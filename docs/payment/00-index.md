@@ -21,7 +21,13 @@ docs/payment/
 ├── 08-webhook.md                     # Webhook Ingestion & Idempotency
 ├── 09-fulfillment.md                 # Post-Payment Delivery Engine
 ├── 10-security.md                    # Security Controls & Compliance
-└── 11-go-live-checklist.md           # Phase 10 Staging & Production Checklist
+├── 11-go-live-checklist.md           # Phase 10 Staging & Production Checklist
+├── 12-payment-platform-overview.md   # End-to-End Implementation & Testing Guide
+├── 13-production-readiness-review.md # Production Readiness Assessment & Gap Tracker
+├── 14-production-operations-runbook.md # Incident & Recovery Playbooks
+├── 15-final-consistency-review.md    # Post-Update Consistency & Completeness Review
+├── 16-observability.md               # Trace context, metrics, health checks, alerts
+└── 17-architecture-review.md         # Principal architect review (DDD, payments, scale)
 ```
 
 ---
@@ -106,6 +112,50 @@ docs/payment/
     *   End-to-end staging suite (checkout, webhook, duplicates, rate limits).
     *   Security hardening and secret rotation.
     *   Monitoring log events and production cutover steps.
+
+### [12 - Payment Platform Overview](./12-payment-platform-overview.md)
+*   **Purpose**: Single end-to-end narrative of the implemented payment system — architecture, flows, testing, and design rationale.
+*   **Key Topics**:
+    *   Full front-to-back checkout and webhook flow.
+    *   Layer responsibilities and key file reference.
+    *   Backend E2E, webhook smoke tests, and staging validation.
+    *   Security controls and known gaps.
+
+### [13 - Production Readiness Review](./13-production-readiness-review.md)
+*   **Purpose**: Formal production readiness assessment with scores, gap tracker, and remediation status.
+*   **Key Topics**:
+    *   Per-area coverage status (errors, webhooks, concurrency, security, money).
+    *   Implementation gaps (code vs documentation).
+    *   Summary recommendations and doc consistency fixes.
+
+### [14 - Production Operations Runbook](./14-production-operations-runbook.md)
+*   **Purpose**: Operational playbooks for recovery scenarios and infrastructure failures.
+*   **Key Topics**:
+    *   User abandonment, late webhooks, success-page polling edge cases.
+    *   Webhook never arrives, Redis/queue/DB outages, retry storms.
+    *   Monitoring event quick reference.
+
+### [15 - Final Consistency Review](./15-final-consistency-review.md)
+*   **Purpose**: Post-update audit of documentation vs implementation consistency and completeness.
+*   **Key Topics**:
+    *   Cross-doc contradiction check (HMAC, timeouts, flows, money).
+    *   Error matrix coverage gaps.
+    *   Final readiness classification and production blockers.
+
+### [16 - Observability](./16-observability.md)
+*   **Purpose**: Operational visibility — trace context, correlation IDs, health checks, metrics, and alert rules.
+*   **Key Topics**:
+    *   `PaymentTraceContext` and `paymentLogger`.
+    *   `GET /api/health/payment`.
+    *   Structured log event catalog and recommended alerts.
+
+### [17 - Architecture Review](./17-architecture-review.md)
+*   **Purpose**: Brutally honest principal-architect review of the payment platform — correctness, DDD, scalability, and production readiness.
+*   **Key Topics**:
+    *   P0/P1/P2/P3 prioritized recommendations with effort estimates.
+    *   Scores across architecture, payment correctness, and startup fitness.
+    *   Udemy-scale evolution path (Stages 1–5).
+    *   Top strengths, weaknesses, and what not to build yet.
 
 ---
 

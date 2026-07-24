@@ -608,6 +608,8 @@ model Order {
   couponId   String? @map("coupon_id")
   couponCode String? @map("coupon_code")
 
+  checkoutFingerprint String? @map("checkout_fingerprint")
+
   paymentId String?  @unique @map("payment_id")
   payment   Payment? @relation(fields: [paymentId], references: [id])
 
@@ -617,10 +619,12 @@ model Order {
 
   items            OrderItem[]
   checkoutSessions CheckoutSession[]
+  invoice          Invoice?
 
   @@index([userId])
   @@index([status])
   @@index([orderNumber])
+  @@index([userId, status, checkoutFingerprint])
   @@map("orders")
 }
 
@@ -683,6 +687,16 @@ model Payment {
   failureCode    String? @map("failure_code")
   failureMessage String? @map("failure_message")
 
+  /// Reconcile control plane (not money state)
+  reconcileStatus          PaymentReconcileStatus @default(IDLE) @map("reconcile_status")
+  reconcileAttemptCount    Int                    @default(0) @map("reconcile_attempt_count")
+  consecutiveNotFoundCount Int                    @default(0) @map("consecutive_not_found_count")
+  nextReconcileAt          DateTime?              @map("next_reconcile_at")
+  reconcileLeaseExpiresAt  DateTime?              @map("reconcile_lease_expires_at")
+  lastReconciledAt         DateTime?              @map("last_reconciled_at")
+  lastProviderOutcome      String?                @map("last_provider_outcome")
+  lastProviderDetail       String?                @map("last_provider_detail")
+
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   paidAt    DateTime? @map("paid_at")
@@ -690,10 +704,15 @@ model Payment {
   order               Order?
   consultationBooking ConsultationBooking?
   refunds             Refund[]
+  reconcileAttempts   PaymentReconcileAttempt[]
+  disputes            PaymentDispute[]
 
   @@unique([provider, providerTransactionId])
   @@index([status])
   @@index([provider])
+  @@index([nextReconcileAt])
+  @@index([reconcileStatus])
+  @@index([reconcileLeaseExpiresAt])
   @@map("payments")
 }
 
@@ -706,6 +725,79 @@ enum PaymentStatus {
   REFUNDED
   PARTIALLY_REFUNDED
   VOIDED
+}
+
+enum PaymentReconcileStatus {
+  IDLE
+  SCHEDULED
+  EXHAUSTED
+  MANUAL_REVIEW
+}
+
+model PaymentReconcileAttempt {
+  id        String  @id @default(cuid())
+  paymentId String  @map("payment_id")
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  attempt       Int
+  outcome       String
+  decision      String?
+  httpStatus    Int?    @map("http_status")
+  detail        String?
+  latencyMs     Int?    @map("latency_ms")
+  correlationId String? @map("correlation_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([paymentId])
+  @@index([createdAt])
+  @@map("payment_reconcile_attempts")
+}
+
+enum PaymentDomainOutboxStatus {
+  PENDING
+  PUBLISHED
+  FAILED
+}
+
+model PaymentDomainOutbox {
+  id          String                    @id @default(cuid())
+  eventType   String                    @map("event_type")
+  aggregateId String                    @map("aggregate_id")
+  payload     Json
+  status      PaymentDomainOutboxStatus @default(PENDING)
+  createdAt   DateTime                  @default(now()) @map("created_at")
+  publishedAt DateTime?                 @map("published_at")
+
+  @@index([status, createdAt])
+  @@map("payment_domain_outbox")
+}
+
+enum PaymentDisputeStatus {
+  OPEN
+  EVIDENCE_REQUIRED
+  WON
+  LOST
+  CLOSED
+}
+
+model PaymentDispute {
+  id               String               @id @default(cuid())
+  paymentId        String               @map("payment_id")
+  payment          Payment              @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  status           PaymentDisputeStatus @default(OPEN)
+  providerDisputeId String?             @map("provider_dispute_id")
+  amountCents      Int                  @map("amount_cents")
+  currency         Currency             @default(EGP)
+  reason           String?
+  openedAt         DateTime             @default(now()) @map("opened_at")
+  resolvedAt       DateTime?            @map("resolved_at")
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+
+  @@index([paymentId])
+  @@index([status])
+  @@map("payment_disputes")
 }
 
 model Refund {
@@ -767,6 +859,18 @@ enum CheckoutSessionStatus {
   OPEN
   COMPLETE
   EXPIRED
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  orderId       String   @unique @map("order_id")
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  invoiceNumber String   @unique @map("invoice_number")
+  storagePath   String   @map("storage_path")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([invoiceNumber])
+  @@map("invoices")
 }
 
 model WebhookEvent {

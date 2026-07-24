@@ -11,7 +11,9 @@ export type CheckoutErrorCode =
   | 'UNSUPPORTED_PROVIDER'
   | 'PROVIDER_UNAVAILABLE'
   | 'VALIDATION_ERROR'
-  | 'RATE_LIMIT_EXCEEDED';
+  | 'RATE_LIMIT_EXCEEDED'
+  | 'CHECKOUT_IN_PROGRESS'
+  | 'CHECKOUT_LOCK_UNAVAILABLE';
 
 /** Thrown by checkout application services; presentation maps to HTTP responses. */
 export class CheckoutError extends Error {

@@ -127,3 +127,36 @@ If an asynchronous worker fails (e.g., email server timeout):
     *   **Initial Delay**: 1 minute.
     *   **Backoff Factor**: 2 (1 min, 2 min, 4 min, 8 min, 16 min).
 *   If all retries are exhausted, the job is moved to a Dead Letter Queue (DLQ) for manual engineering triage.
+
+---
+
+## Infrastructure Outage Runbook
+
+### Redis Unavailable
+
+| Component | Impact | Behavior |
+| :--- | :--- | :--- |
+| Checkout rate limiter | Degraded abuse protection | **Fail-open** — checkout proceeds (`rate-limit.ts` swallows Redis errors) |
+| Webhook rate limiter | Degraded flood protection | **Fail-open** — webhooks accepted |
+| BullMQ (`order-completed` queue) | Async jobs not enqueued | Fulfillment still succeeds synchronously; `[ORDER_COMPLETED_PUBLISH_FAILED]` logged; emails/invoices/analytics delayed until Redis recovers |
+
+**Ops actions:**
+1. Alert on `[ORDER_COMPLETED_PUBLISH_FAILED]` and Redis health checks.
+2. After Redis recovery, inspect DLQ for jobs that exhausted retries.
+3. Manually re-enqueue `OrderCompleted` events for affected orders if needed.
+
+### BullMQ / Worker Outage
+
+| Symptom | User impact | Action |
+| :--- | :--- | :--- |
+| Worker process down | No confirmation emails/invoices; enrollments unaffected | Restart `npm run worker:order-completed` |
+| Queue backlog growing | Delayed notifications | Scale workers; monitor queue depth |
+| DLQ entries | Permanent async failures | Engineering triage per order ID in DLQ payload |
+
+### Database Unavailable During Fulfillment
+
+*   Webhook transaction rolls back → `500` to provider → provider retries.
+*   User may see success page polling indefinitely until webhook succeeds.
+*   **Ops:** Restore DB; provider retries should complete fulfillment automatically. If retries exhausted, use reconciliation worker (when implemented) or manual admin fulfillment.
+
+**Critical rule:** Non-critical failures (email, invoice, analytics, queue publish) must **never** roll back enrollment. See Zone 1 vs Zone 2 boundary above.

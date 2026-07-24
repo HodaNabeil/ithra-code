@@ -164,18 +164,12 @@ export class CheckoutValidator {
       return;
     }
 
-    const subtotal = this.calculateSubtotalForCoupon(cart);
+    const subtotalCents = cart.items.reduce((total, item) => {
+      return total + Math.round(Number(item.course?.price ?? 0) * 100);
+    }, 0);
 
-    if (!isCouponValid(cart.coupon, subtotal)) {
+    if (!isCouponValid(cart.coupon, subtotalCents / 100)) {
       throw new CheckoutError(400, 'كود الخصم غير صالح', 'INVALID_COUPON');
     }
-  }
-
-  private calculateSubtotalForCoupon(cart: CheckoutCartSnapshot): number {
-    return parseFloat(
-      cart.items
-        .reduce((total, item) => total + Number(item.course?.price ?? 0), 0)
-        .toFixed(2),
-    );
   }
 }

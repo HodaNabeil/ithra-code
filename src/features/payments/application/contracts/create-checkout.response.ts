@@ -8,4 +8,6 @@ export type CreateCheckoutResponse = {
   /** Present when the provider supports embedded checkout (Paymob Pixel). */
   clientSecret?: string;
   publicKey?: string;
+  /** True when an existing pending order/session was returned without creating a new order. */
+  reused?: boolean;
 };

@@ -5,6 +5,8 @@ export type PaymobConfig = {
   secretKey: string;
   publicKey: string;
   hmacSecret: string;
+  /** Legacy API key used to mint auth tokens for transaction inquiry. */
+  apiKey?: string;
   integrationIds: number[];
 };
 
@@ -32,6 +34,7 @@ export function readPaymobConfig(): PaymobConfig | null {
     secretKey,
     publicKey,
     hmacSecret,
+    apiKey: env.PAYMOB_API_KEY,
     integrationIds,
   };
 }

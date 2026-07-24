@@ -1,4 +1,5 @@
 import type { PaymentProvider } from '@/features/payments/domain';
+import type { Currency } from '@/generated/prisma/enums';
 
 export type ProcessWebhookOutcome = 'succeeded' | 'failed';
 
@@ -11,6 +12,8 @@ export type ProcessWebhookRequest = {
   outcome: ProcessWebhookOutcome;
   orderId: string;
   providerTransactionId: string;
+  amountCents?: number | null;
+  currency?: Currency | null;
   paymentMethod?: string | null;
   last4?: string | null;
   brand?: string | null;

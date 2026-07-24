@@ -10,7 +10,7 @@ Operational checklist for staging sign-off and production launch of the payment 
 
 - [ ] Phases 0–9 delivered and reviewed
 - [ ] `CheckoutSession` and `WebhookEvent` migrations applied in staging and production
-- [ ] Paymob sandbox credentials configured (`PAYMOB_SECRET_KEY`, `PAYMOB_PUBLIC_KEY`, `PAYMOB_HMAC_SECRET`, `PAYMOB_INTEGRATION_IDS`)
+- [ ] Paymob sandbox credentials configured (`PAYMOB_SECRET_KEY`, `PAYMOB_PUBLIC_KEY`, `PAYMOB_HMAC_SECRET`, `PAYMOB_API_KEY`, `PAYMOB_INTEGRATION_IDS`)
 - [ ] Redis available for rate limiting and BullMQ workers
 - [ ] `npm run worker:order-completed` (and legacy `npm run worker` if Stripe path still active) running as supervised processes
 
@@ -49,7 +49,13 @@ Instrument / alert on these structured log events:
 | `[PAYMOB_WEBHOOK_INVALID_HMAC]` | webhook route | Immediate (possible attack) |
 | `[PAYMOB_WEBHOOK_ERROR]` | webhook route | Error rate / 5xx to provider |
 | `[ORDER_COMPLETED_PUBLISH_FAILED]` | publisher | Queue / Redis health |
-| `[ORDER_COMPLETED_WORKER_FAILED]` | worker | DLQ / exhausted retries |
+| `[ORDER_COMPLETED_DLQ]` | worker | DLQ / exhausted retries |
+| `[PAYMENT_RECONCILE_ERROR]` | reconcile use case | Stuck PROCESSING payments |
+| `[PAYMOB_RETRY]` | PaymobGateway | Provider retry attempts |
+
+**Health check:** `GET /api/health/payment` — DB + Redis must be ok. See [16-observability.md](./16-observability.md).
+
+**Reconciliation:** Schedule `pnpm payment:reconcile` every 15 minutes or run `pnpm worker:reconcile`.
 
 ---
 

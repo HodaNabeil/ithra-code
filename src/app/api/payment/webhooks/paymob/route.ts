@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server';
+import { randomUUID } from 'node:crypto';
+import { env } from '@/config';
 import { logger } from '@/lib/logger';
+import { resolveCorrelationId } from '@/lib/observability/correlation-id';
+import { mergePaymentTrace, runWithPaymentTrace } from '@/lib/observability/payment-trace';
+import { paymentLogger } from '@/lib/observability/payment-logger';
+import { loggingMetricsRecorder } from '@/features/payments/infrastructure/observability/logging-metrics.recorder';
+import { WebhookReplayGuard } from '@/features/payments/application/services/webhook-replay.guard';
 import { createProcessWebhookUseCase } from '@/features/payments/infrastructure/di/payments.container';
 import { mapPaymobWebhookToProcessRequest } from '@/features/payments/infrastructure/gateways/paymob/paymob-webhook.mapper';
 import { readPaymobConfig } from '@/features/payments/infrastructure/gateways/paymob/paymob.config';
@@ -19,8 +26,14 @@ import { WebhookError } from '@/features/payments/application/errors/webhook.err
  * trusted — this endpoint is the source of truth for fulfillment.
  */
 export async function POST(req: Request) {
-  try {
-    await checkWebhookRateLimit(getClientIp(req));
+  const correlationId = resolveCorrelationId(req);
+  const startedAt = Date.now();
+
+  return runWithPaymentTrace(
+    { traceId: randomUUID(), correlationId },
+    async () => {
+      try {
+        await checkWebhookRateLimit(getClientIp(req));
 
     const config = readPaymobConfig();
     if (!config) {
@@ -54,10 +67,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const { request, transaction } = mapPaymobWebhookToProcessRequest({
-      payload,
-      hmac: receivedHmac,
-    });
+    const { request, transaction, eventCreatedAt } =
+      mapPaymobWebhookToProcessRequest({
+        payload,
+        hmac: receivedHmac,
+      });
 
     const valid = verifyPaymobTransactionHmac({
       transaction,
@@ -77,10 +91,26 @@ export async function POST(req: Request) {
       );
     }
 
+    const replayGuard = new WebhookReplayGuard(
+      env.PAYMOB_WEBHOOK_REPLAY_WINDOW_SECONDS,
+    );
+    replayGuard.assertFresh({ eventCreatedAt });
+
     const useCase = createProcessWebhookUseCase();
     const result = await useCase.execute(request);
 
-    logger.info(
+    mergePaymentTrace({ orderId: result.orderId });
+
+    loggingMetricsRecorder.incrementCounter('payment_webhook_processed', {
+      duplicate: Boolean(result.duplicate),
+      fulfilled: Boolean(result.fulfilled),
+    });
+    loggingMetricsRecorder.observeHistogram(
+      'payment_webhook_duration_ms',
+      Date.now() - startedAt,
+    );
+
+    paymentLogger.info(
       {
         orderId: result.orderId,
         duplicate: result.duplicate,
@@ -90,8 +120,17 @@ export async function POST(req: Request) {
       '[PAYMOB_WEBHOOK_PROCESSED]',
     );
 
-    return NextResponse.json({ ok: true, ...result }, { status: 200 });
-  } catch (error) {
-    return toWebhookHttpErrorResponse(error, '[PAYMOB_WEBHOOK_ERROR]');
-  }
+    return NextResponse.json(
+      { ok: true, ...result },
+      {
+        status: 200,
+        headers: { 'x-correlation-id': correlationId },
+      },
+    );
+      } catch (error) {
+        loggingMetricsRecorder.incrementCounter('payment_webhook_error');
+        return toWebhookHttpErrorResponse(error, '[PAYMOB_WEBHOOK_ERROR]');
+      }
+    },
+  );
 }

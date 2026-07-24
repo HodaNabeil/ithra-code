@@ -75,6 +75,16 @@ To maintain strict separation of concerns, the Infrastructure layer implements d
 *   **Domain Entities**: Optimized for business logic, encapsulation, and domain invariants. They use rich types, value objects, and domain methods.
 *   **Prisma Models**: Optimized for database schema design, indexing, relationships, and performance. They are dictated by database constraints and ORM requirements.
 
+### Why Mappers Exist (instead of using Prisma types in use cases)
+1. **Money boundary**: Cart/Course prices are stored as `Decimal(10,2)` in major units; Order/Payment use integer cents. Mappers convert at the persistence boundary so use cases never mix representations.
+2. **Schema evolution**: Database columns can be renamed or split without changing domain entity shapes seen by business logic.
+3. **Testability**: Use cases operate on plain domain objects; tests do not import Prisma client types.
+4. **Leak prevention**: Keeps `generated/prisma` types out of Application and Domain layers, preserving Clean Architecture dependency rules.
+
+Factories (`OrderFactory`, `PaymentFactory`) complement mappers: factories **create** new aggregates with correct invariants before first save; mappers **translate** between persisted shapes and domain entities on read/write. See [03-create-checkout-usecase.md](./03-create-checkout-usecase.md).
+
+---
+
 ### Mapping Flow
 
 ```

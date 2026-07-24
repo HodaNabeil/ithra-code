@@ -1,5 +1,6 @@
 export type WebhookErrorCode =
   | 'INVALID_SIGNATURE'
+  | 'REPLAY_DETECTED'
   | 'DUPLICATE_EVENT'
   | 'ORDER_NOT_FOUND'
   | 'PAYMENT_NOT_FOUND'

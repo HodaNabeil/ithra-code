@@ -14,7 +14,7 @@ Security is the primary non-functional requirement of the IthraCode Payment Plat
 
 ```mermaid
 flowchart TD
-    api["API & NETWORK LAYER<br>- Rate Limiting (IP & User ID)<br>- HTTPS / TLS 1.3 Enforcement<br>- Raw Body Signature Verification (HMAC-SHA256)"] --> app["APPLICATION & AUTH LAYER<br>- JWT Authentication & RBAC<br>- Input Sanitization & Zod Schema Validation<br>- Timing-Safe Cryptographic Comparisons"]
+    api["API & NETWORK LAYER<br>- Rate Limiting (IP & User ID)<br>- HTTPS / TLS 1.3 Enforcement<br>- Raw Body Signature Verification (HMAC-SHA512)"] --> app["APPLICATION & AUTH LAYER<br>- JWT Authentication & RBAC<br>- Input Sanitization & Zod Schema Validation<br>- Timing-Safe Cryptographic Comparisons"]
     app --> data["DATA & STORAGE LAYER<br>- Zero Card Data Exposure (PCI-DSS SAQ-A Scope)<br>- Secure Environment Secret Management (KMS / Vault)<br>- Read-Only Database Replicas for Analytics"]
 ```
 
@@ -28,7 +28,7 @@ The checkout endpoint (`POST /api/payment/checkout`) must require strict user au
 *   **Identity Resolution**: The user ID is resolved directly from the verified session token on the server. The client cannot pass a user ID in the request body, preventing account hijacking and unauthorized checkouts.
 
 ### 2. Role-Based Access Control (RBAC)
-*   Only users with the `STUDENT` role can initiate checkout sessions.
+*   Checkout API (`POST /api/payment/checkout`) requires an authenticated session (`401` if missing). Role enforcement for student-only routes is handled at the route/middleware layer (`src/proxy.ts` for student pages); the checkout API itself does not re-check `STUDENT` role today.
 *   Administrative actions (e.g., manually triggering refunds, reconciling stuck payments) are restricted to authorized personnel with the `ADMIN` or `FINANCE` role and require multi-factor authentication (MFA).
 
 ---
@@ -38,10 +38,16 @@ Under no circumstances may API keys, webhook secrets, or database credentials be
 
 ### 1. Environment Variable Configuration
 The system relies on secure environment variables injected at runtime:
-*   `PAYMOB_API_KEY`: Secret key used to authenticate with Paymob.
+*   `PAYMOB_SECRET_KEY`: Secret key used to authenticate with Paymob Intention API.
+*   `PAYMOB_PUBLIC_KEY`: Public key for unified checkout redirect.
 *   `PAYMOB_HMAC_SECRET`: Secret key used to verify webhook signatures.
-*   `PAYMOB_INTEGRATION_ID`: Public identifier for the credit card payment integration.
-*   `PAYMENT_SYSTEM_CURRENCY`: Enforced system currency (e.g., `EGP`).
+*   `PAYMOB_API_KEY`: Legacy API key used to mint auth tokens for transaction inquiry / payment reconciliation (Dashboard → Settings → API Keys). Required for `pnpm worker:reconcile` / `pnpm payment:reconcile`.
+*   `PAYMOB_INTEGRATION_IDS`: Comma-separated payment integration IDs.
+*   `PAYMOB_WEBHOOK_REPLAY_WINDOW_SECONDS`: Max webhook age (default 300).
+*   `PAYMOB_RETRY_MAX` / `PAYMOB_RETRY_INITIAL_MS` / `PAYMOB_TIMEOUT_MS`: Gateway retry and HTTP timeout tuning.
+*   `PAYMENT_RECONCILE_THRESHOLD_MINUTES` / `PAYMENT_RECONCILE_BATCH_SIZE` / `PAYMENT_RECONCILE_INTERVAL_MS`: Reconciliation worker tuning.
+*   `PAYMENT_RECONCILE_MAX_ATTEMPTS` (default 8) / `PAYMENT_RECONCILE_MAX_WINDOW_HOURS` (default 24) / `PAYMENT_RECONCILE_BACKOFF_BASE_MINUTES` (30) / `PAYMENT_RECONCILE_BACKOFF_CAP_MINUTES` (720) / `PAYMENT_RECONCILE_ABANDON_NOT_FOUND_COUNT` (3): Reconcile policy knobs.
+*   `RESEND_API_KEY` / `PAYMENT_EMAIL_FROM`: Purchase confirmation emails (optional).
 
 ### 2. Production Secret Protection
 In production, secrets must be managed using a dedicated Key Management Service (KMS) or Secret Manager (e.g., AWS Secrets Manager, HashiCorp Vault, or Vercel Environment Secrets). Secrets must be rotated every 90 days to minimize the impact of potential leaks.
@@ -52,13 +58,30 @@ In production, secrets must be managed using a dedicated Key Management Service 
 
 To protect the system from fraudulent fulfillment, the webhook endpoint enforces strict cryptographic validation:
 
-### 1. HMAC-SHA256 Verification
-Every webhook received from Paymob includes an HMAC signature. The platform must recalculate this signature locally using the raw request body and the shared `PAYMOB_HMAC_SECRET`.
-*   **Timing Attack Prevention**: Signature comparison must use constant-time string comparison algorithms (`crypto.timingSafeEqual`) to prevent attackers from guessing valid signatures based on response times.
+### 1. HMAC-SHA512 Verification
+Every webhook received from Paymob includes an HMAC signature in the `hmac` query parameter. The platform recalculates this signature locally using the raw request body fields and the shared `PAYMOB_HMAC_SECRET` (see `paymob.hmac.ts`).
+*   **Algorithm**: HMAC-SHA512 (Paymob processed-transaction callback spec).
+*   **Timing Attack Prevention**: Signature comparison must use `crypto.timingSafeEqual`.
+*   **Missing signature**: Treated as `401 INVALID_SIGNATURE` — fail-close.
 
 ### 2. Replay Protection
-*   The webhook payload must include a timestamp.
-*   The system rejects any webhook where the timestamp differs from the current server time by more than **5 minutes**, preventing attackers from intercepting and replaying successful payment notifications.
+
+**Implemented** via `WebhookReplayGuard` in the webhook route (after HMAC, before use case). Rejects payloads with missing/invalid `created_at` or age > `PAYMOB_WEBHOOK_REPLAY_WINDOW_SECONDS` (default 300s) with `401 REPLAY_DETECTED`.
+
+---
+
+## Fail-Open vs Fail-Close Decisions
+
+| Control | Failure Mode | Decision | Rationale |
+| :--- | :--- | :--- | :--- |
+| Checkout rate limit (Redis down) | Fail-**open** | Checkout proceeds | Legitimate users must not be blocked by Redis outage |
+| Webhook rate limit (Redis down) | Fail-**open** | Webhooks accepted | Provider retries must not pile up indefinitely |
+| HMAC verification | Fail-**close** | `401`, no DB writes | Prevents fraudulent fulfillment |
+| Webhook fulfillment transaction | Fail-**close** | `500`, rollback | Provider retries until enrollment succeeds |
+| BullMQ publish after fulfillment | Fail-**open** | `200`, log `[ORDER_COMPLETED_PUBLISH_FAILED]` | Email/invoice must never roll back enrollment |
+| Unknown order on webhook | Fail-**close** | `404` | Never enroll for unrecognized orders |
+| Checkout lock (Redis down) | Fail-**close** | `503 CHECKOUT_LOCK_UNAVAILABLE` | Prevent duplicate orders during concurrent checkout |
+| Authentication on checkout | Fail-**close** | `401` | Prevent account hijacking |
 
 ---
 
@@ -71,7 +94,7 @@ To protect the checkout and webhook endpoints from Denial of Service (DoS) attac
 *   **Action on Violation**: Returns a `429 Too Many Requests` status.
 
 ### 2. Webhook Endpoint Limits
-*   **Limit**: Configured to match the maximum expected throughput from the payment provider (e.g., 100 requests per second).
+*   **Limit**: **120 requests per second** per IP (`rate-limit.ts`).
 *   **IP Whitelisting**: If possible, the webhook route should restrict incoming traffic to Paymob's official public IP address ranges.
 
 ---

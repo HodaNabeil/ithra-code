@@ -26,6 +26,7 @@ export type OrderEntity = {
   status: OrderStatus;
   couponId: string | null;
   couponCode: string | null;
+  checkoutFingerprint: string | null;
   paymentId: string | null;
   createdAt: Date;
   updatedAt: Date;

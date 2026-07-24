@@ -138,6 +138,21 @@ export type OrderItem = Prisma.OrderItemModel
  */
 export type Payment = Prisma.PaymentModel
 /**
+ * Model PaymentReconcileAttempt
+ * 
+ */
+export type PaymentReconcileAttempt = Prisma.PaymentReconcileAttemptModel
+/**
+ * Model PaymentDomainOutbox
+ * 
+ */
+export type PaymentDomainOutbox = Prisma.PaymentDomainOutboxModel
+/**
+ * Model PaymentDispute
+ * 
+ */
+export type PaymentDispute = Prisma.PaymentDisputeModel
+/**
  * Model Refund
  * 
  */
@@ -147,6 +162,11 @@ export type Refund = Prisma.RefundModel
  * 
  */
 export type CheckoutSession = Prisma.CheckoutSessionModel
+/**
+ * Model Invoice
+ * 
+ */
+export type Invoice = Prisma.InvoiceModel
 /**
  * Model WebhookEvent
  * 

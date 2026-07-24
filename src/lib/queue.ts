@@ -14,5 +14,3 @@ export const paymentQueue = new Queue('payment', {
     removeOnFail: false,
   },
 });
-
-import '@/server/workers/payment.worker';

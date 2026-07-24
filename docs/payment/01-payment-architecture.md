@@ -73,18 +73,34 @@ flowchart TD
 To ensure financial accuracy and prevent rounding issues across different environments, the platform enforces the following strict monetary rules:
 1.  **Integer Storage**: All monetary amounts (subtotals, discounts, taxes, totals, item prices) must be stored and processed in the smallest currency unit (e.g., cents for USD, piasters for EGP) as 64-bit integers.
 2.  **No Floating-Point Math**: Floating-point numbers (`float`, `double`, `number` in JS/TS) must never be used for monetary calculations. All calculations must use integer arithmetic.
-3.  **Currency Isolation**: The checkout currency is determined by system configuration and course settings, never by client input. Mixed-currency carts are strictly prohibited.
+3.  **Currency Isolation**: The checkout currency is determined by system configuration and course settings, never by client input. Mixed-currency carts are strictly prohibited. Supported checkout currencies: `EGP`, `USD` (see `SUPPORTED_CHECKOUT_CURRENCIES` in `checkout.validator.ts`).
 4.  **Database Price Snapshots**: Course prices are queried from the database at the exact millisecond of checkout creation and snapshot into the immutable `OrderItemEntity`.
+5.  **Discount Calculation**: Discounts are computed in integer cents inside `PriceCalculatorService`:
+    *   **Percentage coupon**: `discountCents = Math.round(subtotalCents × couponValue / 100)`
+    *   **Fixed-amount coupon**: `discountCents = min(couponValueCents, subtotalCents)`
+    *   Coupon validity (including expiry) is checked before pricing; invalid coupons fail checkout with `INVALID_COUPON`.
+6.  **Tax Calculation**: `taxCents` is currently **always `0`** (no VAT/sales tax applied at checkout). The field exists on `OrderEntity` for future jurisdiction-specific rules. When tax is introduced, it must use integer arithmetic on top of `(subtotalCents - discountCents)`.
 
 ---
 
 ## Idempotency and Concurrency Control
 
-### 1. Duplicate Checkout Requests
-If a user submits a checkout request for an active cart, and a pending order/payment already exists for that exact cart configuration, the system must return the existing `CheckoutSessionEntity` and its redirect URL instead of creating duplicate orders, payments, or provider sessions.
+### 1. Duplicate Checkout Requests (target behavior)
+If a user submits a checkout request for an active cart, and a pending order/payment already exists for that exact cart configuration, the system **should** return the existing `CheckoutSessionEntity` and its redirect URL instead of creating duplicate orders, payments, or provider sessions.
 
-### 2. Double-Click Prevention
-At the API layer, a distributed lock (or database-level lock on the user's cart) is acquired when a checkout request begins. Any concurrent checkout requests from the same user while the lock is active are rejected with a `409 Conflict` error.
+> **Current implementation:** `CreateCheckoutUseCase` acquires a Redis checkout lock, computes a cart fingerprint (`orders.checkout_fingerprint`), and reuses an existing `PENDING` order when fingerprint and open session match.
+
+### 2. Double-Click and Concurrent Checkout Prevention (current behavior)
+The platform uses **Redis-backed rate limiting** as the primary concurrency guard:
+
+| Limit | Threshold | Response |
+| :--- | :--- | :--- |
+| Per user ID | 5 requests / minute | `429 RATE_LIMIT_EXCEEDED` |
+| Per IP address | 10 requests / minute | `429 RATE_LIMIT_EXCEEDED` |
+
+This protects against double-click abuse and rapid concurrent requests from multiple browser tabs. Rate-limit Redis failures are **fail-open** (checkout proceeds) — see [10-security.md](./10-security.md).
+
+> **Not yet implemented:** Distributed cart lock returning `409 Conflict` described in earlier drafts. A future enhancement may add explicit locking; until then, rate limiting is the documented control.
 
 ### 3. Duplicate Webhook Handling
 Every webhook notification is assigned a unique identifier by the provider. The system stores this in the `WebhookEventEntity` with a unique constraint on `providerEventId`. If the provider retries sending a webhook (due to network latency or timeout), the database unique constraint will reject the duplicate insert, preventing double-fulfillment.
@@ -130,12 +146,18 @@ If the HTTP call to the payment provider fails or times out:
 *   The database already has the `OrderEntity` and `PaymentEntity` saved as `PENDING`.
 *   The use case catches the network exception and returns a graceful error to the client.
 *   The payment status remains `PENDING`.
-*   **Recovery**: The user can safely click "Checkout" again. The system detects the existing pending order, cleans up or cancels the previous payment attempt, and initiates a new provider call.
+*   **Recovery**: The user can safely click "Checkout" again. Pending-order reuse returns the existing session when the cart fingerprint matches; expired sessions get a new provider session on the same order.
 
 ### 2. Webhook Delivery Failure
 If the provider fails to deliver the webhook or our server is down during delivery:
 *   The payment remains `PROCESSING` and the order remains `PENDING`.
-*   **Recovery**: A scheduled cron job (Reconciliation Worker) queries the payment provider's API for all payments in `PROCESSING` status that are older than 30 minutes. It fetches their status and manually triggers the fulfillment flow if the provider marks them as successful.
+*   **Recovery**: `ReconcilePaymentsUseCase` runs every 15 minutes (configurable) and queries provider status for stale `PENDING`/`PROCESSING` payments. See [05-unit-of-work.md](./05-unit-of-work.md) and `pnpm payment:reconcile`.
+
+### 3. User Abandonment and Late Webhooks
+If the user closes the browser, never visits the success page, or the webhook arrives hours after payment:
+*   Fulfillment is still driven by the webhook (not the redirect).
+*   The success page polls order status for UX only.
+*   See [14-production-operations-runbook.md](./14-production-operations-runbook.md) for full recovery scenarios.
 
 ---
 
@@ -215,7 +237,7 @@ export interface PaymentProviderGateway {
   refund(paymentId: string, amountCents: number, reason?: string): Promise<RefundResult>;
 
   /** Queries the gateway directly to reconcile a payment's status */
-  getPaymentStatus(providerTransactionId: string): Promise<ProviderPaymentStatus>;
+  getPaymentStatus(input: GetPaymentStatusInput): Promise<ProviderPaymentStatus>;
 }
 ```
 

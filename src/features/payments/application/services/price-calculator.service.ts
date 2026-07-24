@@ -1,6 +1,6 @@
 import type { Currency } from '@/generated/prisma/enums';
+import { CouponType } from '@/generated/prisma/enums';
 import {
-  calculateDiscount,
   isCouponValid,
 } from '@/features/cart/mappers/cart.mapper';
 import type { DB_CartCoupon } from '@/features/cart/infrastructure/prisma/cart.select';
@@ -51,10 +51,9 @@ export class PriceCalculatorService {
       0,
     );
 
-    const subtotalMajor = subtotalCents / 100;
     const discountCents = this.calculateDiscountCents(
       cart.coupon,
-      subtotalMajor,
+      subtotalCents,
     );
     const taxCents = 0;
     const totalCents = Math.max(subtotalCents - discountCents + taxCents, 0);
@@ -73,12 +72,24 @@ export class PriceCalculatorService {
 
   private calculateDiscountCents(
     coupon: DB_CartCoupon | null,
-    subtotalMajor: number,
+    subtotalCents: number,
   ): number {
-    if (!coupon || !isCouponValid(coupon, subtotalMajor)) {
+    if (!coupon) {
       return 0;
     }
 
-    return toCents(calculateDiscount(subtotalMajor, coupon));
+    const subtotalMajor = subtotalCents / 100;
+    if (!isCouponValid(coupon, subtotalMajor)) {
+      return 0;
+    }
+
+    const couponValue = Number(coupon.value);
+
+    if (coupon.type === CouponType.PERCENTAGE) {
+      return Math.round((subtotalCents * couponValue) / 100);
+    }
+
+    const fixedDiscountCents = Math.round(couponValue * 100);
+    return Math.min(fixedDiscountCents, subtotalCents);
   }
 }

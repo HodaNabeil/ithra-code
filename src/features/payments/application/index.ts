@@ -36,12 +36,19 @@ export type { CreatePaymentInput } from './factories/payment.factory';
 
 export type {
   CreateProviderCheckoutInput,
+  GetPaymentStatusInput,
   PaymentProviderGateway,
   ProviderCheckoutResult,
+  ProviderPaymentOutcome,
+  ProviderPaymentStatus,
 } from './providers/payment-provider.gateway';
 
 export { PaymentProviderResolver } from './providers/payment-provider.resolver';
 export type { PaymentProviderRegistry } from './providers/payment-provider.resolver';
+export type {
+  PaymentInquiryPort,
+  PaymentInquiryRegistry,
+} from './ports/payment-inquiry.port';
 
 export type {
   CartFulfillmentRepository,
@@ -51,6 +58,7 @@ export type {
   MarkPaymentSucceededInput,
   OrderCompletedPublisher,
   OrderRepository,
+  ReusablePendingOrder,
   PaymentRepository,
   TransactionalRepositories,
   UnitOfWork,
@@ -68,5 +76,27 @@ export {
   ProcessWebhookUseCase,
 } from './use-cases/process-webhook.use-case';
 export type { ProcessWebhookUseCaseDeps } from './use-cases/process-webhook.use-case';
+
+export { FulfillOrderService } from './services/fulfill-order.service';
+export { WebhookReplayGuard } from './services/webhook-replay.guard';
+export { CheckoutFingerprintService } from './services/checkout-fingerprint.service';
+export { ReconciliationPolicy } from './services/reconciliation-policy.service';
+export type {
+  ReconciliationPolicyConfig,
+  ReconciliationPolicyContext,
+} from './services/reconciliation-policy.service';
+export type {
+  FulfillOrderResult,
+  FulfillPaymentInput,
+} from './services/fulfill-order.service';
+
+export {
+  ReconcilePaymentsUseCase,
+} from './use-cases/reconcile-payments.use-case';
+export type {
+  ReconcilePaymentsConfig,
+  ReconcilePaymentsSummary,
+  ReconcilePaymentsUseCaseDeps,
+} from './use-cases/reconcile-payments.use-case';
 
 export { mapCartToCheckoutSnapshot } from './mappers/checkout-cart.mapper';

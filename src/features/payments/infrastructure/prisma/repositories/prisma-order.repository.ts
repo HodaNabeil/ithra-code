@@ -1,8 +1,13 @@
 import { prisma } from '@/lib/prisma';
 import type { OrderEntity } from '@/features/payments/domain';
-import type { OrderRepository } from '@/features/payments/application/ports';
+import type {
+  OrderRepository,
+  ReusablePendingOrder,
+} from '@/features/payments/application/ports';
 import { orderWithItemsInclude } from '../order.select';
 import { OrderMapper } from '../mappers/order.mapper';
+import { PaymentMapper } from '../mappers/payment.mapper';
+import { CheckoutSessionMapper } from '../mappers/checkout-session.mapper';
 import type { PrismaClientLike } from '../prisma.types';
 
 /**
@@ -28,6 +33,44 @@ export class PrismaOrderRepository implements OrderRepository {
     });
 
     return order ? OrderMapper.toDomain(order) : null;
+  }
+
+  async findReusablePendingOrder(input: {
+    userId: string;
+    checkoutFingerprint: string;
+  }): Promise<ReusablePendingOrder | null> {
+    const order = await this.db.order.findFirst({
+      where: {
+        userId: input.userId,
+        status: 'PENDING',
+        checkoutFingerprint: input.checkoutFingerprint,
+        payment: {
+          status: { in: ['PENDING', 'PROCESSING'] },
+        },
+      },
+      include: {
+        ...orderWithItemsInclude,
+        payment: true,
+        checkoutSessions: {
+          where: { status: 'OPEN' },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!order?.payment || order.checkoutSessions.length === 0) {
+      return null;
+    }
+
+    return {
+      order: OrderMapper.toDomain(order),
+      payment: PaymentMapper.toDomain(order.payment),
+      checkoutSession: CheckoutSessionMapper.toDomain(
+        order.checkoutSessions[0]!,
+      ),
+    };
   }
 
   async markCompleted(orderId: string): Promise<void> {

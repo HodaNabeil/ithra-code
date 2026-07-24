@@ -51,7 +51,10 @@ export function CartSummary({
           <span className="text-base font-medium text-muted-foreground">
             الإجمالي:
           </span>
-          <span className="text-3xl sm:text-4xl font-bold text-foreground leading-none">
+          <span
+            className="text-3xl sm:text-4xl font-bold text-foreground
+           leading-none"
+          >
             {formatPrice(total, currency)}
           </span>
 

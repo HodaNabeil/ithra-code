@@ -67,7 +67,22 @@ To ensure complete decoupling, the gateway maps internal domain models to Paymob
 ## Error Handling & Mapping
 External API calls are prone to network failures, rate limits, and validation errors. The gateway must catch these exceptions and map them to domain-specific errors.
 
-### Error Mapping Table
+### Malformed or Unexpected Provider Responses
+
+| Condition | HTTP to Client | Code | Behavior |
+| :--- | :--- | :--- | :--- |
+| HTTP 2xx but missing `client_secret` | `502` | `PROVIDER_UNAVAILABLE` | Logged as `[PAYMOB_CREATE_SESSION_ERROR]`; Tx1 order/payment remain `PENDING` |
+| Non-JSON or unparseable response body | `503` | `PROVIDER_UNAVAILABLE` | Axios error caught; no session saved |
+| Unexpected JSON shape (missing required fields) | `502` or `503` | `PROVIDER_UNAVAILABLE` | Same as above |
+| HTTP 401 from Paymob | `503` | `PROVIDER_UNAVAILABLE` | Configuration/secret issue |
+| HTTP 400 from Paymob | `503` | `PROVIDER_UNAVAILABLE` | Logged with response body for triage |
+| HTTP 429 from Paymob | `503` | `PROVIDER_UNAVAILABLE` | User asked to retry later |
+| HTTP 5xx from Paymob | `503` | `PROVIDER_UNAVAILABLE` | Transient provider failure |
+| Network timeout / DNS / connection reset | `503` | `PROVIDER_UNAVAILABLE` | Order/payment remain `PENDING` |
+
+### Error Mapping Table (deprecated reference — not implemented)
+
+> The exception types below (`ConfigurationError`, `ALREADY_EXISTS`, `INVALID_PRICING`) do not exist in the current codebase. Kept for historical reference only.
 
 | Paymob HTTP Status | Paymob Error Code | Domain Exception | Localized Message |
 | :--- | :--- | :--- | :--- |
@@ -82,21 +97,29 @@ External API calls are prone to network failures, rate limits, and validation er
 ## Network Resilience & Retry Strategy
 
 ### 1. Request Timeouts
-To prevent API calls from hanging indefinitely and blocking application threads, the gateway enforces a strict **5-second timeout** on all HTTP requests to Paymob.
+`PaymobGateway` enforces an HTTP timeout on all Paymob requests via `PAYMOB_TIMEOUT_MS` (default **15000** ms).
 
 ### 2. Transient Failure Retries
-For transient network errors (e.g., TCP connection resets, DNS resolution failures, or HTTP `502`/`503`/`504` status codes), the gateway implements an exponential backoff retry strategy:
-*   **Max Retries**: 3 attempts.
-*   **Initial Delay**: 500ms.
-*   **Backoff Factor**: 2 (500ms, then 1000ms, then 2000ms).
-*   **Jitter**: Introduce random noise (+/- 100ms) to prevent thundering herd problems on Paymob's servers.
+
+**Implemented** via `executeWithHttpRetry` in `http-retry.executor.ts`, used by `PaymobGateway` for Intention API and transaction inquiry calls.
+
+*   **Max Retries**: `PAYMOB_RETRY_MAX` (default 3).
+*   **Initial Delay**: `PAYMOB_RETRY_INITIAL_MS` (default 1000ms).
+*   **Backoff Factor**: 2 with ±100ms jitter.
+*   **Retriable conditions**: TCP resets, DNS failures, HTTP `502`/`503`/`504`, `ECONNRESET`, `ETIMEDOUT`, `ENOTFOUND`.
+*   **No retry**: `400`, `401`, `403`, `404`, `422`, missing `client_secret`.
+*   **Log event**: `[PAYMOB_RETRY]` with attempt, delay, status.
+
+### 3. Circuit Breaker
+
+**Not implemented.** There is no circuit breaker or fail-fast open-circuit around Paymob. Under sustained provider outage, each checkout attempt will wait up to 15 seconds before failing. Operations should monitor `[PAYMOB_CREATE_SESSION_ERROR]` and consider a manual kill-switch (disable Paymob in container config) during extended outages.
 
 ---
 
 ## Webhook Verification Architecture
 Paymob notifies IthraCode of payment outcomes via signed webhooks. The gateway is responsible for verifying the authenticity of these notifications:
-*   **HMAC Signature**: Paymob calculates an HMAC signature using a shared Webhook Secret and concatenates specific payload fields (e.g., amount, currency, transaction ID, success status).
-*   **Verification**: The gateway extracts the signature from the request query parameters, re-calculates the HMAC signature locally using the shared secret, and compares the two values. If they do not match, the payload is rejected immediately, preventing fraud.
+*   **HMAC Signature**: Paymob calculates an HMAC-SHA512 signature (see `paymob.hmac.ts`) using a shared Webhook Secret and concatenates 20 transaction fields in Paymob's documented lexical order.
+*   **Verification**: The route extracts the signature from the `hmac` query parameter, re-calculates the HMAC-SHA512 digest locally, and compares with `crypto.timingSafeEqual`. If they do not match, the payload is rejected with `401 INVALID_SIGNATURE`.
 
 ---
 

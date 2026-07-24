@@ -20,6 +20,24 @@ export class PrismaCheckoutSessionRepository
 
     return CheckoutSessionMapper.toDomain(created);
   }
+
+  async findOpenByOrderId(
+    orderId: string,
+  ): Promise<CheckoutSessionEntity | null> {
+    const session = await this.db.checkoutSession.findFirst({
+      where: { orderId, status: 'OPEN' },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return session ? CheckoutSessionMapper.toDomain(session) : null;
+  }
+
+  async markExpired(sessionId: string): Promise<void> {
+    await this.db.checkoutSession.update({
+      where: { id: sessionId },
+      data: { status: 'EXPIRED' },
+    });
+  }
 }
 
 export const prismaCheckoutSessionRepository =

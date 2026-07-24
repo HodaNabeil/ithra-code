@@ -6,4 +6,8 @@ import type { CheckoutSessionEntity } from '@/features/payments/domain';
  */
 export interface CheckoutSessionRepository {
   save(session: CheckoutSessionEntity): Promise<CheckoutSessionEntity>;
+
+  findOpenByOrderId(orderId: string): Promise<CheckoutSessionEntity | null>;
+
+  markExpired(sessionId: string): Promise<void>;
 }

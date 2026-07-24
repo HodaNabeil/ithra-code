@@ -5,6 +5,7 @@ import type { PriceCalculationResult } from '../services/price-calculator.servic
 export type CreateOrderInput = {
   userId: string;
   pricing: PriceCalculationResult;
+  checkoutFingerprint?: string | null;
 };
 
 /** Builds immutable order aggregates with price snapshots. */
@@ -29,6 +30,7 @@ export class OrderFactory {
       status: 'PENDING',
       couponId: input.pricing.couponId,
       couponCode: input.pricing.couponCode,
+      checkoutFingerprint: input.checkoutFingerprint ?? null,
       paymentId: null,
       createdAt: now,
       updatedAt: now,

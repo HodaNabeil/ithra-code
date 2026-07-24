@@ -164,6 +164,36 @@ export const PaymentStatus = {
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
 
 
+export const PaymentReconcileStatus = {
+  IDLE: 'IDLE',
+  SCHEDULED: 'SCHEDULED',
+  EXHAUSTED: 'EXHAUSTED',
+  MANUAL_REVIEW: 'MANUAL_REVIEW'
+} as const
+
+export type PaymentReconcileStatus = (typeof PaymentReconcileStatus)[keyof typeof PaymentReconcileStatus]
+
+
+export const PaymentDomainOutboxStatus = {
+  PENDING: 'PENDING',
+  PUBLISHED: 'PUBLISHED',
+  FAILED: 'FAILED'
+} as const
+
+export type PaymentDomainOutboxStatus = (typeof PaymentDomainOutboxStatus)[keyof typeof PaymentDomainOutboxStatus]
+
+
+export const PaymentDisputeStatus = {
+  OPEN: 'OPEN',
+  EVIDENCE_REQUIRED: 'EVIDENCE_REQUIRED',
+  WON: 'WON',
+  LOST: 'LOST',
+  CLOSED: 'CLOSED'
+} as const
+
+export type PaymentDisputeStatus = (typeof PaymentDisputeStatus)[keyof typeof PaymentDisputeStatus]
+
+
 export const RefundStatus = {
   PENDING: 'PENDING',
   PROCESSING: 'PROCESSING',

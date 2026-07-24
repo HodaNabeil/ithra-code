@@ -119,17 +119,34 @@ export class PrismaOrderRepository implements OrderRepository {
 External provider failures must be retryable. To handle edge cases where a user pays but a network failure prevents the redirect or webhook from completing, the system implements two layers of reconciliation:
 
 ### 1. User-Initiated Retry
-If a user returns to their cart and attempts to checkout again while a pending order exists:
-*   The system does not create a new order.
-*   It resolves the existing `PENDING` order and updates or replaces the linked `PaymentEntity`.
-*   It initiates a fresh checkout session with the payment provider.
+If a user returns to checkout after a provider failure:
+
+*   **Current behavior:** `CreateCheckoutUseCase` acquires a Redis checkout lock, computes a cart fingerprint, and **reuses** an existing `PENDING` order with matching fingerprint when an open non-expired `CheckoutSession` exists. If the session expired, the same order receives a new provider session. Concurrent checkouts return `409 CHECKOUT_IN_PROGRESS`.
 
 ### 2. Automated Reconciliation Worker
-A background cron job runs every 15 minutes to reconcile stuck transactions:
-*   Queries all payments in `PROCESSING` status that are older than 30 minutes.
-*   Calls the provider's status API (`getPaymentStatus`) to check the true state of the payment.
-*   If the provider marks the payment as successful, the worker manually triggers the fulfillment flow.
-*   If the provider marks the payment as failed or expired, the worker updates the local payment status to `FAILED` or `EXPIRED`.
+A background worker runs every **15 minutes** (`PAYMENT_RECONCILE_INTERVAL_MS`, default `900000`) to reconcile stuck transactions:
+
+*   Claims due `PENDING`/`PROCESSING` payments via `nextReconcileAt` (with `FOR UPDATE SKIP LOCKED`) — first due time is set at checkout (`createdAt + PAYMENT_RECONCILE_THRESHOLD_MINUTES`, default **30**).
+*   Calls the provider's `getPaymentStatus` API and maps the response to gateway-agnostic outcomes: `succeeded | failed | pending | not_found | transient_error | ambiguous`.
+*   `ReconciliationPolicy` decides: fulfill success, fulfill failure, **defer** (exponential backoff), **manual_review**, or **abandon** (only after exhausted window + consecutive `not_found` + expired session).
+*   **Never** marks FAILED on a single provider 404/`not_found`.
+*   Success/failure fulfillment goes through `FulfillOrderService` (same path as webhooks — idempotent).
+*   Each attempt is appended to `payment_reconcile_attempts` and updates reconcile control-plane fields on `payments`.
+
+**Scripts:** `pnpm payment:reconcile` (one-shot), `pnpm worker:reconcile` (interval worker), `pnpm payment:reconcile-review` (list / requeue / abandon `MANUAL_REVIEW`).
+
+**Log / metric events:** `[PAYMENT_RECONCILE_PROCESSED]`, `[PAYMENT_RECONCILE_BATCH_COMPLETE]`, `[PAYMENT_RECONCILE_ERROR]`, `payment_reconcile_*` counters via `LoggingMetricsRecorder`.
+
+---
+
+## Commit Failure
+
+If the database `COMMIT` itself fails after all writes succeed (e.g., disk full, replication lag, connection drop at commit time):
+
+*   **Behavior:** Prisma/`UnitOfWork` treats this as a transaction failure. All pending writes in that transaction are rolled back.
+*   **Result:** No partial records from that transaction are visible to other connections.
+*   **Checkout impact:** If Tx1 commit fails → no order/payment saved, no provider call made. If Tx2 commit fails after a successful provider call → order/payment remain `PENDING` without a saved `CheckoutSession`; user sees `INTERNAL_ERROR` (500) and can retry.
+*   **Webhook impact:** Fulfillment transaction rolls back → webhook returns `500` → provider retries.
 
 ---
 

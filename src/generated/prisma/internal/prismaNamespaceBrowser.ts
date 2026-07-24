@@ -75,8 +75,12 @@ export const ModelName = {
   Order: 'Order',
   OrderItem: 'OrderItem',
   Payment: 'Payment',
+  PaymentReconcileAttempt: 'PaymentReconcileAttempt',
+  PaymentDomainOutbox: 'PaymentDomainOutbox',
+  PaymentDispute: 'PaymentDispute',
   Refund: 'Refund',
   CheckoutSession: 'CheckoutSession',
+  Invoice: 'Invoice',
   WebhookEvent: 'WebhookEvent',
   Review: 'Review',
   InstructorAvailability: 'InstructorAvailability',
@@ -487,6 +491,7 @@ export const OrderScalarFieldEnum = {
   status: 'status',
   couponId: 'couponId',
   couponCode: 'couponCode',
+  checkoutFingerprint: 'checkoutFingerprint',
   paymentId: 'paymentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -523,12 +528,66 @@ export const PaymentScalarFieldEnum = {
   brand: 'brand',
   failureCode: 'failureCode',
   failureMessage: 'failureMessage',
+  reconcileStatus: 'reconcileStatus',
+  reconcileAttemptCount: 'reconcileAttemptCount',
+  consecutiveNotFoundCount: 'consecutiveNotFoundCount',
+  nextReconcileAt: 'nextReconcileAt',
+  reconcileLeaseExpiresAt: 'reconcileLeaseExpiresAt',
+  lastReconciledAt: 'lastReconciledAt',
+  lastProviderOutcome: 'lastProviderOutcome',
+  lastProviderDetail: 'lastProviderDetail',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   paidAt: 'paidAt'
 } as const
 
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const PaymentReconcileAttemptScalarFieldEnum = {
+  id: 'id',
+  paymentId: 'paymentId',
+  attempt: 'attempt',
+  outcome: 'outcome',
+  decision: 'decision',
+  httpStatus: 'httpStatus',
+  detail: 'detail',
+  latencyMs: 'latencyMs',
+  correlationId: 'correlationId',
+  createdAt: 'createdAt'
+} as const
+
+export type PaymentReconcileAttemptScalarFieldEnum = (typeof PaymentReconcileAttemptScalarFieldEnum)[keyof typeof PaymentReconcileAttemptScalarFieldEnum]
+
+
+export const PaymentDomainOutboxScalarFieldEnum = {
+  id: 'id',
+  eventType: 'eventType',
+  aggregateId: 'aggregateId',
+  payload: 'payload',
+  status: 'status',
+  createdAt: 'createdAt',
+  publishedAt: 'publishedAt'
+} as const
+
+export type PaymentDomainOutboxScalarFieldEnum = (typeof PaymentDomainOutboxScalarFieldEnum)[keyof typeof PaymentDomainOutboxScalarFieldEnum]
+
+
+export const PaymentDisputeScalarFieldEnum = {
+  id: 'id',
+  paymentId: 'paymentId',
+  status: 'status',
+  providerDisputeId: 'providerDisputeId',
+  amountCents: 'amountCents',
+  currency: 'currency',
+  reason: 'reason',
+  openedAt: 'openedAt',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentDisputeScalarFieldEnum = (typeof PaymentDisputeScalarFieldEnum)[keyof typeof PaymentDisputeScalarFieldEnum]
 
 
 export const RefundScalarFieldEnum = {
@@ -562,6 +621,17 @@ export const CheckoutSessionScalarFieldEnum = {
 } as const
 
 export type CheckoutSessionScalarFieldEnum = (typeof CheckoutSessionScalarFieldEnum)[keyof typeof CheckoutSessionScalarFieldEnum]
+
+
+export const InvoiceScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  invoiceNumber: 'invoiceNumber',
+  storagePath: 'storagePath',
+  createdAt: 'createdAt'
+} as const
+
+export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
 
 
 export const WebhookEventScalarFieldEnum = {

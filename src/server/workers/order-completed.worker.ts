@@ -1,11 +1,41 @@
 import { Worker } from 'bullmq';
+import { prisma } from '@/lib/prisma';
 import { redis } from '@/lib/redis';
 import { logger } from '@/lib/logger';
 import type { OrderCompletedEvent } from '@/features/payments/application/events/order-completed.event';
+import { PostOrderFulfillmentService } from '@/features/payments/application/services/post-order-fulfillment.service';
+import { loggingAnalyticsTracker } from '@/features/payments/infrastructure/analytics/logging-analytics.tracker';
+import { pdfInvoiceGenerator } from '@/features/payments/infrastructure/invoicing/pdf-invoice.generator';
+import {
+  buildPurchaseConfirmationEmail,
+  resendConfirmationEmailSender,
+} from '@/features/payments/infrastructure/notifications/resend-email.sender';
 import {
   ORDER_COMPLETED_JOBS,
   ORDER_COMPLETED_QUEUE,
 } from '@/features/payments/infrastructure/queue/order-completed.publisher';
+
+const postOrderFulfillmentService = new PostOrderFulfillmentService({
+  confirmationEmailSender: resendConfirmationEmailSender,
+  invoiceGenerator: pdfInvoiceGenerator,
+  analyticsTracker: loggingAnalyticsTracker,
+  loadConfirmationEmail: buildPurchaseConfirmationEmail,
+  loadInvoiceInput: async (event) => {
+    const order = await prisma.order.findUniqueOrThrow({
+      where: { id: event.orderId },
+      select: { orderNumber: true },
+    });
+
+    return {
+      orderId: event.orderId,
+      orderNumber: order.orderNumber,
+      userId: event.userId,
+      totalCents: event.totalCents,
+      currency: event.currency,
+      purchasedCourseIds: event.purchasedCourseIds,
+    };
+  },
+});
 
 /**
  * Secondary (non-critical) post-fulfillment workers.
@@ -18,30 +48,15 @@ const worker = new Worker<OrderCompletedEvent>(
 
     switch (job.name) {
       case ORDER_COMPLETED_JOBS.SEND_CONFIRMATION_EMAIL:
-        logger.info(
-          { orderId: event.orderId, userId: event.userId },
-          '[ORDER_COMPLETED] confirmation email queued (stub)',
-        );
-        // TODO: integrate email provider (Resend/SendGrid) with localized template.
+        await postOrderFulfillmentService.sendConfirmationEmail(event);
         return;
 
       case ORDER_COMPLETED_JOBS.GENERATE_INVOICE:
-        logger.info(
-          { orderId: event.orderId, totalCents: event.totalCents },
-          '[ORDER_COMPLETED] invoice generation queued (stub)',
-        );
-        // TODO: generate PDF invoice and store in object storage.
+        await postOrderFulfillmentService.generateInvoice(event);
         return;
 
       case ORDER_COMPLETED_JOBS.TRACK_ANALYTICS:
-        logger.info(
-          {
-            orderId: event.orderId,
-            courses: event.purchasedCourseIds,
-          },
-          '[ORDER_COMPLETED] analytics dispatch queued (stub)',
-        );
-        // TODO: push purchase event to analytics platforms.
+        await postOrderFulfillmentService.trackAnalytics(event);
         return;
 
       default:
@@ -57,7 +72,7 @@ const worker = new Worker<OrderCompletedEvent>(
 worker.on('failed', (job, err) => {
   logger.error(
     { jobId: job?.id, jobName: job?.name, err },
-    '[ORDER_COMPLETED_WORKER_FAILED]',
+    '[ORDER_COMPLETED_DLQ]',
   );
 });
 
