@@ -463,6 +463,8 @@ export type UserWhereInput = {
   trackedDevices?: Prisma.TrackedDeviceListRelationFilter
   tokenFamilies?: Prisma.TokenFamilyListRelationFilter
   checkoutSessions?: Prisma.CheckoutSessionListRelationFilter
+  tutorConversations?: Prisma.TutorConversationListRelationFilter
+  studentLearningProfiles?: Prisma.StudentLearningProfileListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -517,6 +519,8 @@ export type UserOrderByWithRelationInput = {
   trackedDevices?: Prisma.TrackedDeviceOrderByRelationAggregateInput
   tokenFamilies?: Prisma.TokenFamilyOrderByRelationAggregateInput
   checkoutSessions?: Prisma.CheckoutSessionOrderByRelationAggregateInput
+  tutorConversations?: Prisma.TutorConversationOrderByRelationAggregateInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -575,6 +579,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   trackedDevices?: Prisma.TrackedDeviceListRelationFilter
   tokenFamilies?: Prisma.TokenFamilyListRelationFilter
   checkoutSessions?: Prisma.CheckoutSessionListRelationFilter
+  tutorConversations?: Prisma.TutorConversationListRelationFilter
+  studentLearningProfiles?: Prisma.StudentLearningProfileListRelationFilter
 }, "id" | "email" | "emailVerifyToken" | "resetPasswordToken" | "oauthProvider_oauthProviderId">
 
 export type UserOrderByWithAggregationInput = {
@@ -707,6 +713,8 @@ export type UserCreateInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -761,6 +769,8 @@ export type UserUncheckedCreateInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -815,6 +825,8 @@ export type UserUpdateInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -869,6 +881,8 @@ export type UserUncheckedUpdateInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1375,6 +1389,34 @@ export type UserUpdateOneRequiredWithoutInstructorEarningsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInstructorEarningsInput, Prisma.UserUpdateWithoutInstructorEarningsInput>, Prisma.UserUncheckedUpdateWithoutInstructorEarningsInput>
 }
 
+export type UserCreateNestedOneWithoutTutorConversationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTutorConversationsInput, Prisma.UserUncheckedCreateWithoutTutorConversationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTutorConversationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTutorConversationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTutorConversationsInput, Prisma.UserUncheckedCreateWithoutTutorConversationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTutorConversationsInput
+  upsert?: Prisma.UserUpsertWithoutTutorConversationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTutorConversationsInput, Prisma.UserUpdateWithoutTutorConversationsInput>, Prisma.UserUncheckedUpdateWithoutTutorConversationsInput>
+}
+
+export type UserCreateNestedOneWithoutStudentLearningProfilesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutStudentLearningProfilesInput, Prisma.UserUncheckedCreateWithoutStudentLearningProfilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStudentLearningProfilesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutStudentLearningProfilesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutStudentLearningProfilesInput, Prisma.UserUncheckedCreateWithoutStudentLearningProfilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStudentLearningProfilesInput
+  upsert?: Prisma.UserUpsertWithoutStudentLearningProfilesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStudentLearningProfilesInput, Prisma.UserUpdateWithoutStudentLearningProfilesInput>, Prisma.UserUncheckedUpdateWithoutStudentLearningProfilesInput>
+}
+
 export type UserCreateWithoutCoursesInput = {
   id?: string
   name?: string | null
@@ -1426,6 +1468,8 @@ export type UserCreateWithoutCoursesInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCoursesInput = {
@@ -1479,6 +1523,8 @@ export type UserUncheckedCreateWithoutCoursesInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCoursesInput = {
@@ -1548,6 +1594,8 @@ export type UserUpdateWithoutCoursesInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCoursesInput = {
@@ -1601,6 +1649,8 @@ export type UserUncheckedUpdateWithoutCoursesInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -1654,6 +1704,8 @@ export type UserCreateWithoutAccountsInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -1707,6 +1759,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -1776,6 +1830,8 @@ export type UserUpdateWithoutAccountsInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -1829,6 +1885,8 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -1882,6 +1940,8 @@ export type UserCreateWithoutSessionsInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -1935,6 +1995,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -2004,6 +2066,8 @@ export type UserUpdateWithoutSessionsInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -2057,6 +2121,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUserSessionsInput = {
@@ -2110,6 +2176,8 @@ export type UserCreateWithoutUserSessionsInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUserSessionsInput = {
@@ -2163,6 +2231,8 @@ export type UserUncheckedCreateWithoutUserSessionsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUserSessionsInput = {
@@ -2232,6 +2302,8 @@ export type UserUpdateWithoutUserSessionsInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserSessionsInput = {
@@ -2285,6 +2357,8 @@ export type UserUncheckedUpdateWithoutUserSessionsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTrackedDevicesInput = {
@@ -2338,6 +2412,8 @@ export type UserCreateWithoutTrackedDevicesInput = {
   instructorEarnings?: Prisma.InstructorEarningCreateNestedManyWithoutInstructorInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTrackedDevicesInput = {
@@ -2391,6 +2467,8 @@ export type UserUncheckedCreateWithoutTrackedDevicesInput = {
   instructorEarnings?: Prisma.InstructorEarningUncheckedCreateNestedManyWithoutInstructorInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTrackedDevicesInput = {
@@ -2460,6 +2538,8 @@ export type UserUpdateWithoutTrackedDevicesInput = {
   instructorEarnings?: Prisma.InstructorEarningUpdateManyWithoutInstructorNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTrackedDevicesInput = {
@@ -2513,6 +2593,8 @@ export type UserUncheckedUpdateWithoutTrackedDevicesInput = {
   instructorEarnings?: Prisma.InstructorEarningUncheckedUpdateManyWithoutInstructorNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTokenFamiliesInput = {
@@ -2566,6 +2648,8 @@ export type UserCreateWithoutTokenFamiliesInput = {
   instructorEarnings?: Prisma.InstructorEarningCreateNestedManyWithoutInstructorInput
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTokenFamiliesInput = {
@@ -2619,6 +2703,8 @@ export type UserUncheckedCreateWithoutTokenFamiliesInput = {
   instructorEarnings?: Prisma.InstructorEarningUncheckedCreateNestedManyWithoutInstructorInput
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTokenFamiliesInput = {
@@ -2688,6 +2774,8 @@ export type UserUpdateWithoutTokenFamiliesInput = {
   instructorEarnings?: Prisma.InstructorEarningUpdateManyWithoutInstructorNestedInput
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTokenFamiliesInput = {
@@ -2741,6 +2829,8 @@ export type UserUncheckedUpdateWithoutTokenFamiliesInput = {
   instructorEarnings?: Prisma.InstructorEarningUncheckedUpdateManyWithoutInstructorNestedInput
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutEnrollmentsInput = {
@@ -2794,6 +2884,8 @@ export type UserCreateWithoutEnrollmentsInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEnrollmentsInput = {
@@ -2847,6 +2939,8 @@ export type UserUncheckedCreateWithoutEnrollmentsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEnrollmentsInput = {
@@ -2916,6 +3010,8 @@ export type UserUpdateWithoutEnrollmentsInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEnrollmentsInput = {
@@ -2969,6 +3065,8 @@ export type UserUncheckedUpdateWithoutEnrollmentsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCartInput = {
@@ -3022,6 +3120,8 @@ export type UserCreateWithoutCartInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCartInput = {
@@ -3075,6 +3175,8 @@ export type UserUncheckedCreateWithoutCartInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCartInput = {
@@ -3144,6 +3246,8 @@ export type UserUpdateWithoutCartInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCartInput = {
@@ -3197,6 +3301,8 @@ export type UserUncheckedUpdateWithoutCartInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutOrdersInput = {
@@ -3250,6 +3356,8 @@ export type UserCreateWithoutOrdersInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOrdersInput = {
@@ -3303,6 +3411,8 @@ export type UserUncheckedCreateWithoutOrdersInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOrdersInput = {
@@ -3372,6 +3482,8 @@ export type UserUpdateWithoutOrdersInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOrdersInput = {
@@ -3425,6 +3537,8 @@ export type UserUncheckedUpdateWithoutOrdersInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCheckoutSessionsInput = {
@@ -3478,6 +3592,8 @@ export type UserCreateWithoutCheckoutSessionsInput = {
   instructorEarnings?: Prisma.InstructorEarningCreateNestedManyWithoutInstructorInput
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCheckoutSessionsInput = {
@@ -3531,6 +3647,8 @@ export type UserUncheckedCreateWithoutCheckoutSessionsInput = {
   instructorEarnings?: Prisma.InstructorEarningUncheckedCreateNestedManyWithoutInstructorInput
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCheckoutSessionsInput = {
@@ -3600,6 +3718,8 @@ export type UserUpdateWithoutCheckoutSessionsInput = {
   instructorEarnings?: Prisma.InstructorEarningUpdateManyWithoutInstructorNestedInput
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCheckoutSessionsInput = {
@@ -3653,6 +3773,8 @@ export type UserUncheckedUpdateWithoutCheckoutSessionsInput = {
   instructorEarnings?: Prisma.InstructorEarningUncheckedUpdateManyWithoutInstructorNestedInput
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReviewsInput = {
@@ -3706,6 +3828,8 @@ export type UserCreateWithoutReviewsInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
@@ -3759,6 +3883,8 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReviewsInput = {
@@ -3828,6 +3954,8 @@ export type UserUpdateWithoutReviewsInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -3881,6 +4009,8 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAvailabilitiesInput = {
@@ -3934,6 +4064,8 @@ export type UserCreateWithoutAvailabilitiesInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAvailabilitiesInput = {
@@ -3987,6 +4119,8 @@ export type UserUncheckedCreateWithoutAvailabilitiesInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAvailabilitiesInput = {
@@ -4056,6 +4190,8 @@ export type UserUpdateWithoutAvailabilitiesInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAvailabilitiesInput = {
@@ -4109,6 +4245,8 @@ export type UserUncheckedUpdateWithoutAvailabilitiesInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDateOverridesInput = {
@@ -4162,6 +4300,8 @@ export type UserCreateWithoutDateOverridesInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDateOverridesInput = {
@@ -4215,6 +4355,8 @@ export type UserUncheckedCreateWithoutDateOverridesInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDateOverridesInput = {
@@ -4284,6 +4426,8 @@ export type UserUpdateWithoutDateOverridesInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDateOverridesInput = {
@@ -4337,6 +4481,8 @@ export type UserUncheckedUpdateWithoutDateOverridesInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutScheduleSettingsInput = {
@@ -4390,6 +4536,8 @@ export type UserCreateWithoutScheduleSettingsInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutScheduleSettingsInput = {
@@ -4443,6 +4591,8 @@ export type UserUncheckedCreateWithoutScheduleSettingsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutScheduleSettingsInput = {
@@ -4512,6 +4662,8 @@ export type UserUpdateWithoutScheduleSettingsInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutScheduleSettingsInput = {
@@ -4565,6 +4717,8 @@ export type UserUncheckedUpdateWithoutScheduleSettingsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInstructorBookingsInput = {
@@ -4618,6 +4772,8 @@ export type UserCreateWithoutInstructorBookingsInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInstructorBookingsInput = {
@@ -4671,6 +4827,8 @@ export type UserUncheckedCreateWithoutInstructorBookingsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInstructorBookingsInput = {
@@ -4729,6 +4887,8 @@ export type UserCreateWithoutStudentBookingsInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStudentBookingsInput = {
@@ -4782,6 +4942,8 @@ export type UserUncheckedCreateWithoutStudentBookingsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStudentBookingsInput = {
@@ -4851,6 +5013,8 @@ export type UserUpdateWithoutInstructorBookingsInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInstructorBookingsInput = {
@@ -4904,6 +5068,8 @@ export type UserUncheckedUpdateWithoutInstructorBookingsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutStudentBookingsInput = {
@@ -4968,6 +5134,8 @@ export type UserUpdateWithoutStudentBookingsInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStudentBookingsInput = {
@@ -5021,6 +5189,8 @@ export type UserUncheckedUpdateWithoutStudentBookingsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGoogleCalendarTokenInput = {
@@ -5074,6 +5244,8 @@ export type UserCreateWithoutGoogleCalendarTokenInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGoogleCalendarTokenInput = {
@@ -5127,6 +5299,8 @@ export type UserUncheckedCreateWithoutGoogleCalendarTokenInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGoogleCalendarTokenInput = {
@@ -5196,6 +5370,8 @@ export type UserUpdateWithoutGoogleCalendarTokenInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGoogleCalendarTokenInput = {
@@ -5249,6 +5425,8 @@ export type UserUncheckedUpdateWithoutGoogleCalendarTokenInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRefundRequestsInput = {
@@ -5302,6 +5480,8 @@ export type UserCreateWithoutRefundRequestsInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefundRequestsInput = {
@@ -5355,6 +5535,8 @@ export type UserUncheckedCreateWithoutRefundRequestsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefundRequestsInput = {
@@ -5424,6 +5606,8 @@ export type UserUpdateWithoutRefundRequestsInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefundRequestsInput = {
@@ -5477,6 +5661,8 @@ export type UserUncheckedUpdateWithoutRefundRequestsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInstructorEarningsInput = {
@@ -5530,6 +5716,8 @@ export type UserCreateWithoutInstructorEarningsInput = {
   trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInstructorEarningsInput = {
@@ -5583,6 +5771,8 @@ export type UserUncheckedCreateWithoutInstructorEarningsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInstructorEarningsInput = {
@@ -5652,6 +5842,8 @@ export type UserUpdateWithoutInstructorEarningsInput = {
   trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInstructorEarningsInput = {
@@ -5705,6 +5897,480 @@ export type UserUncheckedUpdateWithoutInstructorEarningsInput = {
   trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutTutorConversationsInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutTutorConversationsInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestUncheckedCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutTutorConversationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTutorConversationsInput, Prisma.UserUncheckedCreateWithoutTutorConversationsInput>
+}
+
+export type UserUpsertWithoutTutorConversationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTutorConversationsInput, Prisma.UserUncheckedUpdateWithoutTutorConversationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTutorConversationsInput, Prisma.UserUncheckedCreateWithoutTutorConversationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTutorConversationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTutorConversationsInput, Prisma.UserUncheckedUpdateWithoutTutorConversationsInput>
+}
+
+export type UserUpdateWithoutTutorConversationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTutorConversationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUncheckedUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutStudentLearningProfilesInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutStudentLearningProfilesInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestUncheckedCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutStudentLearningProfilesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutStudentLearningProfilesInput, Prisma.UserUncheckedCreateWithoutStudentLearningProfilesInput>
+}
+
+export type UserUpsertWithoutStudentLearningProfilesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutStudentLearningProfilesInput, Prisma.UserUncheckedUpdateWithoutStudentLearningProfilesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutStudentLearningProfilesInput, Prisma.UserUncheckedCreateWithoutStudentLearningProfilesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutStudentLearningProfilesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutStudentLearningProfilesInput, Prisma.UserUncheckedUpdateWithoutStudentLearningProfilesInput>
+}
+
+export type UserUpdateWithoutStudentLearningProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutStudentLearningProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUncheckedUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -5729,6 +6395,8 @@ export type UserCountOutputType = {
   trackedDevices: number
   tokenFamilies: number
   checkoutSessions: number
+  tutorConversations: number
+  studentLearningProfiles: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5748,6 +6416,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   trackedDevices?: boolean | UserCountOutputTypeCountTrackedDevicesArgs
   tokenFamilies?: boolean | UserCountOutputTypeCountTokenFamiliesArgs
   checkoutSessions?: boolean | UserCountOutputTypeCountCheckoutSessionsArgs
+  tutorConversations?: boolean | UserCountOutputTypeCountTutorConversationsArgs
+  studentLearningProfiles?: boolean | UserCountOutputTypeCountStudentLearningProfilesArgs
 }
 
 /**
@@ -5872,6 +6542,20 @@ export type UserCountOutputTypeCountCheckoutSessionsArgs<ExtArgs extends runtime
   where?: Prisma.CheckoutSessionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTutorConversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TutorConversationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountStudentLearningProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StudentLearningProfileWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -5925,6 +6609,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   trackedDevices?: boolean | Prisma.User$trackedDevicesArgs<ExtArgs>
   tokenFamilies?: boolean | Prisma.User$tokenFamiliesArgs<ExtArgs>
   checkoutSessions?: boolean | Prisma.User$checkoutSessionsArgs<ExtArgs>
+  tutorConversations?: boolean | Prisma.User$tutorConversationsArgs<ExtArgs>
+  studentLearningProfiles?: boolean | Prisma.User$studentLearningProfilesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -6054,6 +6740,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   trackedDevices?: boolean | Prisma.User$trackedDevicesArgs<ExtArgs>
   tokenFamilies?: boolean | Prisma.User$tokenFamiliesArgs<ExtArgs>
   checkoutSessions?: boolean | Prisma.User$checkoutSessionsArgs<ExtArgs>
+  tutorConversations?: boolean | Prisma.User$tutorConversationsArgs<ExtArgs>
+  studentLearningProfiles?: boolean | Prisma.User$studentLearningProfilesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -6081,6 +6769,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     trackedDevices: Prisma.$TrackedDevicePayload<ExtArgs>[]
     tokenFamilies: Prisma.$TokenFamilyPayload<ExtArgs>[]
     checkoutSessions: Prisma.$CheckoutSessionPayload<ExtArgs>[]
+    tutorConversations: Prisma.$TutorConversationPayload<ExtArgs>[]
+    studentLearningProfiles: Prisma.$StudentLearningProfilePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -6528,6 +7218,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   trackedDevices<T extends Prisma.User$trackedDevicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$trackedDevicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrackedDevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tokenFamilies<T extends Prisma.User$tokenFamiliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tokenFamiliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TokenFamilyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   checkoutSessions<T extends Prisma.User$checkoutSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$checkoutSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckoutSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tutorConversations<T extends Prisma.User$tutorConversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tutorConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TutorConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  studentLearningProfiles<T extends Prisma.User$studentLearningProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$studentLearningProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentLearningProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7420,6 +8112,54 @@ export type User$checkoutSessionsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.CheckoutSessionScalarFieldEnum | Prisma.CheckoutSessionScalarFieldEnum[]
+}
+
+/**
+ * User.tutorConversations
+ */
+export type User$tutorConversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TutorConversation
+   */
+  select?: Prisma.TutorConversationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TutorConversation
+   */
+  omit?: Prisma.TutorConversationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TutorConversationInclude<ExtArgs> | null
+  where?: Prisma.TutorConversationWhereInput
+  orderBy?: Prisma.TutorConversationOrderByWithRelationInput | Prisma.TutorConversationOrderByWithRelationInput[]
+  cursor?: Prisma.TutorConversationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TutorConversationScalarFieldEnum | Prisma.TutorConversationScalarFieldEnum[]
+}
+
+/**
+ * User.studentLearningProfiles
+ */
+export type User$studentLearningProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StudentLearningProfile
+   */
+  select?: Prisma.StudentLearningProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StudentLearningProfile
+   */
+  omit?: Prisma.StudentLearningProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StudentLearningProfileInclude<ExtArgs> | null
+  where?: Prisma.StudentLearningProfileWhereInput
+  orderBy?: Prisma.StudentLearningProfileOrderByWithRelationInput | Prisma.StudentLearningProfileOrderByWithRelationInput[]
+  cursor?: Prisma.StudentLearningProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StudentLearningProfileScalarFieldEnum | Prisma.StudentLearningProfileScalarFieldEnum[]
 }
 
 /**

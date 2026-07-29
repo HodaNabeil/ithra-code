@@ -6,7 +6,7 @@ import {
   myCourseLecturesSelect,
   type DB_MyCourseLectures,
 } from '@/server/db/my-course.select';
-import { mapMyCourseLecturesToDTO } from '@/mappers/my-course.mapper';
+import { mapMyCourseLecturesToDTO, mapLectureDetailsToDTO } from '@/mappers/my-course.mapper';
 import { cache } from '@/lib/cache';
 import { revalidateTag } from 'next/cache';
 
@@ -89,15 +89,19 @@ export async function getLectureDetails(lectureId: string, courseSlug: string) {
             },
           },
         },
-        include: {
-          attachments: true,
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          updatedAt: true,
           section: {
-            include: {
+            select: {
               course: {
-                include: {
+                select: {
+                  slug: true,
                   sections: {
                     orderBy: { position: 'asc' },
-                    include: {
+                    select: {
                       lectures: {
                         orderBy: { position: 'asc' },
                         select: { id: true },
@@ -113,19 +117,7 @@ export async function getLectureDetails(lectureId: string, courseSlug: string) {
 
       if (!lecture) return null;
 
-      const allLectures = lecture.section.course.sections.flatMap(
-        (section) => section.lectures,
-      );
-
-      const currentIndex = allLectures.findIndex((l) => l.id === lectureId);
-
-      const nextLecture = allLectures[currentIndex + 1];
-
-      return {
-        lecture,
-        nextLectureId: nextLecture?.id, // لو مفيش درس تاني هيرجع undefined
-        courseSlug: lecture.section.course.slug,
-      };
+      return mapLectureDetailsToDTO(lecture, lectureId);
     },
     ['lecture-details', lectureId, courseSlug, userId],
     {

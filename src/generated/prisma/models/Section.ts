@@ -242,6 +242,7 @@ export type SectionWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Section"> | Date | string
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>
   lectures?: Prisma.LectureListRelationFilter
+  knowledgeChunks?: Prisma.KnowledgeChunkListRelationFilter
 }
 
 export type SectionOrderByWithRelationInput = {
@@ -255,6 +256,7 @@ export type SectionOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   course?: Prisma.CourseOrderByWithRelationInput
   lectures?: Prisma.LectureOrderByRelationAggregateInput
+  knowledgeChunks?: Prisma.KnowledgeChunkOrderByRelationAggregateInput
 }
 
 export type SectionWhereUniqueInput = Prisma.AtLeast<{
@@ -271,6 +273,7 @@ export type SectionWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Section"> | Date | string
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>
   lectures?: Prisma.LectureListRelationFilter
+  knowledgeChunks?: Prisma.KnowledgeChunkListRelationFilter
 }, "id">
 
 export type SectionOrderByWithAggregationInput = {
@@ -313,6 +316,7 @@ export type SectionCreateInput = {
   updatedAt?: Date | string
   course: Prisma.CourseCreateNestedOneWithoutSectionsInput
   lectures?: Prisma.LectureCreateNestedManyWithoutSectionInput
+  knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutSectionInput
 }
 
 export type SectionUncheckedCreateInput = {
@@ -325,6 +329,7 @@ export type SectionUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutSectionInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutSectionInput
 }
 
 export type SectionUpdateInput = {
@@ -337,6 +342,7 @@ export type SectionUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   course?: Prisma.CourseUpdateOneRequiredWithoutSectionsNestedInput
   lectures?: Prisma.LectureUpdateManyWithoutSectionNestedInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutSectionNestedInput
 }
 
 export type SectionUncheckedUpdateInput = {
@@ -349,6 +355,7 @@ export type SectionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutSectionNestedInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutSectionNestedInput
 }
 
 export type SectionCreateManyInput = {
@@ -439,6 +446,11 @@ export type SectionScalarRelationFilter = {
   isNot?: Prisma.SectionWhereInput
 }
 
+export type SectionNullableScalarRelationFilter = {
+  is?: Prisma.SectionWhereInput | null
+  isNot?: Prisma.SectionWhereInput | null
+}
+
 export type SectionCreateNestedManyWithoutCourseInput = {
   create?: Prisma.XOR<Prisma.SectionCreateWithoutCourseInput, Prisma.SectionUncheckedCreateWithoutCourseInput> | Prisma.SectionCreateWithoutCourseInput[] | Prisma.SectionUncheckedCreateWithoutCourseInput[]
   connectOrCreate?: Prisma.SectionCreateOrConnectWithoutCourseInput | Prisma.SectionCreateOrConnectWithoutCourseInput[]
@@ -503,6 +515,22 @@ export type SectionUpdateOneRequiredWithoutLecturesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SectionUpdateToOneWithWhereWithoutLecturesInput, Prisma.SectionUpdateWithoutLecturesInput>, Prisma.SectionUncheckedUpdateWithoutLecturesInput>
 }
 
+export type SectionCreateNestedOneWithoutKnowledgeChunksInput = {
+  create?: Prisma.XOR<Prisma.SectionCreateWithoutKnowledgeChunksInput, Prisma.SectionUncheckedCreateWithoutKnowledgeChunksInput>
+  connectOrCreate?: Prisma.SectionCreateOrConnectWithoutKnowledgeChunksInput
+  connect?: Prisma.SectionWhereUniqueInput
+}
+
+export type SectionUpdateOneWithoutKnowledgeChunksNestedInput = {
+  create?: Prisma.XOR<Prisma.SectionCreateWithoutKnowledgeChunksInput, Prisma.SectionUncheckedCreateWithoutKnowledgeChunksInput>
+  connectOrCreate?: Prisma.SectionCreateOrConnectWithoutKnowledgeChunksInput
+  upsert?: Prisma.SectionUpsertWithoutKnowledgeChunksInput
+  disconnect?: Prisma.SectionWhereInput | boolean
+  delete?: Prisma.SectionWhereInput | boolean
+  connect?: Prisma.SectionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SectionUpdateToOneWithWhereWithoutKnowledgeChunksInput, Prisma.SectionUpdateWithoutKnowledgeChunksInput>, Prisma.SectionUncheckedUpdateWithoutKnowledgeChunksInput>
+}
+
 export type SectionCreateWithoutCourseInput = {
   id?: string
   title: string
@@ -512,6 +540,7 @@ export type SectionCreateWithoutCourseInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lectures?: Prisma.LectureCreateNestedManyWithoutSectionInput
+  knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutSectionInput
 }
 
 export type SectionUncheckedCreateWithoutCourseInput = {
@@ -523,6 +552,7 @@ export type SectionUncheckedCreateWithoutCourseInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutSectionInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutSectionInput
 }
 
 export type SectionCreateOrConnectWithoutCourseInput = {
@@ -574,6 +604,7 @@ export type SectionCreateWithoutLecturesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   course: Prisma.CourseCreateNestedOneWithoutSectionsInput
+  knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutSectionInput
 }
 
 export type SectionUncheckedCreateWithoutLecturesInput = {
@@ -585,6 +616,7 @@ export type SectionUncheckedCreateWithoutLecturesInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutSectionInput
 }
 
 export type SectionCreateOrConnectWithoutLecturesInput = {
@@ -612,6 +644,7 @@ export type SectionUpdateWithoutLecturesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   course?: Prisma.CourseUpdateOneRequiredWithoutSectionsNestedInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutSectionNestedInput
 }
 
 export type SectionUncheckedUpdateWithoutLecturesInput = {
@@ -623,6 +656,71 @@ export type SectionUncheckedUpdateWithoutLecturesInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutSectionNestedInput
+}
+
+export type SectionCreateWithoutKnowledgeChunksInput = {
+  id?: string
+  title: string
+  description?: string | null
+  position: number
+  isPublished?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  course: Prisma.CourseCreateNestedOneWithoutSectionsInput
+  lectures?: Prisma.LectureCreateNestedManyWithoutSectionInput
+}
+
+export type SectionUncheckedCreateWithoutKnowledgeChunksInput = {
+  id?: string
+  courseId: string
+  title: string
+  description?: string | null
+  position: number
+  isPublished?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutSectionInput
+}
+
+export type SectionCreateOrConnectWithoutKnowledgeChunksInput = {
+  where: Prisma.SectionWhereUniqueInput
+  create: Prisma.XOR<Prisma.SectionCreateWithoutKnowledgeChunksInput, Prisma.SectionUncheckedCreateWithoutKnowledgeChunksInput>
+}
+
+export type SectionUpsertWithoutKnowledgeChunksInput = {
+  update: Prisma.XOR<Prisma.SectionUpdateWithoutKnowledgeChunksInput, Prisma.SectionUncheckedUpdateWithoutKnowledgeChunksInput>
+  create: Prisma.XOR<Prisma.SectionCreateWithoutKnowledgeChunksInput, Prisma.SectionUncheckedCreateWithoutKnowledgeChunksInput>
+  where?: Prisma.SectionWhereInput
+}
+
+export type SectionUpdateToOneWithWhereWithoutKnowledgeChunksInput = {
+  where?: Prisma.SectionWhereInput
+  data: Prisma.XOR<Prisma.SectionUpdateWithoutKnowledgeChunksInput, Prisma.SectionUncheckedUpdateWithoutKnowledgeChunksInput>
+}
+
+export type SectionUpdateWithoutKnowledgeChunksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  course?: Prisma.CourseUpdateOneRequiredWithoutSectionsNestedInput
+  lectures?: Prisma.LectureUpdateManyWithoutSectionNestedInput
+}
+
+export type SectionUncheckedUpdateWithoutKnowledgeChunksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lectures?: Prisma.LectureUncheckedUpdateManyWithoutSectionNestedInput
 }
 
 export type SectionCreateManyCourseInput = {
@@ -644,6 +742,7 @@ export type SectionUpdateWithoutCourseInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lectures?: Prisma.LectureUpdateManyWithoutSectionNestedInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutSectionNestedInput
 }
 
 export type SectionUncheckedUpdateWithoutCourseInput = {
@@ -655,6 +754,7 @@ export type SectionUncheckedUpdateWithoutCourseInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutSectionNestedInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutSectionNestedInput
 }
 
 export type SectionUncheckedUpdateManyWithoutCourseInput = {
@@ -674,10 +774,12 @@ export type SectionUncheckedUpdateManyWithoutCourseInput = {
 
 export type SectionCountOutputType = {
   lectures: number
+  knowledgeChunks: number
 }
 
 export type SectionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lectures?: boolean | SectionCountOutputTypeCountLecturesArgs
+  knowledgeChunks?: boolean | SectionCountOutputTypeCountKnowledgeChunksArgs
 }
 
 /**
@@ -697,6 +799,13 @@ export type SectionCountOutputTypeCountLecturesArgs<ExtArgs extends runtime.Type
   where?: Prisma.LectureWhereInput
 }
 
+/**
+ * SectionCountOutputType without action
+ */
+export type SectionCountOutputTypeCountKnowledgeChunksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeChunkWhereInput
+}
+
 
 export type SectionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -709,6 +818,7 @@ export type SectionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
   lectures?: boolean | Prisma.Section$lecturesArgs<ExtArgs>
+  knowledgeChunks?: boolean | Prisma.Section$knowledgeChunksArgs<ExtArgs>
   _count?: boolean | Prisma.SectionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["section"]>
 
@@ -751,6 +861,7 @@ export type SectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type SectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
   lectures?: boolean | Prisma.Section$lecturesArgs<ExtArgs>
+  knowledgeChunks?: boolean | Prisma.Section$knowledgeChunksArgs<ExtArgs>
   _count?: boolean | Prisma.SectionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SectionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -765,6 +876,7 @@ export type $SectionPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     course: Prisma.$CoursePayload<ExtArgs>
     lectures: Prisma.$LecturePayload<ExtArgs>[]
+    knowledgeChunks: Prisma.$KnowledgeChunkPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1171,6 +1283,7 @@ export interface Prisma__SectionClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   course<T extends Prisma.CourseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CourseDefaultArgs<ExtArgs>>): Prisma.Prisma__CourseClient<runtime.Types.Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   lectures<T extends Prisma.Section$lecturesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Section$lecturesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LecturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  knowledgeChunks<T extends Prisma.Section$knowledgeChunksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Section$knowledgeChunksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1630,6 +1743,30 @@ export type Section$lecturesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.LectureScalarFieldEnum | Prisma.LectureScalarFieldEnum[]
+}
+
+/**
+ * Section.knowledgeChunks
+ */
+export type Section$knowledgeChunksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeChunk
+   */
+  select?: Prisma.KnowledgeChunkSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeChunk
+   */
+  omit?: Prisma.KnowledgeChunkOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeChunkInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeChunkWhereInput
+  orderBy?: Prisma.KnowledgeChunkOrderByWithRelationInput | Prisma.KnowledgeChunkOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeChunkWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeChunkScalarFieldEnum | Prisma.KnowledgeChunkScalarFieldEnum[]
 }
 
 /**

@@ -40,6 +40,7 @@ model Course {
   createdAt          DateTime         @default(now()) @map("created_at")
   updatedAt          DateTime         @updatedAt @map("updated_at")
   publishedAt        DateTime?        @map("published_at")
+  knowledgeIndexedAt DateTime?        @map("knowledge_indexed_at")
 
   pathId      String       @map("path_id")
   path        Path         @relation(fields: [pathId], references: [id])
@@ -50,6 +51,9 @@ model Course {
   cartItems   CartItem[]
   reviews     Review[]
   enrollments Enrollment[]
+  tutorConversations TutorConversation[]
+  knowledgeChunks KnowledgeChunk[]
+  studentLearningProfiles StudentLearningProfile[]
 
   prerequisites Course[] @relation("CoursePrerequisites")
   requiredFor   Course[] @relation("CoursePrerequisites")
@@ -110,6 +114,7 @@ model Section {
 
   course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
   lectures Lecture[]
+  knowledgeChunks KnowledgeChunk[]
 
   @@index([courseId])
   @@index([position])
@@ -134,6 +139,9 @@ model Lecture {
   video       Video?       @relation(fields: [videoId], references: [id])
   attachments Attachment[]
   progress    Progress[]
+  tutorThreads TutorThread[]
+  transcript  LectureTranscript?
+  knowledgeChunks KnowledgeChunk[]
 
   @@index([sectionId])
   @@index([position])
@@ -337,6 +345,8 @@ model User {
   trackedDevices      TrackedDevice[]
   tokenFamilies       TokenFamily[]
   checkoutSessions    CheckoutSession[]
+  tutorConversations  TutorConversation[]
+  studentLearningProfiles StudentLearningProfile[]
 
   @@unique([oauthProvider, oauthProviderId])
   @@index([email])
@@ -1176,4 +1186,144 @@ model Faq {
   @@index([isActive])
   @@index([sortOrder])
   @@map("faqs")
+}
+
+// ─── AI Tutor ─────────────────────────────────────────────────────────────────
+
+enum TutorMessageRole {
+  USER
+  ASSISTANT
+
+  @@map("tutor_message_role")
+}
+
+model TutorConversation {
+  id        String   @id @default(cuid())
+  courseId  String   @map("course_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  course  Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  threads TutorThread[]
+
+  @@unique([courseId, userId])
+  @@index([userId])
+  @@map("tutor_conversations")
+}
+
+model TutorThread {
+  id             String   @id @default(cuid())
+  conversationId String   @map("conversation_id")
+  lectureId      String?  @map("lecture_id")
+  topic          String
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  conversation TutorConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  lecture      Lecture?          @relation(fields: [lectureId], references: [id], onDelete: SetNull)
+  messages     TutorMessage[]
+
+  @@unique([conversationId, lectureId])
+  @@index([conversationId])
+  @@index([lectureId])
+  @@map("tutor_threads")
+}
+
+model TutorMessage {
+  id               String           @id @default(cuid())
+  threadId         String           @map("thread_id")
+  role             TutorMessageRole
+  content          String           @db.Text
+  retrievedSources Json?            @map("retrieved_sources")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  thread TutorThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@index([threadId, createdAt])
+  @@map("tutor_messages")
+}
+
+model StudentLearningProfile {
+  id               String   @id @default(cuid())
+  userId           String   @map("user_id")
+  courseId         String   @map("course_id")
+  explanationDepth String   @default("balanced") @map("explanation_depth")
+  contentStyle     String   @default("balanced") @map("content_style")
+  confidence       Float    @default(0)
+  interactionCount Int      @default(0) @map("interaction_count")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@map("student_learning_profiles")
+}
+
+enum KnowledgeContentType {
+  COURSE_OVERVIEW
+  LECTURE_DESCRIPTION
+  LECTURE_CONTENT
+  TRANSCRIPT
+  ATTACHMENT
+
+  @@map("knowledge_content_type")
+}
+
+enum KnowledgeSensitivity {
+  PUBLIC
+  ASSESSMENT
+  INSTRUCTOR
+
+  @@map("knowledge_sensitivity")
+}
+
+model LectureTranscript {
+  id        String   @id @default(cuid())
+  lectureId String   @unique @map("lecture_id")
+  content   String   @db.Text
+  language  String   @default("ar")
+  source    String   @default("manual")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  lecture Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  @@map("lecture_transcripts")
+}
+
+model KnowledgeChunk {
+  id          String               @id @default(cuid())
+  courseId    String               @map("course_id")
+  sectionId   String?              @map("section_id")
+  lectureId   String?              @map("lecture_id")
+  sourceId    String               @map("source_id")
+  title       String
+  content     String               @db.Text
+  contentType KnowledgeContentType @map("content_type")
+  sensitivity KnowledgeSensitivity @default(PUBLIC)
+  chunkIndex  Int                  @map("chunk_index")
+  tokenCount  Int?                 @map("token_count")
+  metadata    Json?
+  embedding   Unsupported("vector(1536)")?
+  createdAt   DateTime             @default(now()) @map("created_at")
+  updatedAt   DateTime             @updatedAt @map("updated_at")
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  section Section? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  lecture Lecture? @relation(fields: [lectureId], references: [id], onDelete: SetNull)
+
+  @@unique([sourceId, chunkIndex])
+  @@index([courseId])
+  @@index([lectureId])
+  @@index([sectionId])
+  @@index([contentType])
+  @@index([sensitivity])
+  @@map("knowledge_chunks")
 }

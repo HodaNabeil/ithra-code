@@ -28,7 +28,7 @@ export const CourseCardStudent = ({
   lastLectureId,
 }: CourseCardProps) => {
   const watchUrl = lastLectureId
-    ? `${APP_ROUTES.MY_COURSES}/${slug}/learn/lecture/${lastLectureId}`
+    ? `${APP_ROUTES.MY_COURSES}/${slug}/lecture/${lastLectureId}`
     : `${APP_ROUTES.MY_COURSES}/${slug}`;
 
   return (

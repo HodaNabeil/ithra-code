@@ -9,10 +9,21 @@ import { LearningToolsPanel } from './panels/learning-tools-panel';
 
 interface TabPanelsProps {
   description: string;
-  updatedAt?: Date;
+  updatedAt?: string;
+  aiTutorEnabled?: boolean;
+  courseSlug?: string;
+  lectureId?: string;
+  lectureTitle?: string;
 }
 
-export function TabPanels({ description, updatedAt }: TabPanelsProps) {
+export function TabPanels({
+  description,
+  updatedAt,
+  aiTutorEnabled,
+  courseSlug,
+  lectureId,
+  lectureTitle,
+}: TabPanelsProps) {
   return (
     <div className="py-8 focus-visible:ring-0">
       <TabsContent value="overview" className="focus-visible:ring-0 mt-0">
@@ -20,7 +31,12 @@ export function TabPanels({ description, updatedAt }: TabPanelsProps) {
       </TabsContent>
 
       <TabsContent value="qna" className="focus-visible:ring-0 mt-0">
-        <QnAPanel />
+        <QnAPanel
+          aiTutorEnabled={aiTutorEnabled}
+          courseSlug={courseSlug}
+          lectureId={lectureId}
+          lectureTitle={lectureTitle}
+        />
       </TabsContent>
 
       <TabsContent value="notes" className="focus-visible:ring-0 mt-0">

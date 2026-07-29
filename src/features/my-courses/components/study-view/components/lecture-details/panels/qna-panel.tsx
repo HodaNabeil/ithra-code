@@ -1,9 +1,38 @@
+'use client';
+
 import React from 'react';
 import { MessageSquare, Search } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AITutorChat } from '@/features/ai-tutor/presentation/components/AITutorChat';
 
-export function QnAPanel() {
+type QnAPanelProps = {
+  aiTutorEnabled?: boolean;
+  courseSlug?: string;
+  lectureId?: string;
+  lectureTitle?: string;
+  courseTitle?: string;
+};
+
+export function QnAPanel({
+  aiTutorEnabled = false,
+  courseSlug,
+  lectureId,
+  lectureTitle,
+  courseTitle,
+}: QnAPanelProps) {
+  if (aiTutorEnabled && courseSlug) {
+    return (
+      <AITutorChat
+        courseSlug={courseSlug}
+        lectureId={lectureId}
+        lectureTitle={lectureTitle}
+        courseTitle={courseTitle}
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">

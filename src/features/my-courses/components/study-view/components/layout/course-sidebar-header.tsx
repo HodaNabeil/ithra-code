@@ -17,20 +17,20 @@ export const CourseSidebarHeader: React.FC<CourseSidebarHeaderProps> = ({
   isMaximized,
 }) => {
   return (
-    <div className="flex items-center justify-between px-2 pt-2 border-b border-border/40">
-      <TabsList variant="line" className="h-12 bg-transparent">
+    <div className="flex min-w-0 items-center justify-between border-b border-border/40 px-2 pt-2">
+      <TabsList variant="line" className="h-11 min-w-0 flex-1 bg-transparent">
         <TabsTrigger
           value="content"
-          className="px-4 py-3 gap-2 data-active:text-primary"
+          className="min-w-0 px-3 py-2.5 text-sm data-active:text-primary"
         >
-          <span>محتوى الدورة</span>
+          <span className="truncate">محتوى الدورة</span>
         </TabsTrigger>
         <TabsTrigger
           value="assistant"
-          className="px-4 py-3 gap-2 data-active:text-primary"
+          className="min-w-0 px-3 py-2.5 text-sm data-active:text-primary"
         >
-          <Sparkles className="size-4 text-primary" />
-          <span>AI Assistant</span>
+          <Sparkles className="size-3.5 shrink-0 text-primary" />
+          <span className="truncate">المدرس الذكي</span>
         </TabsTrigger>
       </TabsList>
 

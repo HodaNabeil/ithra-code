@@ -9,13 +9,17 @@ import { useCourseLearningLayoutStore } from '@/features/my-courses/stores/use-c
 
 interface CourseContentLayoutBodyProps {
   courseSlug: string;
+  aiTutorEnabled?: boolean;
   children: React.ReactNode;
 }
 
 export const CourseContentLayoutBody: React.FC<
   CourseContentLayoutBodyProps
-> = ({ courseSlug, children }) => {
+> = ({ courseSlug, aiTutorEnabled = false, children }) => {
   const ensureCourse = useCourseLearningLayoutStore((s) => s.ensureCourse);
+  const setAiTutorEnabled = useCourseLearningLayoutStore(
+    (s) => s.setAiTutorEnabled,
+  );
   const setSidebarOpen = useCourseLearningLayoutStore((s) => s.setSidebarOpen);
   const toggleMaximized = useCourseLearningLayoutStore(
     (s) => s.toggleMaximized,
@@ -24,6 +28,10 @@ export const CourseContentLayoutBody: React.FC<
   useEffect(() => {
     ensureCourse(courseSlug);
   }, [courseSlug, ensureCourse]);
+
+  useEffect(() => {
+    setAiTutorEnabled(aiTutorEnabled);
+  }, [aiTutorEnabled, setAiTutorEnabled]);
 
   return (
     <div

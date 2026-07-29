@@ -283,3 +283,31 @@ export const InstructorEarningStatus = {
 } as const
 
 export type InstructorEarningStatus = (typeof InstructorEarningStatus)[keyof typeof InstructorEarningStatus]
+
+
+export const TutorMessageRole = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT'
+} as const
+
+export type TutorMessageRole = (typeof TutorMessageRole)[keyof typeof TutorMessageRole]
+
+
+export const KnowledgeContentType = {
+  COURSE_OVERVIEW: 'COURSE_OVERVIEW',
+  LECTURE_DESCRIPTION: 'LECTURE_DESCRIPTION',
+  LECTURE_CONTENT: 'LECTURE_CONTENT',
+  TRANSCRIPT: 'TRANSCRIPT',
+  ATTACHMENT: 'ATTACHMENT'
+} as const
+
+export type KnowledgeContentType = (typeof KnowledgeContentType)[keyof typeof KnowledgeContentType]
+
+
+export const KnowledgeSensitivity = {
+  PUBLIC: 'PUBLIC',
+  ASSESSMENT: 'ASSESSMENT',
+  INSTRUCTOR: 'INSTRUCTOR'
+} as const
+
+export type KnowledgeSensitivity = (typeof KnowledgeSensitivity)[keyof typeof KnowledgeSensitivity]

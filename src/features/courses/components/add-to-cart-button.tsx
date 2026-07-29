@@ -49,7 +49,7 @@ function buildLearnHref(course: AddToCartCourse): string {
     course.firstLectureId || course.sections?.[0]?.lectures?.[0]?.id;
 
   return lectureId
-    ? `${APP_ROUTES.MY_COURSES}/${course.slug}/${APP_ROUTES.LEARN}/${APP_ROUTES.LECTURE}/${lectureId}`
+    ? `${APP_ROUTES.MY_COURSES}/${course.slug}/${APP_ROUTES.LECTURE}/${lectureId}`
     : `${APP_ROUTES.MY_COURSES}/${course.slug}`;
 }
 

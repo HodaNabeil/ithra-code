@@ -800,6 +800,84 @@ export type EnumInstructorEarningStatusWithAggregatesFilter<$PrismaModel = never
   _max?: Prisma.NestedEnumInstructorEarningStatusFilter<$PrismaModel>
 }
 
+export type EnumTutorMessageRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorMessageRole | Prisma.EnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorMessageRole[] | Prisma.ListEnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorMessageRole[] | Prisma.ListEnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel> | $Enums.TutorMessageRole
+}
+
+export type EnumTutorMessageRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorMessageRole | Prisma.EnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorMessageRole[] | Prisma.ListEnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorMessageRole[] | Prisma.ListEnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorMessageRoleWithAggregatesFilter<$PrismaModel> | $Enums.TutorMessageRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel>
+}
+
+export type FloatFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatFilter<$PrismaModel> | number
+}
+
+export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedFloatFilter<$PrismaModel>
+  _min?: Prisma.NestedFloatFilter<$PrismaModel>
+  _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type EnumKnowledgeContentTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.KnowledgeContentType | Prisma.EnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.KnowledgeContentType[] | Prisma.ListEnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KnowledgeContentType[] | Prisma.ListEnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKnowledgeContentTypeFilter<$PrismaModel> | $Enums.KnowledgeContentType
+}
+
+export type EnumKnowledgeSensitivityFilter<$PrismaModel = never> = {
+  equals?: $Enums.KnowledgeSensitivity | Prisma.EnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  in?: $Enums.KnowledgeSensitivity[] | Prisma.ListEnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KnowledgeSensitivity[] | Prisma.ListEnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKnowledgeSensitivityFilter<$PrismaModel> | $Enums.KnowledgeSensitivity
+}
+
+export type EnumKnowledgeContentTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.KnowledgeContentType | Prisma.EnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.KnowledgeContentType[] | Prisma.ListEnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KnowledgeContentType[] | Prisma.ListEnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKnowledgeContentTypeWithAggregatesFilter<$PrismaModel> | $Enums.KnowledgeContentType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumKnowledgeContentTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumKnowledgeContentTypeFilter<$PrismaModel>
+}
+
+export type EnumKnowledgeSensitivityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.KnowledgeSensitivity | Prisma.EnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  in?: $Enums.KnowledgeSensitivity[] | Prisma.ListEnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KnowledgeSensitivity[] | Prisma.ListEnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKnowledgeSensitivityWithAggregatesFilter<$PrismaModel> | $Enums.KnowledgeSensitivity
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumKnowledgeSensitivityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumKnowledgeSensitivityFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1543,6 +1621,73 @@ export type NestedEnumInstructorEarningStatusWithAggregatesFilter<$PrismaModel =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumInstructorEarningStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumInstructorEarningStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumTutorMessageRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorMessageRole | Prisma.EnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorMessageRole[] | Prisma.ListEnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorMessageRole[] | Prisma.ListEnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel> | $Enums.TutorMessageRole
+}
+
+export type NestedEnumTutorMessageRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorMessageRole | Prisma.EnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorMessageRole[] | Prisma.ListEnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorMessageRole[] | Prisma.ListEnumTutorMessageRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorMessageRoleWithAggregatesFilter<$PrismaModel> | $Enums.TutorMessageRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel>
+}
+
+export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedFloatFilter<$PrismaModel>
+  _min?: Prisma.NestedFloatFilter<$PrismaModel>
+  _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type NestedEnumKnowledgeContentTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.KnowledgeContentType | Prisma.EnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.KnowledgeContentType[] | Prisma.ListEnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KnowledgeContentType[] | Prisma.ListEnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKnowledgeContentTypeFilter<$PrismaModel> | $Enums.KnowledgeContentType
+}
+
+export type NestedEnumKnowledgeSensitivityFilter<$PrismaModel = never> = {
+  equals?: $Enums.KnowledgeSensitivity | Prisma.EnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  in?: $Enums.KnowledgeSensitivity[] | Prisma.ListEnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KnowledgeSensitivity[] | Prisma.ListEnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKnowledgeSensitivityFilter<$PrismaModel> | $Enums.KnowledgeSensitivity
+}
+
+export type NestedEnumKnowledgeContentTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.KnowledgeContentType | Prisma.EnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.KnowledgeContentType[] | Prisma.ListEnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KnowledgeContentType[] | Prisma.ListEnumKnowledgeContentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKnowledgeContentTypeWithAggregatesFilter<$PrismaModel> | $Enums.KnowledgeContentType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumKnowledgeContentTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumKnowledgeContentTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumKnowledgeSensitivityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.KnowledgeSensitivity | Prisma.EnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  in?: $Enums.KnowledgeSensitivity[] | Prisma.ListEnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KnowledgeSensitivity[] | Prisma.ListEnumKnowledgeSensitivityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKnowledgeSensitivityWithAggregatesFilter<$PrismaModel> | $Enums.KnowledgeSensitivity
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumKnowledgeSensitivityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumKnowledgeSensitivityFilter<$PrismaModel>
 }
 
 

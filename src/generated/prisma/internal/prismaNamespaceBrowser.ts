@@ -91,7 +91,13 @@ export const ModelName = {
   RefundRequest: 'RefundRequest',
   InstructorEarning: 'InstructorEarning',
   Testimonial: 'Testimonial',
-  Faq: 'Faq'
+  Faq: 'Faq',
+  TutorConversation: 'TutorConversation',
+  TutorThread: 'TutorThread',
+  TutorMessage: 'TutorMessage',
+  StudentLearningProfile: 'StudentLearningProfile',
+  LectureTranscript: 'LectureTranscript',
+  KnowledgeChunk: 'KnowledgeChunk'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -138,6 +144,7 @@ export const CourseScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   publishedAt: 'publishedAt',
+  knowledgeIndexedAt: 'knowledgeIndexedAt',
   pathId: 'pathId',
   trackId: 'trackId'
 } as const
@@ -814,6 +821,90 @@ export const FaqScalarFieldEnum = {
 } as const
 
 export type FaqScalarFieldEnum = (typeof FaqScalarFieldEnum)[keyof typeof FaqScalarFieldEnum]
+
+
+export const TutorConversationScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TutorConversationScalarFieldEnum = (typeof TutorConversationScalarFieldEnum)[keyof typeof TutorConversationScalarFieldEnum]
+
+
+export const TutorThreadScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  lectureId: 'lectureId',
+  topic: 'topic',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TutorThreadScalarFieldEnum = (typeof TutorThreadScalarFieldEnum)[keyof typeof TutorThreadScalarFieldEnum]
+
+
+export const TutorMessageScalarFieldEnum = {
+  id: 'id',
+  threadId: 'threadId',
+  role: 'role',
+  content: 'content',
+  retrievedSources: 'retrievedSources',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TutorMessageScalarFieldEnum = (typeof TutorMessageScalarFieldEnum)[keyof typeof TutorMessageScalarFieldEnum]
+
+
+export const StudentLearningProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  courseId: 'courseId',
+  explanationDepth: 'explanationDepth',
+  contentStyle: 'contentStyle',
+  confidence: 'confidence',
+  interactionCount: 'interactionCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StudentLearningProfileScalarFieldEnum = (typeof StudentLearningProfileScalarFieldEnum)[keyof typeof StudentLearningProfileScalarFieldEnum]
+
+
+export const LectureTranscriptScalarFieldEnum = {
+  id: 'id',
+  lectureId: 'lectureId',
+  content: 'content',
+  language: 'language',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LectureTranscriptScalarFieldEnum = (typeof LectureTranscriptScalarFieldEnum)[keyof typeof LectureTranscriptScalarFieldEnum]
+
+
+export const KnowledgeChunkScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  sectionId: 'sectionId',
+  lectureId: 'lectureId',
+  sourceId: 'sourceId',
+  title: 'title',
+  content: 'content',
+  contentType: 'contentType',
+  sensitivity: 'sensitivity',
+  chunkIndex: 'chunkIndex',
+  tokenCount: 'tokenCount',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeChunkScalarFieldEnum = (typeof KnowledgeChunkScalarFieldEnum)[keyof typeof KnowledgeChunkScalarFieldEnum]
 
 
 export const SortOrder = {

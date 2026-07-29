@@ -6,6 +6,7 @@ import { APP_ROUTES } from '@/constants/enums';
 import { getCourseSections } from '@/features/my-courses/actions/my-course';
 import { CourseContentLayoutBody } from '@/features/my-courses/components/study-view/components/layout/course-content-layout-body';
 import { CourseLearningHeader } from '@/features/my-courses/components/study-view/components/layout/course-learning-header';
+import { AITutorConfig } from '@/features/ai-tutor';
 
 export default async function CourseLearningLayout({
   children,
@@ -31,7 +32,10 @@ export default async function CourseLearningLayout({
         totalCount={20}
       />
       <div className="flex-1 overflow-hidden">
-        <CourseContentLayoutBody courseSlug={courseSlug}>
+        <CourseContentLayoutBody
+          courseSlug={courseSlug}
+          aiTutorEnabled={AITutorConfig.isEnabled()}
+        >
           {children}
         </CourseContentLayoutBody>
       </div>

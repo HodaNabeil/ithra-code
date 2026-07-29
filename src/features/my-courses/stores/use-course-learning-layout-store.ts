@@ -3,14 +3,24 @@ import { create } from 'zustand';
 const SIDEBAR_WIDTH_CLASS = 'w-[415px] max-w-full lg:max-w-[415px]';
 const SIDEBAR_MAX_WIDTH_CLASS = 'w-[70%] min-w-[300px] max-w-full';
 
+export type CurrentLectureContext = {
+  lectureId: string;
+  lectureTitle: string;
+  courseTitle?: string;
+};
+
 export type CourseLearningLayoutSlice = {
   activeCourseSlug: string | null;
   isSidebarOpen: boolean;
   isMaximized: boolean;
+  aiTutorEnabled: boolean;
+  currentLecture: CurrentLectureContext | null;
   ensureCourse: (courseSlug: string) => void;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
   toggleMaximized: () => void;
+  setAiTutorEnabled: (enabled: boolean) => void;
+  setCurrentLecture: (lecture: CurrentLectureContext | null) => void;
 };
 
 export const useCourseLearningLayoutStore = create<CourseLearningLayoutSlice>(
@@ -18,6 +28,8 @@ export const useCourseLearningLayoutStore = create<CourseLearningLayoutSlice>(
     activeCourseSlug: null,
     isSidebarOpen: true,
     isMaximized: false,
+    aiTutorEnabled: false,
+    currentLecture: null,
     ensureCourse: (courseSlug) => {
       const { activeCourseSlug } = get();
       if (activeCourseSlug === courseSlug) return;
@@ -32,6 +44,8 @@ export const useCourseLearningLayoutStore = create<CourseLearningLayoutSlice>(
       set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
     toggleMaximized: () =>
       set((state) => ({ isMaximized: !state.isMaximized })),
+    setAiTutorEnabled: (enabled) => set({ aiTutorEnabled: enabled }),
+    setCurrentLecture: (lecture) => set({ currentLecture: lecture }),
   }),
 );
 

@@ -222,3 +222,33 @@ export type Testimonial = Prisma.TestimonialModel
  * 
  */
 export type Faq = Prisma.FaqModel
+/**
+ * Model TutorConversation
+ * 
+ */
+export type TutorConversation = Prisma.TutorConversationModel
+/**
+ * Model TutorThread
+ * 
+ */
+export type TutorThread = Prisma.TutorThreadModel
+/**
+ * Model TutorMessage
+ * 
+ */
+export type TutorMessage = Prisma.TutorMessageModel
+/**
+ * Model StudentLearningProfile
+ * 
+ */
+export type StudentLearningProfile = Prisma.StudentLearningProfileModel
+/**
+ * Model LectureTranscript
+ * 
+ */
+export type LectureTranscript = Prisma.LectureTranscriptModel
+/**
+ * Model KnowledgeChunk
+ * 
+ */
+export type KnowledgeChunk = Prisma.KnowledgeChunkModel

@@ -3,6 +3,8 @@
 import React from 'react';
 import { Tabs, TabsContent } from '@/components/shared/Tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { AITutorChat } from '@/features/ai-tutor/presentation/components/AITutorChat';
+import { useCourseLearningLayoutStore } from '@/features/my-courses/stores/use-course-learning-layout-store';
 import { SectionAccordion } from '../content/SectionAccordion';
 import { CourseSidebarHeader } from './course-sidebar-header';
 import { CourseSidebarAssistant } from './course-sidebar-assistant';
@@ -20,6 +22,9 @@ export const CourseSidebarContent: React.FC<CourseSidebarContentProps> = ({
   onMaximize,
   isMaximized,
 }) => {
+  const aiTutorEnabled = useCourseLearningLayoutStore((s) => s.aiTutorEnabled);
+  const currentLecture = useCourseLearningLayoutStore((s) => s.currentLecture);
+
   return (
     <Tabs
       defaultValue="content"
@@ -33,19 +38,30 @@ export const CourseSidebarContent: React.FC<CourseSidebarContentProps> = ({
       />
 
       {/* Sidebar Content Area */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {/* Content Tab */}
-        <TabsContent value="content" className="m-0 h-full flex flex-col">
+        <TabsContent value="content" className="m-0 flex h-full min-h-0 flex-col">
           <ScrollArea className="flex-1">
-            <div className="">
-              <SectionAccordion courseSlug={courseSlug} />
-            </div>
+            <SectionAccordion courseSlug={courseSlug} />
           </ScrollArea>
         </TabsContent>
 
         {/* AI Assistant Tab */}
-        <TabsContent value="assistant" className="m-0 h-full">
-          <CourseSidebarAssistant />
+        <TabsContent value="assistant" className="m-0 flex h-full min-h-0 flex-col overflow-hidden">
+          {aiTutorEnabled && currentLecture ? (
+            <AITutorChat
+              variant="sidebar"
+              courseSlug={courseSlug}
+              lectureId={currentLecture.lectureId}
+              lectureTitle={currentLecture.lectureTitle}
+              courseTitle={currentLecture.courseTitle}
+            />
+          ) : (
+            <CourseSidebarAssistant
+              aiTutorEnabled={aiTutorEnabled}
+              hasLectureContext={Boolean(currentLecture)}
+            />
+          )}
         </TabsContent>
       </div>
     </Tabs>

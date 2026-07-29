@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   useLectureDetails,
   useLectureNavigation,
 } from '@/features/my-courses/hooks/useMyCoursesQueries';
+import { useCourseLearningLayoutStore } from '@/features/my-courses/stores/use-course-learning-layout-store';
 import { LectureVideoSection } from './LectureVideoSection';
 import { LectureContentTabs } from './index';
 import { DEFAULT_MUX_PLAYBACK_ID } from '@/features/my-courses/constants/video';
@@ -13,9 +14,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 interface LectureViewProps {
   lectureId: string;
   courseSlug: string;
+  aiTutorEnabled?: boolean;
 }
 
-export function LectureView({ lectureId, courseSlug }: LectureViewProps) {
+export function LectureView({
+  lectureId,
+  courseSlug,
+  aiTutorEnabled = false,
+}: LectureViewProps) {
   const {
     data: details,
     isLoading: isDetailsLoading,
@@ -26,6 +32,24 @@ export function LectureView({ lectureId, courseSlug }: LectureViewProps) {
     lectureId,
     courseSlug,
   );
+  const setCurrentLecture = useCourseLearningLayoutStore(
+    (s) => s.setCurrentLecture,
+  );
+
+  useEffect(() => {
+    if (!details?.lecture) {
+      return;
+    }
+
+    setCurrentLecture({
+      lectureId,
+      lectureTitle: details.lecture.title,
+    });
+
+    return () => {
+      setCurrentLecture(null);
+    };
+  }, [details?.lecture, lectureId, setCurrentLecture]);
 
   if (isDetailsLoading || isNavLoading) {
     return <LectureViewSkeleton />;
@@ -57,6 +81,10 @@ export function LectureView({ lectureId, courseSlug }: LectureViewProps) {
         <LectureContentTabs
           description={lecture.description || undefined}
           updatedAt={lecture.updatedAt}
+          aiTutorEnabled={aiTutorEnabled}
+          courseSlug={courseSlug}
+          lectureId={lectureId}
+          lectureTitle={lecture.title}
         />
       </div>
     </div>

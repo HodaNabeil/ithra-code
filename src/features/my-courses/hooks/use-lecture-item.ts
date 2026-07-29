@@ -14,7 +14,7 @@ export function useLectureItem(id: string, courseSlug: string) {
   const isActive = params.lectureId === id;
 
   const handleSelect = () => {
-    router.push(`/my-courses/${courseSlug}/learn/lecture/${id}`);
+    router.push(`/my-courses/${courseSlug}/lecture/${id}`);
   };
 
   const handleToggleComplete = async (checked: boolean) => {

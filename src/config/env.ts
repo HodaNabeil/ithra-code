@@ -221,6 +221,37 @@ export const env = createEnv({
       .describe('Direct database URL for migrations'),
 
     // NextAuth trust host (v5 requirement)
+
+    // AI Tutor
+    AI_TUTOR_ENABLED: z
+      .enum(['true', 'false'])
+      .default('false')
+      .describe('Enable AI Tutor feature'),
+    OPENAI_API_KEY: z
+      .string()
+      .optional()
+      .describe('LLM API key (OpenAI or OpenRouter)'),
+    OPENAI_BASE_URL: z
+      .string()
+      .url()
+      .optional()
+      .describe('Optional LLM API base URL (e.g. OpenRouter)'),
+    AI_TUTOR_LLM_MODEL: z
+      .string()
+      .optional()
+      .describe('LLM model id (e.g. openai/gpt-4o-mini on OpenRouter)'),
+    AI_TUTOR_EMBEDDING_MODEL: z
+      .string()
+      .optional()
+      .describe('Embedding model id (e.g. openai/text-embedding-3-small)'),
+    AI_TUTOR_TOP_K: z
+      .string()
+      .optional()
+      .describe('Max knowledge chunks to retrieve per question'),
+    AI_TUTOR_MIN_SIMILARITY: z
+      .string()
+      .optional()
+      .describe('Minimum cosine similarity threshold for retrieval (0-1)'),
   },
 
   client: {
@@ -293,6 +324,13 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    AI_TUTOR_ENABLED: process.env.AI_TUTOR_ENABLED,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    OPENAI_BASE_URL: process.env.OPENAI_BASE_URL,
+    AI_TUTOR_LLM_MODEL: process.env.AI_TUTOR_LLM_MODEL,
+    AI_TUTOR_EMBEDDING_MODEL: process.env.AI_TUTOR_EMBEDDING_MODEL,
+    AI_TUTOR_TOP_K: process.env.AI_TUTOR_TOP_K,
+    AI_TUTOR_MIN_SIMILARITY: process.env.AI_TUTOR_MIN_SIMILARITY,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
