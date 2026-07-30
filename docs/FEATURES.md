@@ -340,6 +340,7 @@ IthraCode is a full-featured e-learning platform that enables students to discov
 | `/api/orders/[id]` | GET | Order details | Authenticated |
 | `/api/admin/payment/reconcile` | GET, POST | Payment reconciliation ops | Admin (secret) |
 | `/api/health/payment` | GET | Payment subsystem health | Ops |
+| `/api/health/tutor` | GET | AI Tutor / indexing health (DB, Redis, pgvector, queue metrics) | Ops |
 
 ### Auth & Docs
 
@@ -357,7 +358,9 @@ IthraCode is a full-featured e-learning platform that enables students to discov
 |---|---|---|
 | PostgreSQL database | Primary data store via Prisma ORM | ✅ Live |
 | Redis | Queue backend for BullMQ (Upstash) | ✅ Live |
-| BullMQ workers | Async payment processing worker | ✅ Live |
+| BullMQ workers | Async payment processing + course indexing workers | ✅ Live |
+| AI Tutor indexing | Background knowledge indexing via `pnpm worker:course-indexing` | ✅ Live |
+| Tutor health check | `GET /api/health/tutor` — DB, Redis, pgvector, queue metrics | ✅ Live |
 | Bunny Stream | Video hosting and streaming | ✅ Live |
 | Role-based access control | Route guards via proxy middleware | ✅ Live |
 | Rate limiting | API rate limiting on sensitive endpoints | ✅ Live |

@@ -430,7 +430,8 @@ export const ModelName = {
   TutorMessage: 'TutorMessage',
   StudentLearningProfile: 'StudentLearningProfile',
   LectureTranscript: 'LectureTranscript',
-  KnowledgeChunk: 'KnowledgeChunk'
+  KnowledgeChunk: 'KnowledgeChunk',
+  KnowledgeSourceHash: 'KnowledgeSourceHash'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -446,7 +447,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "course" | "section" | "lecture" | "video" | "videoCollection" | "attachment" | "path" | "track" | "user" | "account" | "session" | "userSession" | "verificationToken" | "trackedDevice" | "tokenFamily" | "enrollment" | "progress" | "cart" | "cartItem" | "coupon" | "couponCourse" | "order" | "orderItem" | "payment" | "paymentReconcileAttempt" | "paymentDomainOutbox" | "paymentDispute" | "refund" | "checkoutSession" | "invoice" | "webhookEvent" | "review" | "instructorAvailability" | "availabilityDateOverride" | "instructorScheduleSettings" | "consultationBooking" | "googleCalendarToken" | "refundRequest" | "instructorEarning" | "testimonial" | "faq" | "tutorConversation" | "tutorThread" | "tutorMessage" | "studentLearningProfile" | "lectureTranscript" | "knowledgeChunk"
+    modelProps: "course" | "section" | "lecture" | "video" | "videoCollection" | "attachment" | "path" | "track" | "user" | "account" | "session" | "userSession" | "verificationToken" | "trackedDevice" | "tokenFamily" | "enrollment" | "progress" | "cart" | "cartItem" | "coupon" | "couponCourse" | "order" | "orderItem" | "payment" | "paymentReconcileAttempt" | "paymentDomainOutbox" | "paymentDispute" | "refund" | "checkoutSession" | "invoice" | "webhookEvent" | "review" | "instructorAvailability" | "availabilityDateOverride" | "instructorScheduleSettings" | "consultationBooking" | "googleCalendarToken" | "refundRequest" | "instructorEarning" | "testimonial" | "faq" | "tutorConversation" | "tutorThread" | "tutorMessage" | "studentLearningProfile" | "lectureTranscript" | "knowledgeChunk" | "knowledgeSourceHash"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3928,6 +3929,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    KnowledgeSourceHash: {
+      payload: Prisma.$KnowledgeSourceHashPayload<ExtArgs>
+      fields: Prisma.KnowledgeSourceHashFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.KnowledgeSourceHashFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.KnowledgeSourceHashFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload>
+        }
+        findFirst: {
+          args: Prisma.KnowledgeSourceHashFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.KnowledgeSourceHashFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload>
+        }
+        findMany: {
+          args: Prisma.KnowledgeSourceHashFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload>[]
+        }
+        create: {
+          args: Prisma.KnowledgeSourceHashCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload>
+        }
+        createMany: {
+          args: Prisma.KnowledgeSourceHashCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.KnowledgeSourceHashCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload>[]
+        }
+        delete: {
+          args: Prisma.KnowledgeSourceHashDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload>
+        }
+        update: {
+          args: Prisma.KnowledgeSourceHashUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload>
+        }
+        deleteMany: {
+          args: Prisma.KnowledgeSourceHashDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.KnowledgeSourceHashUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.KnowledgeSourceHashUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload>[]
+        }
+        upsert: {
+          args: Prisma.KnowledgeSourceHashUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSourceHashPayload>
+        }
+        aggregate: {
+          args: Prisma.KnowledgeSourceHashAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKnowledgeSourceHash>
+        }
+        groupBy: {
+          args: Prisma.KnowledgeSourceHashGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KnowledgeSourceHashGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.KnowledgeSourceHashCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KnowledgeSourceHashCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4758,6 +4833,17 @@ export const KnowledgeChunkScalarFieldEnum = {
 export type KnowledgeChunkScalarFieldEnum = (typeof KnowledgeChunkScalarFieldEnum)[keyof typeof KnowledgeChunkScalarFieldEnum]
 
 
+export const KnowledgeSourceHashScalarFieldEnum = {
+  sourceId: 'sourceId',
+  courseId: 'courseId',
+  lectureId: 'lectureId',
+  contentHash: 'contentHash',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeSourceHashScalarFieldEnum = (typeof KnowledgeSourceHashScalarFieldEnum)[keyof typeof KnowledgeSourceHashScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -5450,6 +5536,7 @@ export type GlobalOmitConfig = {
   studentLearningProfile?: Prisma.StudentLearningProfileOmit
   lectureTranscript?: Prisma.LectureTranscriptOmit
   knowledgeChunk?: Prisma.KnowledgeChunkOmit
+  knowledgeSourceHash?: Prisma.KnowledgeSourceHashOmit
 }
 
 /* Types for Logging */

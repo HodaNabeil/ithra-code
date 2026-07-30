@@ -60,6 +60,11 @@ function createSessionContext(): TutorSessionContext {
       position: 1,
       isCompleted: false,
     },
+    student: {
+      displayName: 'Test Student',
+      learningLevel: 'في بداية الدورة',
+      progressTier: 'start',
+    },
     studentProgress: {
       enrollmentStatus: 'ACTIVE',
       completedLectures: 0,

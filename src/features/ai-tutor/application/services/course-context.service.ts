@@ -24,6 +24,7 @@ import {
   loadStudentLearningProfile,
   type LearningProfileServiceDeps,
 } from './learning-profile.service';
+import { buildStudentInfo } from './student-info.service';
 
 export type CourseContextServiceDeps = LearningProfileServiceDeps & {
   courseContextRepository: CourseContextRepositoryPort;
@@ -204,6 +205,11 @@ export async function buildTutorSessionContext(
     },
     deps,
   );
+  const studentProgress = buildStudentProgress({
+    enrollmentStatus: enrollment.status,
+    lectureProgress,
+    currentLectureId: params.lectureId,
+  });
 
   const sessionContext: TutorSessionContext = {
     courseId: course.id,
@@ -211,11 +217,13 @@ export async function buildTutorSessionContext(
     lectureId: params.lectureId,
     course: mapCourseContext(course),
     lecture,
-    studentProgress: buildStudentProgress({
-      enrollmentStatus: enrollment.status,
-      lectureProgress,
-      currentLectureId: params.lectureId,
+    student: buildStudentInfo({
+      name: enrollment.student.name,
+      firstName: enrollment.student.firstName,
+      lastName: enrollment.student.lastName,
+      progress: studentProgress,
     }),
+    studentProgress,
     lectureCatalog,
     learningProfile:
       learningProfile.interactionCount > 0 ? learningProfile : undefined,

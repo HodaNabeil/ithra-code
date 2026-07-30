@@ -6,6 +6,7 @@
  */
 
 import { env } from '@/config/env';
+import { logger } from '@/lib/logger';
 
 import { AI_TUTOR_CONSTANTS } from '../../shared';
 
@@ -68,7 +69,8 @@ export class AITutorConfig {
     return {
       model: env.AI_TUTOR_LLM_MODEL ?? 'gpt-3.5-turbo',
       temperature: 0.7,
-      maxTokens: 2048,
+      maxTokens: AI_TUTOR_CONSTANTS.MAX_RESPONSE_TOKENS,
+      requestTimeoutMs: AI_TUTOR_CONSTANTS.REQUEST_TIMEOUT_MS,
       baseURL: env.OPENAI_BASE_URL,
     };
   }
@@ -78,9 +80,30 @@ export class AITutorConfig {
    */
   static getRateLimitConfig() {
     return {
-      messagesPerMinute: 30,
-      messagesPerHour: 300,
-      messagesPerDay: 5000,
+      messagesPerMinute: AI_TUTOR_CONSTANTS.RATE_LIMIT_MESSAGES_PER_MINUTE,
+      messagesPerHour: AI_TUTOR_CONSTANTS.RATE_LIMIT_MESSAGES_PER_HOUR,
+      messagesPerDay: AI_TUTOR_CONSTANTS.RATE_LIMIT_MESSAGES_PER_DAY,
+    };
+  }
+
+  /**
+   * Get streaming guard configuration (per student)
+   */
+  static getStreamConfig() {
+    return {
+      maxConcurrentStreamsPerUser:
+        AI_TUTOR_CONSTANTS.MAX_CONCURRENT_STREAMS_PER_USER,
+      requestTimeoutMs: AI_TUTOR_CONSTANTS.REQUEST_TIMEOUT_MS,
+    };
+  }
+
+  /**
+   * Get token budget configuration for prompt construction and LLM calls
+   */
+  static getTokenLimits() {
+    return {
+      maxPromptTokens: AI_TUTOR_CONSTANTS.MAX_PROMPT_TOKENS,
+      maxCompletionTokens: AI_TUTOR_CONSTANTS.MAX_RESPONSE_TOKENS,
     };
   }
 
@@ -103,6 +126,29 @@ export class AITutorConfig {
       indexType: 'hnsw' as const,
     };
   }
+
+  /**
+   * Get knowledge ingestion / indexing pipeline configuration
+   */
+  static getIndexingConfig() {
+    return {
+      chunkMaxChars: AI_TUTOR_CONSTANTS.INDEXING_CHUNK_MAX_CHARS,
+      chunkMinChars: AI_TUTOR_CONSTANTS.INDEXING_CHUNK_MIN_CHARS,
+      chunkOverlapChars: AI_TUTOR_CONSTANTS.INDEXING_CHUNK_OVERLAP_CHARS,
+      maxTokensPerChunk: AI_TUTOR_CONSTANTS.INDEXING_MAX_TOKENS_PER_CHUNK,
+      maxPdfBytes: AI_TUTOR_CONSTANTS.INDEXING_MAX_PDF_BYTES,
+      maxPdfPages: AI_TUTOR_CONSTANTS.INDEXING_MAX_PDF_PAGES,
+      maxTranscriptChars: AI_TUTOR_CONSTANTS.INDEXING_MAX_TRANSCRIPT_CHARS,
+      fetchTimeoutMs: AI_TUTOR_CONSTANTS.INDEXING_FETCH_TIMEOUT_MS,
+      supportedPdfMimeTypes: ['application/pdf'] as const,
+      supportedTextMimeTypes: [
+        'text/plain',
+        'text/markdown',
+        'text/html',
+        'text/x-markdown',
+      ] as const,
+    };
+  }
 }
 
 /**
@@ -110,16 +156,21 @@ export class AITutorConfig {
  */
 export function validateAITutorConfig(): void {
   if (!AITutorConfig.isEnabled()) {
-    console.log('ℹ AI Tutor feature is disabled (AI_TUTOR_ENABLED=false)');
+    logger.info('[AI_TUTOR_CONFIG] AI Tutor feature is disabled (AI_TUTOR_ENABLED=false)');
     return;
   }
 
   try {
     AITutorConfig.getLlmApiKey();
     const provider = AITutorConfig.isOpenRouter() ? 'OpenRouter' : 'OpenAI-compatible';
-    console.log(`✓ AI Tutor configuration is valid (${provider})`);
+    const embeddingModel = AITutorConfig.getEmbeddingConfig().model;
+    const llmModel = AITutorConfig.getLlmConfig().model;
+    logger.info(
+      { provider, embeddingModel, llmModel },
+      '[AI_TUTOR_CONFIG] AI Tutor configuration is valid',
+    );
   } catch (error) {
-    console.error('✗ AI Tutor configuration error:', error);
+    logger.error({ error }, '[AI_TUTOR_CONFIG] AI Tutor configuration error');
     throw error;
   }
 }

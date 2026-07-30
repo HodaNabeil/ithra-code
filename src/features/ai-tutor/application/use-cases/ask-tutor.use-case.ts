@@ -17,6 +17,7 @@ import {
   buildGuidedLearningResponse,
   detectAssessmentIntent,
 } from '../services/educational-integrity.service';
+import { detectSessionMetaIntent } from '../services/student-info.service';
 import {
   buildSuggestionFallback,
   formatSuggestionMessage,
@@ -137,6 +138,7 @@ export async function* askTutorUseCase(
     });
 
     const assessmentIntent = detectAssessmentIntent(input.question);
+    const sessionMetaIntent = detectSessionMetaIntent(input.question);
 
     // Task 7.1: Block direct assessment-answer requests with guided learning.
     if (assessmentIntent.isAssessmentSeeking) {
@@ -190,7 +192,7 @@ export async function* askTutorUseCase(
 
     yield encodeStreamMeta(streamMeta);
 
-    if (retrieval.usedFallback) {
+    if (retrieval.usedFallback && !sessionMetaIntent.isSessionMeta) {
       const fallbackMessage = buildNoResultsMessage(input.question, {
         lectures: sessionContext.lectureCatalog,
         excludeLectureId: input.lectureId,
@@ -212,7 +214,10 @@ export async function* askTutorUseCase(
       };
     }
 
-    const promptOptions = { assessmentMode: false };
+    const promptOptions = {
+      assessmentMode: false,
+      sessionMetaMode: sessionMetaIntent.isSessionMeta && retrieval.usedFallback,
+    };
     const systemPrompt = buildSystemPrompt(
       sessionContext,
       retrieval.chunks,
@@ -236,11 +241,14 @@ export async function* askTutorUseCase(
         lectureId: sessionContext.lectureId,
         estimatedSystemTokens: preview.estimatedSystemTokens,
         historyMessages: messages.length,
+        studentName: sessionContext.student.displayName ?? 'unknown',
+        learningLevel: sessionContext.student.learningLevel,
         completionPercentage: sessionContext.studentProgress.completionPercentage,
         knowledgeGaps: sessionContext.studentProgress.knowledgeGaps.length,
         learningProfile: sessionContext.learningProfile?.explanationDepth ?? 'none',
         retrievedChunks: retrieval.chunks.length,
         usedFallback: retrieval.usedFallback,
+        sessionMetaIntent: sessionMetaIntent.confidence,
         topScore: retrieval.chunks[0]?.score ?? null,
         assessmentIntent: assessmentIntent.confidence,
       });
@@ -272,7 +280,7 @@ export async function* askTutorUseCase(
           courseId: sessionContext.courseId,
           lectureId: input.lectureId,
         },
-        { strictMode: true, courseId: sessionContext.courseId },
+        { strictMode: !sessionMetaIntent.isSessionMeta, courseId: sessionContext.courseId },
       );
 
       if (!validation.isValid) {
@@ -314,7 +322,7 @@ export async function* askTutorUseCase(
       threadId,
       conversationId,
       sources,
-      usedFallback: false,
+      usedFallback: retrieval.usedFallback,
     };
   } catch (error) {
     if (error instanceof AskTutorError) {

@@ -30,6 +30,11 @@ function createSessionContext(): TutorSessionContext {
       position: 3,
       isCompleted: false,
     },
+    student: {
+      displayName: 'Hoda Ali',
+      learningLevel: 'مبتدئ في الدورة',
+      progressTier: 'early',
+    },
     studentProgress: {
       completionPercentage: 35,
       completedLectures: 3,
@@ -77,10 +82,28 @@ describe('prompt-builder RAG integration', () => {
     assert.match(prompt, /88%/);
   });
 
-  it('uses fallback guidance when no chunks are retrieved', () => {
+  it('includes student identity and progress level in system prompt', () => {
     const prompt = buildSystemPrompt(createSessionContext(), []);
 
-    assert.match(prompt, /لم يتم العثور على مواد دورة مطابقة/);
-    assert.doesNotMatch(prompt, /مواد الدورة ذات الصلة/);
+    assert.match(prompt, /معلومات الطالب/);
+    assert.match(prompt, /Hoda Ali/);
+    assert.match(prompt, /مستوى التقدم في الدورة/);
+  });
+
+  it('includes level-adaptive teaching instructions in system prompt', () => {
+    const prompt = buildSystemPrompt(createSessionContext(), []);
+
+    assert.match(prompt, /تكييف الشرح حسب المستوى/);
+    assert.match(prompt, /مستوى الدورة: مبتدئ/);
+    assert.match(prompt, /إرشادات حسب تقدم الطالب/);
+  });
+
+  it('uses session context guidance for student meta questions without RAG', () => {
+    const prompt = buildSystemPrompt(createSessionContext(), [], {
+      sessionMetaMode: true,
+    });
+
+    assert.match(prompt, /يتعلق بالطالب أو تقدمه/);
+    assert.doesNotMatch(prompt, /لم يتم العثور على مواد دورة مطابقة/);
   });
 });

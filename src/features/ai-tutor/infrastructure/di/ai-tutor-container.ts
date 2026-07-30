@@ -8,6 +8,7 @@ import {
 } from '../adapters/EducationalContentFilter';
 import { prismaConversationRepository } from '../repositories/PrismaConversationRepository';
 import { prismaKnowledgeChunkRepository } from '../repositories/PrismaKnowledgeChunkRepository';
+import { prismaKnowledgeSourceHashRepository } from '../repositories/PrismaKnowledgeSourceHashRepository';
 import { prismaCourseContextRepository } from '../repositories/PrismaCourseContextRepository';
 import { prismaStudentLearningProfileRepository } from '../repositories/PrismaStudentLearningProfileRepository';
 import { prismaCourseContentRepository } from '../repositories/PrismaCourseContentRepository';
@@ -19,6 +20,7 @@ import type { ContentFilterPort } from '../../domain/ports/ContentFilterPort';
 import type { KnowledgeChunkRepositoryPort } from '../../domain/ports/KnowledgeChunkRepositoryPort';
 import type { CourseContextRepositoryPort } from '../../domain/ports/CourseContextRepositoryPort';
 import type { StudentLearningProfileRepositoryPort } from '../../domain/ports/StudentLearningProfileRepositoryPort';
+import type { KnowledgeSourceHashRepositoryPort } from '../../domain/ports/KnowledgeSourceHashRepositoryPort';
 import type { CourseContentRepositoryPort } from '../../domain/ports/CourseContentRepositoryPort';
 import type { SessionContextCachePort } from '../../domain/ports/SessionContextCachePort';
 import {
@@ -134,6 +136,11 @@ export function getStudentLearningProfileRepository(): StudentLearningProfileRep
   return prismaStudentLearningProfileRepository;
 }
 
+export function getKnowledgeSourceHashRepository(): KnowledgeSourceHashRepositoryPort {
+  assertAITutorEnabled();
+  return prismaKnowledgeSourceHashRepository;
+}
+
 export function getCourseContentRepository(): CourseContentRepositoryPort {
   assertAITutorEnabled();
   return prismaCourseContentRepository;
@@ -175,6 +182,7 @@ export function getIndexCourseUseCaseDeps(): IndexCourseUseCaseDeps {
   return {
     embeddingPort: getEmbeddingPort(),
     knowledgeChunkRepository: getKnowledgeChunkRepository(),
+    hashRepository: getKnowledgeSourceHashRepository(),
     courseContentRepository: getCourseContentRepository(),
   };
 }

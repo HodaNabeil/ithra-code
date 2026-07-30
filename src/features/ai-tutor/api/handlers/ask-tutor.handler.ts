@@ -7,6 +7,10 @@ import {
 } from '../../application/errors/ask-tutor.errors';
 import { AITutorConfig } from '../../infrastructure/config/ai-tutor.config';
 import {
+  acquireTutorStreamSlot,
+  checkTutorMessageRateLimit,
+} from '../../infrastructure/guards/tutor-request.guards';
+import {
   askTutorUseCase,
   getAskTutorUseCaseDeps,
 } from '../../infrastructure/di/ai-tutor-container';
@@ -53,6 +57,34 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
     return Response.json({ success: false, message }, { status: 400 });
   }
 
+  try {
+    await checkTutorMessageRateLimit(session.user.id);
+  } catch (error) {
+    if (error instanceof AskTutorError) {
+      return Response.json(
+        { success: false, message: error.message, code: error.code },
+        { status: error.status },
+      );
+    }
+
+    throw error;
+  }
+
+  let releaseStreamSlot: (() => Promise<void>) | undefined;
+
+  try {
+    releaseStreamSlot = await acquireTutorStreamSlot(session.user.id);
+  } catch (error) {
+    if (error instanceof AskTutorError) {
+      return Response.json(
+        { success: false, message: error.message, code: error.code },
+        { status: error.status },
+      );
+    }
+
+    throw error;
+  }
+
   const { readable, writable } = new TransformStream();
   const writer = writable.getWriter();
 
@@ -89,6 +121,7 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
 
       await writer.write(encodeSseEvent(`[ERROR] ${code}:${message}`));
     } finally {
+      await releaseStreamSlot?.();
       await writer.close();
     }
   })();

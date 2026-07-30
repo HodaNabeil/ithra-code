@@ -97,7 +97,8 @@ export const ModelName = {
   TutorMessage: 'TutorMessage',
   StudentLearningProfile: 'StudentLearningProfile',
   LectureTranscript: 'LectureTranscript',
-  KnowledgeChunk: 'KnowledgeChunk'
+  KnowledgeChunk: 'KnowledgeChunk',
+  KnowledgeSourceHash: 'KnowledgeSourceHash'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -905,6 +906,17 @@ export const KnowledgeChunkScalarFieldEnum = {
 } as const
 
 export type KnowledgeChunkScalarFieldEnum = (typeof KnowledgeChunkScalarFieldEnum)[keyof typeof KnowledgeChunkScalarFieldEnum]
+
+
+export const KnowledgeSourceHashScalarFieldEnum = {
+  sourceId: 'sourceId',
+  courseId: 'courseId',
+  lectureId: 'lectureId',
+  contentHash: 'contentHash',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeSourceHashScalarFieldEnum = (typeof KnowledgeSourceHashScalarFieldEnum)[keyof typeof KnowledgeSourceHashScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -4,6 +4,10 @@ import type { RetrievedContentChunk } from '../dto/retrieved-content.dto';
 import { AI_TUTOR_CONSTANTS } from '../../shared';
 import { buildAdaptiveFormattingInstructions } from './learning-profile.logic';
 import {
+  buildLevelAdaptiveInstructions,
+  formatCourseLevelLabel,
+} from './student-info.service';
+import {
   formatAssessmentPerformanceSummary,
   formatKnowledgeGapsForPrompt,
   formatSectionProgressForPrompt,
@@ -12,11 +16,13 @@ import {
 const BASE_SYSTEM_PROMPT = `أنت مدرس ذكي على منصة IthraCode.
 - ساعد الطالب على الفهم بدلاً من إعطاء الإجابة مباشرة عندما يكون ذلك مناسباً.
 - اشرح بوضوح وبأسلوب تعليمي مشجع.
+- كيّف عمق الشرح وطول الإجابة حسب مستوى الدورة وتقدم الطالب فيها (انظر تعليمات التكييف أدناه).
 - اربط إجاباتك بسياق الدورة والمحاضرة الحالية عندما يكون ذلك مفيداً.
 - أجب بنفس لغة سؤال الطالب.
 - إذا لم تكن متأكداً من الإجابة، قل ذلك بصراحة.
 - اعتمد على مواد الدورة المسترجعة أدناه عند الإجابة.
 - لا تخترع معلومات غير موجودة في سياق الدورة أو المواد المسترجعة.
+- عندما يسأل الطالب عن نفسه (اسمه، تقدمه، مستواه)، استخدم معلومات الطالب من سياق الجلسة أدناه.
 
 ## حدود النزاهة التعليمية
 - لا تقدّم أبداً إجابات مباشرة لأسئلة الاختبارات أو الواجبات أو مفاتيح الحلول.
@@ -31,6 +37,12 @@ const ASSESSMENT_BOUNDARY_PROMPT = `
 - قدّم تلميحات مفاهيمية وأسئلة توجيهية فقط.
 - اقترح مراجعة محاضرات أو أهداف تعلم ذات صلة.
 - لا تكشف الخيار الصحيح أو نص الحل.`;
+
+const SESSION_CONTEXT_PROMPT = `
+## ملاحظة
+هذا السؤال يتعلق بالطالب أو تقدمه في الدورة.
+- أجب باستخدام معلومات الطالب من سياق الجلسة (الاسم، التقدم، المستوى).
+- لا تحتاج إلى مواد دورة مسترجعة للإجابة على هذا السؤال.`;
 
 const RAG_FALLBACK_PROMPT = `
 ## ملاحظة مهمة
@@ -63,7 +75,7 @@ function formatRetrievedChunks(chunks: RetrievedContentChunk[]): string {
 export function buildSystemPrompt(
   sessionContext: TutorSessionContext,
   retrievedChunks: RetrievedContentChunk[] = [],
-  options?: { assessmentMode?: boolean },
+  options?: { assessmentMode?: boolean; sessionMetaMode?: boolean },
 ): string {
   const lines = [BASE_SYSTEM_PROMPT, '', '## سياق الجلسة'];
 
@@ -71,8 +83,18 @@ export function buildSystemPrompt(
     lines.push(ASSESSMENT_BOUNDARY_PROMPT);
   }
 
+  lines.push('', '### معلومات الطالب');
+  if (sessionContext.student.displayName) {
+    lines.push(`- الاسم: ${sessionContext.student.displayName}`);
+  } else {
+    lines.push('- الاسم: غير متوفر في الملف الشخصي');
+  }
+  lines.push(`- مستوى التقدم في الدورة: ${sessionContext.student.learningLevel}`);
+
   lines.push(`- الدورة: ${sessionContext.course.title}`);
-  lines.push(`- المستوى: ${sessionContext.course.level}`);
+  lines.push(`- مستوى الدورة: ${formatCourseLevelLabel(sessionContext.course.level)}`);
+
+  lines.push('', buildLevelAdaptiveInstructions(sessionContext));
 
   if (sessionContext.course.shortDescription) {
     lines.push(`- نبذة عن الدورة: ${sessionContext.course.shortDescription}`);
@@ -145,6 +167,8 @@ export function buildSystemPrompt(
       '',
       'عند الإجابة، اذكر المصدر بشكل طبيعي (مثل: "حسب محتوى المحاضرة...") عندما يكون ذلك مناسباً.',
     );
+  } else if (options?.sessionMetaMode) {
+    lines.push(SESSION_CONTEXT_PROMPT);
   } else {
     lines.push(RAG_FALLBACK_PROMPT);
   }
@@ -191,7 +215,7 @@ export function buildConversationMessages(
   history: MessageDTO[],
   sessionContext: TutorSessionContext,
   retrievedChunks: RetrievedContentChunk[] = [],
-  options?: { assessmentMode?: boolean },
+  options?: { assessmentMode?: boolean; sessionMetaMode?: boolean },
 ): Array<{ role: 'user' | 'assistant'; content: string }> {
   const systemPrompt = buildSystemPrompt(
     sessionContext,
@@ -209,7 +233,7 @@ export function buildConversationMessages(
 export function buildPromptPreview(
   sessionContext: TutorSessionContext,
   retrievedChunks: RetrievedContentChunk[] = [],
-  options?: { assessmentMode?: boolean },
+  options?: { assessmentMode?: boolean; sessionMetaMode?: boolean },
 ): {
   systemPrompt: string;
   estimatedSystemTokens: number;

@@ -53,12 +53,19 @@ export type LectureCatalogItem = {
   sectionTitle: string;
 };
 
+export type StudentContextInfo = {
+  displayName?: string;
+  learningLevel: string;
+  progressTier: 'start' | 'early' | 'mid' | 'advanced' | 'near_complete';
+};
+
 export type TutorSessionContext = {
   courseId: string;
   userId: string;
   lectureId?: string;
   course: CourseContextInfo;
   lecture?: LectureContextInfo;
+  student: StudentContextInfo;
   studentProgress: StudentProgressInfo;
   /** Course lecture catalog used for intelligent content suggestions. */
   lectureCatalog: LectureCatalogItem[];

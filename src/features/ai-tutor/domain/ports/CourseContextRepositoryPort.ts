@@ -21,6 +21,11 @@ export type EnrolledCourseWithProgressDTO = {
   }>;
   enrollments: Array<{
     status: string;
+    student: {
+      name: string | null;
+      firstName: string | null;
+      lastName: string | null;
+    };
     progress: Array<{
       lectureId: string;
       isCompleted: boolean;

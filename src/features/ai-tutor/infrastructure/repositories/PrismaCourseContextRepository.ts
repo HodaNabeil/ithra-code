@@ -50,6 +50,13 @@ export class PrismaCourseContextRepository implements CourseContextRepositoryPor
           where: { studentId: params.userId },
           select: {
             status: true,
+            student: {
+              select: {
+                name: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
             progress: {
               select: {
                 lectureId: true,

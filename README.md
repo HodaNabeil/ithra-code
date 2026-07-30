@@ -151,11 +151,17 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 7. Start the Payment Worker (separate terminal)
+### 7. Start Background Workers (separate terminals)
 
 ```bash
-pnpm worker
+# Payment post-fulfillment worker
+pnpm worker:order-completed
+
+# Course knowledge indexing worker (requires AI_TUTOR_ENABLED=true)
+pnpm worker:course-indexing
 ```
+
+See [docs/ai-tutor/08-production-operations.md](./docs/ai-tutor/08-production-operations.md) for indexing ops.
 
 ---
 
@@ -276,7 +282,10 @@ MUX_TOKEN_SECRET="..."
 | `pnpm db:push`      | Push schema changes to the database |
 | `pnpm db:reset`     | Reset the database (force)          |
 | `pnpm db:studio`    | Open Prisma Studio                  |
-| `pnpm worker`       | Start the payment processing worker |
+| `pnpm worker:order-completed` | Start the order post-fulfillment worker |
+| `pnpm worker:course-indexing` | Start the AI Tutor course indexing worker |
+| `pnpm worker:reconcile` | Start the payment reconciliation scheduler |
+| `pnpm worker:reconcile-consumer` | Start the payment reconciliation queue consumer |
 
 ---
 

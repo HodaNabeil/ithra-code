@@ -276,3 +276,8 @@ export type LectureTranscript = Prisma.LectureTranscriptModel
  * 
  */
 export type KnowledgeChunk = Prisma.KnowledgeChunkModel
+/**
+ * Model KnowledgeSourceHash
+ * 
+ */
+export type KnowledgeSourceHash = Prisma.KnowledgeSourceHashModel

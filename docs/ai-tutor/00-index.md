@@ -54,6 +54,12 @@ Complete documentation for the IthraCode AI Tutor feature implementation.
    - Multi-agent collaboration framework
    - Advanced evaluation and observability
 
+### 8. **[Production Operations](./08-production-operations.md)**
+   - Local development setup (Next.js + worker + Redis + PostgreSQL)
+   - Production deployment checklist
+   - Health monitoring (`GET /api/health/tutor`)
+   - Operational runbook (restart, failed jobs, reindex, recovery)
+
 ## Quick Start
 
 **For Developers:**

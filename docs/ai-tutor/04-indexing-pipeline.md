@@ -2,6 +2,21 @@
 
 Background process for building and maintaining the knowledge base.
 
+> **Implementation reference:** See [08-production-operations.md](./08-production-operations.md) for deployment, health checks, and runbook.
+
+## Implemented Architecture (current)
+
+| Step | Component |
+|------|-----------|
+| Publish trigger | `src/features/courses/use-cases/publish-course.use-case.ts` |
+| Queue publisher | `src/features/ai-tutor/infrastructure/queue/course-indexing.publisher.ts` |
+| Worker | `src/server/workers/course-indexing.worker.ts` (`pnpm worker:course-indexing`) |
+| Ingestion | `src/features/ai-tutor/application/services/knowledge-ingestion/` |
+| Incremental hashes | `knowledge_source_hashes` table + `content-hash.service.ts` |
+| Health | `GET /api/health/tutor` |
+
+Queue name: `course-indexing`. Job types: `index-course`, `index-lecture`.
+
 ## High-Level Flow
 
 ```
@@ -31,20 +46,12 @@ Index Update Complete
 #### **Course Published**
 **Event:** Course status changes to `PUBLISHED`
 
-**Trigger Location:** `src/features/courses/actions/publish-course.ts`
+**Trigger Location:** `src/features/courses/use-cases/publish-course.use-case.ts` (API: `POST /api/courses/[idOrSlug]/publish`)
 
 **Processing:**
-- Full course indexing initiated
-- All sections, lectures, and attachments processed
-- Expected duration: 2-10 minutes (depending on content size)
-
-**Detection:**
-```typescript
-// Webhook or event emission
-onCourseStatusChange('PUBLISHED', courseId, () => {
-  indexingService.indexFullCourse(courseId);
-});
-```
+- Full course indexing job enqueued to BullMQ (`course-indexing` queue)
+- Worker processes all published lectures and course overview
+- Incremental: unchanged sources skipped via SHA-256 content hashes
 
 ---
 

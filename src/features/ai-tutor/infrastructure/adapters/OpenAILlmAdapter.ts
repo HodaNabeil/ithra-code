@@ -15,6 +15,7 @@ export class OpenAILlmAdapter implements LlmPort {
   private readonly model: string;
   private readonly defaultTemperature: number;
   private readonly defaultMaxTokens: number;
+  private readonly requestTimeoutMs: number;
 
   constructor(apiKey: string, options?: { baseURL?: string; model?: string }) {
     const config = AITutorConfig.getLlmConfig();
@@ -22,24 +23,32 @@ export class OpenAILlmAdapter implements LlmPort {
     this.client = new OpenAI({
       apiKey,
       baseURL: options?.baseURL ?? config.baseURL,
+      timeout: config.requestTimeoutMs,
     });
     this.model = options?.model ?? config.model;
     this.defaultTemperature = config.temperature;
     this.defaultMaxTokens = config.maxTokens;
+    this.requestTimeoutMs = config.requestTimeoutMs;
   }
 
   async *streamAnswer(options: LlmStreamOptions): AsyncIterableIterator<string> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.requestTimeoutMs);
+
     try {
-      const stream = await this.client.chat.completions.create({
-        model: this.model,
-        messages: [
-          { role: 'system', content: options.systemPrompt },
-          ...this.toOpenAIMessages(options.messages),
-        ],
-        temperature: options.temperature ?? this.defaultTemperature,
-        max_tokens: options.maxTokens ?? this.defaultMaxTokens,
-        stream: true,
-      });
+      const stream = await this.client.chat.completions.create(
+        {
+          model: this.model,
+          messages: [
+            { role: 'system', content: options.systemPrompt },
+            ...this.toOpenAIMessages(options.messages),
+          ],
+          temperature: options.temperature ?? this.defaultTemperature,
+          max_tokens: options.maxTokens ?? this.defaultMaxTokens,
+          stream: true,
+        },
+        { signal: controller.signal },
+      );
 
       for await (const chunk of stream) {
         const content = chunk.choices[0]?.delta?.content;
@@ -49,6 +58,8 @@ export class OpenAILlmAdapter implements LlmPort {
       }
     } catch (error) {
       throw this.mapError(error);
+    } finally {
+      clearTimeout(timeout);
     }
   }
 
@@ -64,6 +75,14 @@ export class OpenAILlmAdapter implements LlmPort {
   private mapError(error: unknown): LlmError {
     if (error instanceof LlmError) {
       return error;
+    }
+
+    if (error instanceof Error && error.name === 'AbortError') {
+      return new LlmError(
+        LlmErrorCodes.TIMEOUT,
+        'انتهت مهلة الاتصال بخدمة الذكاء الاصطناعي',
+        true,
+      );
     }
 
     if (error instanceof OpenAI.APIError) {

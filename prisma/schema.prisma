@@ -53,6 +53,7 @@ model Course {
   enrollments Enrollment[]
   tutorConversations TutorConversation[]
   knowledgeChunks KnowledgeChunk[]
+  knowledgeSourceHashes KnowledgeSourceHash[]
   studentLearningProfiles StudentLearningProfile[]
 
   prerequisites Course[] @relation("CoursePrerequisites")
@@ -142,6 +143,7 @@ model Lecture {
   tutorThreads TutorThread[]
   transcript  LectureTranscript?
   knowledgeChunks KnowledgeChunk[]
+  knowledgeSourceHashes KnowledgeSourceHash[]
 
   @@index([sectionId])
   @@index([position])
@@ -1326,4 +1328,19 @@ model KnowledgeChunk {
   @@index([contentType])
   @@index([sensitivity])
   @@map("knowledge_chunks")
+}
+
+model KnowledgeSourceHash {
+  sourceId    String   @id @map("source_id")
+  courseId    String   @map("course_id")
+  lectureId   String?  @map("lecture_id")
+  contentHash String   @map("content_hash")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lecture Lecture? @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+  @@index([lectureId])
+  @@map("knowledge_source_hashes")
 }

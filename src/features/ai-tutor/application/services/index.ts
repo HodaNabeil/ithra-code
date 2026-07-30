@@ -99,3 +99,17 @@ export {
   isLikelyEnglish,
   mapChunksToSources,
 } from './rag-helpers';
+export {
+  buildStudentInfo,
+  buildLevelAdaptiveInstructions,
+  deriveStudentLearningLevel,
+  deriveStudentProgressTier,
+  detectSessionMetaIntent,
+  formatCourseLevelLabel,
+  resolveStudentDisplayName,
+} from './student-info.service';
+export type {
+  SessionMetaIntent,
+  StudentInfo,
+  StudentProgressTier,
+} from './student-info.service';

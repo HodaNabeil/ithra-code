@@ -24,6 +24,26 @@ export class PrismaKnowledgeChunkRepository implements KnowledgeChunkRepositoryP
     return result.count;
   }
 
+  async deleteBySourceId(sourceId: string): Promise<number> {
+    const result = await prisma.knowledgeChunk.deleteMany({
+      where: { sourceId },
+    });
+
+    return result.count;
+  }
+
+  async deleteBySourceIds(sourceIds: string[]): Promise<number> {
+    if (sourceIds.length === 0) {
+      return 0;
+    }
+
+    const result = await prisma.knowledgeChunk.deleteMany({
+      where: { sourceId: { in: sourceIds } },
+    });
+
+    return result.count;
+  }
+
   async countByCourseId(courseId: string): Promise<number> {
     return prisma.knowledgeChunk.count({
       where: { courseId },

@@ -279,6 +279,7 @@ export type LectureWhereInput = {
   tutorThreads?: Prisma.TutorThreadListRelationFilter
   transcript?: Prisma.XOR<Prisma.LectureTranscriptNullableScalarRelationFilter, Prisma.LectureTranscriptWhereInput> | null
   knowledgeChunks?: Prisma.KnowledgeChunkListRelationFilter
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashListRelationFilter
 }
 
 export type LectureOrderByWithRelationInput = {
@@ -301,6 +302,7 @@ export type LectureOrderByWithRelationInput = {
   tutorThreads?: Prisma.TutorThreadOrderByRelationAggregateInput
   transcript?: Prisma.LectureTranscriptOrderByWithRelationInput
   knowledgeChunks?: Prisma.KnowledgeChunkOrderByRelationAggregateInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashOrderByRelationAggregateInput
 }
 
 export type LectureWhereUniqueInput = Prisma.AtLeast<{
@@ -326,6 +328,7 @@ export type LectureWhereUniqueInput = Prisma.AtLeast<{
   tutorThreads?: Prisma.TutorThreadListRelationFilter
   transcript?: Prisma.XOR<Prisma.LectureTranscriptNullableScalarRelationFilter, Prisma.LectureTranscriptWhereInput> | null
   knowledgeChunks?: Prisma.KnowledgeChunkListRelationFilter
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashListRelationFilter
 }, "id" | "videoId">
 
 export type LectureOrderByWithAggregationInput = {
@@ -384,6 +387,7 @@ export type LectureCreateInput = {
   tutorThreads?: Prisma.TutorThreadCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutLectureInput
 }
 
 export type LectureUncheckedCreateInput = {
@@ -404,6 +408,7 @@ export type LectureUncheckedCreateInput = {
   tutorThreads?: Prisma.TutorThreadUncheckedCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptUncheckedCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutLectureInput
 }
 
 export type LectureUpdateInput = {
@@ -424,6 +429,7 @@ export type LectureUpdateInput = {
   tutorThreads?: Prisma.TutorThreadUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureUncheckedUpdateInput = {
@@ -444,6 +450,7 @@ export type LectureUncheckedUpdateInput = {
   tutorThreads?: Prisma.TutorThreadUncheckedUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUncheckedUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureCreateManyInput = {
@@ -714,6 +721,22 @@ export type LectureUpdateOneWithoutKnowledgeChunksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LectureUpdateToOneWithWhereWithoutKnowledgeChunksInput, Prisma.LectureUpdateWithoutKnowledgeChunksInput>, Prisma.LectureUncheckedUpdateWithoutKnowledgeChunksInput>
 }
 
+export type LectureCreateNestedOneWithoutKnowledgeSourceHashesInput = {
+  create?: Prisma.XOR<Prisma.LectureCreateWithoutKnowledgeSourceHashesInput, Prisma.LectureUncheckedCreateWithoutKnowledgeSourceHashesInput>
+  connectOrCreate?: Prisma.LectureCreateOrConnectWithoutKnowledgeSourceHashesInput
+  connect?: Prisma.LectureWhereUniqueInput
+}
+
+export type LectureUpdateOneWithoutKnowledgeSourceHashesNestedInput = {
+  create?: Prisma.XOR<Prisma.LectureCreateWithoutKnowledgeSourceHashesInput, Prisma.LectureUncheckedCreateWithoutKnowledgeSourceHashesInput>
+  connectOrCreate?: Prisma.LectureCreateOrConnectWithoutKnowledgeSourceHashesInput
+  upsert?: Prisma.LectureUpsertWithoutKnowledgeSourceHashesInput
+  disconnect?: Prisma.LectureWhereInput | boolean
+  delete?: Prisma.LectureWhereInput | boolean
+  connect?: Prisma.LectureWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LectureUpdateToOneWithWhereWithoutKnowledgeSourceHashesInput, Prisma.LectureUpdateWithoutKnowledgeSourceHashesInput>, Prisma.LectureUncheckedUpdateWithoutKnowledgeSourceHashesInput>
+}
+
 export type LectureCreateWithoutSectionInput = {
   id?: string
   title: string
@@ -731,6 +754,7 @@ export type LectureCreateWithoutSectionInput = {
   tutorThreads?: Prisma.TutorThreadCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutLectureInput
 }
 
 export type LectureUncheckedCreateWithoutSectionInput = {
@@ -750,6 +774,7 @@ export type LectureUncheckedCreateWithoutSectionInput = {
   tutorThreads?: Prisma.TutorThreadUncheckedCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptUncheckedCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutLectureInput
 }
 
 export type LectureCreateOrConnectWithoutSectionInput = {
@@ -813,6 +838,7 @@ export type LectureCreateWithoutVideoInput = {
   tutorThreads?: Prisma.TutorThreadCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutLectureInput
 }
 
 export type LectureUncheckedCreateWithoutVideoInput = {
@@ -832,6 +858,7 @@ export type LectureUncheckedCreateWithoutVideoInput = {
   tutorThreads?: Prisma.TutorThreadUncheckedCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptUncheckedCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutLectureInput
 }
 
 export type LectureCreateOrConnectWithoutVideoInput = {
@@ -867,6 +894,7 @@ export type LectureUpdateWithoutVideoInput = {
   tutorThreads?: Prisma.TutorThreadUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureUncheckedUpdateWithoutVideoInput = {
@@ -886,6 +914,7 @@ export type LectureUncheckedUpdateWithoutVideoInput = {
   tutorThreads?: Prisma.TutorThreadUncheckedUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUncheckedUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureCreateWithoutAttachmentsInput = {
@@ -905,6 +934,7 @@ export type LectureCreateWithoutAttachmentsInput = {
   tutorThreads?: Prisma.TutorThreadCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutLectureInput
 }
 
 export type LectureUncheckedCreateWithoutAttachmentsInput = {
@@ -924,6 +954,7 @@ export type LectureUncheckedCreateWithoutAttachmentsInput = {
   tutorThreads?: Prisma.TutorThreadUncheckedCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptUncheckedCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutLectureInput
 }
 
 export type LectureCreateOrConnectWithoutAttachmentsInput = {
@@ -959,6 +990,7 @@ export type LectureUpdateWithoutAttachmentsInput = {
   tutorThreads?: Prisma.TutorThreadUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureUncheckedUpdateWithoutAttachmentsInput = {
@@ -978,6 +1010,7 @@ export type LectureUncheckedUpdateWithoutAttachmentsInput = {
   tutorThreads?: Prisma.TutorThreadUncheckedUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUncheckedUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureCreateWithoutProgressInput = {
@@ -997,6 +1030,7 @@ export type LectureCreateWithoutProgressInput = {
   tutorThreads?: Prisma.TutorThreadCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutLectureInput
 }
 
 export type LectureUncheckedCreateWithoutProgressInput = {
@@ -1016,6 +1050,7 @@ export type LectureUncheckedCreateWithoutProgressInput = {
   tutorThreads?: Prisma.TutorThreadUncheckedCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptUncheckedCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutLectureInput
 }
 
 export type LectureCreateOrConnectWithoutProgressInput = {
@@ -1051,6 +1086,7 @@ export type LectureUpdateWithoutProgressInput = {
   tutorThreads?: Prisma.TutorThreadUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureUncheckedUpdateWithoutProgressInput = {
@@ -1070,6 +1106,7 @@ export type LectureUncheckedUpdateWithoutProgressInput = {
   tutorThreads?: Prisma.TutorThreadUncheckedUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUncheckedUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureCreateWithoutTutorThreadsInput = {
@@ -1089,6 +1126,7 @@ export type LectureCreateWithoutTutorThreadsInput = {
   progress?: Prisma.ProgressCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutLectureInput
 }
 
 export type LectureUncheckedCreateWithoutTutorThreadsInput = {
@@ -1108,6 +1146,7 @@ export type LectureUncheckedCreateWithoutTutorThreadsInput = {
   progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptUncheckedCreateNestedOneWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutLectureInput
 }
 
 export type LectureCreateOrConnectWithoutTutorThreadsInput = {
@@ -1143,6 +1182,7 @@ export type LectureUpdateWithoutTutorThreadsInput = {
   progress?: Prisma.ProgressUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureUncheckedUpdateWithoutTutorThreadsInput = {
@@ -1162,6 +1202,7 @@ export type LectureUncheckedUpdateWithoutTutorThreadsInput = {
   progress?: Prisma.ProgressUncheckedUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUncheckedUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureCreateWithoutTranscriptInput = {
@@ -1181,6 +1222,7 @@ export type LectureCreateWithoutTranscriptInput = {
   progress?: Prisma.ProgressCreateNestedManyWithoutLectureInput
   tutorThreads?: Prisma.TutorThreadCreateNestedManyWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutLectureInput
 }
 
 export type LectureUncheckedCreateWithoutTranscriptInput = {
@@ -1200,6 +1242,7 @@ export type LectureUncheckedCreateWithoutTranscriptInput = {
   progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutLectureInput
   tutorThreads?: Prisma.TutorThreadUncheckedCreateNestedManyWithoutLectureInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutLectureInput
 }
 
 export type LectureCreateOrConnectWithoutTranscriptInput = {
@@ -1235,6 +1278,7 @@ export type LectureUpdateWithoutTranscriptInput = {
   progress?: Prisma.ProgressUpdateManyWithoutLectureNestedInput
   tutorThreads?: Prisma.TutorThreadUpdateManyWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureUncheckedUpdateWithoutTranscriptInput = {
@@ -1254,6 +1298,7 @@ export type LectureUncheckedUpdateWithoutTranscriptInput = {
   progress?: Prisma.ProgressUncheckedUpdateManyWithoutLectureNestedInput
   tutorThreads?: Prisma.TutorThreadUncheckedUpdateManyWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureCreateWithoutKnowledgeChunksInput = {
@@ -1273,6 +1318,7 @@ export type LectureCreateWithoutKnowledgeChunksInput = {
   progress?: Prisma.ProgressCreateNestedManyWithoutLectureInput
   tutorThreads?: Prisma.TutorThreadCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptCreateNestedOneWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutLectureInput
 }
 
 export type LectureUncheckedCreateWithoutKnowledgeChunksInput = {
@@ -1292,6 +1338,7 @@ export type LectureUncheckedCreateWithoutKnowledgeChunksInput = {
   progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutLectureInput
   tutorThreads?: Prisma.TutorThreadUncheckedCreateNestedManyWithoutLectureInput
   transcript?: Prisma.LectureTranscriptUncheckedCreateNestedOneWithoutLectureInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutLectureInput
 }
 
 export type LectureCreateOrConnectWithoutKnowledgeChunksInput = {
@@ -1327,6 +1374,7 @@ export type LectureUpdateWithoutKnowledgeChunksInput = {
   progress?: Prisma.ProgressUpdateManyWithoutLectureNestedInput
   tutorThreads?: Prisma.TutorThreadUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUpdateOneWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureUncheckedUpdateWithoutKnowledgeChunksInput = {
@@ -1346,6 +1394,103 @@ export type LectureUncheckedUpdateWithoutKnowledgeChunksInput = {
   progress?: Prisma.ProgressUncheckedUpdateManyWithoutLectureNestedInput
   tutorThreads?: Prisma.TutorThreadUncheckedUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUncheckedUpdateOneWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutLectureNestedInput
+}
+
+export type LectureCreateWithoutKnowledgeSourceHashesInput = {
+  id?: string
+  title: string
+  description?: string | null
+  type?: $Enums.LectureType
+  content?: string | null
+  position: number
+  isPublished?: boolean
+  isFree?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  section: Prisma.SectionCreateNestedOneWithoutLecturesInput
+  video?: Prisma.VideoCreateNestedOneWithoutLectureInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutLectureInput
+  progress?: Prisma.ProgressCreateNestedManyWithoutLectureInput
+  tutorThreads?: Prisma.TutorThreadCreateNestedManyWithoutLectureInput
+  transcript?: Prisma.LectureTranscriptCreateNestedOneWithoutLectureInput
+  knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutLectureInput
+}
+
+export type LectureUncheckedCreateWithoutKnowledgeSourceHashesInput = {
+  id?: string
+  sectionId: string
+  title: string
+  description?: string | null
+  type?: $Enums.LectureType
+  content?: string | null
+  videoId?: string | null
+  position: number
+  isPublished?: boolean
+  isFree?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutLectureInput
+  progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutLectureInput
+  tutorThreads?: Prisma.TutorThreadUncheckedCreateNestedManyWithoutLectureInput
+  transcript?: Prisma.LectureTranscriptUncheckedCreateNestedOneWithoutLectureInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutLectureInput
+}
+
+export type LectureCreateOrConnectWithoutKnowledgeSourceHashesInput = {
+  where: Prisma.LectureWhereUniqueInput
+  create: Prisma.XOR<Prisma.LectureCreateWithoutKnowledgeSourceHashesInput, Prisma.LectureUncheckedCreateWithoutKnowledgeSourceHashesInput>
+}
+
+export type LectureUpsertWithoutKnowledgeSourceHashesInput = {
+  update: Prisma.XOR<Prisma.LectureUpdateWithoutKnowledgeSourceHashesInput, Prisma.LectureUncheckedUpdateWithoutKnowledgeSourceHashesInput>
+  create: Prisma.XOR<Prisma.LectureCreateWithoutKnowledgeSourceHashesInput, Prisma.LectureUncheckedCreateWithoutKnowledgeSourceHashesInput>
+  where?: Prisma.LectureWhereInput
+}
+
+export type LectureUpdateToOneWithWhereWithoutKnowledgeSourceHashesInput = {
+  where?: Prisma.LectureWhereInput
+  data: Prisma.XOR<Prisma.LectureUpdateWithoutKnowledgeSourceHashesInput, Prisma.LectureUncheckedUpdateWithoutKnowledgeSourceHashesInput>
+}
+
+export type LectureUpdateWithoutKnowledgeSourceHashesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumLectureTypeFieldUpdateOperationsInput | $Enums.LectureType
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  section?: Prisma.SectionUpdateOneRequiredWithoutLecturesNestedInput
+  video?: Prisma.VideoUpdateOneWithoutLectureNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutLectureNestedInput
+  progress?: Prisma.ProgressUpdateManyWithoutLectureNestedInput
+  tutorThreads?: Prisma.TutorThreadUpdateManyWithoutLectureNestedInput
+  transcript?: Prisma.LectureTranscriptUpdateOneWithoutLectureNestedInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutLectureNestedInput
+}
+
+export type LectureUncheckedUpdateWithoutKnowledgeSourceHashesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sectionId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumLectureTypeFieldUpdateOperationsInput | $Enums.LectureType
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutLectureNestedInput
+  progress?: Prisma.ProgressUncheckedUpdateManyWithoutLectureNestedInput
+  tutorThreads?: Prisma.TutorThreadUncheckedUpdateManyWithoutLectureNestedInput
+  transcript?: Prisma.LectureTranscriptUncheckedUpdateOneWithoutLectureNestedInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureCreateManySectionInput = {
@@ -1379,6 +1524,7 @@ export type LectureUpdateWithoutSectionInput = {
   tutorThreads?: Prisma.TutorThreadUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureUncheckedUpdateWithoutSectionInput = {
@@ -1398,6 +1544,7 @@ export type LectureUncheckedUpdateWithoutSectionInput = {
   tutorThreads?: Prisma.TutorThreadUncheckedUpdateManyWithoutLectureNestedInput
   transcript?: Prisma.LectureTranscriptUncheckedUpdateOneWithoutLectureNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutLectureNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutLectureNestedInput
 }
 
 export type LectureUncheckedUpdateManyWithoutSectionInput = {
@@ -1424,6 +1571,7 @@ export type LectureCountOutputType = {
   progress: number
   tutorThreads: number
   knowledgeChunks: number
+  knowledgeSourceHashes: number
 }
 
 export type LectureCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1431,6 +1579,7 @@ export type LectureCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   progress?: boolean | LectureCountOutputTypeCountProgressArgs
   tutorThreads?: boolean | LectureCountOutputTypeCountTutorThreadsArgs
   knowledgeChunks?: boolean | LectureCountOutputTypeCountKnowledgeChunksArgs
+  knowledgeSourceHashes?: boolean | LectureCountOutputTypeCountKnowledgeSourceHashesArgs
 }
 
 /**
@@ -1471,6 +1620,13 @@ export type LectureCountOutputTypeCountKnowledgeChunksArgs<ExtArgs extends runti
   where?: Prisma.KnowledgeChunkWhereInput
 }
 
+/**
+ * LectureCountOutputType without action
+ */
+export type LectureCountOutputTypeCountKnowledgeSourceHashesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeSourceHashWhereInput
+}
+
 
 export type LectureSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1492,6 +1648,7 @@ export type LectureSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   tutorThreads?: boolean | Prisma.Lecture$tutorThreadsArgs<ExtArgs>
   transcript?: boolean | Prisma.Lecture$transcriptArgs<ExtArgs>
   knowledgeChunks?: boolean | Prisma.Lecture$knowledgeChunksArgs<ExtArgs>
+  knowledgeSourceHashes?: boolean | Prisma.Lecture$knowledgeSourceHashesArgs<ExtArgs>
   _count?: boolean | Prisma.LectureCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["lecture"]>
 
@@ -1553,6 +1710,7 @@ export type LectureInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   tutorThreads?: boolean | Prisma.Lecture$tutorThreadsArgs<ExtArgs>
   transcript?: boolean | Prisma.Lecture$transcriptArgs<ExtArgs>
   knowledgeChunks?: boolean | Prisma.Lecture$knowledgeChunksArgs<ExtArgs>
+  knowledgeSourceHashes?: boolean | Prisma.Lecture$knowledgeSourceHashesArgs<ExtArgs>
   _count?: boolean | Prisma.LectureCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LectureIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1574,6 +1732,7 @@ export type $LecturePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     tutorThreads: Prisma.$TutorThreadPayload<ExtArgs>[]
     transcript: Prisma.$LectureTranscriptPayload<ExtArgs> | null
     knowledgeChunks: Prisma.$KnowledgeChunkPayload<ExtArgs>[]
+    knowledgeSourceHashes: Prisma.$KnowledgeSourceHashPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1989,6 +2148,7 @@ export interface Prisma__LectureClient<T, Null = never, ExtArgs extends runtime.
   tutorThreads<T extends Prisma.Lecture$tutorThreadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Lecture$tutorThreadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TutorThreadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transcript<T extends Prisma.Lecture$transcriptArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Lecture$transcriptArgs<ExtArgs>>): Prisma.Prisma__LectureTranscriptClient<runtime.Types.Result.GetResult<Prisma.$LectureTranscriptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   knowledgeChunks<T extends Prisma.Lecture$knowledgeChunksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Lecture$knowledgeChunksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  knowledgeSourceHashes<T extends Prisma.Lecture$knowledgeSourceHashesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Lecture$knowledgeSourceHashesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeSourceHashPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2562,6 +2722,30 @@ export type Lecture$knowledgeChunksArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.KnowledgeChunkScalarFieldEnum | Prisma.KnowledgeChunkScalarFieldEnum[]
+}
+
+/**
+ * Lecture.knowledgeSourceHashes
+ */
+export type Lecture$knowledgeSourceHashesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeSourceHash
+   */
+  select?: Prisma.KnowledgeSourceHashSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeSourceHash
+   */
+  omit?: Prisma.KnowledgeSourceHashOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeSourceHashInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeSourceHashWhereInput
+  orderBy?: Prisma.KnowledgeSourceHashOrderByWithRelationInput | Prisma.KnowledgeSourceHashOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeSourceHashWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeSourceHashScalarFieldEnum | Prisma.KnowledgeSourceHashScalarFieldEnum[]
 }
 
 /**

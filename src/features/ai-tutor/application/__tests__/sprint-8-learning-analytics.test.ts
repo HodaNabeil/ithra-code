@@ -55,6 +55,11 @@ function createSessionContext(): TutorSessionContext {
       position: 2,
       isCompleted: false,
     },
+    student: {
+      displayName: 'Hoda Ali',
+      learningLevel: 'في مرحلة متوسطة',
+      progressTier: 'mid',
+    },
     studentProgress: {
       enrollmentStatus: 'ACTIVE',
       completedLectures: 1,
