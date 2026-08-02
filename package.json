@@ -14,7 +14,7 @@
     "type-check": "tsc --noEmit",
     "test": "tsx --test src/features/payments/application/__tests__/payment-money-path.test.ts src/features/courses/use-cases/__tests__/*.test.ts src/features/ai-tutor/application/__tests__/*.test.ts src/features/ai-tutor/infrastructure/queue/__tests__/*.test.ts",
     "test:payments": "tsx --test src/features/payments/application/__tests__/payment-money-path.test.ts",
-    "test:ai-tutor": "SKIP_ENV_VALIDATION=true tsx --test src/features/ai-tutor/application/__tests__/*.test.ts src/features/ai-tutor/infrastructure/queue/__tests__/*.test.ts",
+    "test:ai-tutor": "SKIP_ENV_VALIDATION=true NODE_ENV=test tsx --test src/features/ai-tutor/application/__tests__/*.test.ts src/features/ai-tutor/infrastructure/adapters/__tests__/*.test.ts src/features/ai-tutor/infrastructure/guards/__tests__/*.test.ts src/features/ai-tutor/infrastructure/repositories/__tests__/*.test.ts src/features/ai-tutor/infrastructure/queue/__tests__/*.test.ts",
     "prepare": "husky",
     "seed": "prisma db seed",
     "db:push": "npx prisma db push",

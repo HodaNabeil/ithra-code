@@ -2,6 +2,7 @@ import { CourseStatus } from '@/generated/prisma/enums';
 
 import { AITutorConfig } from '../config/ai-tutor.config';
 import { bullmqCourseKnowledgeIndexer } from './course-indexing.publisher';
+import { reconcilePendingIndexingOutbox } from './course-indexing-outbox.service';
 import {
   COURSE_INDEXING_BOOTSTRAP_LOCK_KEY,
   COURSE_INDEXING_BOOTSTRAP_LOCK_TTL_SECONDS,
@@ -72,5 +73,6 @@ export async function bootstrapUnindexedCourseIndexing(): Promise<number> {
     return unindexedCourses.length;
   } finally {
     await redis.del(COURSE_INDEXING_BOOTSTRAP_LOCK_KEY);
+    await reconcilePendingIndexingOutbox();
   }
 }

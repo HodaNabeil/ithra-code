@@ -7,6 +7,7 @@ export type EnrolledCourseWithProgressDTO = {
   level: string;
   objectives: string[];
   requirements: string[];
+  knowledgeIndexedAt: Date | null;
   sections: Array<{
     id: string;
     title: string;

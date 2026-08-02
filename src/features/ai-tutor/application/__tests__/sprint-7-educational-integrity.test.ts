@@ -51,6 +51,7 @@ function createSessionContext(): TutorSessionContext {
       level: 'BEGINNER',
       objectives: [],
       requirements: [],
+      knowledgeIndexed: true,
     },
     lecture: {
       id: 'lec-1',

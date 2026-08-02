@@ -33,6 +33,9 @@ const NON_RETRYABLE_INDEXING_CODES = new Set<string>([
 ]);
 
 const shutdownGraceMs = Number(process.env.COURSE_INDEXING_SHUTDOWN_GRACE_MS ?? 30_000);
+const workerConcurrency = AITutorConfig.getIndexingWorkerConcurrency();
+const WORKER_HEARTBEAT_KEY = 'tutor:worker:heartbeat';
+const WORKER_HEARTBEAT_INTERVAL_MS = 30_000;
 
 let shuttingDown = false;
 let worker: Worker<CourseIndexingRequestedEvent> | null = null;
@@ -186,8 +189,20 @@ async function startWorker(): Promise<void> {
   worker = new Worker<CourseIndexingRequestedEvent>(
     COURSE_INDEXING_QUEUE,
     async (job) => processJob(job),
-    { connection: redis },
+    { connection: redis, concurrency: workerConcurrency },
   );
+
+  const heartbeatTimer = setInterval(() => {
+    void redis
+      .set(WORKER_HEARTBEAT_KEY, new Date().toISOString(), 'EX', 120)
+      .catch((error) => {
+        logger.error({ error }, '[COURSE_INDEXING_WORKER_HEARTBEAT_FAILED]');
+      });
+  }, WORKER_HEARTBEAT_INTERVAL_MS);
+
+  worker.on('closed', () => {
+    clearInterval(heartbeatTimer);
+  });
 
   worker.on('failed', (job, err) => {
     logger.error(

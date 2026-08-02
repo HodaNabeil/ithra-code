@@ -100,7 +100,7 @@ Streamed Response to Student
 const RATE_LIMITS = {
   messagesPerMinute: 30,
   messagesPerHour: 300,
-  messagesPerDay: 5000,
+  messagesPerDay: 1000,
 };
 ```
 

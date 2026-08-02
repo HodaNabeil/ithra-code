@@ -98,7 +98,8 @@ export const ModelName = {
   StudentLearningProfile: 'StudentLearningProfile',
   LectureTranscript: 'LectureTranscript',
   KnowledgeChunk: 'KnowledgeChunk',
-  KnowledgeSourceHash: 'KnowledgeSourceHash'
+  KnowledgeSourceHash: 'KnowledgeSourceHash',
+  CourseIndexingOutbox: 'CourseIndexingOutbox'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -917,6 +918,24 @@ export const KnowledgeSourceHashScalarFieldEnum = {
 } as const
 
 export type KnowledgeSourceHashScalarFieldEnum = (typeof KnowledgeSourceHashScalarFieldEnum)[keyof typeof KnowledgeSourceHashScalarFieldEnum]
+
+
+export const CourseIndexingOutboxScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  courseSlug: 'courseSlug',
+  scope: 'scope',
+  lectureId: 'lectureId',
+  contentVersion: 'contentVersion',
+  triggeredByUserId: 'triggeredByUserId',
+  status: 'status',
+  attempts: 'attempts',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CourseIndexingOutboxScalarFieldEnum = (typeof CourseIndexingOutboxScalarFieldEnum)[keyof typeof CourseIndexingOutboxScalarFieldEnum]
 
 
 export const SortOrder = {

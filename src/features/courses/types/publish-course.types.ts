@@ -10,6 +10,7 @@ export type PublishCourseResult = {
   alreadyPublished: boolean;
   courseId: string;
   courseSlug: string;
+  indexingWarning?: string;
 };
 
 export type PublishLectureInput = {
@@ -24,4 +25,5 @@ export type PublishLectureResult = {
   courseId: string;
   courseSlug: string;
   lectureId: string;
+  indexingWarning?: string;
 };

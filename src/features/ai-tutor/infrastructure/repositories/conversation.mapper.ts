@@ -13,11 +13,11 @@ import type {
 import type { MessageSourceDTO } from '../../application/dto/message-source.dto';
 
 type ConversationWithThreads = PrismaTutorConversation & {
-  threads: Array<PrismaTutorThread & { messages: PrismaTutorMessage[] }>;
+  threads: Array<PrismaTutorThread & { messages?: PrismaTutorMessage[] }>;
 };
 
 type ThreadWithMessages = PrismaTutorThread & {
-  messages: PrismaTutorMessage[];
+  messages?: PrismaTutorMessage[];
 };
 
 function parseRetrievedSources(value: unknown): MessageSourceDTO[] | undefined {
@@ -72,7 +72,7 @@ export function mapThread(thread: ThreadWithMessages): ThreadDTO {
     conversationId: thread.conversationId,
     lectureId: thread.lectureId ?? undefined,
     topic: thread.topic,
-    messages: thread.messages.map(mapMessage),
+    messages: (thread.messages ?? []).map(mapMessage),
     createdAt: thread.createdAt,
     updatedAt: thread.updatedAt,
   };

@@ -32,6 +32,7 @@ import type { VectorSearchPort } from '../../domain/ports/VectorSearchPort';
 import { VectorSearchError } from '../../domain/ports/VectorSearchPort';
 import type { ContentFilterPort } from '../../domain/ports/ContentFilterPort';
 import type { VectorSearchConfig } from '../services/content-retriever.service';
+import type { MessageSourceDTO } from '../dto/message-source.dto';
 import { AI_TUTOR_CONSTANTS } from '../../shared';
 import { env } from '@/config/env';
 
@@ -42,6 +43,13 @@ export type AskTutorUseCaseDeps = CourseContextServiceDeps & {
   vectorSearchPort: VectorSearchPort;
   contentFilter: ContentFilterPort;
   vectorSearchConfig?: VectorSearchConfig;
+};
+
+export type AskTutorRequestOutcome = {
+  usedFallback: boolean;
+  filterTriggered: boolean;
+  assessmentBlocked: boolean;
+  retrievalChunkCount: number;
 };
 
 function encodeStreamMeta(meta: {
@@ -69,10 +77,24 @@ function withSuggestions(
   return `${baseMessage}\n\n${formattedMessage}`;
 }
 
+async function persistCompletedTurn(
+  conversationRepository: ConversationRepositoryPort,
+  threadId: string,
+  userContent: string,
+  assistantContent: string,
+  sources?: MessageSourceDTO[],
+): Promise<void> {
+  await conversationRepository.persistTurn(threadId, {
+    userContent,
+    assistantContent,
+    retrievedSources: sources,
+  });
+}
+
 export async function* askTutorUseCase(
   input: AskTutorInputDTO & { userId: string },
   deps: AskTutorUseCaseDeps,
-): AsyncGenerator<string, AskTutorResultDTO> {
+): AsyncGenerator<string, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
   const {
     llmPort,
     conversationRepository,
@@ -83,6 +105,12 @@ export async function* askTutorUseCase(
 
   let conversationId = '';
   let threadId = '';
+  const outcome: AskTutorRequestOutcome = {
+    usedFallback: false,
+    filterTriggered: false,
+    assessmentBlocked: false,
+    retrievalChunkCount: 0,
+  };
 
   try {
     const sessionContext = await buildTutorSessionContext(
@@ -112,12 +140,6 @@ export async function* askTutorUseCase(
     );
     threadId = thread.id;
 
-    await conversationRepository.addMessage(thread.id, {
-      threadId: thread.id,
-      role: 'user',
-      content: input.question,
-    });
-
     const history = await conversationRepository.getThreadMessages(
       thread.id,
       AI_TUTOR_CONSTANTS.CONVERSATION_HISTORY_LIMIT,
@@ -140,8 +162,10 @@ export async function* askTutorUseCase(
     const assessmentIntent = detectAssessmentIntent(input.question);
     const sessionMetaIntent = detectSessionMetaIntent(input.question);
 
-    // Task 7.1: Block direct assessment-answer requests with guided learning.
     if (assessmentIntent.isAssessmentSeeking) {
+      outcome.assessmentBlocked = true;
+      outcome.usedFallback = true;
+
       const guided = withSuggestions(
         buildGuidedLearningResponse(input.question),
         input.question,
@@ -156,17 +180,19 @@ export async function* askTutorUseCase(
       });
       yield guided;
 
-      await conversationRepository.addMessage(thread.id, {
-        threadId: thread.id,
-        role: 'assistant',
-        content: guided,
-      });
+      await persistCompletedTurn(
+        conversationRepository,
+        thread.id,
+        input.question,
+        guided,
+      );
 
       return {
         threadId,
         conversationId,
         sources: [],
         usedFallback: true,
+        outcome,
       };
     }
 
@@ -175,6 +201,13 @@ export async function* askTutorUseCase(
         question: input.question,
         courseId: sessionContext.courseId,
         lectureId: input.lectureId,
+        lectureTitle:
+          sessionContext.lecture?.title ?? input.lectureTitle?.trim(),
+        courseTitle: sessionContext.course.title,
+        recentHistory: history.map((message) => ({
+          role: message.role,
+          content: message.content,
+        })),
       },
       {
         embeddingPort,
@@ -182,6 +215,9 @@ export async function* askTutorUseCase(
         vectorSearchConfig: deps.vectorSearchConfig,
       },
     );
+
+    outcome.retrievalChunkCount = retrieval.chunks.length;
+    outcome.usedFallback = retrieval.usedFallback;
 
     const sources = mapChunksToSources(retrieval.chunks);
     const streamMeta = {
@@ -196,27 +232,41 @@ export async function* askTutorUseCase(
       const fallbackMessage = buildNoResultsMessage(input.question, {
         lectures: sessionContext.lectureCatalog,
         excludeLectureId: input.lectureId,
+        knowledgeIndexed: sessionContext.course.knowledgeIndexed,
       });
 
       yield fallbackMessage;
 
-      await conversationRepository.addMessage(thread.id, {
-        threadId: thread.id,
-        role: 'assistant',
-        content: fallbackMessage,
-      });
+      await persistCompletedTurn(
+        conversationRepository,
+        thread.id,
+        input.question,
+        fallbackMessage,
+      );
 
       return {
         threadId,
         conversationId,
         sources: [],
         usedFallback: true,
+        outcome,
       };
     }
 
+    const hasAssessmentAdjacentContent = retrieval.chunks.some((chunk) => {
+      const metadata = chunk.metadata ?? {};
+      return (
+        metadata.isAssessment === true ||
+        metadata.sensitivity === 'ASSESSMENT' ||
+        String(chunk.contentType).toUpperCase().includes('QUIZ') ||
+        String(chunk.contentType).toUpperCase().includes('ASSIGNMENT')
+      );
+    });
+
     const promptOptions = {
-      assessmentMode: false,
+      assessmentMode: hasAssessmentAdjacentContent,
       sessionMetaMode: sessionMetaIntent.isSessionMeta && retrieval.usedFallback,
+      currentQuestion: input.question,
     };
     const systemPrompt = buildSystemPrompt(
       sessionContext,
@@ -254,6 +304,7 @@ export async function* askTutorUseCase(
       });
     }
 
+    const strictMode = !sessionMetaIntent.isSessionMeta;
     const stream = llmPort.streamAnswer({
       systemPrompt,
       messages,
@@ -261,9 +312,15 @@ export async function* askTutorUseCase(
 
     let assistantResponse = '';
 
-    for await (const token of stream) {
-      assistantResponse += token;
-      yield token;
+    if (strictMode) {
+      for await (const token of stream) {
+        assistantResponse += token;
+      }
+    } else {
+      for await (const token of stream) {
+        assistantResponse += token;
+        yield token;
+      }
     }
 
     let finalResponse = assistantResponse.trim();
@@ -280,10 +337,12 @@ export async function* askTutorUseCase(
           courseId: sessionContext.courseId,
           lectureId: input.lectureId,
         },
-        { strictMode: !sessionMetaIntent.isSessionMeta, courseId: sessionContext.courseId },
+        { strictMode, courseId: sessionContext.courseId },
       );
 
       if (!validation.isValid) {
+        outcome.filterTriggered = true;
+
         const suggestions = formatSuggestionMessage(
           input.question,
           buildSuggestionFallback(
@@ -305,17 +364,19 @@ export async function* askTutorUseCase(
         if (suggestions) {
           finalResponse = `${finalResponse}\n\n${suggestions}`;
         }
-
-        // Replace streamed leaky content with a guided correction notice.
-        yield `\n\n---\n${finalResponse}`;
       }
 
-      await conversationRepository.addMessage(thread.id, {
-        threadId: thread.id,
-        role: 'assistant',
-        content: finalResponse,
-        retrievedSources: sources,
-      });
+      if (strictMode) {
+        yield finalResponse;
+      }
+
+      await persistCompletedTurn(
+        conversationRepository,
+        thread.id,
+        input.question,
+        finalResponse,
+        sources,
+      );
     }
 
     return {
@@ -323,6 +384,7 @@ export async function* askTutorUseCase(
       conversationId,
       sources,
       usedFallback: retrieval.usedFallback,
+      outcome,
     };
   } catch (error) {
     if (error instanceof AskTutorError) {

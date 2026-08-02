@@ -311,3 +311,12 @@ export const KnowledgeSensitivity = {
 } as const
 
 export type KnowledgeSensitivity = (typeof KnowledgeSensitivity)[keyof typeof KnowledgeSensitivity]
+
+
+export const CourseIndexingOutboxStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
+} as const
+
+export type CourseIndexingOutboxStatus = (typeof CourseIndexingOutboxStatus)[keyof typeof CourseIndexingOutboxStatus]

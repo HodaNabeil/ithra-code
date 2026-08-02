@@ -431,7 +431,8 @@ export const ModelName = {
   StudentLearningProfile: 'StudentLearningProfile',
   LectureTranscript: 'LectureTranscript',
   KnowledgeChunk: 'KnowledgeChunk',
-  KnowledgeSourceHash: 'KnowledgeSourceHash'
+  KnowledgeSourceHash: 'KnowledgeSourceHash',
+  CourseIndexingOutbox: 'CourseIndexingOutbox'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -447,7 +448,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "course" | "section" | "lecture" | "video" | "videoCollection" | "attachment" | "path" | "track" | "user" | "account" | "session" | "userSession" | "verificationToken" | "trackedDevice" | "tokenFamily" | "enrollment" | "progress" | "cart" | "cartItem" | "coupon" | "couponCourse" | "order" | "orderItem" | "payment" | "paymentReconcileAttempt" | "paymentDomainOutbox" | "paymentDispute" | "refund" | "checkoutSession" | "invoice" | "webhookEvent" | "review" | "instructorAvailability" | "availabilityDateOverride" | "instructorScheduleSettings" | "consultationBooking" | "googleCalendarToken" | "refundRequest" | "instructorEarning" | "testimonial" | "faq" | "tutorConversation" | "tutorThread" | "tutorMessage" | "studentLearningProfile" | "lectureTranscript" | "knowledgeChunk" | "knowledgeSourceHash"
+    modelProps: "course" | "section" | "lecture" | "video" | "videoCollection" | "attachment" | "path" | "track" | "user" | "account" | "session" | "userSession" | "verificationToken" | "trackedDevice" | "tokenFamily" | "enrollment" | "progress" | "cart" | "cartItem" | "coupon" | "couponCourse" | "order" | "orderItem" | "payment" | "paymentReconcileAttempt" | "paymentDomainOutbox" | "paymentDispute" | "refund" | "checkoutSession" | "invoice" | "webhookEvent" | "review" | "instructorAvailability" | "availabilityDateOverride" | "instructorScheduleSettings" | "consultationBooking" | "googleCalendarToken" | "refundRequest" | "instructorEarning" | "testimonial" | "faq" | "tutorConversation" | "tutorThread" | "tutorMessage" | "studentLearningProfile" | "lectureTranscript" | "knowledgeChunk" | "knowledgeSourceHash" | "courseIndexingOutbox"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4003,6 +4004,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CourseIndexingOutbox: {
+      payload: Prisma.$CourseIndexingOutboxPayload<ExtArgs>
+      fields: Prisma.CourseIndexingOutboxFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CourseIndexingOutboxFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CourseIndexingOutboxFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload>
+        }
+        findFirst: {
+          args: Prisma.CourseIndexingOutboxFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CourseIndexingOutboxFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload>
+        }
+        findMany: {
+          args: Prisma.CourseIndexingOutboxFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload>[]
+        }
+        create: {
+          args: Prisma.CourseIndexingOutboxCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload>
+        }
+        createMany: {
+          args: Prisma.CourseIndexingOutboxCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CourseIndexingOutboxCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload>[]
+        }
+        delete: {
+          args: Prisma.CourseIndexingOutboxDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload>
+        }
+        update: {
+          args: Prisma.CourseIndexingOutboxUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload>
+        }
+        deleteMany: {
+          args: Prisma.CourseIndexingOutboxDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CourseIndexingOutboxUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CourseIndexingOutboxUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload>[]
+        }
+        upsert: {
+          args: Prisma.CourseIndexingOutboxUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CourseIndexingOutboxPayload>
+        }
+        aggregate: {
+          args: Prisma.CourseIndexingOutboxAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCourseIndexingOutbox>
+        }
+        groupBy: {
+          args: Prisma.CourseIndexingOutboxGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CourseIndexingOutboxGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CourseIndexingOutboxCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CourseIndexingOutboxCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4844,6 +4919,24 @@ export const KnowledgeSourceHashScalarFieldEnum = {
 export type KnowledgeSourceHashScalarFieldEnum = (typeof KnowledgeSourceHashScalarFieldEnum)[keyof typeof KnowledgeSourceHashScalarFieldEnum]
 
 
+export const CourseIndexingOutboxScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  courseSlug: 'courseSlug',
+  scope: 'scope',
+  lectureId: 'lectureId',
+  contentVersion: 'contentVersion',
+  triggeredByUserId: 'triggeredByUserId',
+  status: 'status',
+  attempts: 'attempts',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CourseIndexingOutboxScalarFieldEnum = (typeof CourseIndexingOutboxScalarFieldEnum)[keyof typeof CourseIndexingOutboxScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -5394,6 +5487,20 @@ export type EnumKnowledgeSensitivityFieldRefInput<$PrismaModel> = FieldRefInputT
 export type ListEnumKnowledgeSensitivityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KnowledgeSensitivity[]'>
     
 
+
+/**
+ * Reference to a field of type 'CourseIndexingOutboxStatus'
+ */
+export type EnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CourseIndexingOutboxStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CourseIndexingOutboxStatus[]'
+ */
+export type ListEnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CourseIndexingOutboxStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -5537,6 +5644,7 @@ export type GlobalOmitConfig = {
   lectureTranscript?: Prisma.LectureTranscriptOmit
   knowledgeChunk?: Prisma.KnowledgeChunkOmit
   knowledgeSourceHash?: Prisma.KnowledgeSourceHashOmit
+  courseIndexingOutbox?: Prisma.CourseIndexingOutboxOmit
 }
 
 /* Types for Logging */

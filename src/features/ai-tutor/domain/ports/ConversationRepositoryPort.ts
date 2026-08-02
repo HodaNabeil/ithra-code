@@ -84,6 +84,31 @@ export interface ConversationRepositoryPort {
   ): Promise<ThreadDTO>;
 
   /**
+   * Persist a user/assistant turn atomically.
+   */
+  persistTurn(
+    threadId: string,
+    params: {
+      userContent: string;
+      assistantContent: string;
+      retrievedSources?: MessageSourceDTO[];
+    },
+  ): Promise<{ userMessage: MessageDTO; assistantMessage: MessageDTO }>;
+
+  /**
+   * Find conversation for a course/user pair without creating.
+   */
+  findConversation(courseId: string, userId: string): Promise<ConversationDTO | null>;
+
+  /**
+   * Find thread within a conversation without creating.
+   */
+  findThread(
+    conversationId: string,
+    params: { lectureId?: string; topic?: string },
+  ): Promise<ThreadDTO | null>;
+
+  /**
    * Get thread messages (recent)
    *
    * @param threadId - Thread ID

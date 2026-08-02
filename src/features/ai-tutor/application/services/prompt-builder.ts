@@ -40,8 +40,8 @@ const ASSESSMENT_BOUNDARY_PROMPT = `
 
 const SESSION_CONTEXT_PROMPT = `
 ## ملاحظة
-هذا السؤال يتعلق بالطالب أو تقدمه في الدورة.
-- أجب باستخدام معلومات الطالب من سياق الجلسة (الاسم، التقدم، المستوى).
+هذا السؤال يتعلق بسياق الجلسة (الطالب، المحاضرة الحالية، أو الدورة).
+- أجب باستخدام معلومات سياق الجلسة (اسم الطالب، التقدم، عنوان المحاضرة، اسم الدورة، القسم).
 - لا تحتاج إلى مواد دورة مسترجعة للإجابة على هذا السؤال.`;
 
 const RAG_FALLBACK_PROMPT = `
@@ -215,7 +215,11 @@ export function buildConversationMessages(
   history: MessageDTO[],
   sessionContext: TutorSessionContext,
   retrievedChunks: RetrievedContentChunk[] = [],
-  options?: { assessmentMode?: boolean; sessionMetaMode?: boolean },
+  options?: {
+    assessmentMode?: boolean;
+    sessionMetaMode?: boolean;
+    currentQuestion?: string;
+  },
 ): Array<{ role: 'user' | 'assistant'; content: string }> {
   const systemPrompt = buildSystemPrompt(
     sessionContext,
@@ -223,11 +227,20 @@ export function buildConversationMessages(
     options,
   );
   const trimmedHistory = trimConversationHistory(history, systemPrompt);
-
-  return trimmedHistory.map((message) => ({
+  const messages = trimmedHistory.map((message) => ({
     role: message.role,
     content: message.content,
   }));
+
+  const currentQuestion = options?.currentQuestion?.trim();
+  if (currentQuestion) {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role !== 'user' || lastMessage.content !== currentQuestion) {
+      messages.push({ role: 'user', content: currentQuestion });
+    }
+  }
+
+  return messages;
 }
 
 export function buildPromptPreview(

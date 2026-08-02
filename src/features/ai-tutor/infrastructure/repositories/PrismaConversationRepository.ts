@@ -22,6 +22,110 @@ const threadInclude = {
 } as const;
 
 export class PrismaConversationRepository implements ConversationRepositoryPort {
+  async findConversation(
+    courseId: string,
+    userId: string,
+  ): Promise<ConversationDTO | null> {
+    const conversation = await prisma.tutorConversation.findUnique({
+      where: {
+        courseId_userId: {
+          courseId,
+          userId,
+        },
+      },
+      include: {
+        threads: {
+          orderBy: { updatedAt: 'desc' },
+        },
+      },
+    });
+
+    return conversation ? mapConversation(conversation) : null;
+  }
+
+  async findThread(
+    conversationId: string,
+    params: { lectureId?: string; topic?: string },
+  ): Promise<ThreadDTO | null> {
+    const thread = params.lectureId
+      ? await prisma.tutorThread.findUnique({
+          where: {
+            conversationId_lectureId: {
+              conversationId,
+              lectureId: params.lectureId,
+            },
+          },
+          include: threadInclude,
+        })
+      : await prisma.tutorThread.findFirst({
+          where: {
+            conversationId,
+            lectureId: null,
+            ...(params.topic ? { topic: params.topic } : {}),
+          },
+          include: threadInclude,
+        });
+
+    return thread ? mapThread(thread) : null;
+  }
+
+  async persistTurn(
+    threadId: string,
+    params: {
+      userContent: string;
+      assistantContent: string;
+      retrievedSources?: MessageDTO['retrievedSources'];
+    },
+  ): Promise<{ userMessage: MessageDTO; assistantMessage: MessageDTO }> {
+    const thread = await prisma.tutorThread.findUnique({
+      where: { id: threadId },
+      select: { id: true, conversationId: true },
+    });
+
+    if (!thread) {
+      throw new ConversationRepositoryError(
+        ConversationRepositoryErrorCodes.NOT_FOUND,
+        'الموضوع غير موجود',
+      );
+    }
+
+    const [userMessage, assistantMessage] = await prisma.$transaction(async (tx) => {
+      const user = await tx.tutorMessage.create({
+        data: {
+          threadId,
+          role: mapMessageRole('user'),
+          content: params.userContent,
+        },
+      });
+
+      const assistant = await tx.tutorMessage.create({
+        data: {
+          threadId,
+          role: mapMessageRole('assistant'),
+          content: params.assistantContent,
+          retrievedSources: params.retrievedSources,
+        },
+      });
+
+      const now = new Date();
+      await tx.tutorThread.update({
+        where: { id: threadId },
+        data: { updatedAt: now },
+      });
+      await tx.tutorConversation.update({
+        where: { id: thread.conversationId },
+        data: { updatedAt: now },
+      });
+
+      return [user, assistant];
+    });
+
+    return {
+      userMessage: mapMessage(userMessage),
+      assistantMessage: mapMessage(assistantMessage),
+    };
+  }
+
   async getOrCreateConversation(
     courseId: string,
     userId: string,
@@ -40,7 +144,6 @@ export class PrismaConversationRepository implements ConversationRepositoryPort 
       update: {},
       include: {
         threads: {
-          include: threadInclude,
           orderBy: { updatedAt: 'desc' },
         },
       },
@@ -97,7 +200,6 @@ export class PrismaConversationRepository implements ConversationRepositoryPort 
           where: {
             conversationId,
             lectureId: null,
-            topic,
           },
           include: threadInclude,
         });
@@ -126,11 +228,11 @@ export class PrismaConversationRepository implements ConversationRepositoryPort 
   async getThreadMessages(threadId: string, limit = 20): Promise<MessageDTO[]> {
     const messages = await prisma.tutorMessage.findMany({
       where: { threadId },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
       take: limit,
     });
 
-    return messages.map(mapMessage);
+    return messages.reverse().map(mapMessage);
   }
 
   async addMessage(

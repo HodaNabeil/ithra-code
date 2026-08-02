@@ -1,17 +1,16 @@
-import { Queue } from 'bullmq';
-import { randomUUID } from 'node:crypto';
-
 import type { CourseKnowledgeIndexerPort } from '@/features/courses/application/ports/course-knowledge-indexer.port';
 import { logger } from '@/lib/logger';
-import { redis } from '@/lib/redis';
 
-import type { CourseIndexingRequestedEvent } from '../../application/events/course-indexing-requested.event';
 import { AITutorConfig } from '../config/ai-tutor.config';
 import {
-  buildCourseIndexingJobId,
-  COURSE_INDEXING_JOBS,
-  COURSE_INDEXING_QUEUE,
-} from './course-indexing.constants';
+  markIndexingOutboxFailed,
+  markIndexingOutboxSent,
+  recordIndexingOutboxEntry,
+} from './course-indexing-outbox.service';
+import {
+  addIndexingJobToQueue,
+  buildIndexingEvent,
+} from './course-indexing-queue';
 
 export {
   buildCourseIndexingJobId,
@@ -19,28 +18,8 @@ export {
   COURSE_INDEXING_QUEUE,
 } from './course-indexing.constants';
 
-let courseIndexingQueue: Queue<CourseIndexingRequestedEvent> | null = null;
-
-function getCourseIndexingQueue(): Queue<CourseIndexingRequestedEvent> {
-  courseIndexingQueue ??= new Queue<CourseIndexingRequestedEvent>(COURSE_INDEXING_QUEUE, {
-    connection: redis,
-    defaultJobOptions: {
-      attempts: 5,
-      backoff: {
-        type: 'exponential',
-        delay: 60_000,
-      },
-      removeOnComplete: true,
-      removeOnFail: false,
-    },
-  });
-
-  return courseIndexingQueue;
-}
-
 /**
- * Publishes course/lecture indexing work to BullMQ.
- * Failures are logged and rethrown for callers that want to swallow them.
+ * Publishes course/lecture indexing work to BullMQ with outbox durability.
  */
 export class BullmqCourseKnowledgeIndexer implements CourseKnowledgeIndexerPort {
   async scheduleIndexing(
@@ -54,40 +33,38 @@ export class BullmqCourseKnowledgeIndexer implements CourseKnowledgeIndexerPort 
       return;
     }
 
-    const event: CourseIndexingRequestedEvent = {
-      eventId: randomUUID(),
+    const outboxId = await recordIndexingOutboxEntry({
       courseId: request.courseId,
       courseSlug: request.courseSlug,
       scope: request.scope,
       lectureId: request.lectureId,
       triggeredByUserId: request.triggeredByUserId,
       contentVersion: request.contentVersion,
-      requestedAt: new Date().toISOString(),
-    };
-
-    const queue = getCourseIndexingQueue();
-    const jobName =
-      request.scope === 'lecture'
-        ? COURSE_INDEXING_JOBS.INDEX_LECTURE
-        : COURSE_INDEXING_JOBS.INDEX_COURSE;
-    const jobId = buildCourseIndexingJobId(event);
-
-    await queue.add(jobName, event, {
-      jobId,
     });
 
-    logger.info(
-      {
-        courseId: request.courseId,
-        courseSlug: request.courseSlug,
-        scope: request.scope,
-        lectureId: request.lectureId,
-        contentVersion: request.contentVersion,
-        jobId,
-        eventId: event.eventId,
-      },
-      '[COURSE_INDEXING_ENQUEUED]',
-    );
+    const event = buildIndexingEvent(request);
+
+    try {
+      const jobId = await addIndexingJobToQueue(event);
+      await markIndexingOutboxSent(outboxId);
+
+      logger.info(
+        {
+          courseId: request.courseId,
+          courseSlug: request.courseSlug,
+          scope: request.scope,
+          lectureId: request.lectureId,
+          contentVersion: request.contentVersion,
+          jobId,
+          eventId: event.eventId,
+          outboxId,
+        },
+        '[COURSE_INDEXING_ENQUEUED]',
+      );
+    } catch (error) {
+      await markIndexingOutboxFailed(outboxId, error);
+      throw error;
+    }
   }
 }
 

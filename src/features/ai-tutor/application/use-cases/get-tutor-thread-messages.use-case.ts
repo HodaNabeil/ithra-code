@@ -27,20 +27,36 @@ export async function getTutorThreadMessagesUseCase(
       deps,
     );
 
-    const conversation = await conversationRepository.getOrCreateConversation(
+    const conversation = await conversationRepository.findConversation(
       sessionContext.courseId,
       input.userId,
     );
+
+    if (!conversation) {
+      return {
+        threadId: null,
+        conversationId: null,
+        messages: [],
+      };
+    }
 
     const topic =
       sessionContext.lecture?.title ??
       input.lectureTitle?.trim() ??
       'محادثة عامة';
-    const thread = await conversationRepository.getOrCreateThread(
-      conversation.id,
-      topic,
-      input.lectureId,
-    );
+
+    const thread = await conversationRepository.findThread(conversation.id, {
+      lectureId: input.lectureId,
+      topic: input.lectureId ? undefined : topic,
+    });
+
+    if (!thread) {
+      return {
+        threadId: null,
+        conversationId: conversation.id,
+        messages: [],
+      };
+    }
 
     const messages = await conversationRepository.getThreadMessages(
       thread.id,

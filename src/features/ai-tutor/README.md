@@ -125,12 +125,14 @@ npm run lint
 ## Status
 
 - **Core chat + RAG:** Implemented (`POST /api/tutor/messages`, streaming, persistence)
-- **Thread history:** Implemented (`GET /api/tutor/threads`)
-- **Course indexing:** Implemented (`POST /api/tutor/index`, manual full-course)
-- **Repository ports + DI:** Implemented (Phase 0)
-- **Session context cache:** Redis-backed (`tutor:session-context:v1`, 5 min TTL)
-- **Next:** Automatic indexing pipeline (Phase 1)
+- **Thread history:** Implemented (`GET /api/tutor/threads`, read-only)
+- **Course indexing:** Implemented (publish hooks, worker, bootstrap, outbox, `POST /api/tutor/index`)
+- **Repository ports + DI:** Implemented
+- **Session context cache:** Redis-backed (`tutor:session-context:v2`, 5 min TTL)
+- **Production hardening:** Rate limits (fail-closed), cost cap, LLM retries, integrity buffering
+
+When disabled, routes return **503** (feature flag).
 
 ---
 
-Last Updated: July 2026
+Last Updated: August 2026

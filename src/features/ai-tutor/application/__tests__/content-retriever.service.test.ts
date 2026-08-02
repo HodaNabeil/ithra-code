@@ -111,4 +111,146 @@ describe('content-retriever.service', () => {
     assert.equal(result.hasResults, false);
     assert.equal(result.usedFallback, true);
   });
+
+  it('retries follow-up questions with expanded context before falling back', async () => {
+    const searchCalls: Array<{ query: string; minScore: number }> = [];
+    const embeddingPort: EmbeddingPort = {
+      generateEmbedding: async (text) => {
+        searchCalls.push({
+          query: text,
+          minScore: -1,
+        });
+        return {
+          text,
+          embedding: [0.1, 0.2, 0.3],
+          model: 'test-embedding',
+          dimensions: 3,
+        };
+      },
+      generateBatchEmbeddings: async (texts) => ({
+        embeddings: texts.map((text) => ({
+          text,
+          embedding: [0.1, 0.2, 0.3],
+          model: 'test-embedding',
+          dimensions: 3,
+        })),
+        totalTokensUsed: texts.length,
+      }),
+      getDimensions: () => 3,
+    };
+
+    let callCount = 0;
+    const vectorSearchPort: VectorSearchPort = {
+      search: async () => {
+        callCount += 1;
+        if (callCount === 1) {
+          return [];
+        }
+
+        return [
+          {
+            id: 'chunk-1',
+            content: 'الدورة تغطي EC2 و S3 و Lambda',
+            score: 0.31,
+            metadata: {
+              title: 'مقدمة عامة — الوصف',
+              lectureId: 'lecture-1',
+              contentType: 'LECTURE_DESCRIPTION',
+            },
+          },
+        ];
+      },
+      index: async (id) => id,
+      indexBatch: async (items) => items.length,
+      delete: async () => true,
+      update: async () => undefined,
+      clear: async () => 0,
+      getStats: async () => ({
+        totalVectors: 0,
+        indexSize: 0,
+        lastUpdated: new Date(0),
+      }),
+    };
+
+    const result = await retrieveRelevantContent(
+      {
+        question: 'اي المفاهيم اللي قالها',
+        courseId: 'course-1',
+        lectureId: 'lecture-1',
+        lectureTitle: 'مقدمة عامة',
+        courseTitle: 'AWS for Developers',
+        recentHistory: [
+          { role: 'user', content: 'الدرس بيتكلم عن اي' },
+          {
+            role: 'assistant',
+            content:
+              'المحاضرة الحالية مقدمة عامة وهي فيديو تعريفي عن محتوى الدورة.',
+          },
+        ],
+      },
+      {
+        embeddingPort,
+        vectorSearchPort,
+      },
+    );
+
+    assert.equal(result.hasResults, true);
+    assert.equal(result.usedFallback, false);
+    assert.equal(result.chunks[0]?.title, 'مقدمة عامة — الوصف');
+    assert.equal(callCount, 2);
+    assert.match(searchCalls[1]?.query ?? '', /سؤال متابعة: اي المفاهيم اللي قالها/);
+  });
+
+  it('falls back to lecture chunks when follow-up retrieval still misses', async () => {
+    let callCount = 0;
+    const vectorSearchPort: VectorSearchPort = {
+      search: async (_embedding, options) => {
+        callCount += 1;
+        if ((options?.minScore ?? 1) > 0) {
+          return [];
+        }
+
+        return [
+          {
+            id: 'chunk-1',
+            content: 'فيديو تعريفي يشرح أهداف الدورة',
+            score: 0.12,
+            metadata: {
+              title: 'مقدمة عامة — الوصف',
+              lectureId: 'lecture-1',
+              contentType: 'LECTURE_DESCRIPTION',
+            },
+          },
+        ];
+      },
+      index: async (id) => id,
+      indexBatch: async (items) => items.length,
+      delete: async () => true,
+      update: async () => undefined,
+      clear: async () => 0,
+      getStats: async () => ({
+        totalVectors: 0,
+        indexSize: 0,
+        lastUpdated: new Date(0),
+      }),
+    };
+
+    const result = await retrieveRelevantContent(
+      {
+        question: 'اي المفاهيم اللي قالها',
+        courseId: 'course-1',
+        lectureId: 'lecture-1',
+        lectureTitle: 'مقدمة عامة',
+        recentHistory: [{ role: 'user', content: 'الدرس بيتكلم عن اي' }],
+      },
+      {
+        embeddingPort: createEmbeddingPort(),
+        vectorSearchPort,
+      },
+    );
+
+    assert.equal(result.hasResults, true);
+    assert.equal(result.usedFallback, false);
+    assert.equal(callCount, 3);
+  });
 });

@@ -12,3 +12,8 @@
 export { AITutorChat } from './AITutorChat';
 export type { AITutorChatProps } from './AITutorChat';
 export { TutorMessageContent } from './TutorMessageContent';
+export { TutorIndexingStatusBanner } from './TutorIndexingStatusBanner';
+export type {
+  TutorIndexingStatus,
+  TutorIndexingStatusBannerProps,
+} from './TutorIndexingStatusBanner';

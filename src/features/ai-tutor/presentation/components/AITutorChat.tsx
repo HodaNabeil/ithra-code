@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { Bot, BookOpen, Loader2, RotateCcw, Send, Sparkles, User } from 'lucide-react';
+import { Bot, BookOpen, Loader2, RotateCcw, Send, Sparkles, Square, User } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -32,6 +32,7 @@ export function AITutorChat({
     setInput,
     sendMessage,
     retry,
+    cancel,
     isStreaming,
     isLoadingHistory,
     error,
@@ -95,7 +96,11 @@ export function AITutorChat({
       )}
 
       <ScrollArea className="min-h-0 flex-1">
-        <div className={cn('space-y-4', isSidebar ? 'px-3 py-3' : 'px-5 py-4')}>
+        <div
+          aria-live="polite"
+          aria-atomic="false"
+          className={cn('space-y-4', isSidebar ? 'px-3 py-3' : 'px-5 py-4')}
+        >
           {isLoadingHistory ? (
             <LoadingState />
           ) : messages.length === 0 ? (
@@ -167,6 +172,18 @@ export function AITutorChat({
                 <Send className="size-4" />
               )}
             </Button>
+            {isStreaming && (
+              <Button
+                type="button"
+                size="icon"
+                variant="outline"
+                onClick={cancel}
+                className="size-11 shrink-0 rounded-xl"
+                aria-label="إيقاف التوليد"
+              >
+                <Square className="size-4" />
+              </Button>
+            )}
           </div>
         ) : (
           <div className="flex flex-col gap-3 md:flex-row md:items-end">
@@ -179,18 +196,32 @@ export function AITutorChat({
               className="min-h-22 flex-1 rounded-xl bg-background"
               dir="auto"
             />
-            <Button
-              type="submit"
-              disabled={isStreaming || isLoadingHistory || input.trim().length === 0}
-              className="h-11 gap-2 rounded-xl px-6 md:self-end"
-            >
-              {isStreaming ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Send className="size-4" />
+            <div className="flex gap-2 md:self-end">
+              {isStreaming && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={cancel}
+                  className="h-11 gap-2 rounded-xl px-4"
+                  aria-label="إيقاف التوليد"
+                >
+                  <Square className="size-4" />
+                  إيقاف
+                </Button>
               )}
-              إرسال
-            </Button>
+              <Button
+                type="submit"
+                disabled={isStreaming || isLoadingHistory || input.trim().length === 0}
+                className="h-11 gap-2 rounded-xl px-6"
+              >
+                {isStreaming ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Send className="size-4" />
+                )}
+                إرسال
+              </Button>
+            </div>
           </div>
         )}
       </form>

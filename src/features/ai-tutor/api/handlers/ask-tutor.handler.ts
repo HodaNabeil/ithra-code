@@ -10,6 +10,11 @@ import {
   acquireTutorStreamSlot,
   checkTutorMessageRateLimit,
 } from '../../infrastructure/guards/tutor-request.guards';
+import { checkTutorDailyCostCap } from '../../infrastructure/guards/tutor-cost-cap.guard';
+import {
+  logTutorRequestCompleted,
+  logTutorRequestFailed,
+} from '../../infrastructure/observability/tutor-request-logger';
 import {
   askTutorUseCase,
   getAskTutorUseCaseDeps,
@@ -58,6 +63,7 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
   }
 
   try {
+    await checkTutorDailyCostCap();
     await checkTutorMessageRateLimit(session.user.id);
   } catch (error) {
     if (error instanceof AskTutorError) {
@@ -87,6 +93,7 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
 
   const { readable, writable } = new TransformStream();
   const writer = writable.getWriter();
+  const startedAt = Date.now();
 
   void (async () => {
     try {
@@ -98,9 +105,11 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
         getAskTutorUseCaseDeps(),
       );
 
+      let result;
       while (true) {
         const { value, done } = await generator.next();
         if (done) {
+          result = value;
           break;
         }
 
@@ -108,6 +117,18 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
       }
 
       await writer.write(encodeSseEvent('[DONE]'));
+
+      logTutorRequestCompleted({
+        userId: session.user.id,
+        courseSlug: parsed.data.courseSlug,
+        lectureId: parsed.data.lectureId,
+        durationMs: Date.now() - startedAt,
+        outcome: 'success',
+        usedFallback: result?.outcome.usedFallback,
+        filterTriggered: result?.outcome.filterTriggered,
+        assessmentBlocked: result?.outcome.assessmentBlocked,
+        retrievalChunkCount: result?.outcome.retrievalChunkCount,
+      });
     } catch (error) {
       const message =
         error instanceof AskTutorError
@@ -118,6 +139,18 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
         error instanceof AskTutorError
           ? error.code
           : AskTutorErrorCodes.UNKNOWN;
+
+      logTutorRequestFailed({
+        userId: session.user.id,
+        courseSlug: parsed.data.courseSlug,
+        lectureId: parsed.data.lectureId,
+        durationMs: Date.now() - startedAt,
+        errorCode: code,
+        usedFallback: false,
+        filterTriggered: false,
+        assessmentBlocked: false,
+        retrievalChunkCount: 0,
+      });
 
       await writer.write(encodeSseEvent(`[ERROR] ${code}:${message}`));
     } finally {

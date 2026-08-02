@@ -1,4 +1,5 @@
 import { redis } from '@/lib/redis';
+import { logger } from '@/lib/logger';
 
 import {
   AskTutorError,
@@ -22,9 +23,18 @@ async function incrementWindow(
   return count;
 }
 
+function throwServiceUnavailable(guard: 'rate_limit' | 'stream_slot', userId: string): never {
+  logger.error({ userId, guard }, '[TUTOR_GUARD_REDIS_FAILURE]');
+  throw new AskTutorError(
+    503,
+    'خدمة المدرس الذكي غير متاحة مؤقتاً. حاول مرة أخرى بعد قليل.',
+    AskTutorErrorCodes.SERVICE_UNAVAILABLE,
+  );
+}
+
 /**
  * Per-student message rate limits: minute, hour, and day windows.
- * Redis failures are swallowed so rate limiting never blocks legitimate requests.
+ * Redis failures fail closed to prevent unbounded LLM usage.
  */
 export async function checkTutorMessageRateLimit(userId: string): Promise<void> {
   const limits = AITutorConfig.getRateLimitConfig();
@@ -73,7 +83,7 @@ export async function checkTutorMessageRateLimit(userId: string): Promise<void> 
       throw error;
     }
 
-    console.error('[TUTOR_RATE_LIMIT]', error);
+    throwServiceUnavailable('rate_limit', userId);
   }
 }
 
@@ -118,7 +128,7 @@ export async function acquireTutorStreamSlot(
           await redis.del(key);
         }
       } catch (error) {
-        console.error('[TUTOR_STREAM_LIMIT_RELEASE]', error);
+        logger.error({ userId, guard: 'stream_slot', error }, '[TUTOR_STREAM_LIMIT_RELEASE]');
       }
     };
   } catch (error) {
@@ -126,8 +136,6 @@ export async function acquireTutorStreamSlot(
       throw error;
     }
 
-    console.error('[TUTOR_STREAM_LIMIT]', error);
-
-    return async () => {};
+    throwServiceUnavailable('stream_slot', userId);
   }
 }

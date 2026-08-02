@@ -20,6 +20,7 @@ function createSessionContext(): TutorSessionContext {
       shortDescription: 'Learn React basics',
       objectives: ['Understand components', 'Use hooks'],
       requirements: [],
+      knowledgeIndexed: true,
     },
     lecture: {
       id: 'lecture-1',
@@ -103,7 +104,8 @@ describe('prompt-builder RAG integration', () => {
       sessionMetaMode: true,
     });
 
-    assert.match(prompt, /يتعلق بالطالب أو تقدمه/);
+    assert.match(prompt, /يتعلق بسياق الجلسة/);
+    assert.match(prompt, /عنوان المحاضرة/);
     assert.doesNotMatch(prompt, /لم يتم العثور على مواد دورة مطابقة/);
   });
 });

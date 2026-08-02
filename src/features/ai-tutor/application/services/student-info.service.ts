@@ -77,6 +77,7 @@ const STUDENT_PROGRESS_GUIDANCE: Record<StudentProgressTier, string[]> = {
 };
 
 const SESSION_META_PATTERNS = [
+  // Student identity and progress
   /\bmy\s+name\b/i,
   /\bwho\s+am\s+i\b/i,
   /\bremember\s+my\s+name\b/i,
@@ -98,6 +99,19 @@ const SESSION_META_PATTERNS = [
   /كم\s+أنجزت/,
   /كيف\s+تقدمي/,
   /نسبة\s+إكمالي/,
+  // Current lecture / course context
+  /اسم\s+(الدرس|المحاضرة|الدورة)/,
+  /عنوان\s+(الدرس|المحاضرة)/,
+  /(الدرس|المحاضرة|الدورة)\s+(ايه|إيه|اي|إي|هو|هي)/,
+  /(ايه|إيه|اي|إي)\s+(الدرس|المحاضرة|الدورة)/,
+  /(ماذا|ما)\s+(أدرس|ادرس|نتعلم|ندرس)/,
+  /(بدرس|أدرس|ادرس)\s+(ايه|إيه|اي|إي|ماذا)/,
+  /في\s+أي\s+(محاضرة|درس|قسم)/,
+  /أي\s+(محاضرة|درس)\s+(هذه|دي|دا)/,
+  /\b(current|this)\s+(lecture|lesson|course)\b/i,
+  /\b(lecture|lesson|course)\s+name\b/i,
+  /\bwhat\s+(lecture|lesson|course)\b/i,
+  /\bwhat\s+am\s+i\s+(studying|learning)\b/i,
 ];
 
 export function resolveStudentDisplayName(student: {

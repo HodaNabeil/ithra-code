@@ -131,6 +131,7 @@ function mapCourseContext(course: EnrolledCourseWithProgressDTO): CourseContextI
     level: course.level,
     objectives: course.objectives,
     requirements: course.requirements,
+    knowledgeIndexed: course.knowledgeIndexedAt != null,
   };
 }
 

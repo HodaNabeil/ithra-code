@@ -1,3 +1,5 @@
+import { EnrollmentStatus } from '@prisma/client';
+
 import { prisma } from '@/lib/prisma';
 
 import type {
@@ -16,6 +18,9 @@ export class PrismaCourseContextRepository implements CourseContextRepositoryPor
         enrollments: {
           some: {
             studentId: params.userId,
+            status: {
+              in: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED],
+            },
           },
         },
       },
@@ -28,6 +33,7 @@ export class PrismaCourseContextRepository implements CourseContextRepositoryPor
         level: true,
         objectives: true,
         requirements: true,
+        knowledgeIndexedAt: true,
         sections: {
           orderBy: { position: 'asc' },
           select: {
@@ -47,7 +53,12 @@ export class PrismaCourseContextRepository implements CourseContextRepositoryPor
           },
         },
         enrollments: {
-          where: { studentId: params.userId },
+          where: {
+            studentId: params.userId,
+            status: {
+              in: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED],
+            },
+          },
           select: {
             status: true,
             student: {

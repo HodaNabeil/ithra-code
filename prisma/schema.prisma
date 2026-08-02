@@ -55,6 +55,7 @@ model Course {
   knowledgeChunks KnowledgeChunk[]
   knowledgeSourceHashes KnowledgeSourceHash[]
   studentLearningProfiles StudentLearningProfile[]
+  indexingOutbox CourseIndexingOutbox[]
 
   prerequisites Course[] @relation("CoursePrerequisites")
   requiredFor   Course[] @relation("CoursePrerequisites")
@@ -1343,4 +1344,33 @@ model KnowledgeSourceHash {
   @@index([courseId])
   @@index([lectureId])
   @@map("knowledge_source_hashes")
+}
+
+enum CourseIndexingOutboxStatus {
+  PENDING
+  SENT
+  FAILED
+
+  @@map("course_indexing_outbox_status")
+}
+
+model CourseIndexingOutbox {
+  id                String                     @id @default(cuid())
+  courseId          String                     @map("course_id")
+  courseSlug        String                     @map("course_slug")
+  scope             String
+  lectureId         String?                    @map("lecture_id")
+  contentVersion    String                     @map("content_version")
+  triggeredByUserId String                     @map("triggered_by_user_id")
+  status            CourseIndexingOutboxStatus @default(PENDING)
+  attempts          Int                        @default(0)
+  lastError         String?                    @map("last_error") @db.Text
+  createdAt         DateTime                   @default(now()) @map("created_at")
+  updatedAt         DateTime                   @updatedAt @map("updated_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([courseId])
+  @@map("course_indexing_outbox")
 }

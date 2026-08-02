@@ -22,6 +22,7 @@ export type CourseContextInfo = {
   level: string;
   objectives: string[];
   requirements: string[];
+  knowledgeIndexed: boolean;
 };
 
 export type LectureContextInfo = {

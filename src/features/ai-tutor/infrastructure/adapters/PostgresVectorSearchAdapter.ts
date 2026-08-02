@@ -152,14 +152,29 @@ export class PostgresVectorSearchAdapter implements VectorSearchPort {
       metadata: Record<string, unknown>;
     }>,
   ): Promise<number> {
-    let indexed = 0;
-
-    for (const item of items) {
-      await this.index(item.id, item.embedding, item.metadata);
-      indexed += 1;
+    if (items.length === 0) {
+      return 0;
     }
 
-    return indexed;
+    await prisma.$transaction(async (tx) => {
+      for (const item of items) {
+        const vectorLiteral = toVectorLiteral(item.embedding);
+        await tx.$executeRawUnsafe(
+          `UPDATE knowledge_chunks SET embedding = $1::vector, updated_at = NOW() WHERE id = $2`,
+          vectorLiteral,
+          item.id,
+        );
+
+        if (item.metadata) {
+          await tx.knowledgeChunk.update({
+            where: { id: item.id },
+            data: { metadata: item.metadata as object },
+          });
+        }
+      }
+    });
+
+    return items.length;
   }
 
   async delete(id: string): Promise<boolean> {

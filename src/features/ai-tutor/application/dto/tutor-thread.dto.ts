@@ -11,8 +11,8 @@ export const getTutorThreadInputSchema = z.object({
 export type GetTutorThreadInputDTO = z.infer<typeof getTutorThreadInputSchema>;
 
 export type TutorThreadMessagesDTO = {
-  threadId: string;
-  conversationId: string;
+  threadId: string | null;
+  conversationId: string | null;
   messages: Array<{
     id: string;
     role: 'user' | 'assistant';

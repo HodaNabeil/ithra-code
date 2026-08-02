@@ -1,10 +1,28 @@
 import { NextResponse } from 'next/server';
 
+import { env } from '@/config/env';
 import { AITutorConfig } from '@/features/ai-tutor/infrastructure/config/ai-tutor.config';
 import { getCourseIndexingQueueMetrics } from '@/features/ai-tutor/infrastructure/queue/course-indexing-queue-metrics';
 import { probeIndexingInfrastructure } from '@/features/ai-tutor/infrastructure/startup/validate-indexing-infrastructure';
+import { redis } from '@/lib/redis';
 
-export async function GET() {
+const WORKER_HEARTBEAT_KEY = 'tutor:worker:heartbeat';
+
+function isAuthorizedDetailedHealth(request: Request): boolean {
+  const token = env.INTERNAL_HEALTH_TOKEN;
+  if (!token) {
+    return env.NODE_ENV !== 'production';
+  }
+
+  const authHeader = request.headers.get('authorization');
+  if (authHeader === `Bearer ${token}`) {
+    return true;
+  }
+
+  return request.headers.get('x-health-token') === token;
+}
+
+export async function GET(request: Request) {
   const validation = await probeIndexingInfrastructure();
   const indexing =
     validation.enabled && validation.checks.queueConnectivity === 'ok'
@@ -27,12 +45,29 @@ export async function GET() {
     (validation.checks.queueConnectivity === 'ok' ||
       validation.checks.queueConnectivity === 'skipped');
 
+  if (!isAuthorizedDetailedHealth(request)) {
+    return NextResponse.json(
+      {
+        status: healthy ? 'healthy' : 'degraded',
+      },
+      { status: healthy ? 200 : 503 },
+    );
+  }
+
+  let workerHeartbeat: string | null = null;
+  try {
+    workerHeartbeat = await redis.get(WORKER_HEARTBEAT_KEY);
+  } catch {
+    workerHeartbeat = null;
+  }
+
   return NextResponse.json(
     {
       status: healthy ? 'healthy' : 'degraded',
       aiTutorEnabled: AITutorConfig.isEnabled(),
       checks: validation.checks,
       indexing,
+      workerHeartbeat,
     },
     { status: healthy ? 200 : 503 },
   );

@@ -149,6 +149,16 @@ export class AITutorConfig {
       ] as const,
     };
   }
+
+  static getDailyCostCap(): number {
+    const cap = Number(env.AI_TUTOR_DAILY_COST_CAP);
+    return Number.isFinite(cap) && cap > 0 ? cap : 0;
+  }
+
+  static getIndexingWorkerConcurrency(): number {
+    const value = Number(env.COURSE_INDEXING_CONCURRENCY);
+    return Number.isFinite(value) && value > 0 ? Math.floor(value) : 1;
+  }
 }
 
 /**

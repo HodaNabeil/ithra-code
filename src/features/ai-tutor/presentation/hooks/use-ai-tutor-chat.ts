@@ -25,8 +25,8 @@ type ThreadMessagesResponse = {
   success: boolean;
   message: string;
   data: {
-    threadId: string;
-    conversationId: string;
+    threadId: string | null;
+    conversationId: string | null;
     messages: ChatMessage[];
   };
 };

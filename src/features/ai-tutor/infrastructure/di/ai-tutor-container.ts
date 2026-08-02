@@ -1,5 +1,6 @@
 import { AITutorConfig, validateAITutorConfig } from '../config/ai-tutor.config';
 import { OpenAILlmAdapter } from '../adapters/OpenAILlmAdapter';
+import { ResilientLlmAdapter } from '../adapters/ResilientLlmAdapter';
 import { OpenAIEmbeddingAdapter } from '../adapters/OpenAIEmbeddingAdapter';
 import { postgresVectorSearchAdapter } from '../adapters/PostgresVectorSearchAdapter';
 import {
@@ -70,10 +71,12 @@ export function getLlmPort(): LlmPort {
 
   if (!state.llmPort) {
     const llmConfig = AITutorConfig.getLlmConfig();
-    state.llmPort = new OpenAILlmAdapter(AITutorConfig.getLlmApiKey(), {
-      baseURL: llmConfig.baseURL,
-      model: llmConfig.model,
-    });
+    state.llmPort = new ResilientLlmAdapter(
+      new OpenAILlmAdapter(AITutorConfig.getLlmApiKey(), {
+        baseURL: llmConfig.baseURL,
+        model: llmConfig.model,
+      }),
+    );
   }
 
   return state.llmPort;

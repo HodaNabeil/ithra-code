@@ -1,7 +1,6 @@
 import { CourseStatus } from '@prisma/client';
 
 import type { CourseKnowledgeIndexerPort } from '@/features/courses/application/ports/course-knowledge-indexer.port';
-import { logger } from '@/lib/logger';
 
 import {
   PublishCourseError,
@@ -22,6 +21,10 @@ import type {
   PublishLectureInput,
   PublishLectureResult,
 } from '../types/publish-course.types';
+import {
+  scheduleCourseIndexing,
+  scheduleLectureIndexing,
+} from './schedule-course-indexing';
 
 export type PublishCourseUseCaseDeps = {
   courseRepository: PublishableCourseRepository;
@@ -32,62 +35,6 @@ export type PublishCourseUseCaseDeps = {
     invalidateAfterLecturePublish(slug: string): Promise<void>;
   };
 };
-
-async function scheduleCourseIndexing(params: {
-  courseId: string;
-  courseSlug: string;
-  triggeredByUserId: string;
-  contentVersion: string;
-  indexer: CourseKnowledgeIndexerPort;
-}): Promise<void> {
-  try {
-    await params.indexer.scheduleIndexing({
-      courseId: params.courseId,
-      courseSlug: params.courseSlug,
-      scope: 'course',
-      triggeredByUserId: params.triggeredByUserId,
-      contentVersion: params.contentVersion,
-    });
-  } catch (error) {
-    logger.error(
-      {
-        error,
-        courseId: params.courseId,
-        courseSlug: params.courseSlug,
-      },
-      '[PUBLISH_COURSE_INDEXING_ENQUEUE_FAILED]',
-    );
-  }
-}
-
-async function scheduleLectureIndexing(params: {
-  courseId: string;
-  courseSlug: string;
-  lectureId: string;
-  triggeredByUserId: string;
-  contentVersion: string;
-  indexer: CourseKnowledgeIndexerPort;
-}): Promise<void> {
-  try {
-    await params.indexer.scheduleIndexing({
-      courseId: params.courseId,
-      courseSlug: params.courseSlug,
-      scope: 'lecture',
-      lectureId: params.lectureId,
-      triggeredByUserId: params.triggeredByUserId,
-      contentVersion: params.contentVersion,
-    });
-  } catch (error) {
-    logger.error(
-      {
-        error,
-        courseId: params.courseId,
-        lectureId: params.lectureId,
-      },
-      '[PUBLISH_LECTURE_INDEXING_ENQUEUE_FAILED]',
-    );
-  }
-}
 
 /** Publishes a course and schedules AI Tutor knowledge indexing asynchronously. */
 export async function publishCourseUseCase(
@@ -112,7 +59,7 @@ export async function publishCourseUseCase(
 
   void deps.cacheInvalidator.invalidateAfterCoursePublish(course.slug);
 
-  await scheduleCourseIndexing({
+  const indexingWarning = await scheduleCourseIndexing({
     courseId: course.id,
     courseSlug: course.slug,
     triggeredByUserId: user.id,
@@ -125,6 +72,7 @@ export async function publishCourseUseCase(
     alreadyPublished,
     courseId: course.id,
     courseSlug: course.slug,
+    ...(indexingWarning ? { indexingWarning } : {}),
   };
 }
 
@@ -164,7 +112,7 @@ export async function publishLectureUseCase(
 
   void deps.cacheInvalidator.invalidateAfterLecturePublish(lecture.course.slug);
 
-  await scheduleLectureIndexing({
+  const indexingWarning = await scheduleLectureIndexing({
     courseId: lecture.course.id,
     courseSlug: lecture.course.slug,
     lectureId: publishedLecture.id,
@@ -179,5 +127,6 @@ export async function publishLectureUseCase(
     courseId: lecture.course.id,
     courseSlug: lecture.course.slug,
     lectureId: publishedLecture.id,
+    ...(indexingWarning ? { indexingWarning } : {}),
   };
 }

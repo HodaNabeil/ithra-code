@@ -878,6 +878,23 @@ export type EnumKnowledgeSensitivityWithAggregatesFilter<$PrismaModel = never> =
   _max?: Prisma.NestedEnumKnowledgeSensitivityFilter<$PrismaModel>
 }
 
+export type EnumCourseIndexingOutboxStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CourseIndexingOutboxStatus | Prisma.EnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CourseIndexingOutboxStatus[] | Prisma.ListEnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CourseIndexingOutboxStatus[] | Prisma.ListEnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCourseIndexingOutboxStatusFilter<$PrismaModel> | $Enums.CourseIndexingOutboxStatus
+}
+
+export type EnumCourseIndexingOutboxStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CourseIndexingOutboxStatus | Prisma.EnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CourseIndexingOutboxStatus[] | Prisma.ListEnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CourseIndexingOutboxStatus[] | Prisma.ListEnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCourseIndexingOutboxStatusWithAggregatesFilter<$PrismaModel> | $Enums.CourseIndexingOutboxStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCourseIndexingOutboxStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCourseIndexingOutboxStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1688,6 +1705,23 @@ export type NestedEnumKnowledgeSensitivityWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumKnowledgeSensitivityFilter<$PrismaModel>
   _max?: Prisma.NestedEnumKnowledgeSensitivityFilter<$PrismaModel>
+}
+
+export type NestedEnumCourseIndexingOutboxStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CourseIndexingOutboxStatus | Prisma.EnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CourseIndexingOutboxStatus[] | Prisma.ListEnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CourseIndexingOutboxStatus[] | Prisma.ListEnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCourseIndexingOutboxStatusFilter<$PrismaModel> | $Enums.CourseIndexingOutboxStatus
+}
+
+export type NestedEnumCourseIndexingOutboxStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CourseIndexingOutboxStatus | Prisma.EnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CourseIndexingOutboxStatus[] | Prisma.ListEnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CourseIndexingOutboxStatus[] | Prisma.ListEnumCourseIndexingOutboxStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCourseIndexingOutboxStatusWithAggregatesFilter<$PrismaModel> | $Enums.CourseIndexingOutboxStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCourseIndexingOutboxStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCourseIndexingOutboxStatusFilter<$PrismaModel>
 }
 
 

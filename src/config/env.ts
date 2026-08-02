@@ -252,6 +252,18 @@ export const env = createEnv({
       .string()
       .optional()
       .describe('Minimum cosine similarity threshold for retrieval (0-1)'),
+    INTERNAL_HEALTH_TOKEN: z
+      .string()
+      .optional()
+      .describe('Bearer token for detailed internal health endpoints'),
+    AI_TUTOR_DAILY_COST_CAP: z
+      .string()
+      .optional()
+      .describe('Max tutor requests per day across all users (0 = disabled)'),
+    COURSE_INDEXING_CONCURRENCY: z
+      .string()
+      .optional()
+      .describe('BullMQ worker concurrency for course indexing jobs'),
   },
 
   client: {
@@ -331,6 +343,9 @@ export const env = createEnv({
     AI_TUTOR_EMBEDDING_MODEL: process.env.AI_TUTOR_EMBEDDING_MODEL,
     AI_TUTOR_TOP_K: process.env.AI_TUTOR_TOP_K,
     AI_TUTOR_MIN_SIMILARITY: process.env.AI_TUTOR_MIN_SIMILARITY,
+    INTERNAL_HEALTH_TOKEN: process.env.INTERNAL_HEALTH_TOKEN,
+    AI_TUTOR_DAILY_COST_CAP: process.env.AI_TUTOR_DAILY_COST_CAP,
+    COURSE_INDEXING_CONCURRENCY: process.env.COURSE_INDEXING_CONCURRENCY,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

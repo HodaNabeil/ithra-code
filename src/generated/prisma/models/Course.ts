@@ -424,6 +424,7 @@ export type CourseWhereInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkListRelationFilter
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashListRelationFilter
   studentLearningProfiles?: Prisma.StudentLearningProfileListRelationFilter
+  indexingOutbox?: Prisma.CourseIndexingOutboxListRelationFilter
   prerequisites?: Prisma.CourseListRelationFilter
   requiredFor?: Prisma.CourseListRelationFilter
 }
@@ -471,6 +472,7 @@ export type CourseOrderByWithRelationInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkOrderByRelationAggregateInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashOrderByRelationAggregateInput
   studentLearningProfiles?: Prisma.StudentLearningProfileOrderByRelationAggregateInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxOrderByRelationAggregateInput
   prerequisites?: Prisma.CourseOrderByRelationAggregateInput
   requiredFor?: Prisma.CourseOrderByRelationAggregateInput
 }
@@ -521,6 +523,7 @@ export type CourseWhereUniqueInput = Prisma.AtLeast<{
   knowledgeChunks?: Prisma.KnowledgeChunkListRelationFilter
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashListRelationFilter
   studentLearningProfiles?: Prisma.StudentLearningProfileListRelationFilter
+  indexingOutbox?: Prisma.CourseIndexingOutboxListRelationFilter
   prerequisites?: Prisma.CourseListRelationFilter
   requiredFor?: Prisma.CourseListRelationFilter
 }, "id" | "slug">
@@ -639,6 +642,7 @@ export type CourseCreateInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -683,6 +687,7 @@ export type CourseUncheckedCreateInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -727,6 +732,7 @@ export type CourseUpdateInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -771,6 +777,7 @@ export type CourseUncheckedUpdateInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -1423,6 +1430,20 @@ export type CourseUpdateOneRequiredWithoutKnowledgeSourceHashesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CourseUpdateToOneWithWhereWithoutKnowledgeSourceHashesInput, Prisma.CourseUpdateWithoutKnowledgeSourceHashesInput>, Prisma.CourseUncheckedUpdateWithoutKnowledgeSourceHashesInput>
 }
 
+export type CourseCreateNestedOneWithoutIndexingOutboxInput = {
+  create?: Prisma.XOR<Prisma.CourseCreateWithoutIndexingOutboxInput, Prisma.CourseUncheckedCreateWithoutIndexingOutboxInput>
+  connectOrCreate?: Prisma.CourseCreateOrConnectWithoutIndexingOutboxInput
+  connect?: Prisma.CourseWhereUniqueInput
+}
+
+export type CourseUpdateOneRequiredWithoutIndexingOutboxNestedInput = {
+  create?: Prisma.XOR<Prisma.CourseCreateWithoutIndexingOutboxInput, Prisma.CourseUncheckedCreateWithoutIndexingOutboxInput>
+  connectOrCreate?: Prisma.CourseCreateOrConnectWithoutIndexingOutboxInput
+  upsert?: Prisma.CourseUpsertWithoutIndexingOutboxInput
+  connect?: Prisma.CourseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CourseUpdateToOneWithWhereWithoutIndexingOutboxInput, Prisma.CourseUpdateWithoutIndexingOutboxInput>, Prisma.CourseUncheckedUpdateWithoutIndexingOutboxInput>
+}
+
 export type CourseCreateWithoutRequiredForInput = {
   id?: string
   title: string
@@ -1463,6 +1484,7 @@ export type CourseCreateWithoutRequiredForInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
 }
 
@@ -1506,6 +1528,7 @@ export type CourseUncheckedCreateWithoutRequiredForInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
 }
 
@@ -1554,6 +1577,7 @@ export type CourseCreateWithoutPrerequisitesInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
 
@@ -1597,6 +1621,7 @@ export type CourseUncheckedCreateWithoutPrerequisitesInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
 
@@ -1712,6 +1737,7 @@ export type CourseCreateWithoutSectionsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -1755,6 +1781,7 @@ export type CourseUncheckedCreateWithoutSectionsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -1814,6 +1841,7 @@ export type CourseUpdateWithoutSectionsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -1857,6 +1885,7 @@ export type CourseUncheckedUpdateWithoutSectionsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -1900,6 +1929,7 @@ export type CourseCreateWithoutPathInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -1943,6 +1973,7 @@ export type CourseUncheckedCreateWithoutPathInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2012,6 +2043,7 @@ export type CourseCreateWithoutTrackInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2055,6 +2087,7 @@ export type CourseUncheckedCreateWithoutTrackInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2124,6 +2157,7 @@ export type CourseCreateWithoutInstructorInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2167,6 +2201,7 @@ export type CourseUncheckedCreateWithoutInstructorInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2236,6 +2271,7 @@ export type CourseCreateWithoutEnrollmentsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2279,6 +2315,7 @@ export type CourseUncheckedCreateWithoutEnrollmentsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2338,6 +2375,7 @@ export type CourseUpdateWithoutEnrollmentsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -2381,6 +2419,7 @@ export type CourseUncheckedUpdateWithoutEnrollmentsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -2424,6 +2463,7 @@ export type CourseCreateWithoutCartItemsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2467,6 +2507,7 @@ export type CourseUncheckedCreateWithoutCartItemsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2526,6 +2567,7 @@ export type CourseUpdateWithoutCartItemsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -2569,6 +2611,7 @@ export type CourseUncheckedUpdateWithoutCartItemsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -2612,6 +2655,7 @@ export type CourseCreateWithoutOrderItemsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2655,6 +2699,7 @@ export type CourseUncheckedCreateWithoutOrderItemsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2714,6 +2759,7 @@ export type CourseUpdateWithoutOrderItemsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -2757,6 +2803,7 @@ export type CourseUncheckedUpdateWithoutOrderItemsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -2800,6 +2847,7 @@ export type CourseCreateWithoutReviewsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2843,6 +2891,7 @@ export type CourseUncheckedCreateWithoutReviewsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -2902,6 +2951,7 @@ export type CourseUpdateWithoutReviewsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -2945,6 +2995,7 @@ export type CourseUncheckedUpdateWithoutReviewsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -2988,6 +3039,7 @@ export type CourseCreateWithoutTutorConversationsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -3031,6 +3083,7 @@ export type CourseUncheckedCreateWithoutTutorConversationsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -3090,6 +3143,7 @@ export type CourseUpdateWithoutTutorConversationsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -3133,6 +3187,7 @@ export type CourseUncheckedUpdateWithoutTutorConversationsInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -3176,6 +3231,7 @@ export type CourseCreateWithoutStudentLearningProfilesInput = {
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutCourseInput
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -3219,6 +3275,7 @@ export type CourseUncheckedCreateWithoutStudentLearningProfilesInput = {
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutCourseInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -3278,6 +3335,7 @@ export type CourseUpdateWithoutStudentLearningProfilesInput = {
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutCourseNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -3321,6 +3379,7 @@ export type CourseUncheckedUpdateWithoutStudentLearningProfilesInput = {
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -3364,6 +3423,7 @@ export type CourseCreateWithoutKnowledgeChunksInput = {
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -3407,6 +3467,7 @@ export type CourseUncheckedCreateWithoutKnowledgeChunksInput = {
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutCourseInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -3466,6 +3527,7 @@ export type CourseUpdateWithoutKnowledgeChunksInput = {
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -3509,6 +3571,7 @@ export type CourseUncheckedUpdateWithoutKnowledgeChunksInput = {
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -3552,6 +3615,7 @@ export type CourseCreateWithoutKnowledgeSourceHashesInput = {
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutCourseInput
   knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
 }
@@ -3595,6 +3659,7 @@ export type CourseUncheckedCreateWithoutKnowledgeSourceHashesInput = {
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutCourseInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedCreateNestedManyWithoutCourseInput
   prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
   requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
 }
@@ -3654,6 +3719,7 @@ export type CourseUpdateWithoutKnowledgeSourceHashesInput = {
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutCourseNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -3696,6 +3762,199 @@ export type CourseUncheckedUpdateWithoutKnowledgeSourceHashesInput = {
   enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutCourseNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
+  prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
+  requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
+}
+
+export type CourseCreateWithoutIndexingOutboxInput = {
+  id?: string
+  title: string
+  description: string
+  shortDescription?: string | null
+  slug: string
+  thumbnailUrl: string
+  previewVideo?: string | null
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  compareAtPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: $Enums.Currency
+  level?: $Enums.CourseLevel
+  status?: $Enums.CourseStatus
+  visibility?: $Enums.CourseVisibility
+  isFeatured?: boolean
+  duration?: number | null
+  requirements?: Prisma.CourseCreaterequirementsInput | string[]
+  objectives?: Prisma.CourseCreateobjectivesInput | string[]
+  targetAudience?: Prisma.CourseCreatetargetAudienceInput | string[]
+  tags?: Prisma.CourseCreatetagsInput | string[]
+  metaTitle?: string | null
+  metaDescription?: string | null
+  certificateEnabled?: boolean
+  maxStudents?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publishedAt?: Date | string | null
+  knowledgeIndexedAt?: Date | string | null
+  instructor: Prisma.UserCreateNestedOneWithoutCoursesInput
+  path: Prisma.PathCreateNestedOneWithoutCoursesInput
+  track?: Prisma.TrackCreateNestedOneWithoutCoursesInput
+  sections?: Prisma.SectionCreateNestedManyWithoutCourseInput
+  orderItems?: Prisma.OrderItemCreateNestedManyWithoutCourseInput
+  cartItems?: Prisma.CartItemCreateNestedManyWithoutCourseInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutCourseInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutCourseInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutCourseInput
+  knowledgeChunks?: Prisma.KnowledgeChunkCreateNestedManyWithoutCourseInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashCreateNestedManyWithoutCourseInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutCourseInput
+  prerequisites?: Prisma.CourseCreateNestedManyWithoutRequiredForInput
+  requiredFor?: Prisma.CourseCreateNestedManyWithoutPrerequisitesInput
+}
+
+export type CourseUncheckedCreateWithoutIndexingOutboxInput = {
+  id?: string
+  instructorId: string
+  title: string
+  description: string
+  shortDescription?: string | null
+  slug: string
+  thumbnailUrl: string
+  previewVideo?: string | null
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  compareAtPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: $Enums.Currency
+  level?: $Enums.CourseLevel
+  status?: $Enums.CourseStatus
+  visibility?: $Enums.CourseVisibility
+  isFeatured?: boolean
+  duration?: number | null
+  requirements?: Prisma.CourseCreaterequirementsInput | string[]
+  objectives?: Prisma.CourseCreateobjectivesInput | string[]
+  targetAudience?: Prisma.CourseCreatetargetAudienceInput | string[]
+  tags?: Prisma.CourseCreatetagsInput | string[]
+  metaTitle?: string | null
+  metaDescription?: string | null
+  certificateEnabled?: boolean
+  maxStudents?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publishedAt?: Date | string | null
+  knowledgeIndexedAt?: Date | string | null
+  pathId: string
+  trackId?: string | null
+  sections?: Prisma.SectionUncheckedCreateNestedManyWithoutCourseInput
+  orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutCourseInput
+  cartItems?: Prisma.CartItemUncheckedCreateNestedManyWithoutCourseInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutCourseInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutCourseInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutCourseInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUncheckedCreateNestedManyWithoutCourseInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedCreateNestedManyWithoutCourseInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutCourseInput
+  prerequisites?: Prisma.CourseUncheckedCreateNestedManyWithoutRequiredForInput
+  requiredFor?: Prisma.CourseUncheckedCreateNestedManyWithoutPrerequisitesInput
+}
+
+export type CourseCreateOrConnectWithoutIndexingOutboxInput = {
+  where: Prisma.CourseWhereUniqueInput
+  create: Prisma.XOR<Prisma.CourseCreateWithoutIndexingOutboxInput, Prisma.CourseUncheckedCreateWithoutIndexingOutboxInput>
+}
+
+export type CourseUpsertWithoutIndexingOutboxInput = {
+  update: Prisma.XOR<Prisma.CourseUpdateWithoutIndexingOutboxInput, Prisma.CourseUncheckedUpdateWithoutIndexingOutboxInput>
+  create: Prisma.XOR<Prisma.CourseCreateWithoutIndexingOutboxInput, Prisma.CourseUncheckedCreateWithoutIndexingOutboxInput>
+  where?: Prisma.CourseWhereInput
+}
+
+export type CourseUpdateToOneWithWhereWithoutIndexingOutboxInput = {
+  where?: Prisma.CourseWhereInput
+  data: Prisma.XOR<Prisma.CourseUpdateWithoutIndexingOutboxInput, Prisma.CourseUncheckedUpdateWithoutIndexingOutboxInput>
+}
+
+export type CourseUpdateWithoutIndexingOutboxInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  shortDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnailUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  previewVideo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  compareAtPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
+  level?: Prisma.EnumCourseLevelFieldUpdateOperationsInput | $Enums.CourseLevel
+  status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus
+  visibility?: Prisma.EnumCourseVisibilityFieldUpdateOperationsInput | $Enums.CourseVisibility
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requirements?: Prisma.CourseUpdaterequirementsInput | string[]
+  objectives?: Prisma.CourseUpdateobjectivesInput | string[]
+  targetAudience?: Prisma.CourseUpdatetargetAudienceInput | string[]
+  tags?: Prisma.CourseUpdatetagsInput | string[]
+  metaTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certificateEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  knowledgeIndexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  instructor?: Prisma.UserUpdateOneRequiredWithoutCoursesNestedInput
+  path?: Prisma.PathUpdateOneRequiredWithoutCoursesNestedInput
+  track?: Prisma.TrackUpdateOneWithoutCoursesNestedInput
+  sections?: Prisma.SectionUpdateManyWithoutCourseNestedInput
+  orderItems?: Prisma.OrderItemUpdateManyWithoutCourseNestedInput
+  cartItems?: Prisma.CartItemUpdateManyWithoutCourseNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutCourseNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutCourseNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutCourseNestedInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
+  requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
+}
+
+export type CourseUncheckedUpdateWithoutIndexingOutboxInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  shortDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnailUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  previewVideo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  compareAtPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
+  level?: Prisma.EnumCourseLevelFieldUpdateOperationsInput | $Enums.CourseLevel
+  status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus
+  visibility?: Prisma.EnumCourseVisibilityFieldUpdateOperationsInput | $Enums.CourseVisibility
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requirements?: Prisma.CourseUpdaterequirementsInput | string[]
+  objectives?: Prisma.CourseUpdateobjectivesInput | string[]
+  targetAudience?: Prisma.CourseUpdatetargetAudienceInput | string[]
+  tags?: Prisma.CourseUpdatetagsInput | string[]
+  metaTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certificateEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  knowledgeIndexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pathId?: Prisma.StringFieldUpdateOperationsInput | string
+  trackId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sections?: Prisma.SectionUncheckedUpdateManyWithoutCourseNestedInput
+  orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutCourseNestedInput
+  cartItems?: Prisma.CartItemUncheckedUpdateManyWithoutCourseNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutCourseNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutCourseNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutCourseNestedInput
+  knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
+  knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
@@ -3741,6 +4000,7 @@ export type CourseUpdateWithoutRequiredForInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
 }
 
@@ -3784,6 +4044,7 @@ export type CourseUncheckedUpdateWithoutRequiredForInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
 }
 
@@ -3860,6 +4121,7 @@ export type CourseUpdateWithoutPrerequisitesInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
 
@@ -3903,6 +4165,7 @@ export type CourseUncheckedUpdateWithoutPrerequisitesInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
 
@@ -4010,6 +4273,7 @@ export type CourseUpdateWithoutPathInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -4053,6 +4317,7 @@ export type CourseUncheckedUpdateWithoutPathInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -4160,6 +4425,7 @@ export type CourseUpdateWithoutTrackInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -4203,6 +4469,7 @@ export type CourseUncheckedUpdateWithoutTrackInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -4310,6 +4577,7 @@ export type CourseUpdateWithoutInstructorInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -4353,6 +4621,7 @@ export type CourseUncheckedUpdateWithoutInstructorInput = {
   knowledgeChunks?: Prisma.KnowledgeChunkUncheckedUpdateManyWithoutCourseNestedInput
   knowledgeSourceHashes?: Prisma.KnowledgeSourceHashUncheckedUpdateManyWithoutCourseNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutCourseNestedInput
+  indexingOutbox?: Prisma.CourseIndexingOutboxUncheckedUpdateManyWithoutCourseNestedInput
   prerequisites?: Prisma.CourseUncheckedUpdateManyWithoutRequiredForNestedInput
   requiredFor?: Prisma.CourseUncheckedUpdateManyWithoutPrerequisitesNestedInput
 }
@@ -4404,6 +4673,7 @@ export type CourseCountOutputType = {
   knowledgeChunks: number
   knowledgeSourceHashes: number
   studentLearningProfiles: number
+  indexingOutbox: number
   prerequisites: number
   requiredFor: number
 }
@@ -4418,6 +4688,7 @@ export type CourseCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   knowledgeChunks?: boolean | CourseCountOutputTypeCountKnowledgeChunksArgs
   knowledgeSourceHashes?: boolean | CourseCountOutputTypeCountKnowledgeSourceHashesArgs
   studentLearningProfiles?: boolean | CourseCountOutputTypeCountStudentLearningProfilesArgs
+  indexingOutbox?: boolean | CourseCountOutputTypeCountIndexingOutboxArgs
   prerequisites?: boolean | CourseCountOutputTypeCountPrerequisitesArgs
   requiredFor?: boolean | CourseCountOutputTypeCountRequiredForArgs
 }
@@ -4498,6 +4769,13 @@ export type CourseCountOutputTypeCountStudentLearningProfilesArgs<ExtArgs extend
 /**
  * CourseCountOutputType without action
  */
+export type CourseCountOutputTypeCountIndexingOutboxArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CourseIndexingOutboxWhereInput
+}
+
+/**
+ * CourseCountOutputType without action
+ */
 export type CourseCountOutputTypeCountPrerequisitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CourseWhereInput
 }
@@ -4553,6 +4831,7 @@ export type CourseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   knowledgeChunks?: boolean | Prisma.Course$knowledgeChunksArgs<ExtArgs>
   knowledgeSourceHashes?: boolean | Prisma.Course$knowledgeSourceHashesArgs<ExtArgs>
   studentLearningProfiles?: boolean | Prisma.Course$studentLearningProfilesArgs<ExtArgs>
+  indexingOutbox?: boolean | Prisma.Course$indexingOutboxArgs<ExtArgs>
   prerequisites?: boolean | Prisma.Course$prerequisitesArgs<ExtArgs>
   requiredFor?: boolean | Prisma.Course$requiredForArgs<ExtArgs>
   _count?: boolean | Prisma.CourseCountOutputTypeDefaultArgs<ExtArgs>
@@ -4677,6 +4956,7 @@ export type CourseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   knowledgeChunks?: boolean | Prisma.Course$knowledgeChunksArgs<ExtArgs>
   knowledgeSourceHashes?: boolean | Prisma.Course$knowledgeSourceHashesArgs<ExtArgs>
   studentLearningProfiles?: boolean | Prisma.Course$studentLearningProfilesArgs<ExtArgs>
+  indexingOutbox?: boolean | Prisma.Course$indexingOutboxArgs<ExtArgs>
   prerequisites?: boolean | Prisma.Course$prerequisitesArgs<ExtArgs>
   requiredFor?: boolean | Prisma.Course$requiredForArgs<ExtArgs>
   _count?: boolean | Prisma.CourseCountOutputTypeDefaultArgs<ExtArgs>
@@ -4707,6 +4987,7 @@ export type $CoursePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     knowledgeChunks: Prisma.$KnowledgeChunkPayload<ExtArgs>[]
     knowledgeSourceHashes: Prisma.$KnowledgeSourceHashPayload<ExtArgs>[]
     studentLearningProfiles: Prisma.$StudentLearningProfilePayload<ExtArgs>[]
+    indexingOutbox: Prisma.$CourseIndexingOutboxPayload<ExtArgs>[]
     prerequisites: Prisma.$CoursePayload<ExtArgs>[]
     requiredFor: Prisma.$CoursePayload<ExtArgs>[]
   }
@@ -5147,6 +5428,7 @@ export interface Prisma__CourseClient<T, Null = never, ExtArgs extends runtime.T
   knowledgeChunks<T extends Prisma.Course$knowledgeChunksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Course$knowledgeChunksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   knowledgeSourceHashes<T extends Prisma.Course$knowledgeSourceHashesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Course$knowledgeSourceHashesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeSourceHashPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   studentLearningProfiles<T extends Prisma.Course$studentLearningProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Course$studentLearningProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentLearningProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  indexingOutbox<T extends Prisma.Course$indexingOutboxArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Course$indexingOutboxArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CourseIndexingOutboxPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   prerequisites<T extends Prisma.Course$prerequisitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Course$prerequisitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   requiredFor<T extends Prisma.Course$requiredForArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Course$requiredForArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -5841,6 +6123,30 @@ export type Course$studentLearningProfilesArgs<ExtArgs extends runtime.Types.Ext
   take?: number
   skip?: number
   distinct?: Prisma.StudentLearningProfileScalarFieldEnum | Prisma.StudentLearningProfileScalarFieldEnum[]
+}
+
+/**
+ * Course.indexingOutbox
+ */
+export type Course$indexingOutboxArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CourseIndexingOutbox
+   */
+  select?: Prisma.CourseIndexingOutboxSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CourseIndexingOutbox
+   */
+  omit?: Prisma.CourseIndexingOutboxOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CourseIndexingOutboxInclude<ExtArgs> | null
+  where?: Prisma.CourseIndexingOutboxWhereInput
+  orderBy?: Prisma.CourseIndexingOutboxOrderByWithRelationInput | Prisma.CourseIndexingOutboxOrderByWithRelationInput[]
+  cursor?: Prisma.CourseIndexingOutboxWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CourseIndexingOutboxScalarFieldEnum | Prisma.CourseIndexingOutboxScalarFieldEnum[]
 }
 
 /**

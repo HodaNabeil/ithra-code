@@ -257,3 +257,8 @@ export type KnowledgeChunk = Prisma.KnowledgeChunkModel
  * 
  */
 export type KnowledgeSourceHash = Prisma.KnowledgeSourceHashModel
+/**
+ * Model CourseIndexingOutbox
+ * 
+ */
+export type CourseIndexingOutbox = Prisma.CourseIndexingOutboxModel

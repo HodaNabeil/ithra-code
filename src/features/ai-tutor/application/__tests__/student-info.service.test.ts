@@ -61,6 +61,18 @@ describe('student-info service', () => {
     assert.equal(intent.isSessionMeta, false);
   });
 
+  it('detects session meta questions about current lecture or course', () => {
+    const lessonName = detectSessionMetaIntent('اسم الدرس اي');
+    const lectureTitle = detectSessionMetaIntent('ايه اسم المحاضرة؟');
+    const courseName = detectSessionMetaIntent('what is the course name?');
+    const studying = detectSessionMetaIntent('what am I studying?');
+
+    assert.equal(lessonName.isSessionMeta, true);
+    assert.equal(lectureTitle.isSessionMeta, true);
+    assert.equal(courseName.isSessionMeta, true);
+    assert.equal(studying.isSessionMeta, true);
+  });
+
   it('builds student info with display name and learning level', () => {
     const info = buildStudentInfo({
       name: null,
@@ -107,6 +119,7 @@ describe('student-info service', () => {
         level: 'BEGINNER',
         objectives: [],
         requirements: [],
+        knowledgeIndexed: true,
       },
       student: {
         displayName: 'Hoda',
