@@ -205,6 +205,7 @@ Each product:
 
 | Doc | Title |
 |-----|-------|
+| [00-platform-blueprint.md](./00-platform-blueprint.md) | **Master architecture blueprint** — current state, target design, SDK, router, migration, risks, roadmap (all 20 deliverables) |
 | [01-overview.md](./01-overview.md) | Vision, goals, non-goals, scope (this document) |
 | [02-architecture.md](./02-architecture.md) | High-level architecture and internal flows |
 | [03-folder-structure.md](./03-folder-structure.md) | Complete folder tree and import rules |

@@ -99,7 +99,12 @@ export const ModelName = {
   LectureTranscript: 'LectureTranscript',
   KnowledgeChunk: 'KnowledgeChunk',
   KnowledgeSourceHash: 'KnowledgeSourceHash',
-  CourseIndexingOutbox: 'CourseIndexingOutbox'
+  CourseIndexingOutbox: 'CourseIndexingOutbox',
+  AiAgentRun: 'AiAgentRun',
+  AiUsageDaily: 'AiUsageDaily',
+  AiEvaluationRun: 'AiEvaluationRun',
+  AiMemoryFact: 'AiMemoryFact',
+  AiToolInvocation: 'AiToolInvocation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -936,6 +941,94 @@ export const CourseIndexingOutboxScalarFieldEnum = {
 } as const
 
 export type CourseIndexingOutboxScalarFieldEnum = (typeof CourseIndexingOutboxScalarFieldEnum)[keyof typeof CourseIndexingOutboxScalarFieldEnum]
+
+
+export const AiAgentRunScalarFieldEnum = {
+  id: 'id',
+  agentId: 'agentId',
+  userId: 'userId',
+  status: 'status',
+  inputTokens: 'inputTokens',
+  outputTokens: 'outputTokens',
+  embeddingTokens: 'embeddingTokens',
+  estimatedCostUsd: 'estimatedCostUsd',
+  model: 'model',
+  provider: 'provider',
+  promptVersion: 'promptVersion',
+  latencyMs: 'latencyMs',
+  langsmithRunId: 'langsmithRunId',
+  correlationId: 'correlationId',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
+} as const
+
+export type AiAgentRunScalarFieldEnum = (typeof AiAgentRunScalarFieldEnum)[keyof typeof AiAgentRunScalarFieldEnum]
+
+
+export const AiUsageDailyScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  userId: 'userId',
+  agentId: 'agentId',
+  totalRuns: 'totalRuns',
+  totalInputTokens: 'totalInputTokens',
+  totalOutputTokens: 'totalOutputTokens',
+  totalCostUsd: 'totalCostUsd',
+  breakdowns: 'breakdowns',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AiUsageDailyScalarFieldEnum = (typeof AiUsageDailyScalarFieldEnum)[keyof typeof AiUsageDailyScalarFieldEnum]
+
+
+export const AiEvaluationRunScalarFieldEnum = {
+  id: 'id',
+  datasetName: 'datasetName',
+  agentId: 'agentId',
+  status: 'status',
+  metrics: 'metrics',
+  thresholds: 'thresholds',
+  reportPath: 'reportPath',
+  durationMs: 'durationMs',
+  createdAt: 'createdAt'
+} as const
+
+export type AiEvaluationRunScalarFieldEnum = (typeof AiEvaluationRunScalarFieldEnum)[keyof typeof AiEvaluationRunScalarFieldEnum]
+
+
+export const AiMemoryFactScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  agentId: 'agentId',
+  scopeType: 'scopeType',
+  scopeId: 'scopeId',
+  factType: 'factType',
+  content: 'content',
+  confidence: 'confidence',
+  sourceRunId: 'sourceRunId',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt'
+} as const
+
+export type AiMemoryFactScalarFieldEnum = (typeof AiMemoryFactScalarFieldEnum)[keyof typeof AiMemoryFactScalarFieldEnum]
+
+
+export const AiToolInvocationScalarFieldEnum = {
+  id: 'id',
+  toolId: 'toolId',
+  agentRunId: 'agentRunId',
+  userId: 'userId',
+  status: 'status',
+  input: 'input',
+  output: 'output',
+  error: 'error',
+  durationMs: 'durationMs',
+  createdAt: 'createdAt'
+} as const
+
+export type AiToolInvocationScalarFieldEnum = (typeof AiToolInvocationScalarFieldEnum)[keyof typeof AiToolInvocationScalarFieldEnum]
 
 
 export const SortOrder = {

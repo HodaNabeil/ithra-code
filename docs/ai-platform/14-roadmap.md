@@ -82,12 +82,12 @@ gantt
 
 ### Exit Criteria
 
-- [ ] All ai-tutor tests pass using platform modules
-- [ ] `ai-tutor-container.ts` is a thin delegate to platform container
-- [ ] Cost tracking records runs in `ai_agent_runs`
-- [ ] Indexing worker imports handlers from platform
-- [ ] No duplicate code between ai-tutor and ai-platform
-- [ ] `AI_PLATFORM_ENABLED` feature flag works
+- [x] All ai-tutor tests pass using platform modules
+- [x] `ai-tutor-container.ts` is a thin delegate to platform container
+- [x] Cost tracking records runs in `ai_agent_runs` for tutor ask path when `AI_PLATFORM_RUNTIME_ENABLED=true` (legacy path unchanged)
+- [x] Indexing worker imports handlers from platform
+- [x] No duplicate code between ai-tutor and ai-platform
+- [x] `AI_PLATFORM_ENABLED` feature flag works
 
 ### What Does NOT Change in Phase 1
 
@@ -109,13 +109,13 @@ gantt
 | # | Deliverable | Description |
 |---|------------|-------------|
 | 2.1 | LangGraph integration | Install `@langchain/langgraph`, create graph compiler |
-| 2.2 | Tutor agent graph | Replace hand-rolled pipeline with `tutor.graph.ts` |
+| 2.2 | Tutor agent graph | **Done** — production tutor delegates to `tutor.graph.ts` via `streamAgent('tutor')` when runtime flag enabled |
 | 2.3 | Reusable nodes | `sanitize-input`, `retrieve-context`, `generate-response`, `validate-output` |
 | 2.4 | Agent registry | Register tutor agent definition |
 | 2.5 | Langfuse integration | Prompt resolver, sync templates, migrate `prompt-builder.ts` |
 | 2.6 | LangSmith tracing | Configure tracing for all agent runs |
 | 2.7 | OTEL bootstrap | Install OTEL SDK, create spans for platform operations |
-| 2.8 | Cost ledger | Full token tracking with daily aggregation worker |
+| 2.8 | Cost ledger | **Partial** — tutor runtime path records `ai_agent_runs`; daily aggregation worker pending |
 | 2.9 | Ragas evaluation | Golden dataset, nightly eval job, `ai-evaluation` queue |
 | 2.10 | Admin cost API | `observability/dashboard/cost-analytics.service.ts` |
 | 2.11 | Model router | Basic routing policies for tutor task |
@@ -139,18 +139,24 @@ Before (Phase 1):
 // Hand-rolled: context → RAG → prompt → stream → persist
 ```
 
-After (Phase 2):
+After (Phase 2 — implemented):
 ```typescript
-export async function* askTutorUseCase(input, deps) {
-  await deps.enrollmentPolicy.assertEnrolled(input.userId, input.courseId);
-  yield* streamAgent('tutor', { userId: input.userId, input: input.message, scope: { ... } });
-  // Feature persists messages via lifecycle hook
+// ask-tutor.use-case.ts delegates LLM execution when runtime flag is on
+if (AIPlatformConfig.isRuntimeEnabled()) {
+  for await (const event of streamAgent('tutor', {
+    userId, input: question, scope: { courseId, lectureId, threadId },
+    options: { metadata: { systemPrompt, conversationHistory, retrievedChunks } },
+  })) { /* map tokens → SSE */ }
+} else {
+  // legacy llmPort.streamAnswer()
 }
+// Assessment block, RAG fallback, content filter, persistence remain in use case
 ```
 
 ### Exit Criteria
 
-- [ ] Tutor uses LangGraph graph (not hand-rolled pipeline)
+- [x] Tutor uses LangGraph graph for LLM execution when `AI_PLATFORM_RUNTIME_ENABLED=true`
+- [x] Tutor ask path records `ai_agent_runs` via platform cost ledger (runtime path only)
 - [ ] Prompts served from Langfuse (not hardcoded)
 - [ ] All agent runs traced in LangSmith
 - [ ] OTEL spans exported (stdout in dev, OTLP in staging)

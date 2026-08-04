@@ -1,0 +1,14 @@
+{
+  "name": "evaluator-golden-v1",
+  "agentId": "evaluator",
+  "samples": [
+    {
+      "id": "evaluator-001",
+      "input": "Student implemented recursion correctly with base case.",
+      "retrievedContext": [
+        "Rubric requires base case, recursive step, and readable naming."
+      ],
+      "groundTruth": "Pass with high score for recursion implementation."
+    }
+  ]
+}

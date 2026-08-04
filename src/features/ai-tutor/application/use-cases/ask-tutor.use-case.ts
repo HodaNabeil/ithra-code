@@ -8,6 +8,7 @@ import {
   buildConversationMessages,
   buildPromptPreview,
   buildSystemPrompt,
+  getTutorBasePromptVersion,
 } from '../services/prompt-builder';
 import {
   buildNoResultsMessage,
@@ -33,8 +34,17 @@ import { VectorSearchError } from '../../domain/ports/VectorSearchPort';
 import type { ContentFilterPort } from '../../domain/ports/ContentFilterPort';
 import type { VectorSearchConfig } from '../services/content-retriever.service';
 import type { MessageSourceDTO } from '../dto/message-source.dto';
+import type { RetrievedContentChunk } from '../dto/retrieved-content.dto';
 import { AI_TUTOR_CONSTANTS } from '../../shared';
 import { env } from '@/config/env';
+import { streamAgent } from '@/ai-platform';
+import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
+import type { RetrievedChunkState } from '@/ai-platform/graph/state/tutor-agent.state';
+import { PlatformError } from '@/ai-platform/shared/errors';
+import { checkTutorDailyCostCap } from '../../infrastructure/guards/tutor-cost-cap.guard';
+import { checkTutorMessageRateLimit } from '../../infrastructure/guards/tutor-request.guards';
+import { mapPlatformErrorToAskTutorError } from '../../infrastructure/guards/platform-error.mapper';
+import type { TutorSessionContext } from '../../domain/models/TutorSessionContext';
 
 export type AskTutorUseCaseDeps = CourseContextServiceDeps & {
   llmPort: LlmPort;
@@ -89,6 +99,111 @@ async function persistCompletedTurn(
     assistantContent,
     retrievedSources: sources,
   });
+}
+
+async function runRuntimeEarlyExitGuards(userId: string): Promise<void> {
+  await checkTutorMessageRateLimit(userId);
+  await checkTutorDailyCostCap();
+}
+
+function mapChunksToRetrievedChunkState(
+  chunks: RetrievedContentChunk[],
+): RetrievedChunkState[] {
+  return chunks.map((chunk) => ({
+    id: chunk.id,
+    content: chunk.content,
+    score: chunk.score,
+    metadata: {
+      ...chunk.metadata,
+      title: chunk.title,
+      contentType: chunk.contentType,
+      lectureId: chunk.lectureId,
+    },
+  }));
+}
+
+async function* streamTutorViaPlatformRuntime(input: {
+  userId: string;
+  question: string;
+  sessionContext: TutorSessionContext;
+  lectureId?: string;
+  threadId: string;
+  conversationId: string;
+  systemPrompt: string;
+  messages: ReturnType<typeof buildConversationMessages>;
+  retrievedChunks: RetrievedContentChunk[];
+  strictMode: boolean;
+}): AsyncGenerator<string, string> {
+  let assistantResponse = '';
+
+  try {
+    for await (const event of streamAgent('tutor', {
+      userId: input.userId,
+      input: input.question,
+      locale: 'ar',
+      scope: {
+        userId: input.userId,
+        courseId: input.sessionContext.courseId,
+        lectureId: input.lectureId,
+        threadId: input.threadId,
+        conversationId: input.conversationId,
+      },
+      options: {
+        maxTokens: AI_TUTOR_CONSTANTS.MAX_RESPONSE_TOKENS,
+        metadata: {
+          systemPrompt: input.systemPrompt,
+          conversationHistory: input.messages,
+          retrievedChunks: mapChunksToRetrievedChunkState(input.retrievedChunks),
+          promptVersion: getTutorBasePromptVersion(),
+        },
+      },
+    })) {
+      if (event.type === 'token') {
+        assistantResponse += event.text;
+        if (!input.strictMode) {
+          yield event.text;
+        }
+      }
+
+      if (event.type === 'error') {
+        throw mapPlatformErrorToAskTutorError(event);
+      }
+    }
+  } catch (error) {
+    if (error instanceof PlatformError) {
+      throw mapPlatformErrorToAskTutorError(error);
+    }
+    throw error;
+  }
+
+  return assistantResponse;
+}
+
+async function* streamTutorViaLegacyLlm(input: {
+  llmPort: LlmPort;
+  systemPrompt: string;
+  messages: ReturnType<typeof buildConversationMessages>;
+  strictMode: boolean;
+}): AsyncGenerator<string, string> {
+  const stream = input.llmPort.streamAnswer({
+    systemPrompt: input.systemPrompt,
+    messages: input.messages,
+  });
+
+  let assistantResponse = '';
+
+  if (input.strictMode) {
+    for await (const token of stream) {
+      assistantResponse += token;
+    }
+  } else {
+    for await (const token of stream) {
+      assistantResponse += token;
+      yield token;
+    }
+  }
+
+  return assistantResponse;
 }
 
 export async function* askTutorUseCase(
@@ -163,6 +278,10 @@ export async function* askTutorUseCase(
     const sessionMetaIntent = detectSessionMetaIntent(input.question);
 
     if (assessmentIntent.isAssessmentSeeking) {
+      if (AIPlatformConfig.isRuntimeEnabled()) {
+        await runRuntimeEarlyExitGuards(input.userId);
+      }
+
       outcome.assessmentBlocked = true;
       outcome.usedFallback = true;
 
@@ -229,6 +348,10 @@ export async function* askTutorUseCase(
     yield encodeStreamMeta(streamMeta);
 
     if (retrieval.usedFallback && !sessionMetaIntent.isSessionMeta) {
+      if (AIPlatformConfig.isRuntimeEnabled()) {
+        await runRuntimeEarlyExitGuards(input.userId);
+      }
+
       const fallbackMessage = buildNoResultsMessage(input.question, {
         lectures: sessionContext.lectureCatalog,
         excludeLectureId: input.lectureId,
@@ -305,22 +428,36 @@ export async function* askTutorUseCase(
     }
 
     const strictMode = !sessionMetaIntent.isSessionMeta;
-    const stream = llmPort.streamAnswer({
-      systemPrompt,
-      messages,
-    });
+    const usePlatformRuntime = AIPlatformConfig.isRuntimeEnabled();
+
+    const responseStream = usePlatformRuntime
+      ? streamTutorViaPlatformRuntime({
+          userId: input.userId,
+          question: input.question,
+          sessionContext,
+          lectureId: input.lectureId,
+          threadId: thread.id,
+          conversationId: conversation.id,
+          systemPrompt,
+          messages,
+          retrievedChunks: retrieval.chunks,
+          strictMode,
+        })
+      : streamTutorViaLegacyLlm({
+          llmPort,
+          systemPrompt,
+          messages,
+          strictMode,
+        });
 
     let assistantResponse = '';
-
-    if (strictMode) {
-      for await (const token of stream) {
-        assistantResponse += token;
+    while (true) {
+      const { value, done } = await responseStream.next();
+      if (done) {
+        assistantResponse = value ?? '';
+        break;
       }
-    } else {
-      for await (const token of stream) {
-        assistantResponse += token;
-        yield token;
-      }
+      yield value;
     }
 
     let finalResponse = assistantResponse.trim();
@@ -389,6 +526,10 @@ export async function* askTutorUseCase(
   } catch (error) {
     if (error instanceof AskTutorError) {
       throw error;
+    }
+
+    if (error instanceof PlatformError) {
+      throw mapPlatformErrorToAskTutorError(error);
     }
 
     if (error instanceof VectorSearchError) {

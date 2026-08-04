@@ -1,0 +1,45 @@
+name: AI Evaluation
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  ragas-evaluation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pip install -r eval/requirements.txt
+
+      - name: Run Ragas evaluation suite
+        run: pnpm eval:ragas
+        env:
+          SKIP_ENV_VALIDATION: 'true'
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+          AUTH_SECRET: test-secret-test-secret-test-secret
+          AUTH_URL: http://localhost:3000
+          AUTH_GOOGLE_ID: test
+          AUTH_GOOGLE_SECRET: test
+          AUTH_GITHUB_ID: test
+          AUTH_GITHUB_SECRET: test
+          STRIPE_API_KEY: sk_test
+          STRIPE_WEBHOOK_SECRET: whsec_test
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test

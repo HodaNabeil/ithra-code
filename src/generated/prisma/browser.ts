@@ -262,3 +262,28 @@ export type KnowledgeSourceHash = Prisma.KnowledgeSourceHashModel
  * 
  */
 export type CourseIndexingOutbox = Prisma.CourseIndexingOutboxModel
+/**
+ * Model AiAgentRun
+ * 
+ */
+export type AiAgentRun = Prisma.AiAgentRunModel
+/**
+ * Model AiUsageDaily
+ * 
+ */
+export type AiUsageDaily = Prisma.AiUsageDailyModel
+/**
+ * Model AiEvaluationRun
+ * 
+ */
+export type AiEvaluationRun = Prisma.AiEvaluationRunModel
+/**
+ * Model AiMemoryFact
+ * 
+ */
+export type AiMemoryFact = Prisma.AiMemoryFactModel
+/**
+ * Model AiToolInvocation
+ * 
+ */
+export type AiToolInvocation = Prisma.AiToolInvocationModel

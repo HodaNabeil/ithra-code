@@ -6,26 +6,26 @@ import { AttachmentType, CourseStatus, LectureType } from '@/generated/prisma/en
 import {
   collectCourseKnowledgeSources,
   collectLectureKnowledgeSources,
-} from '@/features/ai-tutor/application/services/knowledge-ingestion/content-collector.service';
+} from '@/ai-platform/rag/ingestion/content-collector.service';
 import {
   detectContentChange,
-} from '@/features/ai-tutor/application/services/knowledge-ingestion/content-hash.service';
+} from '@/ai-platform/rag/ingestion/content-hash.service';
 import {
   computeContentHash,
   detectContentFormat,
   normalizeKnowledgeText,
-} from '@/features/ai-tutor/application/services/knowledge-ingestion/text-normalizer.service';
+} from '@/ai-platform/rag/ingestion/text-normalizer.service';
 import {
   chunkContentByKind,
   chunkMarkdownContent,
-} from '@/features/ai-tutor/application/services/text-chunker.service';
-import { markdownContentExtractor } from '@/features/ai-tutor/application/services/knowledge-ingestion/extractors/inline-extractors';
-import { transcriptExtractor } from '@/features/ai-tutor/application/services/knowledge-ingestion/extractors/transcript-extractor';
-import { buildKnowledgeChunkRecords } from '@/features/ai-tutor/application/services/knowledge-ingestion/chunk-builder.service';
+} from '@/ai-platform/indexing/services/text-chunker.service';
+import { markdownContentExtractor } from '@/ai-platform/rag/ingestion/extractors/inline-extractors';
+import { transcriptExtractor } from '@/ai-platform/rag/ingestion/extractors/transcript-extractor';
+import { buildKnowledgeChunkRecords } from '@/ai-platform/rag/ingestion/chunk-builder.service';
 import {
   ingestCourseKnowledge,
   ingestLectureKnowledge,
-} from '@/features/ai-tutor/application/services/knowledge-ingestion/knowledge-ingestion-pipeline.service';
+} from '@/ai-platform/rag/ingestion/knowledge-ingestion-pipeline.service';
 import type { CourseForIndexingDTO } from '@/features/ai-tutor/domain/ports/CourseContentRepositoryPort';
 import type { KnowledgeSourceHashRepositoryPort } from '@/features/ai-tutor/domain/ports/KnowledgeSourceHashRepositoryPort';
 import type { KnowledgeChunkRepositoryPort } from '@/features/ai-tutor/domain/ports/KnowledgeChunkRepositoryPort';

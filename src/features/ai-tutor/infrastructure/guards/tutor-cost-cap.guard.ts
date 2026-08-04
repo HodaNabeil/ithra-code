@@ -1,17 +1,16 @@
-import { redis } from '@/lib/redis';
-import { logger } from '@/lib/logger';
-
+import { AITutorConfig } from '../config/ai-tutor.config';
+import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
+import { assertGlobalDailyCostCap } from '@/ai-platform/infrastructure/guards';
 import {
   AskTutorError,
   AskTutorErrorCodes,
 } from '../../application/errors/ask-tutor.errors';
-import { AITutorConfig } from '../config/ai-tutor.config';
+import { PlatformError } from '@/ai-platform/shared/errors';
 
-const DAILY_COST_PREFIX = 'tutor:daily-cost';
-
-function getDailyCostKey(): string {
-  const date = new Date().toISOString().slice(0, 10);
-  return `${DAILY_COST_PREFIX}:${date}`;
+function getDailyCostCap(): number {
+  return AIPlatformConfig.isEnabled()
+    ? AIPlatformConfig.getDailyCostCap()
+    : AITutorConfig.getDailyCostCap();
 }
 
 /**
@@ -19,36 +18,12 @@ function getDailyCostKey(): string {
  * Fails closed when Redis is unavailable.
  */
 export async function checkTutorDailyCostCap(): Promise<void> {
-  const cap = AITutorConfig.getDailyCostCap();
-  if (!cap || cap <= 0) {
-    return;
-  }
-
-  const key = getDailyCostKey();
-
   try {
-    const count = await redis.incr(key);
-    if (count === 1) {
-      await redis.expire(key, 86_400);
-    }
-
-    if (count > cap) {
-      throw new AskTutorError(
-        503,
-        'تم تجاوز الحد اليومي لاستخدام المدرس الذكي. حاول مرة أخرى غداً.',
-        AskTutorErrorCodes.SERVICE_UNAVAILABLE,
-      );
-    }
+    await assertGlobalDailyCostCap(getDailyCostCap());
   } catch (error) {
-    if (error instanceof AskTutorError) {
-      throw error;
+    if (error instanceof PlatformError) {
+      throw new AskTutorError(503, error.message, AskTutorErrorCodes.SERVICE_UNAVAILABLE);
     }
-
-    logger.error({ error }, '[TUTOR_COST_CAP_REDIS_FAILURE]');
-    throw new AskTutorError(
-      503,
-      'خدمة المدرس الذكي غير متاحة مؤقتاً. حاول مرة أخرى بعد قليل.',
-      AskTutorErrorCodes.SERVICE_UNAVAILABLE,
-    );
+    throw error;
   }
 }

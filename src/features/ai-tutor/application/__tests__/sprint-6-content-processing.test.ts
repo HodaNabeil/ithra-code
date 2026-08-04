@@ -7,12 +7,12 @@ import {
   classifyAssessmentHintSource,
   classifyContent,
   classifyLectureContent,
-} from '@/features/ai-tutor/application/services/content-classification.service';
+} from '@/ai-platform/indexing/services/content-classification.service';
 import {
   detectInstructorOnlyContent,
   extractAssessmentHints,
-} from '@/features/ai-tutor/application/services/assessment-content.service';
-import { chunkContentByKind } from '@/features/ai-tutor/application/services/text-chunker.service';
+} from '@/ai-platform/indexing/services/assessment-content.service';
+import { chunkContentByKind } from '@/ai-platform/indexing/services/text-chunker.service';
 
 describe('content-classification Sprint 6', () => {
   it('marks quiz lecture content as assessment', () => {

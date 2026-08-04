@@ -350,6 +350,10 @@ model User {
   checkoutSessions    CheckoutSession[]
   tutorConversations  TutorConversation[]
   studentLearningProfiles StudentLearningProfile[]
+  aiAgentRuns         AiAgentRun[]
+  aiUsageDaily        AiUsageDaily[]
+  aiMemoryFacts       AiMemoryFact[]
+  aiToolInvocations   AiToolInvocation[]
 
   @@unique([oauthProvider, oauthProviderId])
   @@index([email])
@@ -1373,4 +1377,121 @@ model CourseIndexingOutbox {
   @@index([status, createdAt])
   @@index([courseId])
   @@map("course_indexing_outbox")
+}
+
+enum AiAgentRunStatus {
+  running
+  completed
+  failed
+
+  @@map("ai_agent_run_status")
+}
+
+model AiAgentRun {
+  id               String            @id @default(cuid())
+  agentId          String            @map("agent_id")
+  userId           String            @map("user_id")
+  status           AiAgentRunStatus  @default(running)
+  inputTokens      Int?              @map("input_tokens")
+  outputTokens     Int?              @map("output_tokens")
+  embeddingTokens  Int?              @default(0) @map("embedding_tokens")
+  estimatedCostUsd Decimal?          @map("estimated_cost_usd") @db.Decimal(12, 6)
+  model            String
+  provider         String            @default("openai")
+  promptVersion    String?           @map("prompt_version")
+  latencyMs        Int?              @map("latency_ms")
+  langsmithRunId   String?           @map("langsmith_run_id")
+  correlationId    String?           @map("correlation_id")
+  metadata         Json?
+  createdAt        DateTime          @default(now()) @map("created_at")
+  completedAt      DateTime?         @map("completed_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([agentId, createdAt])
+  @@map("ai_agent_runs")
+}
+
+model AiUsageDaily {
+  id                String   @id @default(cuid())
+  date              DateTime @db.Date
+  userId            String?  @map("user_id")
+  agentId           String?  @map("agent_id")
+  totalRuns         Int      @default(0) @map("total_runs")
+  totalInputTokens  BigInt   @default(0) @map("total_input_tokens")
+  totalOutputTokens BigInt   @default(0) @map("total_output_tokens")
+  totalCostUsd      Decimal  @default(0) @map("total_cost_usd") @db.Decimal(12, 6)
+  breakdowns        Json?    @map("breakdowns")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([date, userId, agentId])
+  @@index([date, userId, agentId])
+  @@map("ai_usage_daily")
+}
+
+model AiEvaluationRun {
+  id          String   @id @default(cuid())
+  datasetName String   @map("dataset_name")
+  agentId     String   @map("agent_id")
+  status      String
+  metrics     Json
+  thresholds  Json
+  reportPath  String?  @map("report_path")
+  durationMs  Int?     @map("duration_ms")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([agentId, createdAt])
+  @@map("ai_evaluation_runs")
+}
+
+model AiMemoryFact {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  agentId     String?   @map("agent_id")
+  scopeType   String    @map("scope_type")
+  scopeId     String?   @map("scope_id")
+  factType    String    @map("fact_type")
+  content     String
+  confidence  Float     @default(1.0)
+  sourceRunId String?   @map("source_run_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  expiresAt   DateTime? @map("expires_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, scopeType, scopeId])
+  @@index([userId, factType])
+  @@map("ai_memory_facts")
+}
+
+enum AiToolInvocationStatus {
+  success
+  failed
+  timeout
+
+  @@map("ai_tool_invocation_status")
+}
+
+model AiToolInvocation {
+  id         String                 @id @default(cuid())
+  toolId     String                 @map("tool_id")
+  agentRunId String                 @map("agent_run_id")
+  userId     String                 @map("user_id")
+  status     AiToolInvocationStatus
+  input      Json
+  output     Json?
+  error      String?
+  durationMs Int                    @map("duration_ms")
+  createdAt  DateTime               @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([agentRunId])
+  @@index([userId, createdAt])
+  @@index([toolId, createdAt])
+  @@map("ai_tool_invocations")
 }

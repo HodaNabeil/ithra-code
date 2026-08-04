@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { AttachmentType } from '@/generated/prisma/enums';
-import { extractAttachmentText } from '@/features/ai-tutor/application/services/attachment-content-extractor.service';
+import { extractAttachmentText } from '@/ai-platform/indexing/services/attachment-content-extractor.service';
 
 describe('attachment-content-extractor', () => {
   it('uses inline content when available', async () => {

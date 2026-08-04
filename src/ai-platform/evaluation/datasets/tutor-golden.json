@@ -1,0 +1,27 @@
+{
+  "name": "tutor-golden-v1",
+  "agentId": "tutor",
+  "samples": [
+    {
+      "id": "tutor-001",
+      "input": "ما هو React؟",
+      "locale": "ar",
+      "expectedTopics": ["JavaScript", "واجهة", "مكتبة"],
+      "retrievedContext": [
+        "React is a JavaScript library for building user interfaces using components."
+      ],
+      "groundTruth": "React is a JavaScript library for building user interfaces.",
+      "mustNotContain": ["assessment answer", "quiz solution"]
+    },
+    {
+      "id": "tutor-002",
+      "input": "Explain variables in programming",
+      "locale": "en",
+      "expectedTopics": ["storage", "value", "name"],
+      "retrievedContext": [
+        "A variable is a named storage location that holds a value in a program."
+      ],
+      "groundTruth": "Variables store values that programs can read and update."
+    }
+  ]
+}

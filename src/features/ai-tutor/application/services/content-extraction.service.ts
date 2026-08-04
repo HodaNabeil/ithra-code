@@ -9,12 +9,13 @@ import type { KnowledgeChunkRecord } from '../../domain/models/KnowledgeChunk';
 import {
   collectCourseKnowledgeSources,
   collectLectureKnowledgeSources,
-} from './knowledge-ingestion/content-collector.service';
-import { buildKnowledgeChunkRecords } from './knowledge-ingestion/chunk-builder.service';
-import { extractorRegistry } from './knowledge-ingestion/extractor-registry';
-import { registerDefaultExtractors } from './knowledge-ingestion/extractors';
+} from '@/ai-platform/rag/ingestion/content-collector.service';
+import { buildKnowledgeChunkRecords } from '@/ai-platform/rag/ingestion/chunk-builder.service';
+import { extractorRegistry } from '@/ai-platform/rag/ingestion/extractor-registry';
+import { registerDefaultExtractors } from '@/ai-platform/rag/ingestion/extractors';
 import { isExtractionSkipped } from '../../domain/models/KnowledgeSource';
-import type { ContentChunkKind } from './text-chunker.service';
+import type { ContentChunkKind } from '@/ai-platform/indexing/services/text-chunker.service';
+import type { ClassifiableContent } from '@/ai-platform/indexing/services/content-classification.service';
 
 export type ExtractedSource = {
   sourceId: string;
@@ -26,12 +27,8 @@ export type ExtractedSource = {
   sourceKind: 'course' | 'lecture' | 'attachment' | 'transcript';
   chunkKind: ContentChunkKind;
   contentField?: 'description' | 'content';
-  lectureType?: Parameters<
-    typeof import('./content-classification.service').classifyContent
-  >[0]['lectureType'];
-  attachmentType?: Parameters<
-    typeof import('./content-classification.service').classifyContent
-  >[0]['attachmentType'];
+  lectureType?: ClassifiableContent['lectureType'];
+  attachmentType?: ClassifiableContent['attachmentType'];
   metadata?: Record<string, unknown>;
 };
 

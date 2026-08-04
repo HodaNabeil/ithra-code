@@ -1,0 +1,13 @@
+{
+  "cases": [
+    {
+      "id": "basic-pass",
+      "submission": "The student explains recursion with a clear base case and recursive step.",
+      "rubricCriteria": [
+        { "id": "clarity", "name": "Clarity", "maxScore": 100 },
+        { "id": "accuracy", "name": "Accuracy", "maxScore": 100 }
+      ],
+      "expectedGrade": "pass"
+    }
+  ]
+}

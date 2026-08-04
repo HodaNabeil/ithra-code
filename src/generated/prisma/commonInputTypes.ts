@@ -895,6 +895,67 @@ export type EnumCourseIndexingOutboxStatusWithAggregatesFilter<$PrismaModel = ne
   _max?: Prisma.NestedEnumCourseIndexingOutboxStatusFilter<$PrismaModel>
 }
 
+export type EnumAiAgentRunStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AiAgentRunStatus | Prisma.EnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AiAgentRunStatus[] | Prisma.ListEnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AiAgentRunStatus[] | Prisma.ListEnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAiAgentRunStatusFilter<$PrismaModel> | $Enums.AiAgentRunStatus
+}
+
+export type EnumAiAgentRunStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AiAgentRunStatus | Prisma.EnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AiAgentRunStatus[] | Prisma.ListEnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AiAgentRunStatus[] | Prisma.ListEnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAiAgentRunStatusWithAggregatesFilter<$PrismaModel> | $Enums.AiAgentRunStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAiAgentRunStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAiAgentRunStatusFilter<$PrismaModel>
+}
+
+export type BigIntFilter<$PrismaModel = never> = {
+  equals?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  in?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  notIn?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  lt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  lte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBigIntFilter<$PrismaModel> | bigint | number
+}
+
+export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  in?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  notIn?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  lt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  lte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedBigIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBigIntFilter<$PrismaModel>
+  _max?: Prisma.NestedBigIntFilter<$PrismaModel>
+}
+
+export type EnumAiToolInvocationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AiToolInvocationStatus | Prisma.EnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AiToolInvocationStatus[] | Prisma.ListEnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AiToolInvocationStatus[] | Prisma.ListEnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAiToolInvocationStatusFilter<$PrismaModel> | $Enums.AiToolInvocationStatus
+}
+
+export type EnumAiToolInvocationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AiToolInvocationStatus | Prisma.EnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AiToolInvocationStatus[] | Prisma.ListEnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AiToolInvocationStatus[] | Prisma.ListEnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAiToolInvocationStatusWithAggregatesFilter<$PrismaModel> | $Enums.AiToolInvocationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAiToolInvocationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAiToolInvocationStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1722,6 +1783,67 @@ export type NestedEnumCourseIndexingOutboxStatusWithAggregatesFilter<$PrismaMode
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumCourseIndexingOutboxStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumCourseIndexingOutboxStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumAiAgentRunStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AiAgentRunStatus | Prisma.EnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AiAgentRunStatus[] | Prisma.ListEnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AiAgentRunStatus[] | Prisma.ListEnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAiAgentRunStatusFilter<$PrismaModel> | $Enums.AiAgentRunStatus
+}
+
+export type NestedEnumAiAgentRunStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AiAgentRunStatus | Prisma.EnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AiAgentRunStatus[] | Prisma.ListEnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AiAgentRunStatus[] | Prisma.ListEnumAiAgentRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAiAgentRunStatusWithAggregatesFilter<$PrismaModel> | $Enums.AiAgentRunStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAiAgentRunStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAiAgentRunStatusFilter<$PrismaModel>
+}
+
+export type NestedBigIntFilter<$PrismaModel = never> = {
+  equals?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  in?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  notIn?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  lt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  lte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBigIntFilter<$PrismaModel> | bigint | number
+}
+
+export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  in?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  notIn?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  lt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  lte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedBigIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBigIntFilter<$PrismaModel>
+  _max?: Prisma.NestedBigIntFilter<$PrismaModel>
+}
+
+export type NestedEnumAiToolInvocationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AiToolInvocationStatus | Prisma.EnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AiToolInvocationStatus[] | Prisma.ListEnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AiToolInvocationStatus[] | Prisma.ListEnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAiToolInvocationStatusFilter<$PrismaModel> | $Enums.AiToolInvocationStatus
+}
+
+export type NestedEnumAiToolInvocationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AiToolInvocationStatus | Prisma.EnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AiToolInvocationStatus[] | Prisma.ListEnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AiToolInvocationStatus[] | Prisma.ListEnumAiToolInvocationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAiToolInvocationStatusWithAggregatesFilter<$PrismaModel> | $Enums.AiToolInvocationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAiToolInvocationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAiToolInvocationStatusFilter<$PrismaModel>
 }
 
 

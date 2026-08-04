@@ -17,33 +17,33 @@ export {
 } from './content-extraction.service';
 export type { ExtractedSource, ExtractionStats } from './content-extraction.service';
 
-export { chunkText, chunkContentByKind } from './text-chunker.service';
-export type { TextChunk, ContentChunkKind } from './text-chunker.service';
+export { chunkText, chunkContentByKind } from '@/ai-platform/indexing/services/text-chunker.service';
+export type { TextChunk, ContentChunkKind } from '@/ai-platform/indexing/services/text-chunker.service';
 
 export {
   classifyContent,
   classifyLectureContent,
   classifyAttachmentContent,
   classifyAssessmentHintSource,
-} from './content-classification.service';
+} from '@/ai-platform/indexing/services/content-classification.service';
 export type {
   ClassifiableContent,
   ContentClassificationResult,
   ExtractedSourceClassification,
-} from './content-classification.service';
+} from '@/ai-platform/indexing/services/content-classification.service';
 
-export { extractAttachmentText } from './attachment-content-extractor.service';
+export { extractAttachmentText } from '@/ai-platform/indexing/services/attachment-content-extractor.service';
 export type {
   AttachmentExtractionInput,
   AttachmentExtractionResult,
-} from './attachment-content-extractor.service';
+} from '@/ai-platform/indexing/services/attachment-content-extractor.service';
 
 export {
   detectInstructorOnlyContent,
   extractAssessmentHints,
   sanitizeAssessmentBody,
   buildAssessmentReferenceMetadata,
-} from './assessment-content.service';
+} from '@/ai-platform/indexing/services/assessment-content.service';
 
 export {
   detectAssessmentIntent,

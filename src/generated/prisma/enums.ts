@@ -320,3 +320,21 @@ export const CourseIndexingOutboxStatus = {
 } as const
 
 export type CourseIndexingOutboxStatus = (typeof CourseIndexingOutboxStatus)[keyof typeof CourseIndexingOutboxStatus]
+
+
+export const AiAgentRunStatus = {
+  running: 'running',
+  completed: 'completed',
+  failed: 'failed'
+} as const
+
+export type AiAgentRunStatus = (typeof AiAgentRunStatus)[keyof typeof AiAgentRunStatus]
+
+
+export const AiToolInvocationStatus = {
+  success: 'success',
+  failed: 'failed',
+  timeout: 'timeout'
+} as const
+
+export type AiToolInvocationStatus = (typeof AiToolInvocationStatus)[keyof typeof AiToolInvocationStatus]

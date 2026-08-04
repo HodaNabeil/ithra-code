@@ -18,6 +18,7 @@ const connectionString = env.DATABASE_URL.replace(
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
+export const prisma: PrismaClient =
+  globalForPrisma.prisma ?? new PrismaClient({ adapter });
 
 if (env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;

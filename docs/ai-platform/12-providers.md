@@ -455,6 +455,8 @@ class AIPlatformConfig {
 AI_PLATFORM_ENABLED=true
 ```
 
+**Staging:** set `AI_PLATFORM_ENABLED=true` alongside `AI_TUTOR_ENABLED=true` so the tutor delegates providers, guards, and indexing to the platform module.
+
 When disabled, all platform getters throw or return 503 (same pattern as `AI_TUTOR_ENABLED`).
 
 ---

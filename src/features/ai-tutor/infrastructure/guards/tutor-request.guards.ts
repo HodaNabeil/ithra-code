@@ -1,35 +1,27 @@
-import { redis } from '@/lib/redis';
-import { logger } from '@/lib/logger';
-
-import {
-  AskTutorError,
-  AskTutorErrorCodes,
-} from '../../application/errors/ask-tutor.errors';
 import { AITutorConfig } from '../config/ai-tutor.config';
+import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
+import {
+  acquireConcurrencySlot,
+  assertMessageRateLimit,
+} from '@/ai-platform/infrastructure/guards';
+import { PlatformError } from '@/ai-platform/shared/errors';
 
-const MESSAGE_RATE_PREFIX = 'rate:tutor-messages';
-const ACTIVE_STREAM_PREFIX = 'tutor:active-streams';
+import { mapPlatformErrorToAskTutorError } from './platform-error.mapper';
 
-async function incrementWindow(
-  key: string,
-  windowSeconds: number,
-): Promise<number> {
-  const count = await redis.incr(key);
-
-  if (count === 1) {
-    await redis.expire(key, windowSeconds);
-  }
-
-  return count;
+function getRateLimitConfig() {
+  return AIPlatformConfig.isEnabled()
+    ? AIPlatformConfig.getRateLimitConfig()
+    : {
+        requestsPerMinute: AITutorConfig.getRateLimitConfig().messagesPerMinute,
+        requestsPerHour: AITutorConfig.getRateLimitConfig().messagesPerHour,
+        requestsPerDay: AITutorConfig.getRateLimitConfig().messagesPerDay,
+      };
 }
 
-function throwServiceUnavailable(guard: 'rate_limit' | 'stream_slot', userId: string): never {
-  logger.error({ userId, guard }, '[TUTOR_GUARD_REDIS_FAILURE]');
-  throw new AskTutorError(
-    503,
-    'خدمة المدرس الذكي غير متاحة مؤقتاً. حاول مرة أخرى بعد قليل.',
-    AskTutorErrorCodes.SERVICE_UNAVAILABLE,
-  );
+function getStreamConfig() {
+  return AIPlatformConfig.isEnabled()
+    ? AIPlatformConfig.getStreamConfig()
+    : AITutorConfig.getStreamConfig();
 }
 
 /**
@@ -37,53 +29,17 @@ function throwServiceUnavailable(guard: 'rate_limit' | 'stream_slot', userId: st
  * Redis failures fail closed to prevent unbounded LLM usage.
  */
 export async function checkTutorMessageRateLimit(userId: string): Promise<void> {
-  const limits = AITutorConfig.getRateLimitConfig();
-
   try {
-    const minuteCount = await incrementWindow(
-      `${MESSAGE_RATE_PREFIX}:minute:${userId}`,
-      60,
-    );
-
-    if (minuteCount > limits.messagesPerMinute) {
-      throw new AskTutorError(
-        429,
-        'تم تجاوز حد الرسائل في الدقيقة. حاول مرة أخرى بعد قليل.',
-        AskTutorErrorCodes.RATE_LIMIT_EXCEEDED,
-      );
-    }
-
-    const hourCount = await incrementWindow(
-      `${MESSAGE_RATE_PREFIX}:hour:${userId}`,
-      3600,
-    );
-
-    if (hourCount > limits.messagesPerHour) {
-      throw new AskTutorError(
-        429,
-        'تم تجاوز حد الرسائل في الساعة. حاول مرة أخرى لاحقاً.',
-        AskTutorErrorCodes.RATE_LIMIT_EXCEEDED,
-      );
-    }
-
-    const dayCount = await incrementWindow(
-      `${MESSAGE_RATE_PREFIX}:day:${userId}`,
-      86_400,
-    );
-
-    if (dayCount > limits.messagesPerDay) {
-      throw new AskTutorError(
-        429,
-        'تم تجاوز حد الرسائل اليومي. حاول مرة أخرى غداً.',
-        AskTutorErrorCodes.RATE_LIMIT_EXCEEDED,
-      );
-    }
+    await assertMessageRateLimit({
+      userId,
+      limits: getRateLimitConfig(),
+      scope: 'tutor-messages',
+    });
   } catch (error) {
-    if (error instanceof AskTutorError) {
-      throw error;
+    if (error instanceof PlatformError) {
+      throw mapPlatformErrorToAskTutorError(error);
     }
-
-    throwServiceUnavailable('rate_limit', userId);
+    throw error;
   }
 }
 
@@ -94,48 +50,19 @@ export async function checkTutorMessageRateLimit(userId: string): Promise<void> 
 export async function acquireTutorStreamSlot(
   userId: string,
 ): Promise<() => Promise<void>> {
-  const { maxConcurrentStreamsPerUser, requestTimeoutMs } =
-    AITutorConfig.getStreamConfig();
-  const key = `${ACTIVE_STREAM_PREFIX}:${userId}`;
+  const { maxConcurrentStreamsPerUser, requestTimeoutMs } = getStreamConfig();
 
   try {
-    const activeCount = await redis.incr(key);
-
-    if (activeCount > maxConcurrentStreamsPerUser) {
-      await redis.decr(key);
-      throw new AskTutorError(
-        429,
-        'لديك محادثة نشطة بالفعل. انتظر حتى تنتهي المحادثة الحالية.',
-        AskTutorErrorCodes.CONCURRENT_STREAM_LIMIT,
-      );
-    }
-
-    const ttlSeconds = Math.ceil(requestTimeoutMs / 1000) + 10;
-    await redis.expire(key, ttlSeconds);
-
-    let released = false;
-
-    return async () => {
-      if (released) {
-        return;
-      }
-
-      released = true;
-
-      try {
-        const remaining = await redis.decr(key);
-        if (remaining <= 0) {
-          await redis.del(key);
-        }
-      } catch (error) {
-        logger.error({ userId, guard: 'stream_slot', error }, '[TUTOR_STREAM_LIMIT_RELEASE]');
-      }
-    };
+    return await acquireConcurrencySlot({
+      userId,
+      maxConcurrent: maxConcurrentStreamsPerUser,
+      timeoutMs: requestTimeoutMs,
+      scope: 'tutor',
+    });
   } catch (error) {
-    if (error instanceof AskTutorError) {
-      throw error;
+    if (error instanceof PlatformError) {
+      throw mapPlatformErrorToAskTutorError(error);
     }
-
-    throwServiceUnavailable('stream_slot', userId);
+    throw error;
   }
 }

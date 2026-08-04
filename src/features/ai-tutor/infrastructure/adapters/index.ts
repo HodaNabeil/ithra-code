@@ -15,7 +15,7 @@ export { OpenAIEmbeddingAdapter } from './OpenAIEmbeddingAdapter';
 export {
   PostgresVectorSearchAdapter,
   postgresVectorSearchAdapter,
-} from './PostgresVectorSearchAdapter';
+} from '@/ai-platform/rag/retrieval/postgres-vector-search.adapter';
 export {
   EducationalContentFilter,
   educationalContentFilter,

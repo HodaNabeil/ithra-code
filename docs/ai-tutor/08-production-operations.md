@@ -44,6 +44,7 @@ knowledge-ingestion-pipeline → knowledge_chunks + knowledge_source_hashes
 DATABASE_URL="postgresql://..."
 REDIS_URL="redis://..."
 AI_TUTOR_ENABLED="true"
+AI_PLATFORM_ENABLED="true"   # staging: enable platform module (delegates providers, guards, indexing)
 OPENAI_API_KEY="sk-..."
 # Optional overrides:
 AI_TUTOR_EMBEDDING_MODEL="text-embedding-3-small"
@@ -90,7 +91,7 @@ Re-publish without content changes — confirm `sourcesUnchanged > 0` in complet
 
 1. **Install dependencies:** `pnpm install --frozen-lockfile`
 2. **Run migrations:** `npx prisma migrate deploy` (requires pgvector on target Postgres)
-3. **Set environment variables** (see above; `AI_TUTOR_ENABLED=true` in environments that use the tutor)
+3. **Set environment variables** (see above; `AI_TUTOR_ENABLED=true` and `AI_PLATFORM_ENABLED=true` in staging/production environments that use the tutor)
 4. **Start Next.js:** `pnpm build && pnpm start`
 5. **Start worker** as a supervised process: `pnpm worker:course-indexing`
 6. **Verify health:** `GET /api/health/tutor` returns HTTP 200

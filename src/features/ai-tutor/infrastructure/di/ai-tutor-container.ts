@@ -1,8 +1,14 @@
 import { AITutorConfig, validateAITutorConfig } from '../config/ai-tutor.config';
+import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
+import {
+  getEmbeddingPort as getPlatformEmbeddingPort,
+  getLlmPort as getPlatformLlmPort,
+  getVectorSearchPort as getPlatformVectorSearchPort,
+} from '@/ai-platform/infrastructure/di/ai-platform.container';
 import { OpenAILlmAdapter } from '../adapters/OpenAILlmAdapter';
 import { ResilientLlmAdapter } from '../adapters/ResilientLlmAdapter';
 import { OpenAIEmbeddingAdapter } from '../adapters/OpenAIEmbeddingAdapter';
-import { postgresVectorSearchAdapter } from '../adapters/PostgresVectorSearchAdapter';
+import { postgresVectorSearchAdapter } from '@/ai-platform/rag/retrieval/postgres-vector-search.adapter';
 import {
   EducationalContentFilter,
   educationalContentFilter,
@@ -67,6 +73,11 @@ export function assertAITutorEnabled(): void {
 
 export function getLlmPort(): LlmPort {
   assertAITutorEnabled();
+
+  if (AIPlatformConfig.isEnabled()) {
+    return getPlatformLlmPort();
+  }
+
   const state = getState();
 
   if (!state.llmPort) {
@@ -84,6 +95,11 @@ export function getLlmPort(): LlmPort {
 
 export function getEmbeddingPort(): EmbeddingPort {
   assertAITutorEnabled();
+
+  if (AIPlatformConfig.isEnabled()) {
+    return getPlatformEmbeddingPort();
+  }
+
   const state = getState();
 
   if (!state.embeddingPort) {
@@ -99,6 +115,11 @@ export function getEmbeddingPort(): EmbeddingPort {
 
 export function getVectorSearchPort(): VectorSearchPort {
   assertAITutorEnabled();
+
+  if (AIPlatformConfig.isEnabled()) {
+    return getPlatformVectorSearchPort();
+  }
+
   const state = getState();
 
   if (!state.vectorSearchPort) {

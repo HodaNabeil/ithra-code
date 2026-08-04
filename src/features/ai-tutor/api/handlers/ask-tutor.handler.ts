@@ -1,4 +1,5 @@
 import { auth } from '@/lib/auth';
+import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
 
 import { askTutorInputSchema } from '../../application/dto/ask-tutor.dto';
 import {
@@ -62,33 +63,39 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
     return Response.json({ success: false, message }, { status: 400 });
   }
 
-  try {
-    await checkTutorDailyCostCap();
-    await checkTutorMessageRateLimit(session.user.id);
-  } catch (error) {
-    if (error instanceof AskTutorError) {
-      return Response.json(
-        { success: false, message: error.message, code: error.code },
-        { status: error.status },
-      );
-    }
+  const usePlatformRuntime = AIPlatformConfig.isRuntimeEnabled();
 
-    throw error;
+  if (!usePlatformRuntime) {
+    try {
+      await checkTutorDailyCostCap();
+      await checkTutorMessageRateLimit(session.user.id);
+    } catch (error) {
+      if (error instanceof AskTutorError) {
+        return Response.json(
+          { success: false, message: error.message, code: error.code },
+          { status: error.status },
+        );
+      }
+
+      throw error;
+    }
   }
 
   let releaseStreamSlot: (() => Promise<void>) | undefined;
 
-  try {
-    releaseStreamSlot = await acquireTutorStreamSlot(session.user.id);
-  } catch (error) {
-    if (error instanceof AskTutorError) {
-      return Response.json(
-        { success: false, message: error.message, code: error.code },
-        { status: error.status },
-      );
-    }
+  if (!usePlatformRuntime) {
+    try {
+      releaseStreamSlot = await acquireTutorStreamSlot(session.user.id);
+    } catch (error) {
+      if (error instanceof AskTutorError) {
+        return Response.json(
+          { success: false, message: error.message, code: error.code },
+          { status: error.status },
+        );
+      }
 
-    throw error;
+      throw error;
+    }
   }
 
   const { readable, writable } = new TransformStream();

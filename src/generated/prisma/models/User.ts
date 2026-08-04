@@ -465,6 +465,10 @@ export type UserWhereInput = {
   checkoutSessions?: Prisma.CheckoutSessionListRelationFilter
   tutorConversations?: Prisma.TutorConversationListRelationFilter
   studentLearningProfiles?: Prisma.StudentLearningProfileListRelationFilter
+  aiAgentRuns?: Prisma.AiAgentRunListRelationFilter
+  aiUsageDaily?: Prisma.AiUsageDailyListRelationFilter
+  aiMemoryFacts?: Prisma.AiMemoryFactListRelationFilter
+  aiToolInvocations?: Prisma.AiToolInvocationListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -521,6 +525,10 @@ export type UserOrderByWithRelationInput = {
   checkoutSessions?: Prisma.CheckoutSessionOrderByRelationAggregateInput
   tutorConversations?: Prisma.TutorConversationOrderByRelationAggregateInput
   studentLearningProfiles?: Prisma.StudentLearningProfileOrderByRelationAggregateInput
+  aiAgentRuns?: Prisma.AiAgentRunOrderByRelationAggregateInput
+  aiUsageDaily?: Prisma.AiUsageDailyOrderByRelationAggregateInput
+  aiMemoryFacts?: Prisma.AiMemoryFactOrderByRelationAggregateInput
+  aiToolInvocations?: Prisma.AiToolInvocationOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -581,6 +589,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   checkoutSessions?: Prisma.CheckoutSessionListRelationFilter
   tutorConversations?: Prisma.TutorConversationListRelationFilter
   studentLearningProfiles?: Prisma.StudentLearningProfileListRelationFilter
+  aiAgentRuns?: Prisma.AiAgentRunListRelationFilter
+  aiUsageDaily?: Prisma.AiUsageDailyListRelationFilter
+  aiMemoryFacts?: Prisma.AiMemoryFactListRelationFilter
+  aiToolInvocations?: Prisma.AiToolInvocationListRelationFilter
 }, "id" | "email" | "emailVerifyToken" | "resetPasswordToken" | "oauthProvider_oauthProviderId">
 
 export type UserOrderByWithAggregationInput = {
@@ -715,6 +727,10 @@ export type UserCreateInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -771,6 +787,10 @@ export type UserUncheckedCreateInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -827,6 +847,10 @@ export type UserUpdateInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -883,6 +907,10 @@ export type UserUncheckedUpdateInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1117,6 +1145,11 @@ export type UserSumOrderByAggregateInput = {
   verificationResendCount?: Prisma.SortOrder
   passwordResetRequestCount?: Prisma.SortOrder
   passwordSetupRequestCount?: Prisma.SortOrder
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
 }
 
 export type UserCreateNestedOneWithoutCoursesInput = {
@@ -1417,6 +1450,64 @@ export type UserUpdateOneRequiredWithoutStudentLearningProfilesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStudentLearningProfilesInput, Prisma.UserUpdateWithoutStudentLearningProfilesInput>, Prisma.UserUncheckedUpdateWithoutStudentLearningProfilesInput>
 }
 
+export type UserCreateNestedOneWithoutAiAgentRunsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiAgentRunsInput, Prisma.UserUncheckedCreateWithoutAiAgentRunsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiAgentRunsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAiAgentRunsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiAgentRunsInput, Prisma.UserUncheckedCreateWithoutAiAgentRunsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiAgentRunsInput
+  upsert?: Prisma.UserUpsertWithoutAiAgentRunsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAiAgentRunsInput, Prisma.UserUpdateWithoutAiAgentRunsInput>, Prisma.UserUncheckedUpdateWithoutAiAgentRunsInput>
+}
+
+export type UserCreateNestedOneWithoutAiUsageDailyInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiUsageDailyInput, Prisma.UserUncheckedCreateWithoutAiUsageDailyInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiUsageDailyInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAiUsageDailyNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiUsageDailyInput, Prisma.UserUncheckedCreateWithoutAiUsageDailyInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiUsageDailyInput
+  upsert?: Prisma.UserUpsertWithoutAiUsageDailyInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAiUsageDailyInput, Prisma.UserUpdateWithoutAiUsageDailyInput>, Prisma.UserUncheckedUpdateWithoutAiUsageDailyInput>
+}
+
+export type UserCreateNestedOneWithoutAiMemoryFactsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiMemoryFactsInput, Prisma.UserUncheckedCreateWithoutAiMemoryFactsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiMemoryFactsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAiMemoryFactsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiMemoryFactsInput, Prisma.UserUncheckedCreateWithoutAiMemoryFactsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiMemoryFactsInput
+  upsert?: Prisma.UserUpsertWithoutAiMemoryFactsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAiMemoryFactsInput, Prisma.UserUpdateWithoutAiMemoryFactsInput>, Prisma.UserUncheckedUpdateWithoutAiMemoryFactsInput>
+}
+
+export type UserCreateNestedOneWithoutAiToolInvocationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiToolInvocationsInput, Prisma.UserUncheckedCreateWithoutAiToolInvocationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiToolInvocationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAiToolInvocationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiToolInvocationsInput, Prisma.UserUncheckedCreateWithoutAiToolInvocationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiToolInvocationsInput
+  upsert?: Prisma.UserUpsertWithoutAiToolInvocationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAiToolInvocationsInput, Prisma.UserUpdateWithoutAiToolInvocationsInput>, Prisma.UserUncheckedUpdateWithoutAiToolInvocationsInput>
+}
+
 export type UserCreateWithoutCoursesInput = {
   id?: string
   name?: string | null
@@ -1470,6 +1561,10 @@ export type UserCreateWithoutCoursesInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCoursesInput = {
@@ -1525,6 +1620,10 @@ export type UserUncheckedCreateWithoutCoursesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCoursesInput = {
@@ -1596,6 +1695,10 @@ export type UserUpdateWithoutCoursesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCoursesInput = {
@@ -1651,6 +1754,10 @@ export type UserUncheckedUpdateWithoutCoursesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -1706,6 +1813,10 @@ export type UserCreateWithoutAccountsInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -1761,6 +1872,10 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -1832,6 +1947,10 @@ export type UserUpdateWithoutAccountsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -1887,6 +2006,10 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -1942,6 +2065,10 @@ export type UserCreateWithoutSessionsInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -1997,6 +2124,10 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -2068,6 +2199,10 @@ export type UserUpdateWithoutSessionsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -2123,6 +2258,10 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUserSessionsInput = {
@@ -2178,6 +2317,10 @@ export type UserCreateWithoutUserSessionsInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUserSessionsInput = {
@@ -2233,6 +2376,10 @@ export type UserUncheckedCreateWithoutUserSessionsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUserSessionsInput = {
@@ -2304,6 +2451,10 @@ export type UserUpdateWithoutUserSessionsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserSessionsInput = {
@@ -2359,6 +2510,10 @@ export type UserUncheckedUpdateWithoutUserSessionsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTrackedDevicesInput = {
@@ -2414,6 +2569,10 @@ export type UserCreateWithoutTrackedDevicesInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTrackedDevicesInput = {
@@ -2469,6 +2628,10 @@ export type UserUncheckedCreateWithoutTrackedDevicesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTrackedDevicesInput = {
@@ -2540,6 +2703,10 @@ export type UserUpdateWithoutTrackedDevicesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTrackedDevicesInput = {
@@ -2595,6 +2762,10 @@ export type UserUncheckedUpdateWithoutTrackedDevicesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTokenFamiliesInput = {
@@ -2650,6 +2821,10 @@ export type UserCreateWithoutTokenFamiliesInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTokenFamiliesInput = {
@@ -2705,6 +2880,10 @@ export type UserUncheckedCreateWithoutTokenFamiliesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTokenFamiliesInput = {
@@ -2776,6 +2955,10 @@ export type UserUpdateWithoutTokenFamiliesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTokenFamiliesInput = {
@@ -2831,6 +3014,10 @@ export type UserUncheckedUpdateWithoutTokenFamiliesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutEnrollmentsInput = {
@@ -2886,6 +3073,10 @@ export type UserCreateWithoutEnrollmentsInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEnrollmentsInput = {
@@ -2941,6 +3132,10 @@ export type UserUncheckedCreateWithoutEnrollmentsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEnrollmentsInput = {
@@ -3012,6 +3207,10 @@ export type UserUpdateWithoutEnrollmentsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEnrollmentsInput = {
@@ -3067,6 +3266,10 @@ export type UserUncheckedUpdateWithoutEnrollmentsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCartInput = {
@@ -3122,6 +3325,10 @@ export type UserCreateWithoutCartInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCartInput = {
@@ -3177,6 +3384,10 @@ export type UserUncheckedCreateWithoutCartInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCartInput = {
@@ -3248,6 +3459,10 @@ export type UserUpdateWithoutCartInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCartInput = {
@@ -3303,6 +3518,10 @@ export type UserUncheckedUpdateWithoutCartInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutOrdersInput = {
@@ -3358,6 +3577,10 @@ export type UserCreateWithoutOrdersInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOrdersInput = {
@@ -3413,6 +3636,10 @@ export type UserUncheckedCreateWithoutOrdersInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOrdersInput = {
@@ -3484,6 +3711,10 @@ export type UserUpdateWithoutOrdersInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOrdersInput = {
@@ -3539,6 +3770,10 @@ export type UserUncheckedUpdateWithoutOrdersInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCheckoutSessionsInput = {
@@ -3594,6 +3829,10 @@ export type UserCreateWithoutCheckoutSessionsInput = {
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCheckoutSessionsInput = {
@@ -3649,6 +3888,10 @@ export type UserUncheckedCreateWithoutCheckoutSessionsInput = {
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCheckoutSessionsInput = {
@@ -3720,6 +3963,10 @@ export type UserUpdateWithoutCheckoutSessionsInput = {
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCheckoutSessionsInput = {
@@ -3775,6 +4022,10 @@ export type UserUncheckedUpdateWithoutCheckoutSessionsInput = {
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReviewsInput = {
@@ -3830,6 +4081,10 @@ export type UserCreateWithoutReviewsInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
@@ -3885,6 +4140,10 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReviewsInput = {
@@ -3956,6 +4215,10 @@ export type UserUpdateWithoutReviewsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -4011,6 +4274,10 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAvailabilitiesInput = {
@@ -4066,6 +4333,10 @@ export type UserCreateWithoutAvailabilitiesInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAvailabilitiesInput = {
@@ -4121,6 +4392,10 @@ export type UserUncheckedCreateWithoutAvailabilitiesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAvailabilitiesInput = {
@@ -4192,6 +4467,10 @@ export type UserUpdateWithoutAvailabilitiesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAvailabilitiesInput = {
@@ -4247,6 +4526,10 @@ export type UserUncheckedUpdateWithoutAvailabilitiesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDateOverridesInput = {
@@ -4302,6 +4585,10 @@ export type UserCreateWithoutDateOverridesInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDateOverridesInput = {
@@ -4357,6 +4644,10 @@ export type UserUncheckedCreateWithoutDateOverridesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDateOverridesInput = {
@@ -4428,6 +4719,10 @@ export type UserUpdateWithoutDateOverridesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDateOverridesInput = {
@@ -4483,6 +4778,10 @@ export type UserUncheckedUpdateWithoutDateOverridesInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutScheduleSettingsInput = {
@@ -4538,6 +4837,10 @@ export type UserCreateWithoutScheduleSettingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutScheduleSettingsInput = {
@@ -4593,6 +4896,10 @@ export type UserUncheckedCreateWithoutScheduleSettingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutScheduleSettingsInput = {
@@ -4664,6 +4971,10 @@ export type UserUpdateWithoutScheduleSettingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutScheduleSettingsInput = {
@@ -4719,6 +5030,10 @@ export type UserUncheckedUpdateWithoutScheduleSettingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInstructorBookingsInput = {
@@ -4774,6 +5089,10 @@ export type UserCreateWithoutInstructorBookingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInstructorBookingsInput = {
@@ -4829,6 +5148,10 @@ export type UserUncheckedCreateWithoutInstructorBookingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInstructorBookingsInput = {
@@ -4889,6 +5212,10 @@ export type UserCreateWithoutStudentBookingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStudentBookingsInput = {
@@ -4944,6 +5271,10 @@ export type UserUncheckedCreateWithoutStudentBookingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStudentBookingsInput = {
@@ -5015,6 +5346,10 @@ export type UserUpdateWithoutInstructorBookingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInstructorBookingsInput = {
@@ -5070,6 +5405,10 @@ export type UserUncheckedUpdateWithoutInstructorBookingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutStudentBookingsInput = {
@@ -5136,6 +5475,10 @@ export type UserUpdateWithoutStudentBookingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStudentBookingsInput = {
@@ -5191,6 +5534,10 @@ export type UserUncheckedUpdateWithoutStudentBookingsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGoogleCalendarTokenInput = {
@@ -5246,6 +5593,10 @@ export type UserCreateWithoutGoogleCalendarTokenInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGoogleCalendarTokenInput = {
@@ -5301,6 +5652,10 @@ export type UserUncheckedCreateWithoutGoogleCalendarTokenInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGoogleCalendarTokenInput = {
@@ -5372,6 +5727,10 @@ export type UserUpdateWithoutGoogleCalendarTokenInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGoogleCalendarTokenInput = {
@@ -5427,6 +5786,10 @@ export type UserUncheckedUpdateWithoutGoogleCalendarTokenInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRefundRequestsInput = {
@@ -5482,6 +5845,10 @@ export type UserCreateWithoutRefundRequestsInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefundRequestsInput = {
@@ -5537,6 +5904,10 @@ export type UserUncheckedCreateWithoutRefundRequestsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefundRequestsInput = {
@@ -5608,6 +5979,10 @@ export type UserUpdateWithoutRefundRequestsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefundRequestsInput = {
@@ -5663,6 +6038,10 @@ export type UserUncheckedUpdateWithoutRefundRequestsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInstructorEarningsInput = {
@@ -5718,6 +6097,10 @@ export type UserCreateWithoutInstructorEarningsInput = {
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInstructorEarningsInput = {
@@ -5773,6 +6156,10 @@ export type UserUncheckedCreateWithoutInstructorEarningsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInstructorEarningsInput = {
@@ -5844,6 +6231,10 @@ export type UserUpdateWithoutInstructorEarningsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInstructorEarningsInput = {
@@ -5899,6 +6290,10 @@ export type UserUncheckedUpdateWithoutInstructorEarningsInput = {
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTutorConversationsInput = {
@@ -5954,6 +6349,10 @@ export type UserCreateWithoutTutorConversationsInput = {
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTutorConversationsInput = {
@@ -6009,6 +6408,10 @@ export type UserUncheckedCreateWithoutTutorConversationsInput = {
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTutorConversationsInput = {
@@ -6080,6 +6483,10 @@ export type UserUpdateWithoutTutorConversationsInput = {
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTutorConversationsInput = {
@@ -6135,6 +6542,10 @@ export type UserUncheckedUpdateWithoutTutorConversationsInput = {
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStudentLearningProfilesInput = {
@@ -6190,6 +6601,10 @@ export type UserCreateWithoutStudentLearningProfilesInput = {
   tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStudentLearningProfilesInput = {
@@ -6245,6 +6660,10 @@ export type UserUncheckedCreateWithoutStudentLearningProfilesInput = {
   tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
   tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStudentLearningProfilesInput = {
@@ -6316,6 +6735,10 @@ export type UserUpdateWithoutStudentLearningProfilesInput = {
   tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStudentLearningProfilesInput = {
@@ -6371,6 +6794,1018 @@ export type UserUncheckedUpdateWithoutStudentLearningProfilesInput = {
   tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
   tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAiAgentRunsInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAiAgentRunsInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestUncheckedCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAiAgentRunsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiAgentRunsInput, Prisma.UserUncheckedCreateWithoutAiAgentRunsInput>
+}
+
+export type UserUpsertWithoutAiAgentRunsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAiAgentRunsInput, Prisma.UserUncheckedUpdateWithoutAiAgentRunsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiAgentRunsInput, Prisma.UserUncheckedCreateWithoutAiAgentRunsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAiAgentRunsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAiAgentRunsInput, Prisma.UserUncheckedUpdateWithoutAiAgentRunsInput>
+}
+
+export type UserUpdateWithoutAiAgentRunsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAiAgentRunsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUncheckedUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAiUsageDailyInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAiUsageDailyInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestUncheckedCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAiUsageDailyInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiUsageDailyInput, Prisma.UserUncheckedCreateWithoutAiUsageDailyInput>
+}
+
+export type UserUpsertWithoutAiUsageDailyInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAiUsageDailyInput, Prisma.UserUncheckedUpdateWithoutAiUsageDailyInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiUsageDailyInput, Prisma.UserUncheckedCreateWithoutAiUsageDailyInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAiUsageDailyInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAiUsageDailyInput, Prisma.UserUncheckedUpdateWithoutAiUsageDailyInput>
+}
+
+export type UserUpdateWithoutAiUsageDailyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAiUsageDailyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUncheckedUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAiMemoryFactsInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAiMemoryFactsInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestUncheckedCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAiMemoryFactsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiMemoryFactsInput, Prisma.UserUncheckedCreateWithoutAiMemoryFactsInput>
+}
+
+export type UserUpsertWithoutAiMemoryFactsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAiMemoryFactsInput, Prisma.UserUncheckedUpdateWithoutAiMemoryFactsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiMemoryFactsInput, Prisma.UserUncheckedCreateWithoutAiMemoryFactsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAiMemoryFactsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAiMemoryFactsInput, Prisma.UserUncheckedUpdateWithoutAiMemoryFactsInput>
+}
+
+export type UserUpdateWithoutAiMemoryFactsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAiMemoryFactsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUncheckedUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiToolInvocations?: Prisma.AiToolInvocationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAiToolInvocationsInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAiToolInvocationsInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  password?: string | null
+  passwordChangedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  role?: $Enums.Role
+  isEmailVerified?: boolean
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  emailVerifyToken?: string | null
+  emailVerifyExpires?: Date | string | null
+  verificationResendCount?: number
+  verificationResendLastAttempt?: Date | string | null
+  resetPasswordToken?: string | null
+  resetPasswordExpires?: Date | string | null
+  passwordResetRequestCount?: number
+  passwordResetLastAttempt?: Date | string | null
+  passwordSetupRequestCount?: number
+  passwordSetupLastAttempt?: Date | string | null
+  timezone?: string | null
+  language?: string | null
+  oauthProvider?: string | null
+  oauthProviderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedCreateNestedManyWithoutInstructorInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedCreateNestedManyWithoutInstructorInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedCreateNestedOneWithoutInstructorInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutStudentInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedCreateNestedManyWithoutInstructorInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedCreateNestedOneWithoutUserInput
+  refundRequests?: Prisma.RefundRequestUncheckedCreateNestedManyWithoutUserInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedCreateNestedManyWithoutInstructorInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedCreateNestedManyWithoutUserInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedCreateNestedManyWithoutUserInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutUserInput
+  tutorConversations?: Prisma.TutorConversationUncheckedCreateNestedManyWithoutUserInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedCreateNestedManyWithoutUserInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedCreateNestedManyWithoutUserInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedCreateNestedManyWithoutUserInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAiToolInvocationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiToolInvocationsInput, Prisma.UserUncheckedCreateWithoutAiToolInvocationsInput>
+}
+
+export type UserUpsertWithoutAiToolInvocationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAiToolInvocationsInput, Prisma.UserUncheckedUpdateWithoutAiToolInvocationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiToolInvocationsInput, Prisma.UserUncheckedCreateWithoutAiToolInvocationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAiToolInvocationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAiToolInvocationsInput, Prisma.UserUncheckedUpdateWithoutAiToolInvocationsInput>
+}
+
+export type UserUpdateWithoutAiToolInvocationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAiToolInvocationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifyToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerifyExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationResendCount?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationResendLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resetPasswordExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordResetLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordSetupRequestCount?: Prisma.IntFieldUpdateOperationsInput | number
+  passwordSetupLastAttempt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  availabilities?: Prisma.InstructorAvailabilityUncheckedUpdateManyWithoutInstructorNestedInput
+  dateOverrides?: Prisma.AvailabilityDateOverrideUncheckedUpdateManyWithoutInstructorNestedInput
+  scheduleSettings?: Prisma.InstructorScheduleSettingsUncheckedUpdateOneWithoutInstructorNestedInput
+  studentBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutStudentNestedInput
+  instructorBookings?: Prisma.ConsultationBookingUncheckedUpdateManyWithoutInstructorNestedInput
+  googleCalendarToken?: Prisma.GoogleCalendarTokenUncheckedUpdateOneWithoutUserNestedInput
+  refundRequests?: Prisma.RefundRequestUncheckedUpdateManyWithoutUserNestedInput
+  instructorEarnings?: Prisma.InstructorEarningUncheckedUpdateManyWithoutInstructorNestedInput
+  trackedDevices?: Prisma.TrackedDeviceUncheckedUpdateManyWithoutUserNestedInput
+  tokenFamilies?: Prisma.TokenFamilyUncheckedUpdateManyWithoutUserNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  tutorConversations?: Prisma.TutorConversationUncheckedUpdateManyWithoutUserNestedInput
+  studentLearningProfiles?: Prisma.StudentLearningProfileUncheckedUpdateManyWithoutUserNestedInput
+  aiAgentRuns?: Prisma.AiAgentRunUncheckedUpdateManyWithoutUserNestedInput
+  aiUsageDaily?: Prisma.AiUsageDailyUncheckedUpdateManyWithoutUserNestedInput
+  aiMemoryFacts?: Prisma.AiMemoryFactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -6397,6 +7832,10 @@ export type UserCountOutputType = {
   checkoutSessions: number
   tutorConversations: number
   studentLearningProfiles: number
+  aiAgentRuns: number
+  aiUsageDaily: number
+  aiMemoryFacts: number
+  aiToolInvocations: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6418,6 +7857,10 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   checkoutSessions?: boolean | UserCountOutputTypeCountCheckoutSessionsArgs
   tutorConversations?: boolean | UserCountOutputTypeCountTutorConversationsArgs
   studentLearningProfiles?: boolean | UserCountOutputTypeCountStudentLearningProfilesArgs
+  aiAgentRuns?: boolean | UserCountOutputTypeCountAiAgentRunsArgs
+  aiUsageDaily?: boolean | UserCountOutputTypeCountAiUsageDailyArgs
+  aiMemoryFacts?: boolean | UserCountOutputTypeCountAiMemoryFactsArgs
+  aiToolInvocations?: boolean | UserCountOutputTypeCountAiToolInvocationsArgs
 }
 
 /**
@@ -6556,6 +7999,34 @@ export type UserCountOutputTypeCountStudentLearningProfilesArgs<ExtArgs extends 
   where?: Prisma.StudentLearningProfileWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAiAgentRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiAgentRunWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAiUsageDailyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiUsageDailyWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAiMemoryFactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiMemoryFactWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAiToolInvocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiToolInvocationWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -6611,6 +8082,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   checkoutSessions?: boolean | Prisma.User$checkoutSessionsArgs<ExtArgs>
   tutorConversations?: boolean | Prisma.User$tutorConversationsArgs<ExtArgs>
   studentLearningProfiles?: boolean | Prisma.User$studentLearningProfilesArgs<ExtArgs>
+  aiAgentRuns?: boolean | Prisma.User$aiAgentRunsArgs<ExtArgs>
+  aiUsageDaily?: boolean | Prisma.User$aiUsageDailyArgs<ExtArgs>
+  aiMemoryFacts?: boolean | Prisma.User$aiMemoryFactsArgs<ExtArgs>
+  aiToolInvocations?: boolean | Prisma.User$aiToolInvocationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -6742,6 +8217,10 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   checkoutSessions?: boolean | Prisma.User$checkoutSessionsArgs<ExtArgs>
   tutorConversations?: boolean | Prisma.User$tutorConversationsArgs<ExtArgs>
   studentLearningProfiles?: boolean | Prisma.User$studentLearningProfilesArgs<ExtArgs>
+  aiAgentRuns?: boolean | Prisma.User$aiAgentRunsArgs<ExtArgs>
+  aiUsageDaily?: boolean | Prisma.User$aiUsageDailyArgs<ExtArgs>
+  aiMemoryFacts?: boolean | Prisma.User$aiMemoryFactsArgs<ExtArgs>
+  aiToolInvocations?: boolean | Prisma.User$aiToolInvocationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -6771,6 +8250,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     checkoutSessions: Prisma.$CheckoutSessionPayload<ExtArgs>[]
     tutorConversations: Prisma.$TutorConversationPayload<ExtArgs>[]
     studentLearningProfiles: Prisma.$StudentLearningProfilePayload<ExtArgs>[]
+    aiAgentRuns: Prisma.$AiAgentRunPayload<ExtArgs>[]
+    aiUsageDaily: Prisma.$AiUsageDailyPayload<ExtArgs>[]
+    aiMemoryFacts: Prisma.$AiMemoryFactPayload<ExtArgs>[]
+    aiToolInvocations: Prisma.$AiToolInvocationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -7220,6 +8703,10 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   checkoutSessions<T extends Prisma.User$checkoutSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$checkoutSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckoutSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tutorConversations<T extends Prisma.User$tutorConversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tutorConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TutorConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   studentLearningProfiles<T extends Prisma.User$studentLearningProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$studentLearningProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentLearningProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  aiAgentRuns<T extends Prisma.User$aiAgentRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$aiAgentRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiAgentRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  aiUsageDaily<T extends Prisma.User$aiUsageDailyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$aiUsageDailyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiUsageDailyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  aiMemoryFacts<T extends Prisma.User$aiMemoryFactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$aiMemoryFactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiMemoryFactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  aiToolInvocations<T extends Prisma.User$aiToolInvocationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$aiToolInvocationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiToolInvocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8160,6 +9647,102 @@ export type User$studentLearningProfilesArgs<ExtArgs extends runtime.Types.Exten
   take?: number
   skip?: number
   distinct?: Prisma.StudentLearningProfileScalarFieldEnum | Prisma.StudentLearningProfileScalarFieldEnum[]
+}
+
+/**
+ * User.aiAgentRuns
+ */
+export type User$aiAgentRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiAgentRun
+   */
+  select?: Prisma.AiAgentRunSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiAgentRun
+   */
+  omit?: Prisma.AiAgentRunOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiAgentRunInclude<ExtArgs> | null
+  where?: Prisma.AiAgentRunWhereInput
+  orderBy?: Prisma.AiAgentRunOrderByWithRelationInput | Prisma.AiAgentRunOrderByWithRelationInput[]
+  cursor?: Prisma.AiAgentRunWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiAgentRunScalarFieldEnum | Prisma.AiAgentRunScalarFieldEnum[]
+}
+
+/**
+ * User.aiUsageDaily
+ */
+export type User$aiUsageDailyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiUsageDaily
+   */
+  select?: Prisma.AiUsageDailySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiUsageDaily
+   */
+  omit?: Prisma.AiUsageDailyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiUsageDailyInclude<ExtArgs> | null
+  where?: Prisma.AiUsageDailyWhereInput
+  orderBy?: Prisma.AiUsageDailyOrderByWithRelationInput | Prisma.AiUsageDailyOrderByWithRelationInput[]
+  cursor?: Prisma.AiUsageDailyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiUsageDailyScalarFieldEnum | Prisma.AiUsageDailyScalarFieldEnum[]
+}
+
+/**
+ * User.aiMemoryFacts
+ */
+export type User$aiMemoryFactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiMemoryFact
+   */
+  select?: Prisma.AiMemoryFactSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiMemoryFact
+   */
+  omit?: Prisma.AiMemoryFactOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiMemoryFactInclude<ExtArgs> | null
+  where?: Prisma.AiMemoryFactWhereInput
+  orderBy?: Prisma.AiMemoryFactOrderByWithRelationInput | Prisma.AiMemoryFactOrderByWithRelationInput[]
+  cursor?: Prisma.AiMemoryFactWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiMemoryFactScalarFieldEnum | Prisma.AiMemoryFactScalarFieldEnum[]
+}
+
+/**
+ * User.aiToolInvocations
+ */
+export type User$aiToolInvocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiToolInvocation
+   */
+  select?: Prisma.AiToolInvocationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiToolInvocation
+   */
+  omit?: Prisma.AiToolInvocationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiToolInvocationInclude<ExtArgs> | null
+  where?: Prisma.AiToolInvocationWhereInput
+  orderBy?: Prisma.AiToolInvocationOrderByWithRelationInput | Prisma.AiToolInvocationOrderByWithRelationInput[]
+  cursor?: Prisma.AiToolInvocationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiToolInvocationScalarFieldEnum | Prisma.AiToolInvocationScalarFieldEnum[]
 }
 
 /**

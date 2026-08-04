@@ -222,6 +222,131 @@ export const env = createEnv({
 
     // NextAuth trust host (v5 requirement)
 
+    // AI Platform (shared module — scaffold; parallel to AI Tutor during migration)
+    AI_PLATFORM_ENABLED: z
+      .enum(['true', 'false'])
+      .default('false')
+      .describe('Enable AI Platform module'),
+    AI_PLATFORM_LLM_MODEL: z
+      .string()
+      .optional()
+      .describe('Default LLM model for platform agents'),
+    AI_PLATFORM_EMBEDDING_MODEL: z
+      .string()
+      .optional()
+      .describe('Default embedding model for platform RAG'),
+    AI_PLATFORM_LLM_TIMEOUT_MS: z
+      .string()
+      .optional()
+      .describe('LLM request timeout in milliseconds'),
+    AI_PLATFORM_LLM_MAX_TOKENS: z
+      .string()
+      .optional()
+      .describe('Default max completion tokens for platform LLM calls'),
+    AI_PLATFORM_TOP_K: z
+      .string()
+      .optional()
+      .describe('Default top-K for vector retrieval'),
+    AI_PLATFORM_MIN_SIMILARITY: z
+      .string()
+      .optional()
+      .describe('Default minimum cosine similarity for retrieval (0-1)'),
+    AI_PLATFORM_DAILY_COST_CAP: z
+      .string()
+      .optional()
+      .describe('Max AI requests per day across all users (0 = disabled)'),
+    AI_PLATFORM_RATE_LIMIT_PER_MINUTE: z
+      .string()
+      .optional()
+      .describe('Per-user AI message rate limit per minute'),
+    AI_PLATFORM_RATE_LIMIT_PER_HOUR: z
+      .string()
+      .optional()
+      .describe('Per-user AI message rate limit per hour'),
+    AI_PLATFORM_RATE_LIMIT_PER_DAY: z
+      .string()
+      .optional()
+      .describe('Per-user AI message rate limit per day'),
+    AI_PLATFORM_RUNTIME_ENABLED: z
+      .enum(['true', 'false'])
+      .default('false')
+      .describe('Enable LangGraph agent runtime (Phase 2)'),
+    ANTHROPIC_API_KEY: z
+      .string()
+      .optional()
+      .describe('Anthropic API key for multi-provider routing (Phase 3)'),
+    GOOGLE_AI_API_KEY: z
+      .string()
+      .optional()
+      .describe('Google AI API key for Gemini provider (Phase 3)'),
+    AI_PLATFORM_MCP_SERVERS: z
+      .string()
+      .optional()
+      .describe('JSON array of MCP server configurations (Phase 3)'),
+
+    // Langfuse prompt management
+    LANGFUSE_PUBLIC_KEY: z.string().optional().describe('Langfuse public API key'),
+    LANGFUSE_SECRET_KEY: z.string().optional().describe('Langfuse secret API key'),
+    LANGFUSE_HOST: z
+      .string()
+      .url()
+      .optional()
+      .describe('Langfuse API host (default: cloud.langfuse.com)'),
+    LANGFUSE_PROMPT_LABEL: z
+      .enum(['development', 'staging', 'production'])
+      .optional()
+      .default('production')
+      .describe('Langfuse prompt label for runtime resolution'),
+    LANGFUSE_PROMPT_CACHE_TTL_MS: z
+      .string()
+      .optional()
+      .describe('In-memory prompt cache TTL in milliseconds'),
+
+    // LangSmith tracing
+    LANGCHAIN_TRACING_V2: z
+      .enum(['true', 'false'])
+      .optional()
+      .default('false')
+      .describe('Enable LangSmith tracing'),
+    LANGCHAIN_API_KEY: z.string().optional().describe('LangSmith API key'),
+    LANGCHAIN_PROJECT: z
+      .string()
+      .optional()
+      .default('ithracode-ai-platform')
+      .describe('LangSmith project name'),
+    LANGCHAIN_ENDPOINT: z
+      .string()
+      .url()
+      .optional()
+      .describe('LangSmith API endpoint'),
+
+    // OpenTelemetry
+    OTEL_ENABLED: z
+      .enum(['true', 'false'])
+      .optional()
+      .default('false')
+      .describe('Enable OpenTelemetry instrumentation'),
+    OTEL_SERVICE_NAME: z
+      .string()
+      .optional()
+      .default('ithracode-ai-platform')
+      .describe('OTEL service name'),
+    OTEL_EXPORTER_OTLP_ENDPOINT: z
+      .string()
+      .url()
+      .optional()
+      .describe('OTLP trace exporter endpoint'),
+    OTEL_METRICS_PORT: z
+      .string()
+      .optional()
+      .describe('Prometheus metrics exporter port'),
+
+    // AI admin API
+    AI_ADMIN_API_SECRET: z
+      .string()
+      .optional()
+      .describe('Bearer secret for /api/admin/ai/* endpoints'),
+
     // AI Tutor
     AI_TUTOR_ENABLED: z
       .enum(['true', 'false'])
@@ -336,6 +461,35 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    AI_PLATFORM_ENABLED: process.env.AI_PLATFORM_ENABLED,
+    AI_PLATFORM_LLM_MODEL: process.env.AI_PLATFORM_LLM_MODEL,
+    AI_PLATFORM_EMBEDDING_MODEL: process.env.AI_PLATFORM_EMBEDDING_MODEL,
+    AI_PLATFORM_LLM_TIMEOUT_MS: process.env.AI_PLATFORM_LLM_TIMEOUT_MS,
+    AI_PLATFORM_LLM_MAX_TOKENS: process.env.AI_PLATFORM_LLM_MAX_TOKENS,
+    AI_PLATFORM_TOP_K: process.env.AI_PLATFORM_TOP_K,
+    AI_PLATFORM_MIN_SIMILARITY: process.env.AI_PLATFORM_MIN_SIMILARITY,
+    AI_PLATFORM_DAILY_COST_CAP: process.env.AI_PLATFORM_DAILY_COST_CAP,
+    AI_PLATFORM_RATE_LIMIT_PER_MINUTE: process.env.AI_PLATFORM_RATE_LIMIT_PER_MINUTE,
+    AI_PLATFORM_RATE_LIMIT_PER_HOUR: process.env.AI_PLATFORM_RATE_LIMIT_PER_HOUR,
+    AI_PLATFORM_RATE_LIMIT_PER_DAY: process.env.AI_PLATFORM_RATE_LIMIT_PER_DAY,
+    AI_PLATFORM_RUNTIME_ENABLED: process.env.AI_PLATFORM_RUNTIME_ENABLED,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    GOOGLE_AI_API_KEY: process.env.GOOGLE_AI_API_KEY,
+    AI_PLATFORM_MCP_SERVERS: process.env.AI_PLATFORM_MCP_SERVERS,
+    LANGFUSE_PUBLIC_KEY: process.env.LANGFUSE_PUBLIC_KEY,
+    LANGFUSE_SECRET_KEY: process.env.LANGFUSE_SECRET_KEY,
+    LANGFUSE_HOST: process.env.LANGFUSE_HOST,
+    LANGFUSE_PROMPT_LABEL: process.env.LANGFUSE_PROMPT_LABEL,
+    LANGFUSE_PROMPT_CACHE_TTL_MS: process.env.LANGFUSE_PROMPT_CACHE_TTL_MS,
+    LANGCHAIN_TRACING_V2: process.env.LANGCHAIN_TRACING_V2,
+    LANGCHAIN_API_KEY: process.env.LANGCHAIN_API_KEY,
+    LANGCHAIN_PROJECT: process.env.LANGCHAIN_PROJECT,
+    LANGCHAIN_ENDPOINT: process.env.LANGCHAIN_ENDPOINT,
+    OTEL_ENABLED: process.env.OTEL_ENABLED,
+    OTEL_SERVICE_NAME: process.env.OTEL_SERVICE_NAME,
+    OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+    OTEL_METRICS_PORT: process.env.OTEL_METRICS_PORT,
+    AI_ADMIN_API_SECRET: process.env.AI_ADMIN_API_SECRET,
     AI_TUTOR_ENABLED: process.env.AI_TUTOR_ENABLED,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     OPENAI_BASE_URL: process.env.OPENAI_BASE_URL,

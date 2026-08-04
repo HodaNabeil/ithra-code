@@ -1,6 +1,7 @@
 import type { MessageDTO } from '../../domain/ports/ConversationRepositoryPort';
 import type { TutorSessionContext } from '../../domain/models/TutorSessionContext';
 import type { RetrievedContentChunk } from '../dto/retrieved-content.dto';
+import { resolvePromptSync } from '@/ai-platform/prompts/resolver';
 import { AI_TUTOR_CONSTANTS } from '../../shared';
 import { buildAdaptiveFormattingInstructions } from './learning-profile.logic';
 import {
@@ -13,43 +14,14 @@ import {
   formatSectionProgressForPrompt,
 } from './student-progress-analytics.service';
 
-const BASE_SYSTEM_PROMPT = `أنت مدرس ذكي على منصة IthraCode.
-- ساعد الطالب على الفهم بدلاً من إعطاء الإجابة مباشرة عندما يكون ذلك مناسباً.
-- اشرح بوضوح وبأسلوب تعليمي مشجع.
-- كيّف عمق الشرح وطول الإجابة حسب مستوى الدورة وتقدم الطالب فيها (انظر تعليمات التكييف أدناه).
-- اربط إجاباتك بسياق الدورة والمحاضرة الحالية عندما يكون ذلك مفيداً.
-- أجب بنفس لغة سؤال الطالب.
-- إذا لم تكن متأكداً من الإجابة، قل ذلك بصراحة.
-- اعتمد على مواد الدورة المسترجعة أدناه عند الإجابة.
-- لا تخترع معلومات غير موجودة في سياق الدورة أو المواد المسترجعة.
-- عندما يسأل الطالب عن نفسه (اسمه، تقدمه، مستواه)، استخدم معلومات الطالب من سياق الجلسة أدناه.
+const BASE_SYSTEM_PROMPT = resolvePromptSync('tutor/system', 'ar').content;
+const ASSESSMENT_BOUNDARY_PROMPT = resolvePromptSync('tutor/assessment-boundary', 'ar').content;
+const SESSION_CONTEXT_PROMPT = resolvePromptSync('tutor/session-context', 'ar').content;
+const RAG_FALLBACK_PROMPT = resolvePromptSync('tutor/rag-fallback', 'ar').content;
 
-## حدود النزاهة التعليمية
-- لا تقدّم أبداً إجابات مباشرة لأسئلة الاختبارات أو الواجبات أو مفاتيح الحلول.
-- إذا بدا أن الطالب يطلب إجابة تقييم، قدّم تلميحات وإرشاداً نحو المفاهيم بدلاً من الحل النهائي.
-- لا تستخدم عبارات مثل "الإجابة الصحيحة هي" أو "الخيار الصحيح هو".
-- شجّع الطالب على مراجعة المحاضرات ذات الصلة وطرح أسئلة مفاهيمية.`;
-
-const ASSESSMENT_BOUNDARY_PROMPT = `
-## وضع الإرشاد التقييمي
-يبدو أن الطالب يطلب إجابة مباشرة لتقييم.
-- ارفض بلطف إعطاء الإجابة النهائية أو مفتاح الحل.
-- قدّم تلميحات مفاهيمية وأسئلة توجيهية فقط.
-- اقترح مراجعة محاضرات أو أهداف تعلم ذات صلة.
-- لا تكشف الخيار الصحيح أو نص الحل.`;
-
-const SESSION_CONTEXT_PROMPT = `
-## ملاحظة
-هذا السؤال يتعلق بسياق الجلسة (الطالب، المحاضرة الحالية، أو الدورة).
-- أجب باستخدام معلومات سياق الجلسة (اسم الطالب، التقدم، عنوان المحاضرة، اسم الدورة، القسم).
-- لا تحتاج إلى مواد دورة مسترجعة للإجابة على هذا السؤال.`;
-
-const RAG_FALLBACK_PROMPT = `
-## ملاحظة مهمة
-لم يتم العثور على مواد دورة مطابقة بدرجة كافية لهذا السؤال.
-- وجّه الطالب نحو المحاضرات أو الأقسام ذات الصلة.
-- لا تقدّم إجابات محددة كأنها من محتوى الدورة.
-- اقترح على الطالب مراجعة المحاضرة الحالية أو المواد التعليمية ذات الصلة.`;
+export function getTutorBasePromptVersion(): string {
+  return resolvePromptSync('tutor/system', 'ar').version;
+}
 
 function formatObjectives(objectives: string[]): string {
   if (objectives.length === 0) {
