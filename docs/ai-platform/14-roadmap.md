@@ -84,7 +84,7 @@ gantt
 
 - [x] All ai-tutor tests pass using platform modules
 - [x] `ai-tutor-container.ts` is a thin delegate to platform container
-- [x] Cost tracking records runs in `ai_agent_runs` for tutor ask path when `AI_PLATFORM_RUNTIME_ENABLED=true` (legacy path unchanged)
+- [x] Cost tracking records runs in `ai_agent_runs` for tutor ask path via platform runtime
 - [x] Indexing worker imports handlers from platform
 - [x] No duplicate code between ai-tutor and ai-platform
 - [x] `AI_PLATFORM_ENABLED` feature flag works
@@ -141,21 +141,16 @@ Before (Phase 1):
 
 After (Phase 2 — implemented):
 ```typescript
-// ask-tutor.use-case.ts delegates LLM execution when runtime flag is on
-if (AIPlatformConfig.isRuntimeEnabled()) {
-  for await (const event of streamAgent('tutor', {
-    userId, input: question, scope: { courseId, lectureId, threadId },
-    options: { metadata: { systemPrompt, conversationHistory, retrievedChunks } },
-  })) { /* map tokens → SSE */ }
-} else {
-  // legacy llmPort.streamAnswer()
-}
-// Assessment block, RAG fallback, content filter, persistence remain in use case
+// ask-tutor.use-case.ts delegates to streamAgent('tutor')
+for await (const event of streamAgent('tutor', {
+  userId, input: question, scope: { courseId, lectureId, threadId },
+  options: { metadata: { conversationHistory, personalization, contentValidator, strictIntegrityMode } },
+})) { /* relay SSE; persist turn in tutor repository */ }
 ```
 
 ### Exit Criteria
 
-- [x] Tutor uses LangGraph graph for LLM execution when `AI_PLATFORM_RUNTIME_ENABLED=true`
+- [x] Tutor uses LangGraph graph for LLM execution when `AI_PLATFORM_ENABLED=true`
 - [x] Tutor ask path records `ai_agent_runs` via platform cost ledger (runtime path only)
 - [ ] Prompts served from Langfuse (not hardcoded)
 - [ ] All agent runs traced in LangSmith

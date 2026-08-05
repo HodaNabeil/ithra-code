@@ -1,7 +1,9 @@
 import { prisma } from '@/lib/prisma';
 
-import type { KnowledgeSourceHashRecord } from '../../domain/ports/KnowledgeSourceHashRepositoryPort';
-import type { KnowledgeSourceHashRepositoryPort } from '../../domain/ports/KnowledgeSourceHashRepositoryPort';
+import type {
+  KnowledgeSourceHashRecord,
+  KnowledgeSourceHashRepositoryPort,
+} from '../../domain/ports/KnowledgeSourceHashRepositoryPort';
 
 function mapRecord(row: {
   sourceId: string;

@@ -4,8 +4,8 @@ import { IndexingError, IndexingErrorCodes } from '../errors/indexing.errors';
 import type {
   CourseContentRepositoryPort,
   CourseForIndexingDTO,
-} from '../../domain/ports/CourseContentRepositoryPort';
-import type { KnowledgeChunkRecord } from '../../domain/models/KnowledgeChunk';
+} from '@/ai-platform';
+import type { KnowledgeChunkRecord } from '@/ai-platform';
 import {
   collectCourseKnowledgeSources,
   collectLectureKnowledgeSources,
@@ -13,7 +13,7 @@ import {
 import { buildKnowledgeChunkRecords } from '@/ai-platform/rag/ingestion/chunk-builder.service';
 import { extractorRegistry } from '@/ai-platform/rag/ingestion/extractor-registry';
 import { registerDefaultExtractors } from '@/ai-platform/rag/ingestion/extractors';
-import { isExtractionSkipped } from '../../domain/models/KnowledgeSource';
+import { isExtractionSkipped } from '@/ai-platform';
 import type { ContentChunkKind } from '@/ai-platform/indexing/services/text-chunker.service';
 import type { ClassifiableContent } from '@/ai-platform/indexing/services/content-classification.service';
 

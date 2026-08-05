@@ -1659,7 +1659,7 @@ Each step is independently revertible:
 ### Feature Flag
 
 ```
-AI_PLATFORM_RUNTIME_ENABLED=true   # Enable Runtime pipeline (default: false until validated)
+AI_PLATFORM_ENABLED=true   # Required for LangGraph tutor runtime and shared AI APIs
 ```
 
 When `false`, use cases fall back to Phase 1 hand-rolled path during transition.

@@ -1,4 +1,9 @@
-import { bullmqCourseKnowledgeIndexer } from '@/features/ai-tutor/infrastructure/queue/course-indexing.publisher';
+import { createCourseKnowledgeIndexer } from '@/ai-platform';
+import { AITutorConfig } from '@/features/ai-tutor/infrastructure/config/ai-tutor.config';
+
+export const bullmqCourseKnowledgeIndexer = createCourseKnowledgeIndexer({
+  isEnabled: () => AITutorConfig.isEnabled(),
+});
 
 import {
   publishableCourseRepository,

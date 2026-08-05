@@ -1,17 +1,12 @@
 /**
- * AI Tutor Repositories
- *
- * Prisma implementations of repository ports.
+ * AI Tutor Repositories — tutor conversation and student context only.
+ * Knowledge indexing repositories live in @/ai-platform.
  */
 
 export {
   PrismaConversationRepository,
   prismaConversationRepository,
 } from './PrismaConversationRepository';
-export {
-  PrismaKnowledgeChunkRepository,
-  prismaKnowledgeChunkRepository,
-} from './PrismaKnowledgeChunkRepository';
 export {
   PrismaCourseContextRepository,
   prismaCourseContextRepository,
@@ -20,7 +15,3 @@ export {
   PrismaStudentLearningProfileRepository,
   prismaStudentLearningProfileRepository,
 } from './PrismaStudentLearningProfileRepository';
-export {
-  PrismaCourseContentRepository,
-  prismaCourseContentRepository,
-} from './PrismaCourseContentRepository';

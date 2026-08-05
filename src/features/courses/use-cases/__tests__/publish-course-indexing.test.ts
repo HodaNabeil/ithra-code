@@ -247,7 +247,7 @@ describe('publish course indexing integration', () => {
 describe('course indexing runner', () => {
   it('lecture indexing processes only lecture resources incrementally', async () => {
     const { runLectureIndexing } = await import(
-      '@/features/ai-tutor/application/services/course-indexing-runner.service'
+      '@/ai-platform/indexing/pipelines/course-indexing.pipeline'
     );
     const { CourseStatus, LectureType } = await import('@/generated/prisma/enums');
 

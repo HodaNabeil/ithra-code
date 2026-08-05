@@ -26,11 +26,11 @@ import {
   ingestCourseKnowledge,
   ingestLectureKnowledge,
 } from '@/ai-platform/rag/ingestion/knowledge-ingestion-pipeline.service';
-import type { CourseForIndexingDTO } from '@/features/ai-tutor/domain/ports/CourseContentRepositoryPort';
-import type { KnowledgeSourceHashRepositoryPort } from '@/features/ai-tutor/domain/ports/KnowledgeSourceHashRepositoryPort';
-import type { KnowledgeChunkRepositoryPort } from '@/features/ai-tutor/domain/ports/KnowledgeChunkRepositoryPort';
-import type { EmbeddingPort } from '@/features/ai-tutor/domain/ports/EmbeddingPort';
-import { isExtractionSkipped } from '@/features/ai-tutor/domain/models/KnowledgeSource';
+import type { CourseForIndexingDTO } from '@/ai-platform/indexing/domain/ports/CourseContentRepositoryPort';
+import type { KnowledgeSourceHashRepositoryPort } from '@/ai-platform/indexing/domain/ports/KnowledgeSourceHashRepositoryPort';
+import type { KnowledgeChunkRepositoryPort } from '@/ai-platform/indexing/domain/ports/KnowledgeChunkRepositoryPort';
+import type { EmbeddingPort } from '@/ai-platform/domain/ports/embedding.port';
+import { isExtractionSkipped } from '@/ai-platform/indexing/domain/models/KnowledgeSource';
 
 const sampleCourse: CourseForIndexingDTO = {
   id: 'course-1',

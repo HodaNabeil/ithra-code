@@ -1,6 +1,10 @@
 import { Annotation } from '@langchain/langgraph';
 
 import type { LlmMessage } from '../../domain/ports/llm.port';
+import {
+  agentExecutionChannels,
+  type AgentExecutionState,
+} from './shared-channels';
 
 export interface RetrievedChunkState {
   id: string;
@@ -23,7 +27,7 @@ export interface TutorPersonalizationContext {
   sessionMetaMode?: boolean;
 }
 
-export interface TutorAgentState {
+export interface TutorAgentState extends AgentExecutionState {
   agentId: string;
   userId: string;
   input: string;
@@ -34,10 +38,7 @@ export interface TutorAgentState {
   retrievedChunks: RetrievedChunkState[];
   sanitizedInput: string;
   assessmentBlocked: boolean;
-  finalResponse: string;
   outputValid: boolean;
-  validationErrors: string[];
-  tokensUsed: { input: number; output: number };
   pendingToolCalls: Array<{ id: string; name: string; arguments: Record<string, unknown> }>;
   toolResults: Array<{ toolCallId: string; output: Record<string, unknown> }>;
   toolIterations: number;
@@ -68,14 +69,7 @@ export const TutorAgentStateAnnotation = Annotation.Root({
   }),
   finalResponse: Annotation<string>,
   outputValid: Annotation<boolean>,
-  validationErrors: Annotation<string[]>({
-    reducer: (_left, right) => right,
-    default: () => [],
-  }),
-  tokensUsed: Annotation<{ input: number; output: number }>({
-    reducer: (_left, right) => right,
-    default: () => ({ input: 0, output: 0 }),
-  }),
+  ...agentExecutionChannels,
   pendingToolCalls: Annotation<
     Array<{ id: string; name: string; arguments: Record<string, unknown> }>
   >({

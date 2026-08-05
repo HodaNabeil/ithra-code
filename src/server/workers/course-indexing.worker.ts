@@ -10,8 +10,8 @@ import {
 } from '@/ai-platform/indexing/pipelines/course-indexing.pipeline';
 import type { CourseIndexingRequestedEvent } from '@/ai-platform/indexing/constants';
 import { AITutorConfig } from '@/features/ai-tutor/infrastructure/config/ai-tutor.config';
-import { getIndexCourseUseCaseDeps } from '@/features/ai-tutor/infrastructure/di/ai-tutor-container';
-import { bootstrapUnindexedCourseIndexing } from '@/features/ai-tutor/infrastructure/queue/course-indexing-bootstrap';
+import { getCourseIndexingDeps, getCourseContentRepository } from '@/ai-platform/infrastructure/di/ai-platform.container';
+import { bootstrapUnindexedCourseIndexing } from '@/ai-platform/indexing/pipelines/bootstrap';
 import { validateIndexingInfrastructure } from '@/features/ai-tutor/infrastructure/startup/validate-indexing-infrastructure';
 import { COURSE_INDEXING_QUEUE } from '@/ai-platform/indexing/pipelines/enqueue';
 import {
@@ -39,9 +39,9 @@ let worker: Worker<CourseIndexingRequestedEvent> | null = null;
 async function processCourseIndexingEvent(
   event: CourseIndexingRequestedEvent,
 ): Promise<IndexingJobResult> {
-  const deps = getIndexCourseUseCaseDeps();
+  const deps = getCourseIndexingDeps();
   const course = await loadCourseForIndexing(event.courseSlug, {
-    courseContentRepository: deps.courseContentRepository,
+    courseContentRepository: getCourseContentRepository(),
   });
 
   if (event.scope === 'lecture' && event.lectureId) {
@@ -135,7 +135,9 @@ async function startWorker(): Promise<void> {
     '[COURSE_INDEXING_WORKER_READY] Waiting for publish/indexing jobs',
   );
 
-  void bootstrapUnindexedCourseIndexing().catch((error) => {
+  void bootstrapUnindexedCourseIndexing({
+    isEnabled: () => AITutorConfig.isEnabled(),
+  }).catch((error) => {
     logger.error({ error }, '[COURSE_INDEXING_BOOTSTRAP_FAILED]');
   });
 }

@@ -173,9 +173,11 @@ function buildTutorState(
     retrievedChunks: [],
     sanitizedInput: '',
     assessmentBlocked: false,
+    executionPolicy: 'LIVE',
     finalResponse: '',
     outputValid: false,
     validationErrors: [],
+    runSignals: {},
     tokensUsed: { input: 0, output: 0 },
     pendingToolCalls: [],
     toolResults: [],
@@ -197,8 +199,10 @@ function buildEvaluatorState(
     rubricCriteria: parseRubricCriteria(request),
     sanitizedInput: '',
     structuredOutputStatus: 'pending',
+    executionPolicy: 'LIVE',
     finalResponse: '',
     validationErrors: [],
+    runSignals: {},
     tokensUsed: { input: 0, output: 0 },
   };
 }

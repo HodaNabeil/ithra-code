@@ -112,7 +112,7 @@ barrel), never reach into its internals directly. It provides:
 - Observability: cost ledger, Langfuse prompt management, LangSmith tracing, OpenTelemetry
   metrics.
 
-Gated behind `AI_PLATFORM_ENABLED`, `AI_PLATFORM_RUNTIME_ENABLED`, and `AI_TUTOR_ENABLED` env
+Gated behind `AI_PLATFORM_ENABLED` and `AI_TUTOR_ENABLED` env
 flags. See `src/ai-platform/README.md` and `docs/ai-platform/` / `docs/ai-tutor/` for the full
 design docs (blueprint, folder structure, agents, RAG, security, evaluation, ADRs).
 
@@ -184,6 +184,6 @@ schemas), `types/`, `constants/`.
   via `@t3-oss/env-nextjs` (fails fast on missing/invalid vars unless `SKIP_ENV_VALIDATION=true`).
 - `PAYMOB_*` vars are optional — the Paymob gateway only registers when configured; Stripe is the
   default provider.
-- `AI_PLATFORM_ENABLED`, `AI_PLATFORM_RUNTIME_ENABLED`, and `AI_TUTOR_ENABLED` gate the AI
+- `AI_PLATFORM_ENABLED` and `AI_TUTOR_ENABLED` gate the AI
   features; leave `false` unless working on AI Tutor / AI Platform.
 - Default dev port: 3000.

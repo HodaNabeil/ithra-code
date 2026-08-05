@@ -4,17 +4,7 @@ import {
   type CourseContextServiceDeps,
 } from '../services/course-context.service';
 import { getTutorBasePromptVersion } from '../services/prompt-builder';
-import {
-  detectAssessmentIntent,
-} from '../services/educational-integrity.service';
-import {
-  detectSessionMetaIntent,
-  type SessionMetaIntent,
-} from '../services/student-info.service';
-import {
-  buildSuggestionFallback,
-  formatSuggestionMessage,
-} from '../services/content-suggestion.service';
+import { detectSessionMetaIntent } from '../services/student-info.service';
 import { updateLearningProfileFromInteraction } from '../services/learning-profile.service';
 import { AskTutorError, AskTutorErrorCodes } from '../errors/ask-tutor.errors';
 import type {
@@ -31,6 +21,8 @@ import type { TutorPersonalizationContext } from '@/ai-platform/graph/state/tuto
 import { PlatformError } from '@/ai-platform/shared/errors';
 import { mapPlatformErrorToAskTutorError } from '../../infrastructure/guards/platform-error.mapper';
 import type { TutorSessionContext } from '../../domain/models/TutorSessionContext';
+import { TutorResponseProcessorAdapter } from '../../infrastructure/adapters/TutorResponseProcessorAdapter';
+import { tutorResponseEnricherAdapter } from '../../infrastructure/adapters/TutorResponseEnricherAdapter';
 
 export type AskTutorUseCaseDeps = CourseContextServiceDeps & {
   conversationRepository: ConversationRepositoryPort;
@@ -52,23 +44,6 @@ function encodeStreamMeta(meta: {
   return `${AI_TUTOR_CONSTANTS.SSE_META_PREFIX}${JSON.stringify(meta)}`;
 }
 
-function withSuggestions(
-  baseMessage: string,
-  question: string,
-  lectures: Parameters<typeof buildSuggestionFallback>[1],
-  excludeLectureId?: string,
-): string {
-  const { formattedMessage } = buildSuggestionFallback(question, lectures, {
-    excludeLectureId,
-  });
-
-  if (!formattedMessage) {
-    return baseMessage;
-  }
-
-  return `${baseMessage}\n\n${formattedMessage}`;
-}
-
 async function persistCompletedTurn(
   conversationRepository: ConversationRepositoryPort,
   threadId: string,
@@ -83,14 +58,9 @@ async function persistCompletedTurn(
   });
 }
 
-/**
- * Maps the feature-owned session context into the plain personalization
- * facts ai-platform accepts. ai-platform owns rendering these facts into the
- * final system prompt — this function must not build any prompt text itself.
- */
 function buildPersonalizationContext(
   sessionContext: TutorSessionContext,
-  sessionMetaIntent: SessionMetaIntent,
+  sessionMetaIntent: ReturnType<typeof detectSessionMetaIntent>,
 ): TutorPersonalizationContext {
   return {
     studentName: sessionContext.student.displayName,
@@ -121,20 +91,28 @@ function mapPlatformSourcesToMessageSources(
   });
 }
 
-/**
- * Streams a tutor turn via the ai-platform runtime. Retrieval and
- * system-prompt construction happen entirely inside the tutor graph
- * (retrieve-context.node.ts / tutor-system-prompt.builder.ts) — this
- * function only supplies raw conversation history and personalization
- * facts, and relays the resulting stream (including RAG source metadata)
- * back to the caller. This is the only tutor turn path — ai-platform owns
- * RAG, prompting, memory, and guardrails end-to-end.
- */
+function mapRunMetadataToOutcome(
+  metadata: Record<string, unknown> | undefined,
+  outcome: AskTutorRequestOutcome,
+): void {
+  if (!metadata) {
+    return;
+  }
+
+  if (metadata.assessmentBlocked === true) {
+    outcome.assessmentBlocked = true;
+    outcome.usedFallback = true;
+  }
+
+  if (metadata.filterTriggered === true) {
+    outcome.filterTriggered = true;
+  }
+}
+
 async function* streamTutorViaPlatformRuntime(input: {
   userId: string;
   question: string;
   sessionContext: TutorSessionContext;
-  sessionMetaIntent: SessionMetaIntent;
   lectureId?: string;
   threadId: string;
   conversationId: string;
@@ -144,16 +122,15 @@ async function* streamTutorViaPlatformRuntime(input: {
   outcome: AskTutorRequestOutcome;
 }): AsyncGenerator<string, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
   const { outcome } = input;
-  const strictMode = !input.sessionMetaIntent.isSessionMeta;
+  const sessionMetaIntent = detectSessionMetaIntent(input.question);
   const personalization = buildPersonalizationContext(
     input.sessionContext,
-    input.sessionMetaIntent,
+    sessionMetaIntent,
   );
+  const responseProcessor = new TutorResponseProcessorAdapter(input.contentFilter);
 
   let sources: MessageSourceDTO[] = [];
-  let rawSources: RetrievedSource[] = [];
-  let assistantResponse = '';
-  let streamedTokens = false;
+  let validatedOutput: string | undefined;
 
   try {
     for await (const event of streamAgent('tutor', {
@@ -176,11 +153,16 @@ async function* streamTutorViaPlatformRuntime(input: {
           })),
           personalization,
           promptVersion: getTutorBasePromptVersion(),
+          responseProcessor,
+          responseEnricher: tutorResponseEnricherAdapter,
+          enrichmentContext: {
+            lectureCatalog: input.sessionContext.lectureCatalog,
+            lectureId: input.lectureId,
+          },
         },
       },
     })) {
       if (event.type === 'meta' && event.sources) {
-        rawSources = event.sources;
         sources = mapPlatformSourcesToMessageSources(event.sources);
         outcome.retrievalChunkCount = event.sources.length;
         outcome.usedFallback = event.usedFallback ?? false;
@@ -188,15 +170,27 @@ async function* streamTutorViaPlatformRuntime(input: {
         yield encodeStreamMeta({
           sources,
           usedFallback: outcome.usedFallback,
-          educationalFilterApplied: false,
+          educationalFilterApplied: outcome.filterTriggered,
         });
       }
 
       if (event.type === 'token') {
-        assistantResponse += event.text;
-        streamedTokens = true;
-        if (!strictMode) {
-          yield event.text;
+        yield event.text;
+      }
+
+      if (event.type === 'done') {
+        if (event.output) {
+          validatedOutput = event.output.trim();
+        }
+        mapRunMetadataToOutcome(event.metadata, outcome);
+
+        if (outcome.assessmentBlocked || outcome.filterTriggered) {
+          yield encodeStreamMeta({
+            sources,
+            usedFallback: outcome.usedFallback || outcome.assessmentBlocked,
+            educationalFilterApplied:
+              outcome.filterTriggered || outcome.assessmentBlocked,
+          });
         }
       }
 
@@ -205,90 +199,25 @@ async function* streamTutorViaPlatformRuntime(input: {
       }
     }
 
-    let finalResponse = assistantResponse.trim();
+    const finalResponse = validatedOutput?.trim() ?? '';
 
-  const assessmentIntent = detectAssessmentIntent(input.question);
-  if (assessmentIntent.isAssessmentSeeking) {
-    outcome.assessmentBlocked = true;
-    outcome.usedFallback = true;
-
-    if (!streamedTokens && finalResponse) {
-      yield encodeStreamMeta({
-        sources: [],
-        usedFallback: true,
-        educationalFilterApplied: true,
-      });
-    }
-
-    finalResponse = withSuggestions(
-      finalResponse,
-      input.question,
-      input.sessionContext.lectureCatalog,
-      input.lectureId,
-    );
-  }
-
-  if (finalResponse) {
-    const validation = await input.contentFilter.validateResponse(
-      finalResponse,
-      {
-        question: input.question,
-        retrievedSources: rawSources.map((source) => ({
-          content: source.content,
-          metadata: source.metadata ?? {},
-        })),
-        courseId: input.sessionContext.courseId,
-        lectureId: input.lectureId,
-      },
-      { strictMode, courseId: input.sessionContext.courseId },
-    );
-
-    if (!validation.isValid) {
-      outcome.filterTriggered = true;
-
-      const suggestions = formatSuggestionMessage(
+    if (finalResponse) {
+      await persistCompletedTurn(
+        input.conversationRepository,
+        input.threadId,
         input.question,
-        buildSuggestionFallback(
-          input.question,
-          input.sessionContext.lectureCatalog,
-          { excludeLectureId: input.lectureId },
-        ).suggestions,
+        finalResponse,
+        sources,
       );
-
-      finalResponse =
-        validation.suggestedResponse ??
-        (await input.contentFilter.transformToGuidance(finalResponse, {
-          courseId: input.sessionContext.courseId,
-          lectureId: input.lectureId,
-          topic: input.sessionContext.lecture?.title,
-          question: input.question,
-        }));
-
-      if (suggestions) {
-        finalResponse = `${finalResponse}\n\n${suggestions}`;
-      }
     }
 
-    if (strictMode) {
-      yield finalResponse;
-    }
-
-    await persistCompletedTurn(
-      input.conversationRepository,
-      input.threadId,
-      input.question,
-      finalResponse,
+    return {
+      threadId: input.threadId,
+      conversationId: input.conversationId,
       sources,
-    );
-  }
-
-  return {
-    threadId: input.threadId,
-    conversationId: input.conversationId,
-    sources,
-    usedFallback: outcome.usedFallback,
-    outcome,
-  };
+      usedFallback: outcome.usedFallback,
+      outcome,
+    };
   } catch (error) {
     if (error instanceof AskTutorError) {
       throw error;
@@ -371,15 +300,10 @@ export async function* askTutorUseCase(
       }
     });
 
-    const sessionMetaIntent = detectSessionMetaIntent(input.question);
-
-    // RAG retrieval, guards, integrity checks, prompting, memory, and LLM
-    // execution all run inside the ai-platform tutor graph via streamAgent.
     return yield* streamTutorViaPlatformRuntime({
       userId: input.userId,
       question: input.question,
       sessionContext,
-      sessionMetaIntent,
       lectureId: input.lectureId,
       threadId: thread.id,
       conversationId: conversation.id,

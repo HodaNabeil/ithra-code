@@ -2,7 +2,7 @@ import { Queue } from 'bullmq';
 
 import { redis } from '@/lib/redis';
 
-import { COURSE_INDEXING_QUEUE } from './course-indexing.constants';
+import { COURSE_INDEXING_QUEUE } from '../../indexing/constants';
 
 export type CourseIndexingQueueMetrics = {
   queue: typeof COURSE_INDEXING_QUEUE;

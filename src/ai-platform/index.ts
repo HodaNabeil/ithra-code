@@ -56,6 +56,38 @@ export {
 export { getAgentDefinition, listAgents } from './agents/definitions/agent-registry';
 export { compileAgentGraph } from './graph/compiler/graph-compiler';
 export { getMemoryStorePort } from './infrastructure/di/ai-platform.container';
+export {
+  getCourseIndexingDeps,
+  getCourseContentRepository,
+  getKnowledgeChunkRepository,
+  getKnowledgeSourceHashRepository,
+} from './infrastructure/di/ai-platform.container';
+export { getCourseIndexingQueueMetrics } from './infrastructure/queue/course-indexing-queue-metrics';
+export type { CourseIndexingQueueMetrics } from './infrastructure/queue/course-indexing-queue-metrics';
+export type {
+  CourseContentRepositoryPort,
+  CourseForIndexingDTO,
+} from './indexing/domain/ports/CourseContentRepositoryPort';
+export type {
+  KnowledgeChunkRepositoryPort,
+} from './indexing/domain/ports/KnowledgeChunkRepositoryPort';
+export type {
+  KnowledgeSourceHashRepositoryPort,
+  KnowledgeSourceHashRecord,
+} from './indexing/domain/ports/KnowledgeSourceHashRepositoryPort';
+export type {
+  KnowledgeChunkRecord,
+  IndexedKnowledgeChunk,
+} from './indexing/domain/models/KnowledgeChunk';
+export { isExtractionSkipped } from './indexing/domain/models/KnowledgeSource';
+export type { EducationalContentValidatorPort } from './graph/runtime-config';
+export type { ResponseProcessorPort } from './domain/ports/response-processor.port';
+export type { ResponseEnricherPort } from './domain/ports/response-enricher.port';
+export type {
+  AgentExecutionState,
+  ExecutionPolicy,
+} from './graph/state/shared-channels';
+export { readExecutionPolicy } from './graph/state/shared-channels';
 export { generateStructuredOutput } from './structured-output/structured-output.service';
 export type { EvaluatorRubricV1 } from './structured-output/schemas/evaluator-rubric.v1';
 export { executeTool } from './tools/executor/tool-executor';

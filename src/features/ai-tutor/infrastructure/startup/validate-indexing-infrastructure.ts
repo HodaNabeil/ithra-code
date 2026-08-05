@@ -6,7 +6,7 @@ import { redis } from '@/lib/redis';
 
 import { AITutorConfig, validateAITutorConfig } from '../config/ai-tutor.config';
 import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
-import { COURSE_INDEXING_QUEUE } from '../queue/course-indexing.constants';
+import { COURSE_INDEXING_QUEUE } from '@/ai-platform';
 
 export type IndexingInfrastructureCheckStatus = 'ok' | 'error' | 'skipped';
 

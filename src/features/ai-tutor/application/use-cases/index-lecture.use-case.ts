@@ -3,7 +3,7 @@ import { Role } from '@/generated/prisma/enums';
 import type { IndexLectureResultDTO } from '../dto/index-lecture.dto';
 import { IndexingError, IndexingErrorCodes } from '../errors/indexing.errors';
 import { loadCourseForIndexing } from '../services/content-extraction.service';
-import { runLectureIndexing } from '../services/course-indexing-runner.service';
+import { runLectureIndexing } from '@/ai-platform/indexing/pipelines/course-indexing.pipeline';
 import type { IndexCourseUseCaseDeps } from './index-course.use-case';
 
 export type IndexLectureInput = {

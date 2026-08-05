@@ -83,7 +83,7 @@ export {
   updateLearningProfileFromInteraction,
 } from './learning-profile.service';
 
-export { embedChunkRecords } from './embedding-pipeline.service';
+export { embedRecords as embedChunkRecords } from '@/ai-platform/embeddings/pipeline';
 export {
   buildStudentInfo,
   buildLevelAdaptiveInstructions,

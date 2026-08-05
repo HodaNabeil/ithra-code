@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { buildCourseIndexingJobId } from '@/features/ai-tutor/infrastructure/queue/course-indexing.constants';
+import { buildCourseIndexingJobId } from '@/ai-platform/indexing/constants';
 
 describe('buildCourseIndexingJobId', () => {
   it('uses contentVersion for course-scoped jobs', () => {

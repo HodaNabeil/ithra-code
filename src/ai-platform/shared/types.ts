@@ -46,5 +46,10 @@ export interface ChatResult {
 export type ChatStreamEvent =
   | { type: 'meta'; runId: string; sources?: RetrievedSource[]; usedFallback?: boolean }
   | { type: 'token'; text: string }
-  | { type: 'done'; usage?: ChatUsage }
+  | {
+      type: 'done';
+      usage?: ChatUsage;
+      output?: string;
+      metadata?: Record<string, unknown>;
+    }
   | { type: 'error'; code: string; message: string; retryable?: boolean };

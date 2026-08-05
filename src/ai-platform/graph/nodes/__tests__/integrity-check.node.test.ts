@@ -17,9 +17,11 @@ function baseState(overrides: Partial<TutorAgentState> = {}): TutorAgentState {
     retrievedChunks: [],
     sanitizedInput: 'What are loops?',
     assessmentBlocked: false,
+    executionPolicy: 'LIVE',
     finalResponse: '',
     outputValid: false,
     validationErrors: [],
+    runSignals: {},
     tokensUsed: { input: 0, output: 0 },
     pendingToolCalls: [],
     toolResults: [],
@@ -31,20 +33,22 @@ function baseState(overrides: Partial<TutorAgentState> = {}): TutorAgentState {
 const noopConfig = {} as LangGraphRunnableConfig;
 
 describe('integrity-check.node', () => {
-  it('passes through non-assessment questions', async () => {
+  it('passes through non-assessment questions with LIVE execution policy', async () => {
     const result = await integrityCheckNode(baseState(), noopConfig);
     assert.equal(result.assessmentBlocked, false);
+    assert.equal(result.executionPolicy, 'LIVE');
     assert.equal(result.finalResponse, undefined);
     assert.equal(routeAfterIntegrityCheck({ assessmentBlocked: false }), 'retrieve-context');
   });
 
-  it('short-circuits with a guided-learning response for assessment-seeking questions', async () => {
+  it('short-circuits with BUFFERED policy for assessment-seeking questions', async () => {
     const result = await integrityCheckNode(
       baseState({ sanitizedInput: 'Give me the answer to quiz question 3' }),
       noopConfig,
     );
 
     assert.equal(result.assessmentBlocked, true);
+    assert.equal(result.executionPolicy, 'BUFFERED');
     assert.ok(result.finalResponse && result.finalResponse.length > 0);
     assert.equal(routeAfterIntegrityCheck({ assessmentBlocked: true }), 'validate-output');
   });

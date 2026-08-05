@@ -21,6 +21,19 @@ import {
 import { ResilientLlmAdapter } from '../../providers/resilient/resilient-llm.adapter';
 import { FallbackLlmAdapter } from '../../router/fallback-chain';
 import { getFallbackChainForTask, resolveModelForPolicy } from '../../router/model-router';
+import type { CourseContentRepositoryPort } from '../../indexing/domain/ports/CourseContentRepositoryPort';
+import type { KnowledgeChunkRepositoryPort } from '../../indexing/domain/ports/KnowledgeChunkRepositoryPort';
+import type { KnowledgeSourceHashRepositoryPort } from '../../indexing/domain/ports/KnowledgeSourceHashRepositoryPort';
+import {
+  prismaCourseContentRepository,
+} from '../../indexing/infrastructure/prisma/PrismaCourseContentRepository';
+import {
+  prismaKnowledgeChunkRepository,
+} from '../../indexing/infrastructure/prisma/PrismaKnowledgeChunkRepository';
+import {
+  prismaKnowledgeSourceHashRepository,
+} from '../../indexing/infrastructure/prisma/PrismaKnowledgeSourceHashRepository';
+import type { CourseIndexingDeps } from '../../indexing/pipelines/course-indexing.pipeline';
 import { postgresVectorSearchAdapter } from '../../rag/retrieval/postgres-vector-search.adapter';
 import { registerStructuredOutputSchemas } from '../../structured-output/bootstrap';
 import { resetSchemaRegistryForTests } from '../../structured-output/registry/schema-registry';
@@ -188,6 +201,29 @@ export function getMemoryStorePort(): MemoryStorePort {
   }
 
   return state.memoryStore;
+}
+
+export function getKnowledgeChunkRepository(): KnowledgeChunkRepositoryPort {
+  assertPlatformEnabled();
+  return prismaKnowledgeChunkRepository;
+}
+
+export function getKnowledgeSourceHashRepository(): KnowledgeSourceHashRepositoryPort {
+  assertPlatformEnabled();
+  return prismaKnowledgeSourceHashRepository;
+}
+
+export function getCourseContentRepository(): CourseContentRepositoryPort {
+  assertPlatformEnabled();
+  return prismaCourseContentRepository;
+}
+
+export function getCourseIndexingDeps(): CourseIndexingDeps {
+  return {
+    embeddingPort: getEmbeddingPort(),
+    knowledgeChunkRepository: getKnowledgeChunkRepository(),
+    hashRepository: getKnowledgeSourceHashRepository(),
+  };
 }
 
 export function resetPlatformContainerForTests(): void {

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { env } from '@/config/env';
 import { AITutorConfig } from '@/features/ai-tutor/infrastructure/config/ai-tutor.config';
-import { getCourseIndexingQueueMetrics } from '@/features/ai-tutor/infrastructure/queue/course-indexing-queue-metrics';
+import { getCourseIndexingQueueMetrics } from '@/ai-platform';
 import { probeIndexingInfrastructure } from '@/features/ai-tutor/infrastructure/startup/validate-indexing-infrastructure';
 import { redis } from '@/lib/redis';
 

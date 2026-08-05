@@ -1,14 +1,17 @@
 import { END, START, StateGraph } from '@langchain/langgraph';
 
 import { wrapGraphNode } from '../../observability/opentelemetry/span-helpers';
+import { enrichResponseNode } from '../nodes/enrich-response.node';
 import { generateResponseNode } from '../nodes/generate-response.node';
 import { integrityCheckNode, routeAfterIntegrityCheck } from '../nodes/integrity-check.node';
 import { loadHistoryNode } from '../nodes/load-history.node';
-import { persistTurnNode } from '../nodes/persist-turn.node';
 import { retrieveContextNode } from '../nodes/retrieve-context.node';
 import { sanitizeInputNode } from '../nodes/sanitize-input.node';
 import { toolCallNode } from '../nodes/tool-call.node';
-import { validateOutputNode } from '../nodes/validate-output.node';
+import {
+  routeAfterValidateOutput,
+  validateOutputNode,
+} from '../nodes/validate-output.node';
 import { TutorAgentStateAnnotation } from '../state/tutor-agent.state';
 
 const MAX_TOOL_ITERATIONS = 5;
@@ -36,7 +39,7 @@ export function buildTutorGraph() {
     .addNode('generate-response', wrapGraphNode('generate-response', generateResponseNode))
     .addNode('tool-call', wrapGraphNode('tool-call', toolCallNode as never))
     .addNode('validate-output', wrapGraphNode('validate-output', validateOutputNode))
-    .addNode('persist-turn', wrapGraphNode('persist-turn', persistTurnNode))
+    .addNode('enrich-response', wrapGraphNode('enrich-response', enrichResponseNode))
     .addEdge(START, 'sanitize-input')
     .addEdge('sanitize-input', 'load-history')
     .addEdge('load-history', 'integrity-check')
@@ -50,8 +53,11 @@ export function buildTutorGraph() {
       'validate-output': 'validate-output',
     })
     .addEdge('tool-call', 'generate-response')
-    .addEdge('validate-output', 'persist-turn')
-    .addEdge('persist-turn', END);
+    .addConditionalEdges('validate-output', routeAfterValidateOutput, {
+      'enrich-response': 'enrich-response',
+      done: END,
+    })
+    .addEdge('enrich-response', END);
 
   return graph;
 }

@@ -3,11 +3,13 @@ import { Role } from '@/generated/prisma/enums';
 import type { IndexCourseInputDTO, IndexCourseResultDTO } from '../dto/index-course.dto';
 import { IndexingError, IndexingErrorCodes } from '../errors/indexing.errors';
 import { loadCourseForIndexing } from '../services/content-extraction.service';
-import { runCourseIndexing } from '../services/course-indexing-runner.service';
-import type { EmbeddingPort } from '../../domain/ports/EmbeddingPort';
-import type { KnowledgeChunkRepositoryPort } from '../../domain/ports/KnowledgeChunkRepositoryPort';
-import type { KnowledgeSourceHashRepositoryPort } from '../../domain/ports/KnowledgeSourceHashRepositoryPort';
-import type { CourseContentRepositoryPort } from '../../domain/ports/CourseContentRepositoryPort';
+import { runCourseIndexing } from '@/ai-platform/indexing/pipelines/course-indexing.pipeline';
+import type {
+  CourseContentRepositoryPort,
+  EmbeddingPort,
+  KnowledgeChunkRepositoryPort,
+  KnowledgeSourceHashRepositoryPort,
+} from '@/ai-platform';
 
 export type IndexCourseUseCaseDeps = {
   embeddingPort: EmbeddingPort;

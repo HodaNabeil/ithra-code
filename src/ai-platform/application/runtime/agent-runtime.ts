@@ -21,11 +21,16 @@ import {
 } from '../../observability/cost/cost-ledger.service';
 import { estimateCostUsd } from '../../observability/cost/token-pricing';
 import { resolveModelForPolicy } from '../../router/model-router';
+import { readExecutionPolicy } from '../../graph/state/shared-channels';
 import { PlatformError, PlatformErrorCodes } from '../../shared/errors';
 import type { ChatStreamEvent } from '../../shared/types';
 import { agentRunRequestSchema } from '../dto/agent-run.dto';
 import { buildAgentContext } from './context-builder';
-import { invokeAgentGraph } from './graph-executor';
+import { invokeAgentGraph, streamAgentGraph } from './graph-executor';
+import {
+  extractGraphInjectionPorts,
+  extractRunMetadata,
+} from './graph-port-extractor';
 import { runGuards, runStreamGuards } from './guard-runner';
 import type { RuntimeExecutionContext } from './types';
 import {
@@ -88,6 +93,10 @@ function getConversationMemory(
     return {};
   }
   return { conversationMemoryPort: getConversationMemoryPort() };
+}
+
+function extractGraphPorts(metadata: Record<string, unknown> | undefined) {
+  return extractGraphInjectionPorts(metadata);
 }
 
 function extractRunOutput(finalState: AgentGraphState): {
@@ -170,6 +179,7 @@ export async function executeAgentRun(
           llmPort: getLlmPort(),
           ...getRagPorts(context.agent),
           ...getConversationMemory(context.agent),
+          ...extractGraphPorts(parsed.options?.metadata),
           allowedTools: context.agent.allowedTools,
           courseId: parsed.scope.courseId,
           lectureId: parsed.scope.lectureId,
@@ -301,13 +311,16 @@ export async function* executeAgentStream(
     { input: parsed.input },
   );
 
-  const graphPromise = invokeAgentGraph({
+  let latestObservedState: AgentGraphState = built.initialState;
+
+  const graphPromise = streamAgentGraph({
     agentId: context.agentId,
     runId: context.runId,
     state: built.initialState,
     llmPort: getLlmPort(),
     ...getRagPorts(context.agent),
     ...getConversationMemory(context.agent),
+    ...extractGraphPorts(parsed.options?.metadata),
     allowedTools: context.agent.allowedTools,
     courseId: parsed.scope.courseId,
     lectureId: parsed.scope.lectureId,
@@ -322,8 +335,13 @@ export async function* executeAgentStream(
       userId: parsed.userId,
       promptVersion: built.promptVersion,
     },
+    onStateUpdate: (state) => {
+      latestObservedState = state;
+    },
     onToken: async (token) => {
-      pendingEvents.push({ kind: 'token', text: token });
+      if (readExecutionPolicy(latestObservedState) === 'LIVE') {
+        pendingEvents.push({ kind: 'token', text: token });
+      }
       notifyToken?.();
     },
     onRetrieval: async (chunks, usedFallback) => {
@@ -383,7 +401,12 @@ export async function* executeAgentStream(
     }
 
     const finalResponse = graphResult.finalState?.finalResponse?.trim();
-    if (finalResponse && streamedTokenCount === 0) {
+    const executionPolicy = readExecutionPolicy(graphResult.finalState);
+
+    if (
+      finalResponse &&
+      (executionPolicy === 'BUFFERED' || streamedTokenCount === 0)
+    ) {
       yield { type: 'token', text: finalResponse };
     }
 
@@ -406,6 +429,10 @@ export async function* executeAgentStream(
 
     yield {
       type: 'done',
+      output: graphResult.finalState?.finalResponse,
+      metadata: extractRunMetadata(
+        graphResult.finalState as unknown as Record<string, unknown> | undefined,
+      ),
       usage: {
         promptTokens: usage.input,
         completionTokens: usage.output,

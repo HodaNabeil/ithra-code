@@ -1,7 +1,7 @@
 # Internal AI Platform — Architecture Blueprint
 
 > Principal architecture document for extracting IthraCode's AI Tutor into a reusable Internal AI Platform.  
-> **Status:** Phase 2 in progress — `src/ai-platform/` is implemented (~99 files). Production AI Tutor delegates LLM execution to `streamAgent('tutor')` when `AI_PLATFORM_RUNTIME_ENABLED=true`. Legacy hand-rolled pipeline remains the fallback.  
+> **Status:** Phase 2 complete — `src/ai-platform/` is the shared AI module. AI Tutor delegates LLM execution to `streamAgent('tutor')` via the LangGraph tutor graph. Durable conversation persistence stays in `src/features/ai-tutor`; indexing repositories and queue infrastructure live in the platform.  
 > **Last updated:** August 2026  
 > **Audience:** Engineering leadership, platform engineers, feature teams
 
@@ -812,56 +812,23 @@ export async function* askTutorUseCase(input: AskTutorInputDTO, deps: AskTutorDe
 
 **Target:** Courses → `CourseKnowledgeIndexerPort` → implemented in **ai-platform/indexing/** (platform owns queue). Courses feature keeps the port interface; wiring changes once.
 
-### 8.6 Phase 2 Runtime Migration (Implemented)
+### 8.6 Phase 2 Runtime Migration (Complete)
 
-Production tutor orchestration now uses a **dual-path** in `ask-tutor.use-case.ts`:
+Production tutor orchestration uses `streamAgent('tutor')` in `ask-tutor.use-case.ts` when both `AI_PLATFORM_ENABLED=true` and `AI_TUTOR_ENABLED=true`.
 
 | Flag | Execution path |
 |------|----------------|
-| `AI_PLATFORM_RUNTIME_ENABLED=false` | Legacy `llmPort.streamAnswer()` pipeline (Phase 1) |
-| `AI_PLATFORM_RUNTIME_ENABLED=true` | `streamAgent('tutor')` → LangGraph tutor graph + cost ledger |
+| `AI_PLATFORM_ENABLED=false` | Tutor cannot start (config validation fails) |
+| `AI_PLATFORM_ENABLED=true` | `streamAgent('tutor')` → LangGraph tutor graph + cost ledger |
 
-**What the use case still owns (unchanged):** session context, enrollment, conversation/thread persistence, assessment blocking, RAG retrieval, prompt building, content filter, SSE `[META]` protocol.
+**What the use case still owns:** session context, enrollment, durable conversation/thread persistence, lecture suggestions for assessment-blocked turns, SSE `[META]` protocol.
 
-**What the platform runtime owns:** guards (rate limit, cost cap, concurrency), `startAgentRun` / `completeAgentRun`, graph nodes (`sanitize-input` → `retrieve-context` → `generate-response` → `validate-output`).
-
-```mermaid
-sequenceDiagram
-  participant Client
-  participant Handler as ask-tutor.handler
-  participant UseCase as ask-tutor.use-case
-  participant Runtime as streamAgent
-  participant Graph as tutor.graph
-
-  Client->>Handler: POST /api/tutor/messages
-  Handler->>Handler: auth + validation
-  alt runtime disabled
-    Handler->>Handler: rate + cost + concurrency guards
-  end
-  Handler->>UseCase: askTutorUseCase()
-  UseCase->>UseCase: session + RAG + prompts
-  alt runtime enabled
-    UseCase->>Runtime: streamAgent('tutor', metadata)
-    Runtime->>Runtime: guards + startAgentRun
-    Runtime->>Graph: invoke tutor graph
-    Graph-->>Runtime: streamed tokens
-    Runtime->>Runtime: completeAgentRun
-    Runtime-->>UseCase: ChatStreamEvent tokens
-  else legacy
-    UseCase->>UseCase: llmPort.streamAnswer()
-  end
-  UseCase->>UseCase: content filter + persist
-  UseCase-->>Handler: SSE chunks
-  Handler-->>Client: text/event-stream
-```
+**What the platform runtime owns:** guards (rate limit, cost cap, concurrency), RAG retrieval, prompt assembly, integrity validation via graph nodes, `startAgentRun` / `completeAgentRun`, short-term conversation memory.
 
 **Feature flags:**
 
 - `AI_TUTOR_ENABLED` — master switch for `/api/tutor/*` routes
-- `AI_PLATFORM_ENABLED` — enables platform providers, guards config, cost ledger tables
-- `AI_PLATFORM_RUNTIME_ENABLED` — switches tutor LLM execution to LangGraph runtime (requires platform enabled)
-
-When runtime is enabled, the handler skips pre-stream guards; `streamAgent` applies platform guards with `agent:tutor` scope. Early-exit paths (assessment block, RAG fallback) call tutor guard helpers directly since they do not invoke the graph.
+- `AI_PLATFORM_ENABLED` — enables platform providers, LangGraph runtime, guards, and cost ledger
 
 ---
 

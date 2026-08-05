@@ -2,8 +2,12 @@ import { Annotation } from '@langchain/langgraph';
 
 import type { LlmMessage } from '../../domain/ports/llm.port';
 import type { EvaluatorRubricV1 } from '../../structured-output/schemas/evaluator-rubric.v1';
+import {
+  agentExecutionChannels,
+  type AgentExecutionState,
+} from './shared-channels';
 
-export interface EvaluatorAgentState {
+export interface EvaluatorAgentState extends AgentExecutionState {
   agentId: string;
   userId: string;
   input: string;
@@ -13,9 +17,6 @@ export interface EvaluatorAgentState {
   sanitizedInput: string;
   structuredOutput?: EvaluatorRubricV1;
   structuredOutputStatus: 'valid' | 'repaired' | 'rejected' | 'pending';
-  finalResponse: string;
-  validationErrors: string[];
-  tokensUsed: { input: number; output: number };
 }
 
 export const EvaluatorAgentStateAnnotation = Annotation.Root({
@@ -32,14 +33,7 @@ export const EvaluatorAgentStateAnnotation = Annotation.Root({
   structuredOutput: Annotation<EvaluatorRubricV1 | undefined>,
   structuredOutputStatus: Annotation<'valid' | 'repaired' | 'rejected' | 'pending'>,
   finalResponse: Annotation<string>,
-  validationErrors: Annotation<string[]>({
-    reducer: (_left, right) => right,
-    default: () => [],
-  }),
-  tokensUsed: Annotation<{ input: number; output: number }>({
-    reducer: (_left, right) => right,
-    default: () => ({ input: 0, output: 0 }),
-  }),
+  ...agentExecutionChannels,
   conversationHistory: Annotation<LlmMessage[]>({
     reducer: (_left, right) => right,
     default: () => [],

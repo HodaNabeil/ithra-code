@@ -1,6 +1,7 @@
 import type { LangGraphRunnableConfig } from '@langchain/langgraph';
 
 import { buildGuidedLearningResponse, detectAssessmentIntent } from './guards/educational-integrity';
+import type { ExecutionPolicy } from '../state/shared-channels';
 import type { TutorAgentState } from '../state/tutor-agent.state';
 
 /**
@@ -17,12 +18,17 @@ export async function integrityCheckNode(
   const intent = detectAssessmentIntent(question);
 
   if (!intent.isAssessmentSeeking) {
-    return { assessmentBlocked: false };
+    return {
+      assessmentBlocked: false,
+      executionPolicy: 'LIVE' satisfies ExecutionPolicy,
+    };
   }
 
   return {
     assessmentBlocked: true,
+    executionPolicy: 'BUFFERED' satisfies ExecutionPolicy,
     finalResponse: buildGuidedLearningResponse(question),
+    runSignals: { assessmentBlocked: true },
   };
 }
 

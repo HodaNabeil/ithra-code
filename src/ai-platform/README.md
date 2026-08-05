@@ -10,7 +10,7 @@ Weeks 5–6 RAG extraction: `PostgresVectorSearchAdapter`, embedding cache, embe
 
 Week 7 guards + ingestion extraction: knowledge ingestion pipeline, `course-indexing.pipeline`, generalized Redis guards (`ai:*` keys), and staging `AI_PLATFORM_ENABLED=true`.
 
-**Phase 2 (Weeks 8–10) — in progress:** LangGraph agent runtime with `tutor.graph.ts` (sanitize → retrieve → generate → validate), agent registry, and `AgentRuntime`. Enable with `AI_PLATFORM_RUNTIME_ENABLED=true` (requires `AI_PLATFORM_ENABLED=true`).
+**Phase 2 (Weeks 8–10) — complete:** LangGraph agent runtime with `tutor.graph.ts` (sanitize → retrieve → generate → validate), agent registry, and `AgentRuntime`. Requires `AI_PLATFORM_ENABLED=true` and `AI_TUTOR_ENABLED=true`.
 
 ## Quick start
 
