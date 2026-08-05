@@ -21,6 +21,7 @@ export function formatEvaluationMarkdown(report: EvalReport): string {
     `- Agent: ${report.agentId}`,
     `- Status: ${report.status}`,
     `- Duration: ${report.durationMs}ms`,
+    `- Evaluation method: ${report.usedFallback ? 'heuristic fallback (NOT real Ragas)' : 'ragas'}`,
     '',
     '## Metrics',
     `- Faithfulness: ${report.metrics.faithfulness.toFixed(3)} (threshold ${report.thresholds.faithfulness})`,

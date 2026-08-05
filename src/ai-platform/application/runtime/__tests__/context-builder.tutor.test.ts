@@ -6,7 +6,7 @@ import { tutorAgentDefinition } from '@/ai-platform/agents/tutor/tutor-agent.def
 import type { TutorAgentState } from '@/ai-platform/graph/state/tutor-agent.state';
 
 describe('context builder — tutor metadata', () => {
-  it('populates tutor state from request metadata', () => {
+  it('populates tutor state from request metadata (history + personalization only)', () => {
     const built = buildAgentContext(tutorAgentDefinition, {
       userId: 'user-1',
       input: 'ما هي الحلقات؟',
@@ -19,19 +19,14 @@ describe('context builder — tutor metadata', () => {
       },
       options: {
         metadata: {
-          systemPrompt: 'أنت مدرس ذكي',
           conversationHistory: [
             { role: 'user', content: 'مرحبا' },
             { role: 'assistant', content: 'أهلاً' },
           ],
-          retrievedChunks: [
-            {
-              id: 'chunk-1',
-              content: 'محتوى المحاضرة',
-              score: 0.9,
-              metadata: { title: 'الدرس 1' },
-            },
-          ],
+          personalization: {
+            studentName: 'سارة',
+            learningLevel: 'متوسط',
+          },
           promptVersion: 'tutor-v1',
         },
       },
@@ -40,10 +35,33 @@ describe('context builder — tutor metadata', () => {
     assert.equal(built.promptVersion, 'tutor-v1');
     const state = built.initialState as TutorAgentState;
     assert.equal(state.agentId, 'tutor');
-    assert.equal(state.systemPrompt, 'أنت مدرس ذكي');
+    assert.match(state.systemPrompt, /مدرس ذكي/);
     assert.equal(state.conversationHistory.length, 2);
-    assert.equal(state.retrievedChunks.length, 1);
-    assert.equal(state.retrievedChunks[0]?.id, 'chunk-1');
+    assert.equal(state.personalization?.studentName, 'سارة');
+    // RAG chunks are always fetched inside the graph (retrieve-context.node.ts),
+    // never accepted pre-built from feature-layer metadata.
+    assert.equal(state.retrievedChunks.length, 0);
+  });
+
+  it('does not accept a pre-built systemPrompt or retrievedChunks from metadata', () => {
+    const built = buildAgentContext(tutorAgentDefinition, {
+      userId: 'user-1',
+      input: 'سؤال',
+      locale: 'ar',
+      scope: { userId: 'user-1' },
+      options: {
+        metadata: {
+          conversationHistory: [],
+          systemPrompt: 'يجب تجاهل هذا',
+          retrievedChunks: [{ id: 'ignored', content: 'ignored', score: 1 }],
+        },
+      },
+    });
+
+    const state = built.initialState as TutorAgentState;
+    assert.match(state.systemPrompt, /مدرس ذكي/);
+    assert.notEqual(state.systemPrompt, 'يجب تجاهل هذا');
+    assert.equal(state.retrievedChunks.length, 0);
   });
 
   it('falls back to generic tutor defaults when metadata is missing', () => {
@@ -58,6 +76,7 @@ describe('context builder — tutor metadata', () => {
     const state = built.initialState as TutorAgentState;
     assert.equal(state.conversationHistory.length, 0);
     assert.equal(state.retrievedChunks.length, 0);
+    assert.equal(state.personalization, undefined);
     assert.match(state.systemPrompt, /مدرس ذكي/);
   });
 
@@ -69,7 +88,7 @@ describe('context builder — tutor metadata', () => {
       scope: { userId: 'user-1' },
       options: {
         metadata: {
-          systemPrompt: 123,
+          conversationHistory: 'not-an-array',
         },
       },
     });

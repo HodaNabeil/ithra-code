@@ -9,15 +9,31 @@ export interface RetrievedChunkState {
   metadata?: Record<string, unknown>;
 }
 
+/**
+ * Optional, feature-supplied personalization facts (student/course/progress).
+ * Plain data only — ai-platform owns formatting/rendering of these facts into
+ * the final system prompt (see prompts/tutor-system-prompt.builder.ts).
+ */
+export interface TutorPersonalizationContext {
+  studentName?: string;
+  learningLevel?: string;
+  courseTitle?: string;
+  progressPercent?: number;
+  knowledgeGaps?: string[];
+  sessionMetaMode?: boolean;
+}
+
 export interface TutorAgentState {
   agentId: string;
   userId: string;
   input: string;
   locale: 'ar' | 'en';
   systemPrompt: string;
+  personalization?: TutorPersonalizationContext;
   conversationHistory: LlmMessage[];
   retrievedChunks: RetrievedChunkState[];
   sanitizedInput: string;
+  assessmentBlocked: boolean;
   finalResponse: string;
   outputValid: boolean;
   validationErrors: string[];
@@ -33,6 +49,10 @@ export const TutorAgentStateAnnotation = Annotation.Root({
   input: Annotation<string>,
   locale: Annotation<'ar' | 'en'>,
   systemPrompt: Annotation<string>,
+  personalization: Annotation<TutorPersonalizationContext | undefined>({
+    reducer: (_left, right) => right,
+    default: () => undefined,
+  }),
   conversationHistory: Annotation<LlmMessage[]>({
     reducer: (_left, right) => right,
     default: () => [],
@@ -42,6 +62,10 @@ export const TutorAgentStateAnnotation = Annotation.Root({
     default: () => [],
   }),
   sanitizedInput: Annotation<string>,
+  assessmentBlocked: Annotation<boolean>({
+    reducer: (_left, right) => right,
+    default: () => false,
+  }),
   finalResponse: Annotation<string>,
   outputValid: Annotation<boolean>,
   validationErrors: Annotation<string[]>({

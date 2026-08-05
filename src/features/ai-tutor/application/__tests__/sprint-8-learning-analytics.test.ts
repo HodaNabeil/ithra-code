@@ -4,7 +4,6 @@ import { describe, it } from 'node:test';
 import { detectKnowledgeGaps } from '@/features/ai-tutor/application/services/knowledge-gap.service';
 import {
   analyzeAssessmentPerformance,
-  buildSectionProgressSummaries,
   formatAssessmentPerformanceSummary,
   formatKnowledgeGapsForPrompt,
 } from '@/features/ai-tutor/application/services/student-progress-analytics.service';
@@ -14,9 +13,7 @@ import {
   mergeLearningProfile,
   buildAdaptiveFormattingInstructions,
 } from '@/features/ai-tutor/application/services/learning-profile.logic';
-import { buildSystemPrompt } from '@/features/ai-tutor/application/services/prompt-builder';
 import type { LectureProgressItem } from '@/features/ai-tutor/domain/models/StudentProgressAnalytics';
-import type { TutorSessionContext } from '@/features/ai-tutor/domain/models/TutorSessionContext';
 import type { MessageDTO } from '@/features/ai-tutor/domain/ports/ConversationRepositoryPort';
 
 function createLectureProgress(
@@ -30,151 +27,6 @@ function createLectureProgress(
     isCompleted: false,
     timeSpentSeconds: 120,
     ...overrides,
-  };
-}
-
-function createSessionContext(): TutorSessionContext {
-  return {
-    courseId: 'course-1',
-    userId: 'user-1',
-    lectureId: 'lec-2',
-    course: {
-      id: 'course-1',
-      title: 'React Fundamentals',
-      slug: 'react-fundamentals',
-      description: 'Learn React',
-      level: 'BEGINNER',
-      objectives: [],
-      requirements: [],
-      knowledgeIndexed: true,
-    },
-    lecture: {
-      id: 'lec-2',
-      title: 'Hooks',
-      sectionTitle: 'State',
-      sectionPosition: 2,
-      position: 2,
-      isCompleted: false,
-    },
-    student: {
-      displayName: 'Hoda Ali',
-      learningLevel: 'في مرحلة متوسطة',
-      progressTier: 'mid',
-    },
-    studentProgress: {
-      enrollmentStatus: 'ACTIVE',
-      completedLectures: 1,
-      totalLectures: 4,
-      completionPercentage: 25,
-      currentLectureCompleted: false,
-      lectureProgress: [
-        createLectureProgress({
-          id: 'lec-1',
-          title: 'Intro',
-          isCompleted: true,
-        }),
-        createLectureProgress({
-          id: 'lec-2',
-          title: 'Hooks',
-          position: 2,
-          isCompleted: false,
-        }),
-        createLectureProgress({
-          id: 'lec-3',
-          title: 'Quiz 1',
-          type: 'QUIZ',
-          position: 3,
-          isCompleted: false,
-        }),
-        createLectureProgress({
-          id: 'lec-4',
-          title: 'Assignment 1',
-          type: 'ASSIGNMENT',
-          position: 4,
-          isCompleted: true,
-        }),
-      ],
-      sectionProgress: buildSectionProgressSummaries([
-        createLectureProgress({
-          id: 'lec-1',
-          title: 'Intro',
-          isCompleted: true,
-        }),
-        createLectureProgress({
-          id: 'lec-2',
-          title: 'Hooks',
-          position: 2,
-          isCompleted: false,
-        }),
-        createLectureProgress({
-          id: 'lec-3',
-          title: 'Quiz 1',
-          type: 'QUIZ',
-          position: 3,
-          isCompleted: false,
-        }),
-        createLectureProgress({
-          id: 'lec-4',
-          title: 'Assignment 1',
-          type: 'ASSIGNMENT',
-          position: 4,
-          isCompleted: true,
-        }),
-      ]),
-      assessmentPerformance: analyzeAssessmentPerformance([
-        createLectureProgress({
-          id: 'lec-3',
-          title: 'Quiz 1',
-          type: 'QUIZ',
-          position: 3,
-          isCompleted: false,
-        }),
-        createLectureProgress({
-          id: 'lec-4',
-          title: 'Assignment 1',
-          type: 'ASSIGNMENT',
-          position: 4,
-          isCompleted: true,
-        }),
-      ]),
-      knowledgeGaps: detectKnowledgeGaps([
-        createLectureProgress({
-          id: 'lec-1',
-          title: 'Intro',
-          isCompleted: true,
-        }),
-        createLectureProgress({
-          id: 'lec-2',
-          title: 'Hooks',
-          position: 2,
-          isCompleted: false,
-        }),
-        createLectureProgress({
-          id: 'lec-3',
-          title: 'Quiz 1',
-          type: 'QUIZ',
-          position: 3,
-          isCompleted: false,
-        }),
-        createLectureProgress({
-          id: 'lec-4',
-          title: 'Assignment 1',
-          type: 'ASSIGNMENT',
-          position: 4,
-          isCompleted: true,
-        }),
-      ]),
-    },
-    lectureCatalog: [],
-    learningProfile: {
-      userId: 'user-1',
-      courseId: 'course-1',
-      explanationDepth: 'detailed',
-      contentStyle: 'code_heavy',
-      confidence: 0.7,
-      interactionCount: 5,
-      lastUpdatedAt: new Date(),
-    },
   };
 }
 
@@ -342,17 +194,5 @@ describe('learning profile Sprint 8', () => {
     assert.match(instructions, /تفضيلات التعلم/);
     assert.match(instructions, /أمثلة عملية/);
     assert.match(instructions, /خطوة بخطوة/);
-  });
-});
-
-describe('prompt personalization Sprint 8', () => {
-  it('includes progress analytics and adaptive formatting in system prompt', () => {
-    const prompt = buildSystemPrompt(createSessionContext(), []);
-
-    assert.match(prompt, /تقدم الأقسام/);
-    assert.match(prompt, /أداء التقييمات/);
-    assert.match(prompt, /فجوات تعلم محتملة/);
-    assert.match(prompt, /تفضيلات التعلم المستنتجة/);
-    assert.match(prompt, /أمثلة عملية/);
   });
 });

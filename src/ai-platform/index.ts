@@ -11,7 +11,6 @@ export const ai = {
   chat,
   chatStream,
   isEnabled: () => AIPlatformConfig.isEnabled(),
-  isRuntimeEnabled: () => AIPlatformConfig.isRuntimeEnabled(),
 };
 
 export { runAgent, streamAgent, routeSupervisorRequest };

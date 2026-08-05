@@ -32,6 +32,7 @@ export async function runOfflineEvaluation(params: {
     perSample: result.perSample,
     durationMs: result.durationMs,
     generatedAt: new Date().toISOString(),
+    usedFallback: result.usedFallback,
   };
 
   await prisma.aiEvaluationRun.create({

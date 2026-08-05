@@ -3,12 +3,7 @@ export {
 } from './course-context.service';
 export type { CourseContextServiceDeps } from './course-context.service';
 
-export {
-  buildConversationMessages,
-  buildPromptPreview,
-  buildSystemPrompt,
-  trimConversationHistory,
-} from './prompt-builder';
+export { getTutorBasePromptVersion, trimConversationHistory } from './prompt-builder';
 
 export {
   loadCourseForIndexing,
@@ -89,16 +84,6 @@ export {
 } from './learning-profile.service';
 
 export { embedChunkRecords } from './embedding-pipeline.service';
-export { retrieveRelevantContent } from './content-retriever.service';
-export type {
-  ContentRetrieverDeps,
-  RetrieveRelevantContentInput,
-} from './content-retriever.service';
-export {
-  buildNoResultsMessage,
-  isLikelyEnglish,
-  mapChunksToSources,
-} from './rag-helpers';
 export {
   buildStudentInfo,
   buildLevelAdaptiveInstructions,

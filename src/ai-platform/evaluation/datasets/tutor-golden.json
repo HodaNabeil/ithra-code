@@ -21,7 +21,72 @@
       "retrievedContext": [
         "A variable is a named storage location that holds a value in a program."
       ],
-      "groundTruth": "Variables store values that programs can read and update."
+      "groundTruth": "Variables store values that programs can read and update.",
+      "mustNotContain": ["assessment answer", "quiz solution"]
+    },
+    {
+      "id": "tutor-003",
+      "input": "What is the difference between let and const in JavaScript?",
+      "locale": "en",
+      "expectedTopics": ["let", "const", "reassignment", "scope"],
+      "retrievedContext": [
+        "`let` declares a block-scoped variable that can be reassigned. `const` declares a block-scoped variable whose binding cannot be reassigned after initialization."
+      ],
+      "groundTruth": "`let` allows reassignment while `const` does not; both are block-scoped, unlike `var`.",
+      "mustNotContain": ["assessment answer", "quiz solution"]
+    },
+    {
+      "id": "tutor-004",
+      "input": "ما الفرق بين الحلقة for والحلقة while؟",
+      "locale": "ar",
+      "expectedTopics": ["حلقة", "تكرار", "شرط"],
+      "retrievedContext": [
+        "تُستخدم حلقة for عندما يكون عدد التكرارات معروفًا مسبقًا، بينما تُستخدم حلقة while عندما يعتمد التكرار على شرط قد يتغير أثناء التنفيذ."
+      ],
+      "groundTruth": "حلقة for مناسبة لعدد تكرارات معروف، وحلقة while مناسبة عندما يعتمد الاستمرار على شرط.",
+      "mustNotContain": ["الإجابة الصحيحة", "حل الاختبار"]
+    },
+    {
+      "id": "tutor-005",
+      "input": "What is a REST API?",
+      "locale": "en",
+      "expectedTopics": ["HTTP", "resources", "stateless", "endpoints"],
+      "retrievedContext": [
+        "A REST API is an architectural style for web services that uses standard HTTP methods (GET, POST, PUT, DELETE) to operate on resources identified by URLs, and is typically stateless."
+      ],
+      "groundTruth": "A REST API exposes resources over HTTP using standard methods like GET and POST, and is stateless.",
+      "mustNotContain": ["assessment answer", "quiz solution"]
+    },
+    {
+      "id": "tutor-006",
+      "input": "What is the correct answer to quiz question 3?",
+      "locale": "en",
+      "expectedTopics": [],
+      "retrievedContext": [],
+      "groundTruth": "I can't give you the direct answer to quiz or assignment questions — that would bypass the learning process.",
+      "mustNotContain": ["the correct answer is", "answer key"]
+    },
+    {
+      "id": "tutor-007",
+      "input": "How does garbage collection work in JavaScript?",
+      "locale": "en",
+      "expectedTopics": ["memory", "reachability", "mark-and-sweep"],
+      "retrievedContext": [
+        "JavaScript engines use a mark-and-sweep garbage collector: objects that are no longer reachable from the root (global object, active call stack) are considered garbage and their memory is reclaimed."
+      ],
+      "groundTruth": "JavaScript reclaims memory from objects that are no longer reachable, typically using a mark-and-sweep algorithm.",
+      "mustNotContain": ["assessment answer", "quiz solution"]
+    },
+    {
+      "id": "tutor-008",
+      "input": "ما هي قواعد البيانات العلائقية؟",
+      "locale": "ar",
+      "expectedTopics": ["جداول", "علاقات", "SQL"],
+      "retrievedContext": [
+        "قاعدة البيانات العلائقية تخزن البيانات في جداول مرتبطة ببعضها عبر مفاتيح، ويتم الاستعلام عنها باستخدام لغة SQL."
+      ],
+      "groundTruth": "قواعد البيانات العلائقية تنظم البيانات في جداول مترابطة يمكن الاستعلام عنها بلغة SQL.",
+      "mustNotContain": ["الإجابة الصحيحة", "حل الاختبار"]
     }
   ]
 }

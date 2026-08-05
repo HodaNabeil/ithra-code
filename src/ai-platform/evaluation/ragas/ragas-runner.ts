@@ -13,13 +13,68 @@ function average(values: number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-function computeHeuristicMetrics(dataset: EvalDataset): RagasResult {
+function tokenize(text: string): Set<string> {
+  return new Set(
+    text
+      .toLowerCase()
+      .split(/[^\p{L}\p{N}]+/u)
+      .filter((token) => token.length > 1),
+  );
+}
+
+/** Fraction of `needle`'s tokens that also appear in `haystack`. */
+function overlapRatio(needle: Set<string>, haystack: Set<string>): number {
+  if (needle.size === 0) {
+    return 0;
+  }
+  let hits = 0;
+  for (const token of needle) {
+    if (haystack.has(token)) {
+      hits += 1;
+    }
+  }
+  return hits / needle.size;
+}
+
+/**
+ * Lightweight, non-LLM approximation of the four Ragas metrics using lexical
+ * token overlap between the sample's context/answer/ground-truth fields.
+ * This is a *heuristic fallback* used only when the real `ragas` Python
+ * package isn't available — it is intentionally never reported as if it were
+ * a real Ragas evaluation (see `usedFallback` on the result).
+ */
+export function computeHeuristicMetrics(dataset: EvalDataset): RagasResult {
   const perSample = dataset.samples.map((sample) => {
-    const context = sample.retrievedContext?.join(' ') ?? '';
-    const faithfulness = context.length > 0 ? 0.9 : 0.5;
-    const answerRelevancy = sample.expectedTopics?.length ? 0.88 : 0.8;
-    const contextPrecision = context.length > 20 ? 0.82 : 0.6;
-    const contextRecall = sample.groundTruth ? 0.78 : 0.7;
+    const contextText = sample.retrievedContext?.join(' ') ?? '';
+    const contextTokens = tokenize(contextText);
+    const groundTruthTokens = tokenize(sample.groundTruth ?? '');
+    const topicTokens = tokenize((sample.expectedTopics ?? []).join(' '));
+    const inputTokens = tokenize(sample.input);
+
+    // Faithfulness: how much of the (simulated) answer — approximated here by
+    // ground truth — is grounded in retrieved context tokens.
+    const faithfulness =
+      groundTruthTokens.size > 0 && contextTokens.size > 0
+        ? overlapRatio(groundTruthTokens, contextTokens)
+        : contextTokens.size > 0
+          ? 0.5
+          : 0.2;
+
+    // Answer relevancy: overlap between expected topics and the question.
+    const answerRelevancy =
+      topicTokens.size > 0 ? Math.min(1, overlapRatio(topicTokens, inputTokens) + 0.5) : 0.5;
+
+    // Context precision: fraction of context tokens relevant to the question.
+    const contextPrecision =
+      contextTokens.size > 0 ? overlapRatio(inputTokens, contextTokens) : 0.3;
+
+    // Context recall: how much of the ground truth is covered by context.
+    const contextRecall =
+      groundTruthTokens.size > 0 && contextTokens.size > 0
+        ? overlapRatio(groundTruthTokens, contextTokens)
+        : contextTokens.size > 0
+          ? 0.4
+          : 0.2;
 
     return {
       sampleId: sample.id,
@@ -45,6 +100,7 @@ function computeHeuristicMetrics(dataset: EvalDataset): RagasResult {
     perSample,
     durationMs: 0,
     passed: true,
+    usedFallback: true,
   };
 }
 
@@ -57,6 +113,10 @@ async function runPythonRagas(
   const scriptPath = join(process.cwd(), 'eval/ragas_eval.py');
 
   if (!existsSync(scriptPath)) {
+    console.warn(
+      `[ragas] eval/ragas_eval.py not found at ${scriptPath} — falling back to the ` +
+        'local heuristic evaluator. Results will NOT reflect real Ragas metrics.',
+    );
     return null;
   }
 
@@ -67,16 +127,39 @@ async function runPythonRagas(
       stdio: 'inherit',
     });
 
+    child.on('error', (error) => {
+      console.warn(
+        `[ragas] failed to spawn python3 (${error.message}) — falling back to the ` +
+          'local heuristic evaluator. Results will NOT reflect real Ragas metrics.',
+      );
+      resolve(null);
+    });
+
     child.on('close', (code) => {
       if (code !== 0 || !existsSync(outputPath)) {
+        console.warn(
+          `[ragas] eval/ragas_eval.py exited with code ${code} — falling back to the ` +
+            'local heuristic evaluator. Results will NOT reflect real Ragas metrics.',
+        );
         resolve(null);
         return;
       }
 
       try {
         const parsed = JSON.parse(readFileSync(outputPath, 'utf-8')) as RagasResult;
+        if (parsed.usedFallback) {
+          console.warn(
+            '[ragas] eval/ragas_eval.py reported it could not import the `ragas` package ' +
+              'and used its own placeholder metrics — install eval/requirements.txt for a ' +
+              'real evaluation.',
+          );
+        }
         resolve(parsed);
       } catch {
+        console.warn(
+          '[ragas] failed to parse eval/ragas_eval.py output — falling back to the local ' +
+            'heuristic evaluator. Results will NOT reflect real Ragas metrics.',
+        );
         resolve(null);
       }
     });

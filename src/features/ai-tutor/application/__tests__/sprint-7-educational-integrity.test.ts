@@ -12,10 +12,7 @@ import {
   formatSuggestionMessage,
   buildSuggestionFallback,
 } from '@/features/ai-tutor/application/services/content-suggestion.service';
-import { buildNoResultsMessage } from '@/features/ai-tutor/application/services/rag-helpers';
-import { buildSystemPrompt } from '@/features/ai-tutor/application/services/prompt-builder';
 import { EducationalContentFilter } from '@/features/ai-tutor/infrastructure/adapters/EducationalContentFilter';
-import type { TutorSessionContext } from '@/features/ai-tutor/domain/models/TutorSessionContext';
 
 const lectures = [
   {
@@ -37,55 +34,6 @@ const lectures = [
     sectionTitle: 'Styling',
   },
 ];
-
-function createSessionContext(): TutorSessionContext {
-  return {
-    courseId: 'course-1',
-    userId: 'user-1',
-    lectureId: 'lec-1',
-    course: {
-      id: 'course-1',
-      title: 'React Fundamentals',
-      slug: 'react-fundamentals',
-      description: 'Learn React',
-      level: 'BEGINNER',
-      objectives: [],
-      requirements: [],
-      knowledgeIndexed: true,
-    },
-    lecture: {
-      id: 'lec-1',
-      title: 'React Context API',
-      sectionTitle: 'State Management',
-      sectionPosition: 1,
-      position: 1,
-      isCompleted: false,
-    },
-    student: {
-      displayName: 'Test Student',
-      learningLevel: 'في بداية الدورة',
-      progressTier: 'start',
-    },
-    studentProgress: {
-      enrollmentStatus: 'ACTIVE',
-      completedLectures: 0,
-      totalLectures: 3,
-      completionPercentage: 0,
-      currentLectureCompleted: false,
-      lectureProgress: [],
-      sectionProgress: [],
-      assessmentPerformance: {
-        totalQuizzes: 0,
-        completedQuizzes: 0,
-        totalAssignments: 0,
-        completedAssignments: 0,
-        assessmentCompletionRate: 100,
-      },
-      knowledgeGaps: [],
-    },
-    lectureCatalog: lectures,
-  };
-}
 
 describe('educational integrity Sprint 7', () => {
   it('detects assessment-seeking questions in English and Arabic', () => {
@@ -152,16 +100,6 @@ describe('content suggestions Sprint 7', () => {
     assert.match(message, /React Context API/);
   });
 
-  it('enhances no-results fallback with lecture suggestions', () => {
-    const message = buildNoResultsMessage('How does context provider work?', {
-      lectures,
-      excludeLectureId: 'lec-2',
-    });
-
-    assert.match(message, /couldn't find information/i);
-    assert.match(message, /React Context API/);
-  });
-
   it('returns empty ranking when no tokens match', () => {
     const ranked = rankContentSuggestions('zzzz nonexistent topic', lectures, {
       minScore: 0.5,
@@ -207,17 +145,5 @@ describe('EducationalContentFilter Sprint 7', () => {
     );
     assert.ok(suggestions.length >= 2);
     assert.match(suggestions.join('\n'), /Review topic: Hooks/);
-  });
-});
-
-describe('prompt educational boundaries Sprint 7', () => {
-  it('includes educational integrity rules in system prompt', () => {
-    const prompt = buildSystemPrompt(createSessionContext(), [], {
-      assessmentMode: true,
-    });
-
-    assert.match(prompt, /حدود النزاهة التعليمية/);
-    assert.match(prompt, /وضع الإرشاد التقييمي/);
-    assert.match(prompt, /لا تقدّم أبداً إجابات مباشرة/);
   });
 });

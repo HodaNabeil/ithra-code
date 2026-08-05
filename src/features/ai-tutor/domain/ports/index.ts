@@ -11,9 +11,7 @@
  * import { LlmPort, EmbeddingPort } from '@/features/ai-tutor/domain/ports';
  */
 
-export * from './LlmPort';
 export * from './EmbeddingPort';
-export * from './VectorSearchPort';
 export * from './ConversationRepositoryPort';
 export * from './ContentFilterPort';
 export * from './KnowledgeChunkRepositoryPort';

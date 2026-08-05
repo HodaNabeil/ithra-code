@@ -1,5 +1,7 @@
 import type { EmbeddingPort, LlmPort, VectorSearchPort } from '../../domain/ports';
+import type { ConversationMemoryPort } from '../../domain/ports/conversation-memory.port';
 import type { MemoryStorePort } from '../../domain/ports/memory-store.port';
+import { redisConversationMemoryAdapter } from '../../memory/short-term/conversation-memory.adapter';
 import { registerAgent } from '../../agents/definitions/agent-registry';
 import {
   codeReviewerAgentDefinition,
@@ -34,6 +36,7 @@ type PlatformGlobalState = {
   llmPort?: LlmPort;
   embeddingPort?: EmbeddingPort;
   vectorSearchPort?: VectorSearchPort;
+  conversationMemoryPort?: ConversationMemoryPort;
   memoryStore?: MemoryStorePort;
   mcpClient?: McpClient;
 };
@@ -163,6 +166,17 @@ export function getVectorSearchPort(): VectorSearchPort {
   }
 
   return state.vectorSearchPort;
+}
+
+export function getConversationMemoryPort(): ConversationMemoryPort {
+  assertPlatformEnabled();
+  const state = getState();
+
+  if (!state.conversationMemoryPort) {
+    state.conversationMemoryPort = redisConversationMemoryAdapter;
+  }
+
+  return state.conversationMemoryPort;
 }
 
 export function getMemoryStorePort(): MemoryStorePort {

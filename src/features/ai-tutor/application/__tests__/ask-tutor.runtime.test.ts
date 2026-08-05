@@ -22,11 +22,11 @@ describe('ask tutor — platform runtime integration', () => {
     assert.equal(error.code, AskTutorErrorCodes.RATE_LIMIT_EXCEEDED);
   });
 
-  it('maps runtime disabled errors to service unavailable', () => {
+  it('maps AI disabled platform errors to service unavailable', () => {
     const error = mapPlatformErrorToAskTutorError({
       type: 'error',
-      code: PlatformErrorCodes.NOT_IMPLEMENTED,
-      message: 'runtime disabled',
+      code: PlatformErrorCodes.AI_DISABLED,
+      message: 'AI Platform is disabled',
     });
 
     assert.equal(error.status, 503);
@@ -44,7 +44,7 @@ describe('ask tutor — platform runtime integration', () => {
     assert.equal(error.code, AskTutorErrorCodes.CONCURRENT_STREAM_LIMIT);
   });
 
-  it('accepts tutor-v1 metadata payload used by ask-tutor use case', () => {
+  it('accepts tutor-v1 metadata payload used by ask-tutor use case (history + personalization only)', () => {
     const built = buildAgentContext(tutorAgentDefinition, {
       userId: 'student-1',
       input: 'اشرح المتغيرات',
@@ -57,11 +57,13 @@ describe('ask tutor — platform runtime integration', () => {
         conversationId: 'conversation-1',
       },
       options: {
-        maxTokens: 1500,
+        maxTokens: 402,
         metadata: {
-          systemPrompt: 'system',
           conversationHistory: [{ role: 'user', content: 'مرحبا' }],
-          retrievedChunks: [{ id: 'c1', content: 'chunk', score: 0.8 }],
+          personalization: {
+            studentName: 'أحمد',
+            courseTitle: 'أساسيات البرمجة',
+          },
           promptVersion: 'tutor-v1',
         },
       },
@@ -71,5 +73,8 @@ describe('ask tutor — platform runtime integration', () => {
     const state = built.initialState as TutorAgentState;
     assert.equal(state.input, 'اشرح المتغيرات');
     assert.equal(state.conversationHistory[0]?.content, 'مرحبا');
+    assert.equal(state.personalization?.studentName, 'أحمد');
+    // RAG is fetched by retrieve-context.node.ts using the graph's ports, not from metadata.
+    assert.equal(state.retrievedChunks.length, 0);
   });
 });

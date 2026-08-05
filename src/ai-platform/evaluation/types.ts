@@ -41,6 +41,14 @@ export type RagasResult = {
   perSample: RagasSampleResult[];
   durationMs: number;
   passed: boolean;
+  /**
+   * True when real Ragas (via `eval/ragas_eval.py`) could not run — e.g. the
+   * `ragas` Python package isn't installed — and metrics were instead
+   * computed by the local lexical-overlap heuristic. Threshold checks still
+   * apply, but a fallback result should never be silently treated as a real
+   * Ragas evaluation in CI.
+   */
+  usedFallback: boolean;
 };
 
 export type EvalReport = {
@@ -52,4 +60,5 @@ export type EvalReport = {
   perSample: RagasSampleResult[];
   durationMs: number;
   generatedAt: string;
+  usedFallback: boolean;
 };

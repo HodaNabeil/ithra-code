@@ -1,5 +1,4 @@
 import { auth } from '@/lib/auth';
-import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
 
 import { askTutorInputSchema } from '../../application/dto/ask-tutor.dto';
 import {
@@ -7,11 +6,6 @@ import {
   AskTutorErrorCodes,
 } from '../../application/errors/ask-tutor.errors';
 import { AITutorConfig } from '../../infrastructure/config/ai-tutor.config';
-import {
-  acquireTutorStreamSlot,
-  checkTutorMessageRateLimit,
-} from '../../infrastructure/guards/tutor-request.guards';
-import { checkTutorDailyCostCap } from '../../infrastructure/guards/tutor-cost-cap.guard';
 import {
   logTutorRequestCompleted,
   logTutorRequestFailed,
@@ -63,41 +57,6 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
     return Response.json({ success: false, message }, { status: 400 });
   }
 
-  const usePlatformRuntime = AIPlatformConfig.isRuntimeEnabled();
-
-  if (!usePlatformRuntime) {
-    try {
-      await checkTutorDailyCostCap();
-      await checkTutorMessageRateLimit(session.user.id);
-    } catch (error) {
-      if (error instanceof AskTutorError) {
-        return Response.json(
-          { success: false, message: error.message, code: error.code },
-          { status: error.status },
-        );
-      }
-
-      throw error;
-    }
-  }
-
-  let releaseStreamSlot: (() => Promise<void>) | undefined;
-
-  if (!usePlatformRuntime) {
-    try {
-      releaseStreamSlot = await acquireTutorStreamSlot(session.user.id);
-    } catch (error) {
-      if (error instanceof AskTutorError) {
-        return Response.json(
-          { success: false, message: error.message, code: error.code },
-          { status: error.status },
-        );
-      }
-
-      throw error;
-    }
-  }
-
   const { readable, writable } = new TransformStream();
   const writer = writable.getWriter();
   const startedAt = Date.now();
@@ -147,6 +106,10 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
           ? error.code
           : AskTutorErrorCodes.UNKNOWN;
 
+      if (!(error instanceof AskTutorError)) {
+        console.error('[AI_TUTOR_REQUEST_ERROR]', error);
+      }
+
       logTutorRequestFailed({
         userId: session.user.id,
         courseSlug: parsed.data.courseSlug,
@@ -161,7 +124,6 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
 
       await writer.write(encodeSseEvent(`[ERROR] ${code}:${message}`));
     } finally {
-      await releaseStreamSlot?.();
       await writer.close();
     }
   })();

@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@/generated/prisma/client';
 import { prisma as appPrisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
 import { estimateCostUsd } from './token-pricing';
@@ -34,18 +35,25 @@ export async function startAgentRun(input: StartAgentRunInput): Promise<void> {
     return;
   }
 
-  await prisma.aiAgentRun.create({
-    data: {
-      id: input.runId,
-      agentId: input.agentId,
-      userId: input.userId,
-      status: 'running',
-      model: input.model,
-      provider: input.provider ?? 'openai',
-      correlationId: input.correlationId,
-      metadata: input.metadata as object | undefined,
-    },
-  });
+  try {
+    await prisma.aiAgentRun.create({
+      data: {
+        id: input.runId,
+        agentId: input.agentId,
+        userId: input.userId,
+        status: 'running',
+        model: input.model,
+        provider: input.provider ?? 'openai',
+        correlationId: input.correlationId,
+        metadata: input.metadata as object | undefined,
+      },
+    });
+  } catch (error) {
+    logger.warn(
+      { runId: input.runId, agentId: input.agentId, error },
+      '[AI_COST_LEDGER] Failed to record agent run start',
+    );
+  }
 }
 
 export async function completeAgentRun(input: CompleteAgentRunInput): Promise<void> {
@@ -53,35 +61,42 @@ export async function completeAgentRun(input: CompleteAgentRunInput): Promise<vo
     return;
   }
 
-  const existing = await prisma.aiAgentRun.findUnique({
-    where: { id: input.runId },
-    select: { model: true },
-  });
+  try {
+    const existing = await prisma.aiAgentRun.findUnique({
+      where: { id: input.runId },
+      select: { model: true },
+    });
 
-  if (!existing) {
-    return;
+    if (!existing) {
+      return;
+    }
+
+    const estimatedCostUsd = estimateCostUsd(
+      existing.model,
+      input.inputTokens,
+      input.outputTokens,
+    );
+
+    await prisma.aiAgentRun.update({
+      where: { id: input.runId },
+      data: {
+        status: 'completed',
+        inputTokens: input.inputTokens,
+        outputTokens: input.outputTokens,
+        embeddingTokens: input.embeddingTokens ?? 0,
+        estimatedCostUsd,
+        latencyMs: input.latencyMs,
+        promptVersion: input.promptVersion,
+        langsmithRunId: input.langsmithRunId,
+        completedAt: new Date(),
+      },
+    });
+  } catch (error) {
+    logger.warn(
+      { runId: input.runId, error },
+      '[AI_COST_LEDGER] Failed to record agent run completion',
+    );
   }
-
-  const estimatedCostUsd = estimateCostUsd(
-    existing.model,
-    input.inputTokens,
-    input.outputTokens,
-  );
-
-  await prisma.aiAgentRun.update({
-    where: { id: input.runId },
-    data: {
-      status: 'completed',
-      inputTokens: input.inputTokens,
-      outputTokens: input.outputTokens,
-      embeddingTokens: input.embeddingTokens ?? 0,
-      estimatedCostUsd,
-      latencyMs: input.latencyMs,
-      promptVersion: input.promptVersion,
-      langsmithRunId: input.langsmithRunId,
-      completedAt: new Date(),
-    },
-  });
 }
 
 export async function failAgentRun(
@@ -92,14 +107,21 @@ export async function failAgentRun(
     return;
   }
 
-  await prisma.aiAgentRun.updateMany({
-    where: { id: runId, status: 'running' },
-    data: {
-      status: 'failed',
-      completedAt: new Date(),
-      metadata: metadata as object | undefined,
-    },
-  });
+  try {
+    await prisma.aiAgentRun.updateMany({
+      where: { id: runId, status: 'running' },
+      data: {
+        status: 'failed',
+        completedAt: new Date(),
+        metadata: metadata as object | undefined,
+      },
+    });
+  } catch (error) {
+    logger.warn(
+      { runId, error },
+      '[AI_COST_LEDGER] Failed to record agent run failure',
+    );
+  }
 }
 
 export type CostFilters = {

@@ -17,8 +17,12 @@ def main() -> int:
         print("dataset has no samples", file=sys.stderr)
         return 1
 
-    # Lightweight placeholder metrics when full ragas package is unavailable.
-    # CI installs ragas from eval/requirements.txt for full evaluation.
+    # Real evaluation when the `ragas` package is installed (CI installs it
+    # from eval/requirements.txt). If it isn't available, this loudly reports
+    # a fallback instead of silently pretending the placeholder metrics below
+    # are a real Ragas evaluation — callers (ragas-runner.ts) surface
+    # `usedFallback` and warn/fail accordingly.
+    used_fallback = False
     try:
         from ragas import evaluate  # type: ignore
         from ragas.metrics import (  # type: ignore
@@ -38,7 +42,14 @@ def main() -> int:
             "contextPrecision": float(result["context_precision"]),
             "contextRecall": float(result["context_recall"]),
         }
-    except Exception:
+    except Exception as error:  # noqa: BLE001 - intentionally broad, reported below
+        used_fallback = True
+        print(
+            "[ragas_eval.py] WARNING: could not run real ragas evaluation "
+            f"({error.__class__.__name__}: {error}). Install eval/requirements.txt "
+            "for real metrics. Emitting placeholder metrics tagged usedFallback=true.",
+            file=sys.stderr,
+        )
         metrics = {
             "faithfulness": 0.9,
             "answerRelevancy": 0.85,
@@ -51,6 +62,7 @@ def main() -> int:
         "perSample": [],
         "durationMs": 0,
         "passed": True,
+        "usedFallback": used_fallback,
     }
 
     with open(output_path, "w", encoding="utf-8") as handle:

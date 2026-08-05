@@ -23,3 +23,5 @@ export type {
   VectorSearchOptions,
 } from './vector-search.port';
 export { VectorSearchError, VectorSearchErrorCodes } from './vector-search.port';
+
+export type { ConversationMemoryPort } from './conversation-memory.port';

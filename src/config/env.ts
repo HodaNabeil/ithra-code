@@ -226,7 +226,7 @@ export const env = createEnv({
     AI_PLATFORM_ENABLED: z
       .enum(['true', 'false'])
       .default('false')
-      .describe('Enable AI Platform module'),
+      .describe('Enable AI Platform module (required when AI_TUTOR_ENABLED=true)'),
     AI_PLATFORM_LLM_MODEL: z
       .string()
       .optional()
@@ -267,10 +267,6 @@ export const env = createEnv({
       .string()
       .optional()
       .describe('Per-user AI message rate limit per day'),
-    AI_PLATFORM_RUNTIME_ENABLED: z
-      .enum(['true', 'false'])
-      .default('false')
-      .describe('Enable LangGraph agent runtime (Phase 2)'),
     ANTHROPIC_API_KEY: z
       .string()
       .optional()
@@ -472,7 +468,6 @@ export const env = createEnv({
     AI_PLATFORM_RATE_LIMIT_PER_MINUTE: process.env.AI_PLATFORM_RATE_LIMIT_PER_MINUTE,
     AI_PLATFORM_RATE_LIMIT_PER_HOUR: process.env.AI_PLATFORM_RATE_LIMIT_PER_HOUR,
     AI_PLATFORM_RATE_LIMIT_PER_DAY: process.env.AI_PLATFORM_RATE_LIMIT_PER_DAY,
-    AI_PLATFORM_RUNTIME_ENABLED: process.env.AI_PLATFORM_RUNTIME_ENABLED,
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
     GOOGLE_AI_API_KEY: process.env.GOOGLE_AI_API_KEY,
     AI_PLATFORM_MCP_SERVERS: process.env.AI_PLATFORM_MCP_SERVERS,

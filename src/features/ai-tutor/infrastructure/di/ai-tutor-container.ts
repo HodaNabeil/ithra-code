@@ -1,14 +1,5 @@
 import { AITutorConfig, validateAITutorConfig } from '../config/ai-tutor.config';
-import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
-import {
-  getEmbeddingPort as getPlatformEmbeddingPort,
-  getLlmPort as getPlatformLlmPort,
-  getVectorSearchPort as getPlatformVectorSearchPort,
-} from '@/ai-platform/infrastructure/di/ai-platform.container';
-import { OpenAILlmAdapter } from '../adapters/OpenAILlmAdapter';
-import { ResilientLlmAdapter } from '../adapters/ResilientLlmAdapter';
-import { OpenAIEmbeddingAdapter } from '../adapters/OpenAIEmbeddingAdapter';
-import { postgresVectorSearchAdapter } from '@/ai-platform/rag/retrieval/postgres-vector-search.adapter';
+import { getEmbeddingPort as getPlatformEmbeddingPort } from '@/ai-platform/infrastructure/di/ai-platform.container';
 import {
   EducationalContentFilter,
   educationalContentFilter,
@@ -19,9 +10,7 @@ import { prismaKnowledgeSourceHashRepository } from '../repositories/PrismaKnowl
 import { prismaCourseContextRepository } from '../repositories/PrismaCourseContextRepository';
 import { prismaStudentLearningProfileRepository } from '../repositories/PrismaStudentLearningProfileRepository';
 import { prismaCourseContentRepository } from '../repositories/PrismaCourseContentRepository';
-import type { LlmPort } from '../../domain/ports/LlmPort';
 import type { EmbeddingPort } from '../../domain/ports/EmbeddingPort';
-import type { VectorSearchPort } from '../../domain/ports/VectorSearchPort';
 import type { ConversationRepositoryPort } from '../../domain/ports/ConversationRepositoryPort';
 import type { ContentFilterPort } from '../../domain/ports/ContentFilterPort';
 import type { KnowledgeChunkRepositoryPort } from '../../domain/ports/KnowledgeChunkRepositoryPort';
@@ -46,9 +35,6 @@ import type { CourseContextServiceDeps } from '../../application/services/course
 import { redisSessionContextCache } from '../cache/redis-session-context.cache';
 
 type AITutorGlobalState = {
-  llmPort?: LlmPort;
-  embeddingPort?: EmbeddingPort;
-  vectorSearchPort?: VectorSearchPort;
   contentFilter?: ContentFilterPort;
 };
 
@@ -71,62 +57,9 @@ export function assertAITutorEnabled(): void {
   validateAITutorConfig();
 }
 
-export function getLlmPort(): LlmPort {
-  assertAITutorEnabled();
-
-  if (AIPlatformConfig.isEnabled()) {
-    return getPlatformLlmPort();
-  }
-
-  const state = getState();
-
-  if (!state.llmPort) {
-    const llmConfig = AITutorConfig.getLlmConfig();
-    state.llmPort = new ResilientLlmAdapter(
-      new OpenAILlmAdapter(AITutorConfig.getLlmApiKey(), {
-        baseURL: llmConfig.baseURL,
-        model: llmConfig.model,
-      }),
-    );
-  }
-
-  return state.llmPort;
-}
-
 export function getEmbeddingPort(): EmbeddingPort {
   assertAITutorEnabled();
-
-  if (AIPlatformConfig.isEnabled()) {
-    return getPlatformEmbeddingPort();
-  }
-
-  const state = getState();
-
-  if (!state.embeddingPort) {
-    const embeddingConfig = AITutorConfig.getEmbeddingConfig();
-    state.embeddingPort = new OpenAIEmbeddingAdapter(AITutorConfig.getLlmApiKey(), {
-      baseURL: embeddingConfig.baseURL,
-      model: embeddingConfig.model,
-    });
-  }
-
-  return state.embeddingPort;
-}
-
-export function getVectorSearchPort(): VectorSearchPort {
-  assertAITutorEnabled();
-
-  if (AIPlatformConfig.isEnabled()) {
-    return getPlatformVectorSearchPort();
-  }
-
-  const state = getState();
-
-  if (!state.vectorSearchPort) {
-    state.vectorSearchPort = postgresVectorSearchAdapter;
-  }
-
-  return state.vectorSearchPort;
+  return getPlatformEmbeddingPort();
 }
 
 export function getContentFilter(): ContentFilterPort {
@@ -186,12 +119,8 @@ export function getSessionContextDeps(): CourseContextServiceDeps {
 export function getAskTutorUseCaseDeps(): AskTutorUseCaseDeps {
   return {
     ...getSessionContextDeps(),
-    llmPort: getLlmPort(),
     conversationRepository: getConversationRepository(),
-    embeddingPort: getEmbeddingPort(),
-    vectorSearchPort: getVectorSearchPort(),
     contentFilter: getContentFilter(),
-    vectorSearchConfig: AITutorConfig.getVectorSearchConfig(),
   };
 }
 

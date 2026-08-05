@@ -1,5 +1,7 @@
 import type { LangGraphRunnableConfig } from '@langchain/langgraph';
+import { z } from 'zod';
 
+import { buildTutorSystemPrompt } from '../../prompts/tutor-system-prompt.builder';
 import { listTools } from '../../tools/registry/tool-registry';
 import type { TutorAgentState } from '../state/tutor-agent.state';
 import { getGraphRuntimeConfig } from '../runtime-config';
@@ -24,16 +26,26 @@ function buildMessages(state: TutorAgentState) {
   return messages;
 }
 
+/**
+ * Converts each registered tool's real Zod input schema into JSON Schema so
+ * the LLM receives accurate parameter definitions instead of an opaque
+ * `{ properties: {} }` placeholder.
+ */
 function toLlmTools(allowedTools: string[]) {
-  return listTools(allowedTools).map((tool) => ({
-    name: tool.id,
-    description: tool.description,
-    parameters: {
-      type: 'object',
-      properties: {},
-      additionalProperties: true,
-    },
-  }));
+  return listTools(allowedTools).map((tool) => {
+    let parameters: Record<string, unknown>;
+    try {
+      parameters = z.toJSONSchema(tool.inputSchema) as Record<string, unknown>;
+    } catch {
+      parameters = { type: 'object', properties: {}, additionalProperties: true };
+    }
+
+    return {
+      name: tool.id,
+      description: tool.description,
+      parameters,
+    };
+  });
 }
 
 export async function generateResponseNode(
@@ -42,16 +54,27 @@ export async function generateResponseNode(
 ): Promise<Partial<TutorAgentState>> {
   const runtime = getGraphRuntimeConfig(config);
   const messages = buildMessages(state);
+  const systemPrompt = buildTutorSystemPrompt({
+    locale: state.locale,
+    basePrompt: state.systemPrompt,
+    retrievedChunks: state.retrievedChunks,
+    personalization: state.personalization,
+  });
   const inputTokens = estimateTokens(
-    `${state.systemPrompt}\n${messages.map((message) => message.content).join('\n')}`,
+    `${systemPrompt}\n${messages.map((message) => message.content).join('\n')}`,
   );
 
   const allowedTools = runtime.allowedTools ?? [];
-  const useTools = allowedTools.length > 0 && runtime.llmPort.complete;
+  // SSE tutor runs stream tokens to the client — use streamAnswer there.
+  // Tool calling via complete() is only for non-streaming agent runs.
+  const useToolComplete =
+    !runtime.onToken &&
+    allowedTools.length > 0 &&
+    Boolean(runtime.llmPort.complete);
 
-  if (useTools && runtime.llmPort.complete) {
+  if (useToolComplete && runtime.llmPort.complete) {
     const response = await runtime.llmPort.complete({
-      systemPrompt: state.systemPrompt,
+      systemPrompt,
       messages,
       temperature: runtime.temperature,
       maxTokens: runtime.maxTokens,
@@ -82,7 +105,7 @@ export async function generateResponseNode(
   let finalResponse = '';
 
   for await (const token of runtime.llmPort.streamAnswer({
-    systemPrompt: state.systemPrompt,
+    systemPrompt,
     messages,
     temperature: runtime.temperature,
     maxTokens: runtime.maxTokens,

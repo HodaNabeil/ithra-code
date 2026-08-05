@@ -6,8 +6,14 @@ import type {
 } from '../../agents/base/agent-definition';
 import { getAgentDefinition } from '../../agents/definitions/agent-registry';
 import type { AgentGraphState } from '../../graph/compiler/graph-compiler';
-import { getLlmPort } from '../../infrastructure/di/ai-platform.container';
-import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
+import type { RetrievedChunkState } from '../../graph/state/tutor-agent.state';
+import {
+  assertPlatformEnabled,
+  getConversationMemoryPort,
+  getEmbeddingPort,
+  getLlmPort,
+  getVectorSearchPort,
+} from '../../infrastructure/di/ai-platform.container';
 import {
   completeAgentRun,
   failAgentRun,
@@ -33,19 +39,7 @@ import { withSpan } from '../../observability/opentelemetry/span-helpers';
 import { platformMetrics } from '../../observability/metrics/platform-metrics';
 
 function assertRuntimeReady(): void {
-  if (!AIPlatformConfig.isEnabled()) {
-    throw new PlatformError(
-      PlatformErrorCodes.AI_DISABLED,
-      'AI Platform is disabled. Set AI_PLATFORM_ENABLED=true.',
-    );
-  }
-
-  if (!AIPlatformConfig.isRuntimeEnabled()) {
-    throw new PlatformError(
-      PlatformErrorCodes.NOT_IMPLEMENTED,
-      'Agent runtime is disabled. Set AI_PLATFORM_RUNTIME_ENABLED=true.',
-    );
-  }
+  assertPlatformEnabled();
 }
 
 function parseRequest(request: AgentRunRequest): AgentRunRequest {
@@ -72,6 +66,28 @@ function createExecutionContext(
     request,
     startedAt: Date.now(),
   };
+}
+
+function getRagPorts(agent: RuntimeExecutionContext['agent']): {
+  embeddingPort?: ReturnType<typeof getEmbeddingPort>;
+  vectorSearchPort?: ReturnType<typeof getVectorSearchPort>;
+} {
+  if (!agent.capabilities.includes('RAG')) {
+    return {};
+  }
+  return {
+    embeddingPort: getEmbeddingPort(),
+    vectorSearchPort: getVectorSearchPort(),
+  };
+}
+
+function getConversationMemory(
+  agent: RuntimeExecutionContext['agent'],
+): { conversationMemoryPort?: ReturnType<typeof getConversationMemoryPort> } {
+  if (agent.memoryScope !== 'CONVERSATION') {
+    return {};
+  }
+  return { conversationMemoryPort: getConversationMemoryPort() };
 }
 
 function extractRunOutput(finalState: AgentGraphState): {
@@ -152,8 +168,12 @@ export async function executeAgentRun(
           runId: context.runId,
           state: built.initialState,
           llmPort: getLlmPort(),
+          ...getRagPorts(context.agent),
+          ...getConversationMemory(context.agent),
           allowedTools: context.agent.allowedTools,
           courseId: parsed.scope.courseId,
+          lectureId: parsed.scope.lectureId,
+          threadId: parsed.scope.threadId,
           maxTokens: parsed.options?.maxTokens ?? resolved.maxTokens,
           temperature: resolved.temperature,
           signal: parsed.options?.signal,
@@ -252,7 +272,11 @@ export async function* executeAgentStream(
 
   yield { type: 'meta', runId: context.runId };
 
-  const pendingTokens: string[] = [];
+  type PendingEvent =
+    | { kind: 'token'; text: string }
+    | { kind: 'retrieval'; chunks: RetrievedChunkState[]; usedFallback: boolean };
+
+  const pendingEvents: PendingEvent[] = [];
   let notifyToken: (() => void) | null = null;
   let graphDone = false;
   let graphError: unknown = null;
@@ -282,8 +306,12 @@ export async function* executeAgentStream(
     runId: context.runId,
     state: built.initialState,
     llmPort: getLlmPort(),
+    ...getRagPorts(context.agent),
+    ...getConversationMemory(context.agent),
     allowedTools: context.agent.allowedTools,
     courseId: parsed.scope.courseId,
+    lectureId: parsed.scope.lectureId,
+    threadId: parsed.scope.threadId,
     maxTokens: parsed.options?.maxTokens ?? resolved.maxTokens,
     temperature: resolved.temperature,
     signal: parsed.options?.signal,
@@ -295,7 +323,11 @@ export async function* executeAgentStream(
       promptVersion: built.promptVersion,
     },
     onToken: async (token) => {
-      pendingTokens.push(token);
+      pendingEvents.push({ kind: 'token', text: token });
+      notifyToken?.();
+    },
+    onRetrieval: async (chunks, usedFallback) => {
+      pendingEvents.push({ kind: 'retrieval', chunks, usedFallback });
       notifyToken?.();
     },
   })
@@ -311,8 +343,10 @@ export async function* executeAgentStream(
     });
 
   try {
-    while (!graphDone || pendingTokens.length > 0) {
-      if (pendingTokens.length === 0) {
+    let streamedTokenCount = 0;
+
+    while (!graphDone || pendingEvents.length > 0) {
+      if (pendingEvents.length === 0) {
         if (graphDone) {
           break;
         }
@@ -320,9 +354,25 @@ export async function* executeAgentStream(
         continue;
       }
 
-      const token = pendingTokens.shift();
-      if (token) {
-        yield { type: 'token', text: token };
+      const event = pendingEvents.shift();
+      if (!event) {
+        continue;
+      }
+      if (event.kind === 'token') {
+        streamedTokenCount += 1;
+        yield { type: 'token', text: event.text };
+      } else {
+        yield {
+          type: 'meta',
+          runId: context.runId,
+          sources: event.chunks.map((chunk) => ({
+            id: chunk.id,
+            content: chunk.content,
+            score: chunk.score,
+            metadata: chunk.metadata,
+          })),
+          usedFallback: event.usedFallback,
+        };
       }
     }
 
@@ -330,6 +380,11 @@ export async function* executeAgentStream(
 
     if (graphError) {
       throw graphError;
+    }
+
+    const finalResponse = graphResult.finalState?.finalResponse?.trim();
+    if (finalResponse && streamedTokenCount === 0) {
+      yield { type: 'token', text: finalResponse };
     }
 
     const durationMs = Date.now() - context.startedAt;

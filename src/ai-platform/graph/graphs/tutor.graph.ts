@@ -2,6 +2,9 @@ import { END, START, StateGraph } from '@langchain/langgraph';
 
 import { wrapGraphNode } from '../../observability/opentelemetry/span-helpers';
 import { generateResponseNode } from '../nodes/generate-response.node';
+import { integrityCheckNode, routeAfterIntegrityCheck } from '../nodes/integrity-check.node';
+import { loadHistoryNode } from '../nodes/load-history.node';
+import { persistTurnNode } from '../nodes/persist-turn.node';
 import { retrieveContextNode } from '../nodes/retrieve-context.node';
 import { sanitizeInputNode } from '../nodes/sanitize-input.node';
 import { toolCallNode } from '../nodes/tool-call.node';
@@ -27,19 +30,28 @@ function routeAfterGenerate(state: {
 export function buildTutorGraph() {
   const graph = new StateGraph(TutorAgentStateAnnotation)
     .addNode('sanitize-input', wrapGraphNode('sanitize-input', sanitizeInputNode))
+    .addNode('load-history', wrapGraphNode('load-history', loadHistoryNode))
+    .addNode('integrity-check', wrapGraphNode('integrity-check', integrityCheckNode))
     .addNode('retrieve-context', wrapGraphNode('retrieve-context', retrieveContextNode))
     .addNode('generate-response', wrapGraphNode('generate-response', generateResponseNode))
     .addNode('tool-call', wrapGraphNode('tool-call', toolCallNode as never))
     .addNode('validate-output', wrapGraphNode('validate-output', validateOutputNode))
+    .addNode('persist-turn', wrapGraphNode('persist-turn', persistTurnNode))
     .addEdge(START, 'sanitize-input')
-    .addEdge('sanitize-input', 'retrieve-context')
+    .addEdge('sanitize-input', 'load-history')
+    .addEdge('load-history', 'integrity-check')
+    .addConditionalEdges('integrity-check', routeAfterIntegrityCheck, {
+      'retrieve-context': 'retrieve-context',
+      'validate-output': 'validate-output',
+    })
     .addEdge('retrieve-context', 'generate-response')
     .addConditionalEdges('generate-response', routeAfterGenerate, {
       'tool-call': 'tool-call',
       'validate-output': 'validate-output',
     })
     .addEdge('tool-call', 'generate-response')
-    .addEdge('validate-output', END);
+    .addEdge('validate-output', 'persist-turn')
+    .addEdge('persist-turn', END);
 
   return graph;
 }

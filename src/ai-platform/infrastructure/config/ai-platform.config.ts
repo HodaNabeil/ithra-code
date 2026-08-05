@@ -8,10 +8,6 @@ export class AIPlatformConfig {
     return env.AI_PLATFORM_ENABLED === 'true';
   }
 
-  static isRuntimeEnabled(): boolean {
-    return this.isEnabled() && env.AI_PLATFORM_RUNTIME_ENABLED === 'true';
-  }
-
   static getLlmApiKey(): string {
     if (!this.isEnabled()) {
       throw new Error('AI Platform is disabled');

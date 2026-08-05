@@ -5,6 +5,7 @@ import { logger } from '@/lib/logger';
 import { redis } from '@/lib/redis';
 
 import { AITutorConfig, validateAITutorConfig } from '../config/ai-tutor.config';
+import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
 import { COURSE_INDEXING_QUEUE } from '../queue/course-indexing.constants';
 
 export type IndexingInfrastructureCheckStatus = 'ok' | 'error' | 'skipped';
@@ -141,8 +142,8 @@ export async function validateIndexingInfrastructure(): Promise<IndexingInfrastr
     );
   }
 
-  const embeddingConfig = AITutorConfig.getEmbeddingConfig();
-  const llmConfig = AITutorConfig.getLlmConfig();
+  const embeddingConfig = AIPlatformConfig.getEmbeddingConfig();
+  const llmConfig = AIPlatformConfig.getLlmConfig();
 
   logger.info(
     {

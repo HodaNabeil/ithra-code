@@ -3,56 +3,38 @@ import {
   buildTutorSessionContext,
   type CourseContextServiceDeps,
 } from '../services/course-context.service';
-import { retrieveRelevantContent } from '../services/content-retriever.service';
+import { getTutorBasePromptVersion } from '../services/prompt-builder';
 import {
-  buildConversationMessages,
-  buildPromptPreview,
-  buildSystemPrompt,
-  getTutorBasePromptVersion,
-} from '../services/prompt-builder';
-import {
-  buildNoResultsMessage,
-  mapChunksToSources,
-} from '../services/rag-helpers';
-import {
-  buildGuidedLearningResponse,
   detectAssessmentIntent,
 } from '../services/educational-integrity.service';
-import { detectSessionMetaIntent } from '../services/student-info.service';
+import {
+  detectSessionMetaIntent,
+  type SessionMetaIntent,
+} from '../services/student-info.service';
 import {
   buildSuggestionFallback,
   formatSuggestionMessage,
 } from '../services/content-suggestion.service';
 import { updateLearningProfileFromInteraction } from '../services/learning-profile.service';
 import { AskTutorError, AskTutorErrorCodes } from '../errors/ask-tutor.errors';
-import type { ConversationRepositoryPort } from '../../domain/ports/ConversationRepositoryPort';
+import type {
+  ConversationRepositoryPort,
+  MessageDTO,
+} from '../../domain/ports/ConversationRepositoryPort';
 import { ConversationRepositoryError } from '../../domain/ports/ConversationRepositoryPort';
-import { LlmError, type LlmPort } from '../../domain/ports/LlmPort';
-import type { EmbeddingPort } from '../../domain/ports/EmbeddingPort';
-import type { VectorSearchPort } from '../../domain/ports/VectorSearchPort';
-import { VectorSearchError } from '../../domain/ports/VectorSearchPort';
 import type { ContentFilterPort } from '../../domain/ports/ContentFilterPort';
-import type { VectorSearchConfig } from '../services/content-retriever.service';
+import { ContentFilterError } from '../../domain/ports/ContentFilterPort';
 import type { MessageSourceDTO } from '../dto/message-source.dto';
-import type { RetrievedContentChunk } from '../dto/retrieved-content.dto';
 import { AI_TUTOR_CONSTANTS } from '../../shared';
-import { env } from '@/config/env';
-import { streamAgent } from '@/ai-platform';
-import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
-import type { RetrievedChunkState } from '@/ai-platform/graph/state/tutor-agent.state';
+import { streamAgent, type RetrievedSource } from '@/ai-platform';
+import type { TutorPersonalizationContext } from '@/ai-platform/graph/state/tutor-agent.state';
 import { PlatformError } from '@/ai-platform/shared/errors';
-import { checkTutorDailyCostCap } from '../../infrastructure/guards/tutor-cost-cap.guard';
-import { checkTutorMessageRateLimit } from '../../infrastructure/guards/tutor-request.guards';
 import { mapPlatformErrorToAskTutorError } from '../../infrastructure/guards/platform-error.mapper';
 import type { TutorSessionContext } from '../../domain/models/TutorSessionContext';
 
 export type AskTutorUseCaseDeps = CourseContextServiceDeps & {
-  llmPort: LlmPort;
   conversationRepository: ConversationRepositoryPort;
-  embeddingPort: EmbeddingPort;
-  vectorSearchPort: VectorSearchPort;
   contentFilter: ContentFilterPort;
-  vectorSearchConfig?: VectorSearchConfig;
 };
 
 export type AskTutorRequestOutcome = {
@@ -63,7 +45,7 @@ export type AskTutorRequestOutcome = {
 };
 
 function encodeStreamMeta(meta: {
-  sources: ReturnType<typeof mapChunksToSources>;
+  sources: MessageSourceDTO[];
   usedFallback: boolean;
   educationalFilterApplied?: boolean;
 }): string {
@@ -101,40 +83,77 @@ async function persistCompletedTurn(
   });
 }
 
-async function runRuntimeEarlyExitGuards(userId: string): Promise<void> {
-  await checkTutorMessageRateLimit(userId);
-  await checkTutorDailyCostCap();
+/**
+ * Maps the feature-owned session context into the plain personalization
+ * facts ai-platform accepts. ai-platform owns rendering these facts into the
+ * final system prompt — this function must not build any prompt text itself.
+ */
+function buildPersonalizationContext(
+  sessionContext: TutorSessionContext,
+  sessionMetaIntent: SessionMetaIntent,
+): TutorPersonalizationContext {
+  return {
+    studentName: sessionContext.student.displayName,
+    learningLevel: sessionContext.student.learningLevel,
+    courseTitle: sessionContext.course.title,
+    progressPercent: sessionContext.studentProgress.completionPercentage,
+    knowledgeGaps: sessionContext.studentProgress.knowledgeGaps.map(
+      (gap) => gap.lectureTitle,
+    ),
+    sessionMetaMode: sessionMetaIntent.isSessionMeta,
+  };
 }
 
-function mapChunksToRetrievedChunkState(
-  chunks: RetrievedContentChunk[],
-): RetrievedChunkState[] {
-  return chunks.map((chunk) => ({
-    id: chunk.id,
-    content: chunk.content,
-    score: chunk.score,
-    metadata: {
-      ...chunk.metadata,
-      title: chunk.title,
-      contentType: chunk.contentType,
-      lectureId: chunk.lectureId,
-    },
-  }));
+function mapPlatformSourcesToMessageSources(
+  sources: RetrievedSource[],
+): MessageSourceDTO[] {
+  return sources.map((source) => {
+    const metadata = source.metadata ?? {};
+    const contentType = String(metadata.contentType ?? 'UNKNOWN');
+    return {
+      id: source.id,
+      title: String(metadata.title ?? 'مصدر غير معروف'),
+      source: contentType,
+      relevanceScore: source.score,
+      contentType,
+      lectureId: typeof metadata.lectureId === 'string' ? metadata.lectureId : undefined,
+    };
+  });
 }
 
+/**
+ * Streams a tutor turn via the ai-platform runtime. Retrieval and
+ * system-prompt construction happen entirely inside the tutor graph
+ * (retrieve-context.node.ts / tutor-system-prompt.builder.ts) — this
+ * function only supplies raw conversation history and personalization
+ * facts, and relays the resulting stream (including RAG source metadata)
+ * back to the caller. This is the only tutor turn path — ai-platform owns
+ * RAG, prompting, memory, and guardrails end-to-end.
+ */
 async function* streamTutorViaPlatformRuntime(input: {
   userId: string;
   question: string;
   sessionContext: TutorSessionContext;
+  sessionMetaIntent: SessionMetaIntent;
   lectureId?: string;
   threadId: string;
   conversationId: string;
-  systemPrompt: string;
-  messages: ReturnType<typeof buildConversationMessages>;
-  retrievedChunks: RetrievedContentChunk[];
-  strictMode: boolean;
-}): AsyncGenerator<string, string> {
+  history: MessageDTO[];
+  conversationRepository: ConversationRepositoryPort;
+  contentFilter: ContentFilterPort;
+  outcome: AskTutorRequestOutcome;
+}): AsyncGenerator<string, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
+  const { outcome } = input;
+  const strictMode = !input.sessionMetaIntent.isSessionMeta;
+  const personalization = buildPersonalizationContext(
+    input.sessionContext,
+    input.sessionMetaIntent,
+  );
+
+  let sources: MessageSourceDTO[] = [];
+  let rawSources: RetrievedSource[] = [];
   let assistantResponse = '';
+  let streamedTokens = false;
 
   try {
     for await (const event of streamAgent('tutor', {
@@ -151,16 +170,32 @@ async function* streamTutorViaPlatformRuntime(input: {
       options: {
         maxTokens: AI_TUTOR_CONSTANTS.MAX_RESPONSE_TOKENS,
         metadata: {
-          systemPrompt: input.systemPrompt,
-          conversationHistory: input.messages,
-          retrievedChunks: mapChunksToRetrievedChunkState(input.retrievedChunks),
+          conversationHistory: input.history.map((message) => ({
+            role: message.role,
+            content: message.content,
+          })),
+          personalization,
           promptVersion: getTutorBasePromptVersion(),
         },
       },
     })) {
+      if (event.type === 'meta' && event.sources) {
+        rawSources = event.sources;
+        sources = mapPlatformSourcesToMessageSources(event.sources);
+        outcome.retrievalChunkCount = event.sources.length;
+        outcome.usedFallback = event.usedFallback ?? false;
+
+        yield encodeStreamMeta({
+          sources,
+          usedFallback: outcome.usedFallback,
+          educationalFilterApplied: false,
+        });
+      }
+
       if (event.type === 'token') {
         assistantResponse += event.text;
-        if (!input.strictMode) {
+        streamedTokens = true;
+        if (!strictMode) {
           yield event.text;
         }
       }
@@ -169,57 +204,122 @@ async function* streamTutorViaPlatformRuntime(input: {
         throw mapPlatformErrorToAskTutorError(event);
       }
     }
+
+    let finalResponse = assistantResponse.trim();
+
+  const assessmentIntent = detectAssessmentIntent(input.question);
+  if (assessmentIntent.isAssessmentSeeking) {
+    outcome.assessmentBlocked = true;
+    outcome.usedFallback = true;
+
+    if (!streamedTokens && finalResponse) {
+      yield encodeStreamMeta({
+        sources: [],
+        usedFallback: true,
+        educationalFilterApplied: true,
+      });
+    }
+
+    finalResponse = withSuggestions(
+      finalResponse,
+      input.question,
+      input.sessionContext.lectureCatalog,
+      input.lectureId,
+    );
+  }
+
+  if (finalResponse) {
+    const validation = await input.contentFilter.validateResponse(
+      finalResponse,
+      {
+        question: input.question,
+        retrievedSources: rawSources.map((source) => ({
+          content: source.content,
+          metadata: source.metadata ?? {},
+        })),
+        courseId: input.sessionContext.courseId,
+        lectureId: input.lectureId,
+      },
+      { strictMode, courseId: input.sessionContext.courseId },
+    );
+
+    if (!validation.isValid) {
+      outcome.filterTriggered = true;
+
+      const suggestions = formatSuggestionMessage(
+        input.question,
+        buildSuggestionFallback(
+          input.question,
+          input.sessionContext.lectureCatalog,
+          { excludeLectureId: input.lectureId },
+        ).suggestions,
+      );
+
+      finalResponse =
+        validation.suggestedResponse ??
+        (await input.contentFilter.transformToGuidance(finalResponse, {
+          courseId: input.sessionContext.courseId,
+          lectureId: input.lectureId,
+          topic: input.sessionContext.lecture?.title,
+          question: input.question,
+        }));
+
+      if (suggestions) {
+        finalResponse = `${finalResponse}\n\n${suggestions}`;
+      }
+    }
+
+    if (strictMode) {
+      yield finalResponse;
+    }
+
+    await persistCompletedTurn(
+      input.conversationRepository,
+      input.threadId,
+      input.question,
+      finalResponse,
+      sources,
+    );
+  }
+
+  return {
+    threadId: input.threadId,
+    conversationId: input.conversationId,
+    sources,
+    usedFallback: outcome.usedFallback,
+    outcome,
+  };
   } catch (error) {
+    if (error instanceof AskTutorError) {
+      throw error;
+    }
+
     if (error instanceof PlatformError) {
       throw mapPlatformErrorToAskTutorError(error);
     }
+
+    if (error instanceof ContentFilterError) {
+      throw new AskTutorError(500, error.message, AskTutorErrorCodes.UNKNOWN);
+    }
+
+    if (error instanceof Error) {
+      throw new AskTutorError(
+        502,
+        error.message,
+        AskTutorErrorCodes.LLM_ERROR,
+      );
+    }
+
     throw error;
   }
-
-  return assistantResponse;
-}
-
-async function* streamTutorViaLegacyLlm(input: {
-  llmPort: LlmPort;
-  systemPrompt: string;
-  messages: ReturnType<typeof buildConversationMessages>;
-  strictMode: boolean;
-}): AsyncGenerator<string, string> {
-  const stream = input.llmPort.streamAnswer({
-    systemPrompt: input.systemPrompt,
-    messages: input.messages,
-  });
-
-  let assistantResponse = '';
-
-  if (input.strictMode) {
-    for await (const token of stream) {
-      assistantResponse += token;
-    }
-  } else {
-    for await (const token of stream) {
-      assistantResponse += token;
-      yield token;
-    }
-  }
-
-  return assistantResponse;
 }
 
 export async function* askTutorUseCase(
   input: AskTutorInputDTO & { userId: string },
   deps: AskTutorUseCaseDeps,
 ): AsyncGenerator<string, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
-  const {
-    llmPort,
-    conversationRepository,
-    embeddingPort,
-    vectorSearchPort,
-    contentFilter,
-  } = deps;
+  const { conversationRepository, contentFilter } = deps;
 
-  let conversationId = '';
-  let threadId = '';
   const outcome: AskTutorRequestOutcome = {
     usedFallback: false,
     filterTriggered: false,
@@ -246,14 +346,11 @@ export async function* askTutorUseCase(
       sessionContext.courseId,
       input.userId,
     );
-    conversationId = conversation.id;
-
     const thread = await conversationRepository.getOrCreateThread(
       conversation.id,
       topic,
       input.lectureId,
     );
-    threadId = thread.id;
 
     const history = await conversationRepository.getThreadMessages(
       thread.id,
@@ -269,260 +366,28 @@ export async function* askTutorUseCase(
       },
       deps,
     ).catch((error) => {
-      if (env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === 'development') {
         console.warn('[AI_TUTOR_PROFILE] Failed to update learning profile', error);
       }
     });
 
-    const assessmentIntent = detectAssessmentIntent(input.question);
     const sessionMetaIntent = detectSessionMetaIntent(input.question);
 
-    if (assessmentIntent.isAssessmentSeeking) {
-      if (AIPlatformConfig.isRuntimeEnabled()) {
-        await runRuntimeEarlyExitGuards(input.userId);
-      }
-
-      outcome.assessmentBlocked = true;
-      outcome.usedFallback = true;
-
-      const guided = withSuggestions(
-        buildGuidedLearningResponse(input.question),
-        input.question,
-        sessionContext.lectureCatalog,
-        input.lectureId,
-      );
-
-      yield encodeStreamMeta({
-        sources: [],
-        usedFallback: true,
-        educationalFilterApplied: true,
-      });
-      yield guided;
-
-      await persistCompletedTurn(
-        conversationRepository,
-        thread.id,
-        input.question,
-        guided,
-      );
-
-      return {
-        threadId,
-        conversationId,
-        sources: [],
-        usedFallback: true,
-        outcome,
-      };
-    }
-
-    const retrieval = await retrieveRelevantContent(
-      {
-        question: input.question,
-        courseId: sessionContext.courseId,
-        lectureId: input.lectureId,
-        lectureTitle:
-          sessionContext.lecture?.title ?? input.lectureTitle?.trim(),
-        courseTitle: sessionContext.course.title,
-        recentHistory: history.map((message) => ({
-          role: message.role,
-          content: message.content,
-        })),
-      },
-      {
-        embeddingPort,
-        vectorSearchPort,
-        vectorSearchConfig: deps.vectorSearchConfig,
-      },
-    );
-
-    outcome.retrievalChunkCount = retrieval.chunks.length;
-    outcome.usedFallback = retrieval.usedFallback;
-
-    const sources = mapChunksToSources(retrieval.chunks);
-    const streamMeta = {
-      sources,
-      usedFallback: retrieval.usedFallback,
-      educationalFilterApplied: false,
-    };
-
-    yield encodeStreamMeta(streamMeta);
-
-    if (retrieval.usedFallback && !sessionMetaIntent.isSessionMeta) {
-      if (AIPlatformConfig.isRuntimeEnabled()) {
-        await runRuntimeEarlyExitGuards(input.userId);
-      }
-
-      const fallbackMessage = buildNoResultsMessage(input.question, {
-        lectures: sessionContext.lectureCatalog,
-        excludeLectureId: input.lectureId,
-        knowledgeIndexed: sessionContext.course.knowledgeIndexed,
-      });
-
-      yield fallbackMessage;
-
-      await persistCompletedTurn(
-        conversationRepository,
-        thread.id,
-        input.question,
-        fallbackMessage,
-      );
-
-      return {
-        threadId,
-        conversationId,
-        sources: [],
-        usedFallback: true,
-        outcome,
-      };
-    }
-
-    const hasAssessmentAdjacentContent = retrieval.chunks.some((chunk) => {
-      const metadata = chunk.metadata ?? {};
-      return (
-        metadata.isAssessment === true ||
-        metadata.sensitivity === 'ASSESSMENT' ||
-        String(chunk.contentType).toUpperCase().includes('QUIZ') ||
-        String(chunk.contentType).toUpperCase().includes('ASSIGNMENT')
-      );
-    });
-
-    const promptOptions = {
-      assessmentMode: hasAssessmentAdjacentContent,
-      sessionMetaMode: sessionMetaIntent.isSessionMeta && retrieval.usedFallback,
-      currentQuestion: input.question,
-    };
-    const systemPrompt = buildSystemPrompt(
+    // RAG retrieval, guards, integrity checks, prompting, memory, and LLM
+    // execution all run inside the ai-platform tutor graph via streamAgent.
+    return yield* streamTutorViaPlatformRuntime({
+      userId: input.userId,
+      question: input.question,
       sessionContext,
-      retrieval.chunks,
-      promptOptions,
-    );
-    const messages = buildConversationMessages(
+      sessionMetaIntent,
+      lectureId: input.lectureId,
+      threadId: thread.id,
+      conversationId: conversation.id,
       history,
-      sessionContext,
-      retrieval.chunks,
-      promptOptions,
-    );
-
-    if (env.NODE_ENV === 'development') {
-      const preview = buildPromptPreview(
-        sessionContext,
-        retrieval.chunks,
-        promptOptions,
-      );
-      console.info('[AI_TUTOR_PROMPT]', {
-        courseId: sessionContext.courseId,
-        lectureId: sessionContext.lectureId,
-        estimatedSystemTokens: preview.estimatedSystemTokens,
-        historyMessages: messages.length,
-        studentName: sessionContext.student.displayName ?? 'unknown',
-        learningLevel: sessionContext.student.learningLevel,
-        completionPercentage: sessionContext.studentProgress.completionPercentage,
-        knowledgeGaps: sessionContext.studentProgress.knowledgeGaps.length,
-        learningProfile: sessionContext.learningProfile?.explanationDepth ?? 'none',
-        retrievedChunks: retrieval.chunks.length,
-        usedFallback: retrieval.usedFallback,
-        sessionMetaIntent: sessionMetaIntent.confidence,
-        topScore: retrieval.chunks[0]?.score ?? null,
-        assessmentIntent: assessmentIntent.confidence,
-      });
-    }
-
-    const strictMode = !sessionMetaIntent.isSessionMeta;
-    const usePlatformRuntime = AIPlatformConfig.isRuntimeEnabled();
-
-    const responseStream = usePlatformRuntime
-      ? streamTutorViaPlatformRuntime({
-          userId: input.userId,
-          question: input.question,
-          sessionContext,
-          lectureId: input.lectureId,
-          threadId: thread.id,
-          conversationId: conversation.id,
-          systemPrompt,
-          messages,
-          retrievedChunks: retrieval.chunks,
-          strictMode,
-        })
-      : streamTutorViaLegacyLlm({
-          llmPort,
-          systemPrompt,
-          messages,
-          strictMode,
-        });
-
-    let assistantResponse = '';
-    while (true) {
-      const { value, done } = await responseStream.next();
-      if (done) {
-        assistantResponse = value ?? '';
-        break;
-      }
-      yield value;
-    }
-
-    let finalResponse = assistantResponse.trim();
-
-    if (finalResponse) {
-      const validation = await contentFilter.validateResponse(
-        finalResponse,
-        {
-          question: input.question,
-          retrievedSources: retrieval.chunks.map((chunk) => ({
-            content: chunk.content,
-            metadata: chunk.metadata ?? {},
-          })),
-          courseId: sessionContext.courseId,
-          lectureId: input.lectureId,
-        },
-        { strictMode, courseId: sessionContext.courseId },
-      );
-
-      if (!validation.isValid) {
-        outcome.filterTriggered = true;
-
-        const suggestions = formatSuggestionMessage(
-          input.question,
-          buildSuggestionFallback(
-            input.question,
-            sessionContext.lectureCatalog,
-            { excludeLectureId: input.lectureId },
-          ).suggestions,
-        );
-
-        finalResponse =
-          validation.suggestedResponse ??
-          (await contentFilter.transformToGuidance(finalResponse, {
-            courseId: sessionContext.courseId,
-            lectureId: input.lectureId,
-            topic: sessionContext.lecture?.title,
-            question: input.question,
-          }));
-
-        if (suggestions) {
-          finalResponse = `${finalResponse}\n\n${suggestions}`;
-        }
-      }
-
-      if (strictMode) {
-        yield finalResponse;
-      }
-
-      await persistCompletedTurn(
-        conversationRepository,
-        thread.id,
-        input.question,
-        finalResponse,
-        sources,
-      );
-    }
-
-    return {
-      threadId,
-      conversationId,
-      sources,
-      usedFallback: retrieval.usedFallback,
+      conversationRepository,
+      contentFilter,
       outcome,
-    };
+    });
   } catch (error) {
     if (error instanceof AskTutorError) {
       throw error;
@@ -530,14 +395,6 @@ export async function* askTutorUseCase(
 
     if (error instanceof PlatformError) {
       throw mapPlatformErrorToAskTutorError(error);
-    }
-
-    if (error instanceof VectorSearchError) {
-      throw new AskTutorError(502, error.message, AskTutorErrorCodes.LLM_ERROR);
-    }
-
-    if (error instanceof LlmError) {
-      throw new AskTutorError(502, error.message, AskTutorErrorCodes.LLM_ERROR);
     }
 
     if (error instanceof ConversationRepositoryError) {
@@ -550,7 +407,7 @@ export async function* askTutorUseCase(
 
     throw new AskTutorError(
       500,
-      'حدث خطأ أثناء معالجة سؤالك',
+      error instanceof Error ? error.message : 'حدث خطأ أثناء معالجة سؤالك',
       AskTutorErrorCodes.UNKNOWN,
     );
   }

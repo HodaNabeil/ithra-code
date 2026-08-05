@@ -1,17 +1,12 @@
 /**
  * AI Tutor Adapters
  *
- * Implementations of port interfaces for external services.
- * Adapters handle integration with specific providers.
+ * Feature-specific adapter implementations.
  *
- * - OpenAILlmAdapter (Sprint 1)
- * - OpenAIEmbeddingAdapter (Sprint 4)
- * - PostgresVectorSearchAdapter (Sprint 5)
+ * - PostgresVectorSearchAdapter (via ai-platform)
  * - EducationalContentFilter (Sprint 7)
  */
 
-export { OpenAILlmAdapter } from './OpenAILlmAdapter';
-export { OpenAIEmbeddingAdapter } from './OpenAIEmbeddingAdapter';
 export {
   PostgresVectorSearchAdapter,
   postgresVectorSearchAdapter,

@@ -3,15 +3,22 @@ import type { AgentDefinition, AgentRunRequest } from '../../agents/base/agent-d
 import type { AgentGraphState } from '../../graph/compiler/graph-compiler';
 import type { EvaluatorAgentState } from '../../graph/state/evaluator-agent.state';
 import type {
-  RetrievedChunkState,
   TutorAgentState,
+  TutorPersonalizationContext,
 } from '../../graph/state/tutor-agent.state';
 import { resolvePromptSync } from '../../prompts/resolver';
 
+/**
+ * Metadata a caller (e.g. src/features/ai-tutor) may pass alongside a tutor
+ * run request. Note: `systemPrompt` and `retrievedChunks` are intentionally
+ * NOT accepted here — ai-platform builds the system prompt and fetches RAG
+ * context itself (see retrieve-context.node.ts / tutor-system-prompt.builder.ts).
+ * Only raw conversation history and plain personalization facts may be
+ * supplied by the feature layer.
+ */
 export interface TutorRunMetadata {
-  systemPrompt: string;
   conversationHistory: LlmMessage[];
-  retrievedChunks: RetrievedChunkState[];
+  personalization?: TutorPersonalizationContext;
   promptVersion?: string;
 }
 
@@ -81,14 +88,25 @@ function isLlmMessage(value: unknown): value is LlmMessage {
   );
 }
 
-function isRetrievedChunkState(value: unknown): value is RetrievedChunkState {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    typeof (value as RetrievedChunkState).id === 'string' &&
-    typeof (value as RetrievedChunkState).content === 'string' &&
-    typeof (value as RetrievedChunkState).score === 'number'
+function isPersonalizationContext(value: unknown): value is TutorPersonalizationContext {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  const candidate = value as Record<string, unknown>;
+
+  const stringFieldsOk = (['studentName', 'learningLevel', 'courseTitle'] as const).every(
+    (key) => candidate[key] === undefined || typeof candidate[key] === 'string',
   );
+  const progressOk =
+    candidate.progressPercent === undefined || typeof candidate.progressPercent === 'number';
+  const gapsOk =
+    candidate.knowledgeGaps === undefined ||
+    (Array.isArray(candidate.knowledgeGaps) &&
+      candidate.knowledgeGaps.every((gap) => typeof gap === 'string'));
+  const sessionMetaOk =
+    candidate.sessionMetaMode === undefined || typeof candidate.sessionMetaMode === 'boolean';
+
+  return stringFieldsOk && progressOk && gapsOk && sessionMetaOk;
 }
 
 function parseTutorRunMetadata(
@@ -99,29 +117,23 @@ function parseTutorRunMetadata(
     return null;
   }
 
-  const systemPrompt = raw.systemPrompt;
   const conversationHistory = raw.conversationHistory;
-  const retrievedChunks = raw.retrievedChunks;
-
-  if (typeof systemPrompt !== 'string') {
-    return null;
-  }
 
   if (!Array.isArray(conversationHistory) || !conversationHistory.every(isLlmMessage)) {
     return null;
   }
 
-  if (!Array.isArray(retrievedChunks) || !retrievedChunks.every(isRetrievedChunkState)) {
-    return null;
-  }
+  const personalization =
+    'personalization' in raw && isPersonalizationContext(raw.personalization)
+      ? raw.personalization
+      : undefined;
 
   const promptVersion =
     typeof raw.promptVersion === 'string' ? raw.promptVersion : undefined;
 
   return {
-    systemPrompt,
     conversationHistory,
-    retrievedChunks,
+    personalization,
     promptVersion,
   };
 }
@@ -155,10 +167,12 @@ function buildTutorState(
     userId: request.userId,
     input: request.input,
     locale,
-    systemPrompt: tutorMetadata?.systemPrompt ?? resolveSystemPrompt(agent, locale),
+    systemPrompt: resolveSystemPrompt(agent, locale),
+    personalization: tutorMetadata?.personalization,
     conversationHistory: tutorMetadata?.conversationHistory ?? [],
-    retrievedChunks: tutorMetadata?.retrievedChunks ?? [],
+    retrievedChunks: [],
     sanitizedInput: '',
+    assessmentBlocked: false,
     finalResponse: '',
     outputValid: false,
     validationErrors: [],

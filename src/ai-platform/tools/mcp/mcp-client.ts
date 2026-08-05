@@ -1,4 +1,8 @@
+import { z } from 'zod';
+
 import type { ToolDefinition } from '../types';
+import type { JsonSchema } from './json-schema-to-zod';
+import { jsonSchemaToZodObject } from './json-schema-to-zod';
 
 export interface McpServerConfig {
   id: string;
@@ -14,6 +18,7 @@ export interface McpResource {
   uri: string;
   name: string;
   description?: string;
+  serverId: string;
 }
 
 /**
@@ -83,11 +88,60 @@ export class McpClient {
   }
 
   async listResources(): Promise<McpResource[]> {
-    return [];
+    const resources: McpResource[] = [];
+
+    for (const config of this.serverConfigs) {
+      if (config.transport !== 'http' || !config.url) {
+        continue;
+      }
+
+      try {
+        const response = await fetch(`${config.url}/resources`);
+        if (!response.ok) {
+          continue;
+        }
+
+        const payload = (await response.json()) as {
+          resources?: Array<{ uri: string; name: string; description?: string }>;
+        };
+
+        for (const resource of payload.resources ?? []) {
+          resources.push({ ...resource, serverId: config.id });
+        }
+      } catch {
+        // Best-effort discovery — one unreachable server shouldn't fail the
+        // rest of resource listing.
+      }
+    }
+
+    return resources;
   }
 
-  async readResource(_uri: string): Promise<string> {
-    throw new Error('MCP resource read not implemented');
+  async readResource(uri: string): Promise<string> {
+    for (const config of this.serverConfigs) {
+      if (config.transport !== 'http' || !config.url) {
+        continue;
+      }
+
+      try {
+        const response = await fetch(
+          `${config.url}/resources/read?uri=${encodeURIComponent(uri)}`,
+        );
+        if (!response.ok) {
+          continue;
+        }
+
+        const payload = (await response.json()) as { contents?: string; text?: string };
+        const content = payload.contents ?? payload.text;
+        if (typeof content === 'string') {
+          return content;
+        }
+      } catch {
+        // Try the next configured server.
+      }
+    }
+
+    throw new Error(`MCP resource not found on any configured server: ${uri}`);
   }
 
   createHandler(toolId: string) {
@@ -103,7 +157,12 @@ export class McpClient {
         }
 
         const payload = (await response.json()) as {
-          tools?: Array<{ name: string; description?: string }>;
+          tools?: Array<{
+            name: string;
+            description?: string;
+            inputSchema?: JsonSchema;
+            outputSchema?: JsonSchema;
+          }>;
         };
 
         return (payload.tools ?? [])
@@ -115,8 +174,12 @@ export class McpClient {
             name: tool.name,
             description: tool.description ?? tool.name,
             source: 'mcp' as const,
-            inputSchema: { safeParse: (v: unknown) => ({ success: true, data: v }) } as never,
-            outputSchema: { safeParse: (v: unknown) => ({ success: true, data: v }) } as never,
+            // Real JSON-Schema-to-Zod conversion of the schema the MCP
+            // server advertises, instead of an always-succeeding passthrough.
+            inputSchema: jsonSchemaToZodObject(tool.inputSchema),
+            outputSchema: tool.outputSchema
+              ? jsonSchemaToZodObject(tool.outputSchema)
+              : z.record(z.string(), z.unknown()),
             timeout: 30_000,
             requiresAuth: true,
             metadata: { serverId: config.id },

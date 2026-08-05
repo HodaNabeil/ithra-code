@@ -5,7 +5,7 @@ import { evaluateSubmissionInputSchema } from '../../application/dto/evaluate-su
 import { evaluateSubmissionUseCase } from '../../application/use-cases/evaluate-submission.use-case';
 
 export async function handleEvaluateSubmissionRequest(request: Request): Promise<Response> {
-  if (!AIPlatformConfig.isEnabled() || !AIPlatformConfig.isRuntimeEnabled()) {
+  if (!AIPlatformConfig.isEnabled()) {
     return Response.json(
       { success: false, message: 'AI evaluation is not enabled' },
       { status: 503 },

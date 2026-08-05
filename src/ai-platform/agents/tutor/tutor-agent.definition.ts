@@ -9,7 +9,7 @@ export const tutorAgentDefinition: AgentDefinition = {
   defaultModelPolicy: {
     task: 'education',
     preferredModel: 'gpt-4o-mini',
-    maxTokens: 1500,
+    maxTokens: 402,
     temperature: 0.7,
   },
   allowedTools: ['search', 'calculator'],
