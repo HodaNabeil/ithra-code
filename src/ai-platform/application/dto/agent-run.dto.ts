@@ -18,6 +18,9 @@ export const agentRunOptionsSchema = z.object({
   correlationId: z.string().optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
   locale: z.string().optional(),
+  signal: z
+    .custom<AbortSignal>((value) => value === undefined || value instanceof AbortSignal)
+    .optional(),
 });
 
 export const agentRunRequestSchema = z.object({

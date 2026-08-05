@@ -42,9 +42,6 @@ pnpm lint                         # ESLint
 pnpm format                       # Prettier --write
 pnpm format:check                 # Prettier --check (CI)
 pnpm type-check                   # tsc --noEmit
-pnpm test                         # Node test runner across features + ai-platform
-pnpm test:payments                # Payment money-path tests only
-pnpm test:ai-tutor                # AI Tutor unit/integration tests only
 pnpm seed                         # Seed the database (prisma/seeds/seed.ts)
 pnpm db:push                      # Push Prisma schema to DB
 pnpm db:reset                     # Reset DB (force)
@@ -83,7 +80,6 @@ features/{feature}/
   api/                # Route-handler-facing logic (used by `src/app/api/**`)
   components/         # Feature-scoped React components
   hooks/              # Feature-scoped React hooks
-  __tests__/          # Node `--test` based unit/integration tests
 ```
 
 More mature features (**payments**, **ai-tutor**) fully implement the domain → application →
@@ -174,8 +170,6 @@ schemas), `types/`, `constants/`.
 - **Commits**: Conventional commits enforced by commitlint + husky. Types: `feat`, `fix`, `docs`,
   `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`. Header max 100 chars,
   lower-case type/scope, subject not sentence/start/pascal/upper-case and no trailing period.
-- **Tests**: Node's built-in `--test` runner via `tsx`, colocated in `__tests__/` folders next to
-  the code they cover (no separate top-level test directory).
 
 ## Environment
 

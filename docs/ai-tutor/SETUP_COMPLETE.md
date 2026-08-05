@@ -4,16 +4,15 @@ Documentation and code scaffolding for the AI Tutor feature are now complete and
 
 ## What's Been Created
 
-### 📚 Documentation (7 files)
+### 📚 Documentation (6 files)
 
 1. **00-index.md** - Documentation hub and quick navigation
 2. **01-implementation-roadmap.md** - Complete sprint-by-sprint plan (Sprints 1-9)
 3. **02-architecture.md** - Clean Architecture overview and patterns
 4. **03-runtime-pipeline.md** - Student question flow with detailed steps
 5. **04-indexing-pipeline.md** - Knowledge base building and maintenance
-6. **05-testing-strategy.md** - Comprehensive testing approach
-7. **06-adr/** - 5 Architecture Decision Records (ADRs)
-8. **07-future-roadmap.md** - Post-MVP enhancements and components
+6. **06-adr/** - 5 Architecture Decision Records (ADRs)
+7. **07-future-roadmap.md** - Post-MVP enhancements and components
 
 ### 💻 Code Scaffolding
 
@@ -102,15 +101,6 @@ Review ADRs to understand major decisions:
 
 Check `07-future-roadmap.md` for post-MVP extensions.
 
-### For QA/Testing
-
-See `05-testing-strategy.md` for:
-- Unit testing patterns
-- Integration testing approach
-- Prompt engineering tests
-- RAG evaluation metrics
-- AI evaluation dataset structure
-
 ## Environment Setup
 
 Add to `.env`:
@@ -137,7 +127,6 @@ AI_TUTOR_ENABLED=true
 - [x] 02-architecture.md
 - [x] 03-runtime-pipeline.md
 - [x] 04-indexing-pipeline.md
-- [x] 05-testing-strategy.md
 - [x] 06-adr/ADR-001-port-adapter-pattern.md
 - [x] 06-adr/ADR-002-conversation-threading-strategy.md
 - [x] 06-adr/ADR-003-content-classification-educational-integrity.md
@@ -173,7 +162,6 @@ docs/ai-tutor/
 ├── 02-architecture.md                   # Architecture overview
 ├── 03-runtime-pipeline.md               # Runtime flow
 ├── 04-indexing-pipeline.md              # Indexing flow
-├── 05-testing-strategy.md               # Testing approach
 ├── 06-adr/
 │   ├── ADR-001-port-adapter-pattern.md
 │   ├── ADR-002-conversation-threading-strategy.md
@@ -190,7 +178,6 @@ docs/ai-tutor/
 - **For developers:** [docs/ai-tutor/02-architecture.md](./02-architecture.md)
 - **For architects:** [docs/ai-tutor/06-adr/](./06-adr/)
 - **For implementation:** [docs/ai-tutor/01-implementation-roadmap.md](./01-implementation-roadmap.md)
-- **For testing:** [docs/ai-tutor/05-testing-strategy.md](./05-testing-strategy.md)
 
 ## Support
 

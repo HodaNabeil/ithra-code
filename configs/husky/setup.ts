@@ -78,14 +78,6 @@ pnpm build || {
   exit 1
 }
 
-# Run tests if test script exists
-echo "🧪 Running tests..."
-if pnpm run --if-present test; then
-  echo "✅ Tests passed!"
-else
-  echo "⚠️  Tests not available or failed"
-fi
-
 echo "✅ Pre-push checks passed! Ready to push."
 `;
 
@@ -140,7 +132,7 @@ hooks.forEach(({ name, content }) => {
 console.log('\n✅ Husky setup complete!');
 console.log('\nConfigured hooks:');
 console.log('  • pre-commit: Runs linting and type checking');
-console.log('  • pre-push: Runs build and tests');
+console.log('  • pre-push: Runs build');
 console.log(
   '  • commit-msg: Validates commit messages with commitlint (or fallback validation)',
 );

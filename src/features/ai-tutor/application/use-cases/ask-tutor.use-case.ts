@@ -16,6 +16,7 @@ import type { ContentFilterPort } from '../../domain/ports/ContentFilterPort';
 import { ContentFilterError } from '../../domain/ports/ContentFilterPort';
 import type { MessageSourceDTO } from '../dto/message-source.dto';
 import { AI_TUTOR_CONSTANTS } from '../../shared';
+import type { TutorSseEvent } from '../../shared/sse-protocol';
 import { streamAgent, type RetrievedSource } from '@/ai-platform';
 import type { TutorPersonalizationContext } from '@/ai-platform/graph/state/tutor-agent.state';
 import { PlatformError } from '@/ai-platform/shared/errors';
@@ -35,14 +36,6 @@ export type AskTutorRequestOutcome = {
   assessmentBlocked: boolean;
   retrievalChunkCount: number;
 };
-
-function encodeStreamMeta(meta: {
-  sources: MessageSourceDTO[];
-  usedFallback: boolean;
-  educationalFilterApplied?: boolean;
-}): string {
-  return `${AI_TUTOR_CONSTANTS.SSE_META_PREFIX}${JSON.stringify(meta)}`;
-}
 
 async function persistCompletedTurn(
   conversationRepository: ConversationRepositoryPort,
@@ -120,7 +113,8 @@ async function* streamTutorViaPlatformRuntime(input: {
   conversationRepository: ConversationRepositoryPort;
   contentFilter: ContentFilterPort;
   outcome: AskTutorRequestOutcome;
-}): AsyncGenerator<string, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
+  signal?: AbortSignal;
+}): AsyncGenerator<TutorSseEvent, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
   const { outcome } = input;
   const sessionMetaIntent = detectSessionMetaIntent(input.question);
   const personalization = buildPersonalizationContext(
@@ -146,6 +140,7 @@ async function* streamTutorViaPlatformRuntime(input: {
       },
       options: {
         maxTokens: AI_TUTOR_CONSTANTS.MAX_RESPONSE_TOKENS,
+        signal: input.signal,
         metadata: {
           conversationHistory: input.history.map((message) => ({
             role: message.role,
@@ -167,15 +162,20 @@ async function* streamTutorViaPlatformRuntime(input: {
         outcome.retrievalChunkCount = event.sources.length;
         outcome.usedFallback = event.usedFallback ?? false;
 
-        yield encodeStreamMeta({
+        yield {
+          type: 'meta',
           sources,
           usedFallback: outcome.usedFallback,
           educationalFilterApplied: outcome.filterTriggered,
-        });
+        };
       }
 
       if (event.type === 'token') {
-        yield event.text;
+        yield { type: 'token', text: event.text };
+      }
+
+      if (event.type === 'replace') {
+        yield { type: 'replace', text: event.text };
       }
 
       if (event.type === 'done') {
@@ -185,12 +185,13 @@ async function* streamTutorViaPlatformRuntime(input: {
         mapRunMetadataToOutcome(event.metadata, outcome);
 
         if (outcome.assessmentBlocked || outcome.filterTriggered) {
-          yield encodeStreamMeta({
+          yield {
+            type: 'meta',
             sources,
             usedFallback: outcome.usedFallback || outcome.assessmentBlocked,
             educationalFilterApplied:
               outcome.filterTriggered || outcome.assessmentBlocked,
-          });
+          };
         }
       }
 
@@ -244,9 +245,9 @@ async function* streamTutorViaPlatformRuntime(input: {
 }
 
 export async function* askTutorUseCase(
-  input: AskTutorInputDTO & { userId: string },
+  input: AskTutorInputDTO & { userId: string; signal?: AbortSignal },
   deps: AskTutorUseCaseDeps,
-): AsyncGenerator<string, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
+): AsyncGenerator<TutorSseEvent, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
   const { conversationRepository, contentFilter } = deps;
 
   const outcome: AskTutorRequestOutcome = {
@@ -311,6 +312,7 @@ export async function* askTutorUseCase(
       conversationRepository,
       contentFilter,
       outcome,
+      signal: input.signal,
     });
   } catch (error) {
     if (error instanceof AskTutorError) {

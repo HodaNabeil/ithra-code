@@ -29,18 +29,24 @@ async function* streamWithRetry(
   options: LlmStreamOptions,
 ): AsyncGenerator<string> {
   let lastError: LlmError | undefined;
+  let tokensYielded = 0;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt += 1) {
     try {
       const stream = inner.streamAnswer(options);
 
       for await (const token of stream) {
+        tokensYielded += 1;
         yield token;
       }
 
       return;
     } catch (error) {
       if (!(error instanceof LlmError) || !error.retryable || attempt === MAX_RETRIES - 1) {
+        throw error;
+      }
+
+      if (tokensYielded > 0) {
         throw error;
       }
 

@@ -11,7 +11,6 @@ See `/docs/ai-tutor/` for complete documentation:
 - **[02-architecture.md](../../docs/ai-tutor/02-architecture.md)** - Clean Architecture overview
 - **[03-runtime-pipeline.md](../../docs/ai-tutor/03-runtime-pipeline.md)** - Student question flow
 - **[04-indexing-pipeline.md](../../docs/ai-tutor/04-indexing-pipeline.md)** - Knowledge base indexing
-- **[05-testing-strategy.md](../../docs/ai-tutor/05-testing-strategy.md)** - Testing approach
 - **[06-adr/](../../docs/ai-tutor/06-adr/)** - Architecture Decision Records
 - **[07-future-roadmap.md](../../docs/ai-tutor/07-future-roadmap.md)** - Post-MVP enhancements
 
@@ -68,12 +67,6 @@ When disabled:
 2. Understand [03-runtime-pipeline.md](../../docs/ai-tutor/03-runtime-pipeline.md)
 3. Review [07-future-roadmap.md](../../docs/ai-tutor/07-future-roadmap.md)
 
-### For Testing
-
-1. Read [05-testing-strategy.md](../../docs/ai-tutor/05-testing-strategy.md)
-2. Follow testing patterns
-3. Use provided test utilities
-
 ## Development
 
 ### Environment Setup
@@ -87,9 +80,6 @@ AI_TUTOR_ENABLED=true
 ### Available Scripts
 
 ```bash
-# Run tests
-npm run test:ai-tutor
-
 # Type check
 npm run type-check
 

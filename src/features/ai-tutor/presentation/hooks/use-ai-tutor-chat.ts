@@ -4,6 +4,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { MessageSourceDTO } from '../../application/dto/message-source.dto';
 import { AI_TUTOR_CONSTANTS } from '../../shared';
+import {
+  parseTutorSseEvent,
+  type TutorSseEvent,
+} from '../../shared/sse-protocol';
 
 export type ChatMessage = {
   id: string;
@@ -56,24 +60,15 @@ function buildThreadQuery(options: UseAITutorChatOptions): string {
   return params.toString();
 }
 
-function parseStreamMeta(payload: string): StreamMeta | null {
-  if (!payload.startsWith(AI_TUTOR_CONSTANTS.SSE_META_PREFIX)) {
+function parseStreamMeta(event: TutorSseEvent): StreamMeta | null {
+  if (event.type !== 'meta') {
     return null;
   }
 
-  try {
-    const parsed = JSON.parse(
-      payload.slice(AI_TUTOR_CONSTANTS.SSE_META_PREFIX.length),
-    ) as StreamMeta;
-
-    if (!Array.isArray(parsed.sources)) {
-      return null;
-    }
-
-    return parsed;
-  } catch {
-    return null;
-  }
+  return {
+    sources: event.sources,
+    usedFallback: event.usedFallback,
+  };
 }
 
 async function streamTutorResponse(params: {
@@ -83,6 +78,7 @@ async function streamTutorResponse(params: {
   signal: AbortSignal;
   onMeta: (assistantMessageId: string, meta: StreamMeta) => void;
   onToken: (assistantMessageId: string, token: string) => void;
+  onReplace: (assistantMessageId: string, text: string) => void;
   onComplete: () => void;
 }): Promise<void> {
   const response = await fetch(`${AI_TUTOR_CONSTANTS.API_BASE_PATH}/messages`, {
@@ -132,31 +128,41 @@ async function streamTutorResponse(params: {
     const events = buffer.split('\n\n');
     buffer = events.pop() ?? '';
 
-    for (const event of events) {
-      const line = event.trim();
+    for (const rawEvent of events) {
+      const line = rawEvent.trim();
       if (!line.startsWith('data: ')) {
         continue;
       }
 
       const payload = line.slice(6);
+      const sseEvent = parseTutorSseEvent(payload);
+      if (!sseEvent) {
+        continue;
+      }
 
-      if (payload === '[DONE]') {
+      if (sseEvent.type === 'done') {
         params.onComplete();
         continue;
       }
 
-      if (payload.startsWith('[ERROR]')) {
-        const errorMessage = payload.replace('[ERROR] ', '').split(':').slice(1).join(':');
-        throw new Error(errorMessage || 'حدث خطأ أثناء توليد الرد');
+      if (sseEvent.type === 'error') {
+        throw new Error(sseEvent.message || 'حدث خطأ أثناء توليد الرد');
       }
 
-      const meta = parseStreamMeta(payload);
+      const meta = parseStreamMeta(sseEvent);
       if (meta) {
         params.onMeta(params.assistantMessageId, meta);
         continue;
       }
 
-      params.onToken(params.assistantMessageId, payload);
+      if (sseEvent.type === 'replace') {
+        params.onReplace(params.assistantMessageId, sseEvent.text);
+        continue;
+      }
+
+      if (sseEvent.type === 'token') {
+        params.onToken(params.assistantMessageId, sseEvent.text);
+      }
     }
   }
 
@@ -253,6 +259,14 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
     [],
   );
 
+  const replaceContent = useCallback((assistantMessageId: string, text: string) => {
+    setMessages((current) =>
+      current.map((message) =>
+        message.id === assistantMessageId ? { ...message, content: text } : message,
+      ),
+    );
+  }, []);
+
   const runQuestion = useCallback(
     async (question: string, requestOptions: { includeUserMessage: boolean }) => {
       const assistantMessageId = createMessageId();
@@ -288,6 +302,7 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
           signal: controller.signal,
           onMeta: applyMeta,
           onToken: appendToken,
+          onReplace: replaceContent,
           onComplete: () => setStreamState('idle'),
         });
       } catch (requestError) {
@@ -313,7 +328,7 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
         abortControllerRef.current = null;
       }
     },
-    [appendToken, applyMeta, options],
+    [appendToken, applyMeta, options, replaceContent],
   );
 
   const sendMessage = useCallback(async () => {

@@ -31,22 +31,14 @@ Complete documentation for the IthraCode AI Tutor feature implementation.
    - Embedding generation and vector storage
    - Optimization and cache invalidation
 
-### 5. **[Testing Strategy](./05-testing-strategy.md)**
-   - Unit testing approach and patterns
-   - Integration testing methodology
-   - Prompt engineering validation tests
-   - RAG evaluation framework
-   - AI evaluation dataset and metrics
-   - Regression testing automation
-
-### 6. **[Architecture Decision Records (ADRs)](./06-adr/)**
+### 5. **[Architecture Decision Records (ADRs)](./06-adr/)**
    - ADR-001: Port and Adapter pattern for AI providers
    - ADR-002: Course-scoped conversations with lecture threading
    - ADR-003: Content classification and educational integrity
    - ADR-004: Vector search implementation strategy
    - ADR-005: Streaming response architecture
 
-### 7. **[Future Roadmap](./07-future-roadmap.md)**
+### 6. **[Future Roadmap](./07-future-roadmap.md)**
    - Post-MVP architecture components
    - Short-term and long-term memory systems
    - Tool calling and function execution
@@ -54,7 +46,7 @@ Complete documentation for the IthraCode AI Tutor feature implementation.
    - Multi-agent collaboration framework
    - Advanced evaluation and observability
 
-### 8. **[Production Operations](./08-production-operations.md)**
+### 7. **[Production Operations](./08-production-operations.md)**
    - Local development setup (Next.js + worker + Redis + PostgreSQL)
    - Production deployment checklist
    - Health monitoring (`GET /api/health/tutor`)
@@ -65,7 +57,6 @@ Complete documentation for the IthraCode AI Tutor feature implementation.
 **For Developers:**
 1. Start with [Architecture Overview](./02-architecture.md)
 2. Review [Implementation Roadmap](./01-implementation-roadmap.md)
-3. Follow [Testing Strategy](./05-testing-strategy.md)
 
 **For Architects:**
 1. Review all [ADRs](./06-adr/)
@@ -73,9 +64,8 @@ Complete documentation for the IthraCode AI Tutor feature implementation.
 3. Check [Future Roadmap](./07-future-roadmap.md) for scalability
 
 **For Product/QA:**
-1. Read [Testing Strategy](./05-testing-strategy.md)
-2. Understand [Runtime Pipeline](./03-runtime-pipeline.md)
-3. Review task acceptance criteria in [Implementation Roadmap](./01-implementation-roadmap.md)
+1. Understand [Runtime Pipeline](./03-runtime-pipeline.md)
+2. Review task acceptance criteria in [Implementation Roadmap](./01-implementation-roadmap.md)
 
 ## Key Principles
 

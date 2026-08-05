@@ -11,6 +11,7 @@ import {
   type LlmPort,
   type LlmStreamOptions,
 } from '../../domain/ports/llm.port';
+import { createLinkedAbortController } from '../abort-signal';
 
 export class OpenAILlmAdapter implements LlmPort {
   private readonly client: OpenAI;
@@ -34,8 +35,10 @@ export class OpenAILlmAdapter implements LlmPort {
   }
 
   async *streamAnswer(options: LlmStreamOptions): AsyncIterableIterator<string> {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.requestTimeoutMs);
+    const { controller, cleanup } = createLinkedAbortController(
+      this.requestTimeoutMs,
+      options.signal,
+    );
 
     try {
       const stream = await this.client.chat.completions.create(
@@ -48,6 +51,7 @@ export class OpenAILlmAdapter implements LlmPort {
           temperature: options.temperature ?? this.defaultTemperature,
           max_tokens: options.maxTokens ?? this.defaultMaxTokens,
           stream: true,
+          stream_options: { include_usage: true },
           tools: options.tools
             ? options.tools.map((tool) => ({
                 type: 'function' as const,
@@ -63,21 +67,42 @@ export class OpenAILlmAdapter implements LlmPort {
       );
 
       for await (const chunk of stream) {
+        const usage = chunk.usage;
+        if (usage && options.onUsage) {
+          options.onUsage({
+            input: usage.prompt_tokens ?? 0,
+            output: usage.completion_tokens ?? 0,
+          });
+        }
+
         const content = chunk.choices[0]?.delta?.content;
         if (content) {
           yield content;
         }
       }
     } catch (error) {
+      if (
+        error instanceof Error &&
+        error.name === 'AbortError' &&
+        options.signal?.aborted
+      ) {
+        throw new LlmError(
+          LlmErrorCodes.INVALID_REQUEST,
+          'تم إلغاء الطلب',
+          false,
+        );
+      }
       throw this.mapError(error);
     } finally {
-      clearTimeout(timeout);
+      cleanup();
     }
   }
 
   async complete(options: LlmCompleteOptions): Promise<LlmCompleteResult> {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.requestTimeoutMs);
+    const { controller, cleanup } = createLinkedAbortController(
+      this.requestTimeoutMs,
+      options.signal,
+    );
 
     try {
       const response = await this.client.chat.completions.create(
@@ -132,7 +157,7 @@ export class OpenAILlmAdapter implements LlmPort {
     } catch (error) {
       throw this.mapError(error);
     } finally {
-      clearTimeout(timeout);
+      cleanup();
     }
   }
 

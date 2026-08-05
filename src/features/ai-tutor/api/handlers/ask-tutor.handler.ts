@@ -14,16 +14,13 @@ import {
   askTutorUseCase,
   getAskTutorUseCaseDeps,
 } from '../../infrastructure/di/ai-tutor-container';
+import { encodeSseDataLine } from '../../shared/sse-protocol';
 
 const STREAM_HEADERS = {
   'Content-Type': 'text/event-stream; charset=utf-8',
   'Cache-Control': 'no-cache, no-transform',
   Connection: 'keep-alive',
 } as const;
-
-function encodeSseEvent(data: string): Uint8Array {
-  return new TextEncoder().encode(`data: ${data}\n\n`);
-}
 
 export async function handleAskTutorRequest(request: Request): Promise<Response> {
   if (!AITutorConfig.isEnabled()) {
@@ -67,6 +64,7 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
         {
           ...parsed.data,
           userId: session.user.id,
+          signal: request.signal,
         },
         getAskTutorUseCaseDeps(),
       );
@@ -79,10 +77,10 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
           break;
         }
 
-        await writer.write(encodeSseEvent(value));
+        await writer.write(encodeSseDataLine(value));
       }
 
-      await writer.write(encodeSseEvent('[DONE]'));
+      await writer.write(encodeSseDataLine({ type: 'done' }));
 
       logTutorRequestCompleted({
         userId: session.user.id,
@@ -122,7 +120,13 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
         retrievalChunkCount: 0,
       });
 
-      await writer.write(encodeSseEvent(`[ERROR] ${code}:${message}`));
+      await writer.write(
+        encodeSseDataLine({
+          type: 'error',
+          code,
+          message,
+        }),
+      );
     } finally {
       await writer.close();
     }

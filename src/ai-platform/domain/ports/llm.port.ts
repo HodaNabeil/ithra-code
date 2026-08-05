@@ -7,6 +7,11 @@ export interface LlmMessage {
   content: string;
 }
 
+export interface LlmTokenUsage {
+  input: number;
+  output: number;
+}
+
 export interface LlmStreamOptions {
   messages: LlmMessage[];
   systemPrompt: string;
@@ -14,6 +19,8 @@ export interface LlmStreamOptions {
   maxTokens?: number;
   model?: string;
   tools?: LlmToolDefinition[];
+  signal?: AbortSignal;
+  onUsage?: (usage: LlmTokenUsage) => void;
 }
 
 export interface LlmCompleteOptions {
@@ -25,6 +32,7 @@ export interface LlmCompleteOptions {
   responseFormat?: 'text' | 'json';
   jsonSchema?: Record<string, unknown>;
   tools?: LlmToolDefinition[];
+  signal?: AbortSignal;
 }
 
 export interface LlmToolDefinition {

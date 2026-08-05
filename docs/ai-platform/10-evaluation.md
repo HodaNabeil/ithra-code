@@ -426,4 +426,3 @@ Evaluation runs create LangSmith experiment runs for side-by-side comparison wit
 - [08-prompts.md](./08-prompts.md) — Prompt version pinning for eval
 - [09-observability.md](./09-observability.md) — LangSmith experiment comparison
 - [11-workers.md](./11-workers.md) — Evaluation worker queue
-- [AI Tutor Testing Strategy](../ai-tutor/05-testing-strategy.md) — Pre-platform testing approach

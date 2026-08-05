@@ -12,7 +12,7 @@ export interface BuildTutorSystemPromptInput {
   personalization?: TutorPersonalizationContext;
 }
 
-function isAssessmentAdjacent(chunks: RetrievedChunkState[]): boolean {
+export function isAssessmentAdjacent(chunks: RetrievedChunkState[]): boolean {
   return chunks.some((chunk) => {
     const metadata = chunk.metadata ?? {};
     const contentType = String(metadata.contentType ?? '').toUpperCase();

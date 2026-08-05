@@ -38,10 +38,12 @@ import {
   resolveLangsmithRunIdForLedger,
 } from '../../observability/langsmith/langsmith-tracer';
 import {
+  runWithTraceContext,
   runWithTraceContextAsync,
 } from '../../observability/langsmith/trace-context';
-import { withSpan } from '../../observability/opentelemetry/span-helpers';
+import { withSpan, getTracer, isOtelActive } from '../../observability/opentelemetry/span-helpers';
 import { platformMetrics } from '../../observability/metrics/platform-metrics';
+import { validateEducationalResponse } from '../../graph/nodes/guards/educational-integrity';
 
 function assertRuntimeReady(): void {
   assertPlatformEnabled();
@@ -259,6 +261,23 @@ export async function* executeAgentStream(
   assertRuntimeReady();
   const parsed = parseRequest(request);
   const context = createExecutionContext(agentId, parsed);
+  const traceContext = {
+    runId: context.runId,
+    agentId: context.agentId,
+    correlationId: parsed.options?.correlationId,
+  };
+
+  const stream = runWithTraceContext(traceContext, () =>
+    executeAgentStreamCore(context, parsed),
+  );
+
+  yield* stream;
+}
+
+async function* executeAgentStreamCore(
+  context: RuntimeExecutionContext,
+  parsed: AgentRunRequest,
+): AsyncGenerator<ChatStreamEvent> {
   const resolved = resolveModelForPolicy(
     context.agent.defaultModelPolicy,
     parsed.options?.modelOverride,
@@ -312,6 +331,8 @@ export async function* executeAgentStream(
   );
 
   let latestObservedState: AgentGraphState = built.initialState;
+  let liveStreamBuffer = '';
+  let liveStreamBlocked = false;
 
   const graphPromise = streamAgentGraph({
     agentId: context.agentId,
@@ -339,9 +360,25 @@ export async function* executeAgentStream(
       latestObservedState = state;
     },
     onToken: async (token) => {
-      if (readExecutionPolicy(latestObservedState) === 'LIVE') {
-        pendingEvents.push({ kind: 'token', text: token });
+      if (readExecutionPolicy(latestObservedState) !== 'LIVE') {
+        notifyToken?.();
+        return;
       }
+
+      if (liveStreamBlocked) {
+        notifyToken?.();
+        return;
+      }
+
+      liveStreamBuffer += token;
+      const integrity = validateEducationalResponse(liveStreamBuffer);
+      if (!integrity.isValid) {
+        liveStreamBlocked = true;
+        notifyToken?.();
+        return;
+      }
+
+      pendingEvents.push({ kind: 'token', text: token });
       notifyToken?.();
     },
     onRetrieval: async (chunks, usedFallback) => {
@@ -359,6 +396,17 @@ export async function* executeAgentStream(
       graphDone = true;
       notifyToken?.();
     });
+
+  const span = isOtelActive()
+    ? getTracer().startSpan('ai.agent.run', {
+        attributes: {
+          'ai.agent.id': context.agentId,
+          'ai.user.id': parsed.userId,
+          'ai.prompt.version': built.promptVersion,
+          'ai.agent.mode': 'stream',
+        },
+      })
+    : null;
 
   try {
     let streamedTokenCount = 0;
@@ -408,6 +456,8 @@ export async function* executeAgentStream(
       (executionPolicy === 'BUFFERED' || streamedTokenCount === 0)
     ) {
       yield { type: 'token', text: finalResponse };
+    } else if (liveStreamBlocked && finalResponse) {
+      yield { type: 'replace', text: finalResponse };
     }
 
     const durationMs = Date.now() - context.startedAt;
@@ -427,6 +477,11 @@ export async function* executeAgentStream(
       langsmithRunId: resolveLangsmithRunIdForLedger(),
     });
 
+    platformMetrics.incrementAgentRun(context.agentId, 'completed');
+    platformMetrics.recordAgentDuration(context.agentId, durationMs);
+    platformMetrics.incrementLlmTokens(resolved.model, 'input', usage.input);
+    platformMetrics.incrementLlmTokens(resolved.model, 'output', usage.output);
+
     yield {
       type: 'done',
       output: graphResult.finalState?.finalResponse,
@@ -444,7 +499,14 @@ export async function* executeAgentStream(
         ),
       },
     };
+    span?.setStatus({ code: 1 });
   } catch (error) {
+    span?.recordException(error as Error);
+    span?.setStatus({
+      code: 2,
+      message: error instanceof Error ? error.message : 'error',
+    });
+    platformMetrics.incrementAgentRun(context.agentId, 'failed');
     await trace.endTrace(undefined, error instanceof Error ? error.message : 'Unknown error');
     await failAgentRun(context.runId, {
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -466,6 +528,7 @@ export async function* executeAgentStream(
       retryable: mapped.retryable,
     };
   } finally {
+    span?.end();
     await guards.releaseConcurrencySlot?.();
   }
 }

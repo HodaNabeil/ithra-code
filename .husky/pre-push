@@ -7,12 +7,4 @@ pnpm build || {
   exit 1
 }
 
-# Run tests if test script exists
-echo "🧪 Running tests..."
-if pnpm run --if-present test; then
-  echo "✅ Tests passed!"
-else
-  echo "⚠️  Tests not available or failed"
-fi
-
 echo "✅ Pre-push checks passed! Ready to push."

@@ -72,11 +72,15 @@ export const AI_TUTOR_CONSTANTS = {
   // Indexing API
   INDEX_ENDPOINT: '/api/tutor/index',
 
-  // Streaming protocol
-  SSE_META_PREFIX: '[META]',
 } as const;
 
 export { isLikelyEnglish } from './language';
+export {
+  encodeSseDataLine,
+  encodeTutorSseEvent,
+  parseTutorSseEvent,
+  type TutorSseEvent,
+} from './sse-protocol';
 export {
   detectAssessmentIntent,
   validateEducationalResponse,

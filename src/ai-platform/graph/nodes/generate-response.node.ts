@@ -103,12 +103,17 @@ export async function generateResponseNode(
   }
 
   let finalResponse = '';
+  let measuredUsage: { input: number; output: number } | undefined;
 
   for await (const token of runtime.llmPort.streamAnswer({
     systemPrompt,
     messages,
     temperature: runtime.temperature,
     maxTokens: runtime.maxTokens,
+    signal: config.signal,
+    onUsage: (usage) => {
+      measuredUsage = usage;
+    },
   })) {
     finalResponse += token;
     if (runtime.onToken) {
@@ -119,7 +124,7 @@ export async function generateResponseNode(
   return {
     finalResponse,
     pendingToolCalls: [],
-    tokensUsed: {
+    tokensUsed: measuredUsage ?? {
       input: inputTokens,
       output: estimateTokens(finalResponse),
     },

@@ -6,6 +6,7 @@ import {
 } from '../../memory/short-term/working-memory.cache';
 import { retrieveRelevantContent } from '../../rag/retrieval/content-retriever.service';
 import type { RetrievedContentChunk } from '../../rag/retrieval/types';
+import { isAssessmentAdjacent } from '../../prompts/tutor-system-prompt.builder';
 import { getGraphRuntimeConfig } from '../runtime-config';
 import type { RetrievedChunkState, TutorAgentState } from '../state/tutor-agent.state';
 
@@ -93,5 +94,15 @@ export async function retrieveContextNode(
     await runtime.onRetrieval(retrievedChunks, usedFallback);
   }
 
-  return { retrievedChunks };
+  const stateUpdate: Partial<TutorAgentState> = { retrievedChunks };
+
+  if (isAssessmentAdjacent(retrievedChunks)) {
+    stateUpdate.executionPolicy = 'BUFFERED';
+    stateUpdate.runSignals = {
+      ...state.runSignals,
+      assessmentAdjacentRetrieval: true,
+    };
+  }
+
+  return stateUpdate;
 }
