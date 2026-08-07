@@ -19,8 +19,10 @@ import {
   failAgentRun,
   startAgentRun,
 } from '../../observability/cost/cost-ledger.service';
-import { estimateCostUsd } from '../../observability/cost/token-pricing';
+import { computeRunCostUsd } from '../../observability/cost/token-pricing';
 import { resolveModelForPolicy } from '../../router/model-router';
+import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
+import { recordDailySpendUsd } from '../../infrastructure/guards';
 import { readExecutionPolicy } from '../../graph/state/shared-channels';
 import { PlatformError, PlatformErrorCodes } from '../../shared/errors';
 import type { ChatStreamEvent } from '../../shared/types';
@@ -43,7 +45,7 @@ import {
 } from '../../observability/langsmith/trace-context';
 import { withSpan, getTracer, isOtelActive } from '../../observability/opentelemetry/span-helpers';
 import { platformMetrics } from '../../observability/metrics/platform-metrics';
-import { validateEducationalResponse } from '../../graph/nodes/guards/educational-integrity';
+import { LiveStreamGuard } from './live-stream-guard';
 
 function assertRuntimeReady(): void {
   assertPlatformEnabled();
@@ -101,6 +103,20 @@ function extractGraphPorts(metadata: Record<string, unknown> | undefined) {
   return extractGraphInjectionPorts(metadata);
 }
 
+function computeFinalRunCost(
+  resolvedModel: string,
+  tokensUsed: { input: number; output: number },
+  embeddingTokensUsed: number,
+): number {
+  return computeRunCostUsd({
+    model: resolvedModel,
+    inputTokens: tokensUsed.input,
+    outputTokens: tokensUsed.output,
+    embeddingModel: AIPlatformConfig.getEmbeddingConfig().model,
+    embeddingTokens: embeddingTokensUsed,
+  });
+}
+
 function extractRunOutput(finalState: AgentGraphState): {
   output: string;
   structuredOutput?: unknown;
@@ -136,6 +152,7 @@ export async function executeAgentRun(
     agentId: context.agentId,
     userId: parsed.userId,
     model: resolved.model,
+    provider: resolved.provider,
     correlationId: parsed.options?.correlationId,
     metadata: {
       courseId: parsed.scope.courseId,
@@ -188,6 +205,7 @@ export async function executeAgentRun(
           threadId: parsed.scope.threadId,
           maxTokens: parsed.options?.maxTokens ?? resolved.maxTokens,
           temperature: resolved.temperature,
+          model: resolved.model,
           signal: parsed.options?.signal,
           callbacks: trace.callbacks,
           traceMetadata: {
@@ -200,10 +218,11 @@ export async function executeAgentRun(
 
         const durationMs = Date.now() - context.startedAt;
         const tokensUsed = finalState.tokensUsed ?? { input: 0, output: 0 };
-        const estimatedCost = estimateCostUsd(
+        const embeddingTokensUsed = finalState.embeddingTokensUsed ?? 0;
+        const estimatedCost = computeFinalRunCost(
           resolved.model,
-          tokensUsed.input,
-          tokensUsed.output,
+          tokensUsed,
+          embeddingTokensUsed,
         );
         const { output, structuredOutput } = extractRunOutput(finalState);
 
@@ -217,9 +236,15 @@ export async function executeAgentRun(
           runId: context.runId,
           inputTokens: tokensUsed.input,
           outputTokens: tokensUsed.output,
+          embeddingTokens: embeddingTokensUsed,
           latencyMs: durationMs,
           promptVersion: built.promptVersion,
           langsmithRunId: resolveLangsmithRunIdForLedger(),
+        });
+
+        await recordDailySpendUsd({
+          userId: parsed.userId,
+          usd: estimatedCost,
         });
 
         platformMetrics.incrementAgentRun(context.agentId, 'completed');
@@ -291,6 +316,7 @@ async function* executeAgentStreamCore(
     agentId: context.agentId,
     userId: parsed.userId,
     model: resolved.model,
+    provider: resolved.provider,
     correlationId: parsed.options?.correlationId,
     metadata: {
       courseId: parsed.scope.courseId,
@@ -331,8 +357,7 @@ async function* executeAgentStreamCore(
   );
 
   let latestObservedState: AgentGraphState = built.initialState;
-  let liveStreamBuffer = '';
-  let liveStreamBlocked = false;
+  const liveStreamGuard = new LiveStreamGuard();
 
   const graphPromise = streamAgentGraph({
     agentId: context.agentId,
@@ -348,6 +373,7 @@ async function* executeAgentStreamCore(
     threadId: parsed.scope.threadId,
     maxTokens: parsed.options?.maxTokens ?? resolved.maxTokens,
     temperature: resolved.temperature,
+    model: resolved.model,
     signal: parsed.options?.signal,
     callbacks: trace.callbacks,
     traceMetadata: {
@@ -365,20 +391,15 @@ async function* executeAgentStreamCore(
         return;
       }
 
-      if (liveStreamBlocked) {
+      const { emit, blocked } = liveStreamGuard.push(token);
+      if (blocked) {
         notifyToken?.();
         return;
       }
 
-      liveStreamBuffer += token;
-      const integrity = validateEducationalResponse(liveStreamBuffer);
-      if (!integrity.isValid) {
-        liveStreamBlocked = true;
-        notifyToken?.();
-        return;
+      if (emit) {
+        pendingEvents.push({ kind: 'token', text: emit });
       }
-
-      pendingEvents.push({ kind: 'token', text: token });
       notifyToken?.();
     },
     onRetrieval: async (chunks, usedFallback) => {
@@ -456,12 +477,23 @@ async function* executeAgentStreamCore(
       (executionPolicy === 'BUFFERED' || streamedTokenCount === 0)
     ) {
       yield { type: 'token', text: finalResponse };
-    } else if (liveStreamBlocked && finalResponse) {
+    } else if (liveStreamGuard.isBlocked() && finalResponse) {
       yield { type: 'replace', text: finalResponse };
+    } else {
+      const tail = liveStreamGuard.flush();
+      if (tail) {
+        yield { type: 'token', text: tail };
+      }
     }
 
     const durationMs = Date.now() - context.startedAt;
     const usage = graphResult.finalState?.tokensUsed ?? { input: 0, output: 0 };
+    const embeddingTokensUsed = graphResult.finalState?.embeddingTokensUsed ?? 0;
+    const estimatedCost = computeFinalRunCost(
+      resolved.model,
+      usage,
+      embeddingTokensUsed,
+    );
 
     await trace.endTrace({
       output: graphResult.finalState?.finalResponse,
@@ -472,9 +504,15 @@ async function* executeAgentStreamCore(
       runId: context.runId,
       inputTokens: usage.input,
       outputTokens: usage.output,
+      embeddingTokens: embeddingTokensUsed,
       latencyMs: durationMs,
       promptVersion: built.promptVersion,
       langsmithRunId: resolveLangsmithRunIdForLedger(),
+    });
+
+    await recordDailySpendUsd({
+      userId: parsed.userId,
+      usd: estimatedCost,
     });
 
     platformMetrics.incrementAgentRun(context.agentId, 'completed');
@@ -492,11 +530,7 @@ async function* executeAgentStreamCore(
         promptTokens: usage.input,
         completionTokens: usage.output,
         totalTokens: usage.input + usage.output,
-        estimatedCostUsd: estimateCostUsd(
-          resolved.model,
-          usage.input,
-          usage.output,
-        ),
+        estimatedCostUsd: estimatedCost,
       },
     };
     span?.setStatus({ code: 1 });

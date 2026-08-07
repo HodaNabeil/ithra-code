@@ -11,6 +11,7 @@ export interface EmbeddingResult {
   embedding: number[];
   dimensions: number;
   model: string;
+  tokensUsed?: number;
 }
 
 export interface BatchEmbeddingResult {

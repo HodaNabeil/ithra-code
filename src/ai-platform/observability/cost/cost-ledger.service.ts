@@ -3,7 +3,7 @@ import { prisma as appPrisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
 
 import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
-import { estimateCostUsd } from './token-pricing';
+import { computeRunCostUsd } from './token-pricing';
 
 /** Platform tables are typed on the `prisma-client` generator output. */
 const prisma = appPrisma as unknown as PrismaClient;
@@ -71,11 +71,13 @@ export async function completeAgentRun(input: CompleteAgentRunInput): Promise<vo
       return;
     }
 
-    const estimatedCostUsd = estimateCostUsd(
-      existing.model,
-      input.inputTokens,
-      input.outputTokens,
-    );
+    const estimatedCostUsd = computeRunCostUsd({
+      model: existing.model,
+      inputTokens: input.inputTokens,
+      outputTokens: input.outputTokens,
+      embeddingModel: AIPlatformConfig.getEmbeddingConfig().model,
+      embeddingTokens: input.embeddingTokens,
+    });
 
     await prisma.aiAgentRun.update({
       where: { id: input.runId },

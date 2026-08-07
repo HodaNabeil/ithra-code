@@ -40,7 +40,11 @@ export { AIPlatformConfig, validateAIPlatformConfig } from './infrastructure/con
 export {
   assertMessageRateLimit,
   acquireConcurrencySlot,
-  assertGlobalDailyCostCap,
+  assertGlobalDailyBudgetUsd,
+  assertUserDailyBudgetUsd,
+  recordDailySpendUsd,
+  usdToMicro,
+  isOverBudget,
 } from './infrastructure/guards';
 export {
   probePlatformInfrastructure,

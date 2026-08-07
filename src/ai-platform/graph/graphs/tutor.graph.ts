@@ -5,6 +5,7 @@ import { enrichResponseNode } from '../nodes/enrich-response.node';
 import { generateResponseNode } from '../nodes/generate-response.node';
 import { integrityCheckNode, routeAfterIntegrityCheck } from '../nodes/integrity-check.node';
 import { loadHistoryNode } from '../nodes/load-history.node';
+import { persistTurnNode } from '../nodes/persist-turn.node';
 import { retrieveContextNode } from '../nodes/retrieve-context.node';
 import { sanitizeInputNode } from '../nodes/sanitize-input.node';
 import { toolCallNode } from '../nodes/tool-call.node';
@@ -40,6 +41,7 @@ export function buildTutorGraph() {
     .addNode('tool-call', wrapGraphNode('tool-call', toolCallNode as never))
     .addNode('validate-output', wrapGraphNode('validate-output', validateOutputNode))
     .addNode('enrich-response', wrapGraphNode('enrich-response', enrichResponseNode))
+    .addNode('persist-turn', wrapGraphNode('persist-turn', persistTurnNode))
     .addEdge(START, 'sanitize-input')
     .addEdge('sanitize-input', 'load-history')
     .addEdge('load-history', 'integrity-check')
@@ -55,9 +57,10 @@ export function buildTutorGraph() {
     .addEdge('tool-call', 'generate-response')
     .addConditionalEdges('validate-output', routeAfterValidateOutput, {
       'enrich-response': 'enrich-response',
-      done: END,
+      done: 'persist-turn',
     })
-    .addEdge('enrich-response', END);
+    .addEdge('enrich-response', 'persist-turn')
+    .addEdge('persist-turn', END);
 
   return graph;
 }

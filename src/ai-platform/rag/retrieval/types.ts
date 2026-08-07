@@ -12,4 +12,5 @@ export type ContentRetrievalResult = {
   chunks: RetrievedContentChunk[];
   hasResults: boolean;
   usedFallback: boolean;
+  embeddingTokensUsed: number;
 };

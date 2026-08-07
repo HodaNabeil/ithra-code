@@ -57,6 +57,7 @@ export interface GraphRuntimeConfigurable {
   courseId?: string;
   lectureId?: string;
   threadId?: string;
+  model?: string;
 }
 
 export function getGraphRuntimeConfig(

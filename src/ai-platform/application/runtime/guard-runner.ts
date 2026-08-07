@@ -1,8 +1,9 @@
 import type { AgentDefinition } from '../../agents/base/agent-definition';
 import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
 import {
-  assertGlobalDailyCostCap,
+  assertGlobalDailyBudgetUsd,
   assertMessageRateLimit,
+  assertUserDailyBudgetUsd,
   acquireConcurrencySlot,
 } from '../../infrastructure/guards';
 import { PlatformError, PlatformErrorCodes } from '../../shared/errors';
@@ -13,14 +14,14 @@ export type GuardChainResult = {
 
 async function runBaseGuards(agent: AgentDefinition, userId: string): Promise<void> {
   const rateLimits = AIPlatformConfig.getRateLimitConfig();
-  const dailyCap = agent.guards.dailyCostCap ?? AIPlatformConfig.getDailyCostCap();
 
   await assertMessageRateLimit({
     userId,
     limits: rateLimits,
     scope: `agent:${agent.id}`,
   });
-  await assertGlobalDailyCostCap(dailyCap);
+  await assertUserDailyBudgetUsd(userId, AIPlatformConfig.getUserDailyBudgetUsd());
+  await assertGlobalDailyBudgetUsd(AIPlatformConfig.getGlobalDailyBudgetUsd());
 }
 
 export async function runGuards(

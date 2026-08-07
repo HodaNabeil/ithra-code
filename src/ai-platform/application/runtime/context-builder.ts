@@ -179,6 +179,7 @@ function buildTutorState(
     validationErrors: [],
     runSignals: {},
     tokensUsed: { input: 0, output: 0 },
+    embeddingTokensUsed: 0,
     pendingToolCalls: [],
     toolResults: [],
     toolIterations: 0,
@@ -204,6 +205,7 @@ function buildEvaluatorState(
     validationErrors: [],
     runSignals: {},
     tokensUsed: { input: 0, output: 0 },
+    embeddingTokensUsed: 0,
   };
 }
 

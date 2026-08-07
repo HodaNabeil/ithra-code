@@ -81,6 +81,7 @@ export class OpenAIEmbeddingAdapter implements EmbeddingPort {
           input: sanitizedTexts,
         });
 
+        const totalTokens = response.usage?.total_tokens ?? 0;
         const embeddings = response.data
           .sort((a, b) => a.index - b.index)
           .map((item) => ({
@@ -88,6 +89,8 @@ export class OpenAIEmbeddingAdapter implements EmbeddingPort {
             embedding: item.embedding,
             dimensions: item.embedding.length,
             model,
+            tokensUsed:
+              sanitizedTexts.length === 1 ? totalTokens : undefined,
           }));
 
         return {

@@ -43,6 +43,7 @@ export interface LlmToolDefinition {
 
 export interface LlmCompleteResult {
   content: string;
+  usage?: LlmTokenUsage;
   toolCalls?: Array<{
     id: string;
     name: string;

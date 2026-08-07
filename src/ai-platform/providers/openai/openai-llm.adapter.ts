@@ -153,7 +153,16 @@ export class OpenAILlmAdapter implements LlmPort {
         };
       });
 
-      return { content, toolCalls };
+      return {
+        content,
+        usage: response.usage
+          ? {
+              input: response.usage.prompt_tokens ?? 0,
+              output: response.usage.completion_tokens ?? 0,
+            }
+          : undefined,
+        toolCalls,
+      };
     } catch (error) {
       throw this.mapError(error);
     } finally {

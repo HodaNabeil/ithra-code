@@ -49,15 +49,18 @@ function mapSearchResults(
 async function embedQuery(
   query: string,
   embeddingPort: EmbeddingPort,
-): Promise<number[]> {
+): Promise<{ embedding: number[]; tokensUsed: number }> {
   const cached = await getCachedEmbedding(query);
   if (cached) {
-    return cached;
+    return { embedding: cached, tokensUsed: 0 };
   }
 
   const result = await embeddingPort.generateEmbedding(query);
   await setCachedEmbedding(query, result.embedding);
-  return result.embedding;
+  return {
+    embedding: result.embedding,
+    tokensUsed: result.tokensUsed ?? 0,
+  };
 }
 
 async function searchChunks(
@@ -65,13 +68,13 @@ async function searchChunks(
   input: Pick<RetrieveRelevantContentInput, 'courseId' | 'lectureId'>,
   deps: ContentRetrieverDeps,
   minScore: number,
-): Promise<RetrievedContentChunk[]> {
+): Promise<{ chunks: RetrievedContentChunk[]; embeddingTokensUsed: number }> {
   const searchConfig = deps.vectorSearchConfig ?? {
     topK: AI_PLATFORM_CONSTANTS.DEFAULT_TOP_K,
     minScore: AI_PLATFORM_CONSTANTS.DEFAULT_MIN_SIMILARITY,
   };
 
-  const embedding = await embedQuery(query, deps.embeddingPort);
+  const { embedding, tokensUsed } = await embedQuery(query, deps.embeddingPort);
   const results = await deps.vectorSearchPort.search(embedding, {
     topK: searchConfig.topK,
     minScore,
@@ -81,7 +84,10 @@ async function searchChunks(
     },
   });
 
-  return mapSearchResults(results);
+  return {
+    chunks: mapSearchResults(results),
+    embeddingTokensUsed: tokensUsed,
+  };
 }
 
 export async function retrieveRelevantContent(
@@ -107,7 +113,7 @@ async function retrieveRelevantContentInternal(
 ): Promise<ContentRetrievalResult> {
   const question = input.question.trim();
   if (!question) {
-    return { chunks: [], hasResults: false, usedFallback: true };
+    return { chunks: [], hasResults: false, usedFallback: true, embeddingTokensUsed: 0 };
   }
 
   const searchConfig = deps.vectorSearchConfig ?? {
@@ -115,9 +121,13 @@ async function retrieveRelevantContentInternal(
     minScore: AI_PLATFORM_CONSTANTS.DEFAULT_MIN_SIMILARITY,
   };
 
-  let chunks = await searchChunks(question, input, deps, searchConfig.minScore);
+  let embeddingTokensUsed = 0;
+
+  let searchResult = await searchChunks(question, input, deps, searchConfig.minScore);
+  embeddingTokensUsed += searchResult.embeddingTokensUsed;
+  let chunks = searchResult.chunks;
   if (chunks.length > 0) {
-    return { chunks, hasResults: true, usedFallback: false };
+    return { chunks, hasResults: true, usedFallback: false, embeddingTokensUsed };
   }
 
   const expandedQuery = buildRetrievalQuery({
@@ -128,19 +138,23 @@ async function retrieveRelevantContentInternal(
   });
 
   if (expandedQuery !== question) {
-    chunks = await searchChunks(expandedQuery, input, deps, searchConfig.minScore);
+    searchResult = await searchChunks(expandedQuery, input, deps, searchConfig.minScore);
+    embeddingTokensUsed += searchResult.embeddingTokensUsed;
+    chunks = searchResult.chunks;
     if (chunks.length > 0) {
-      return { chunks, hasResults: true, usedFallback: false };
+      return { chunks, hasResults: true, usedFallback: false, embeddingTokensUsed };
     }
   }
 
   if (input.lectureId) {
     const fallbackQuery = expandedQuery !== question ? expandedQuery : question;
-    chunks = await searchChunks(fallbackQuery, input, deps, 0);
+    searchResult = await searchChunks(fallbackQuery, input, deps, 0);
+    embeddingTokensUsed += searchResult.embeddingTokensUsed;
+    chunks = searchResult.chunks;
     if (chunks.length > 0) {
-      return { chunks, hasResults: true, usedFallback: false };
+      return { chunks, hasResults: true, usedFallback: false, embeddingTokensUsed };
     }
   }
 
-  return { chunks: [], hasResults: false, usedFallback: true };
+  return { chunks: [], hasResults: false, usedFallback: true, embeddingTokensUsed };
 }

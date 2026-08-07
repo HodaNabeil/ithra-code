@@ -2,7 +2,11 @@ import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
 
 import { AITutorConfig } from '../../infrastructure/config/ai-tutor.config';
-import { getConversationRepository } from '../../infrastructure/di/ai-tutor-container';
+import { isCourseAccessible } from '../../application/services/enrollment-access.service';
+import {
+  getConversationRepository,
+  getCourseContextRepository,
+} from '../../infrastructure/di/ai-tutor-container';
 
 export async function handleDeleteTutorMessageRequest(
   _request: Request,
@@ -25,11 +29,20 @@ export async function handleDeleteTutorMessageRequest(
   }
 
   const conversations = await repository.getUserConversations(session.user.id);
-  const ownsMessage = conversations.some((conversation) =>
-    conversation.threads.some((thread) => thread.id === message.threadId),
+  const conversation = conversations.find((item) =>
+    item.threads.some((thread) => thread.id === message.threadId),
   );
+  const ownsMessage = Boolean(conversation);
 
-  if (!ownsMessage) {
+  if (!ownsMessage || !conversation) {
+    return apiError('غير مصرح لك بحذف هذه الرسالة', 403);
+  }
+
+  const accessibleCourseIds = await getCourseContextRepository().getAccessibleCourseIds(
+    session.user.id,
+    [conversation.courseId],
+  );
+  if (!isCourseAccessible(conversation.courseId, accessibleCourseIds)) {
     return apiError('غير مصرح لك بحذف هذه الرسالة', 403);
   }
 

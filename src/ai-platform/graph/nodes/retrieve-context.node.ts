@@ -56,6 +56,7 @@ export async function retrieveContextNode(
 
   let retrievedChunks: RetrievedChunkState[];
   let usedFallback: boolean;
+  let embeddingTokensUsed = 0;
 
   if (cached) {
     retrievedChunks = cached.chunks;
@@ -81,6 +82,7 @@ export async function retrieveContextNode(
 
     retrievedChunks = result.chunks.map(toRetrievedChunkState);
     usedFallback = result.usedFallback;
+    embeddingTokensUsed = result.embeddingTokensUsed;
 
     if (runtime.runId) {
       await setWorkingMemory(runtime.runId, WORKING_MEMORY_SCOPE, {
@@ -94,7 +96,10 @@ export async function retrieveContextNode(
     await runtime.onRetrieval(retrievedChunks, usedFallback);
   }
 
-  const stateUpdate: Partial<TutorAgentState> = { retrievedChunks };
+  const stateUpdate: Partial<TutorAgentState> = {
+    retrievedChunks,
+    embeddingTokensUsed,
+  };
 
   if (isAssessmentAdjacent(retrievedChunks)) {
     stateUpdate.executionPolicy = 'BUFFERED';

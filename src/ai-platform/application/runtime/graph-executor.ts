@@ -36,6 +36,7 @@ export interface GraphExecutionInput {
   onStateUpdate?: (state: AgentGraphState) => void;
   maxTokens?: number;
   temperature?: number;
+  model?: string;
   signal?: AbortSignal;
   callbacks?: BaseCallbackHandler[];
   traceMetadata?: Record<string, unknown>;
@@ -70,6 +71,7 @@ function buildConfigurable(input: GraphExecutionInput): GraphRuntimeConfigurable
     responseEnricher: input.responseEnricher,
     enrichmentContext: input.enrichmentContext,
     contentValidator: input.contentValidator,
+    model: input.model,
   };
 }
 

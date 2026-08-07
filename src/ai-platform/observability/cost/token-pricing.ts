@@ -28,3 +28,25 @@ export function estimateCostUsd(
   const pricing = getModelPricing(model);
   return inputTokens * pricing.input + outputTokens * pricing.output;
 }
+
+export type ComputeRunCostUsdInput = {
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  embeddingModel?: string;
+  embeddingTokens?: number;
+};
+
+export function computeRunCostUsd(input: ComputeRunCostUsdInput): number {
+  const llmCost = estimateCostUsd(
+    input.model,
+    input.inputTokens,
+    input.outputTokens,
+  );
+
+  if (!input.embeddingModel || !input.embeddingTokens) {
+    return llmCost;
+  }
+
+  return llmCost + estimateCostUsd(input.embeddingModel, input.embeddingTokens, 0);
+}

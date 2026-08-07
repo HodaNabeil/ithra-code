@@ -2,8 +2,12 @@ import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
 
 import { AskTutorError } from '../../application/errors/ask-tutor.errors';
+import { isCourseAccessible } from '../../application/services/enrollment-access.service';
 import { AITutorConfig } from '../../infrastructure/config/ai-tutor.config';
-import { getConversationRepository } from '../../infrastructure/di/ai-tutor-container';
+import {
+  getConversationRepository,
+  getCourseContextRepository,
+} from '../../infrastructure/di/ai-tutor-container';
 import { AI_TUTOR_CONSTANTS } from '../../shared';
 
 export async function handleGetTutorThreadByIdRequest(
@@ -22,12 +26,21 @@ export async function handleGetTutorThreadByIdRequest(
   try {
     const repository = getConversationRepository();
     const conversations = await repository.getUserConversations(session.user.id);
-    const thread = conversations
-      .flatMap((conversation) => conversation.threads)
-      .find((item) => item.id === threadId);
+    const conversation = conversations.find((item) =>
+      item.threads.some((thread) => thread.id === threadId),
+    );
+    const thread = conversation?.threads.find((item) => item.id === threadId);
 
-    if (!thread) {
+    if (!thread || !conversation) {
       return apiError('الموضوع غير موجود', 404);
+    }
+
+    const accessibleCourseIds = await getCourseContextRepository().getAccessibleCourseIds(
+      session.user.id,
+      [conversation.courseId],
+    );
+    if (!isCourseAccessible(conversation.courseId, accessibleCourseIds)) {
+      return apiError('غير مصرح لك بالوصول إلى هذه المحادثة', 403);
     }
 
     const messages = await repository.getThreadMessages(

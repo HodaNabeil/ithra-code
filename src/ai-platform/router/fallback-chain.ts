@@ -6,11 +6,24 @@ export interface FallbackChainConfig {
   fallbacks: string[];
 }
 
+export function resolveModelChain(
+  chain: FallbackChainConfig,
+  callerModel?: string,
+): string[] {
+  if (callerModel) {
+    return [
+      callerModel,
+      ...chain.fallbacks.filter((model) => model !== callerModel),
+    ];
+  }
+  return [chain.primaryModel, ...chain.fallbacks];
+}
+
 export class FallbackLlmAdapter implements LlmPort {
   constructor(private readonly chain: FallbackChainConfig) {}
 
   async *streamAnswer(options: LlmStreamOptions): AsyncIterableIterator<string> {
-    const models = [this.chain.primaryModel, ...this.chain.fallbacks];
+    const models = resolveModelChain(this.chain, options.model);
     let lastError: unknown;
 
     for (const model of models) {
@@ -29,7 +42,7 @@ export class FallbackLlmAdapter implements LlmPort {
   }
 
   async complete(options: LlmCompleteOptions): Promise<LlmCompleteResult> {
-    const models = [this.chain.primaryModel, ...this.chain.fallbacks];
+    const models = resolveModelChain(this.chain, options.model);
     let lastError: unknown;
 
     for (const model of models) {

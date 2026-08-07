@@ -254,7 +254,15 @@ export const env = createEnv({
     AI_PLATFORM_DAILY_COST_CAP: z
       .string()
       .optional()
-      .describe('Max AI requests per day across all users (0 = disabled)'),
+      .describe('Deprecated request-count cap (unused; see *_DAILY_BUDGET_USD)'),
+    AI_PLATFORM_USER_DAILY_BUDGET_USD: z
+      .string()
+      .optional()
+      .describe('Per-user daily AI spend cap in USD (0 = disabled)'),
+    AI_PLATFORM_GLOBAL_DAILY_BUDGET_USD: z
+      .string()
+      .optional()
+      .describe('Global daily AI spend safety-net cap in USD (0 = disabled)'),
     AI_PLATFORM_RATE_LIMIT_PER_MINUTE: z
       .string()
       .optional()
@@ -380,7 +388,11 @@ export const env = createEnv({
     AI_TUTOR_DAILY_COST_CAP: z
       .string()
       .optional()
-      .describe('Max tutor requests per day across all users (0 = disabled)'),
+      .describe('Deprecated request-count cap (unused; see AI_TUTOR_USER_DAILY_BUDGET_USD)'),
+    AI_TUTOR_USER_DAILY_BUDGET_USD: z
+      .string()
+      .optional()
+      .describe('Per-user daily AI tutor spend cap in USD (0 = disabled)'),
     COURSE_INDEXING_CONCURRENCY: z
       .string()
       .optional()
@@ -465,6 +477,8 @@ export const env = createEnv({
     AI_PLATFORM_TOP_K: process.env.AI_PLATFORM_TOP_K,
     AI_PLATFORM_MIN_SIMILARITY: process.env.AI_PLATFORM_MIN_SIMILARITY,
     AI_PLATFORM_DAILY_COST_CAP: process.env.AI_PLATFORM_DAILY_COST_CAP,
+    AI_PLATFORM_USER_DAILY_BUDGET_USD: process.env.AI_PLATFORM_USER_DAILY_BUDGET_USD,
+    AI_PLATFORM_GLOBAL_DAILY_BUDGET_USD: process.env.AI_PLATFORM_GLOBAL_DAILY_BUDGET_USD,
     AI_PLATFORM_RATE_LIMIT_PER_MINUTE: process.env.AI_PLATFORM_RATE_LIMIT_PER_MINUTE,
     AI_PLATFORM_RATE_LIMIT_PER_HOUR: process.env.AI_PLATFORM_RATE_LIMIT_PER_HOUR,
     AI_PLATFORM_RATE_LIMIT_PER_DAY: process.env.AI_PLATFORM_RATE_LIMIT_PER_DAY,
@@ -494,6 +508,7 @@ export const env = createEnv({
     AI_TUTOR_MIN_SIMILARITY: process.env.AI_TUTOR_MIN_SIMILARITY,
     INTERNAL_HEALTH_TOKEN: process.env.INTERNAL_HEALTH_TOKEN,
     AI_TUTOR_DAILY_COST_CAP: process.env.AI_TUTOR_DAILY_COST_CAP,
+    AI_TUTOR_USER_DAILY_BUDGET_USD: process.env.AI_TUTOR_USER_DAILY_BUDGET_USD,
     COURSE_INDEXING_CONCURRENCY: process.env.COURSE_INDEXING_CONCURRENCY,
   },
 

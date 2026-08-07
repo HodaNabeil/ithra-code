@@ -125,6 +125,23 @@ export class AIPlatformConfig {
     return Number.isFinite(tutorCap) && tutorCap > 0 ? Math.floor(tutorCap) : 0;
   }
 
+  /** Per-user daily USD budget (0 = disabled). */
+  static getUserDailyBudgetUsd(): number {
+    const tutorCap = Number(env.AI_TUTOR_USER_DAILY_BUDGET_USD);
+    if (Number.isFinite(tutorCap) && tutorCap > 0) {
+      return tutorCap;
+    }
+
+    const platformCap = Number(env.AI_PLATFORM_USER_DAILY_BUDGET_USD);
+    return Number.isFinite(platformCap) && platformCap > 0 ? platformCap : 0;
+  }
+
+  /** Global daily USD safety-net budget (0 = disabled). */
+  static getGlobalDailyBudgetUsd(): number {
+    const cap = Number(env.AI_PLATFORM_GLOBAL_DAILY_BUDGET_USD);
+    return Number.isFinite(cap) && cap > 0 ? cap : 0;
+  }
+
   static getLangfuseConfig() {
     return {
       enabled: Boolean(env.LANGFUSE_PUBLIC_KEY && env.LANGFUSE_SECRET_KEY),

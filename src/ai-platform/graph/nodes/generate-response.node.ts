@@ -6,7 +6,8 @@ import { listTools } from '../../tools/registry/tool-registry';
 import type { TutorAgentState } from '../state/tutor-agent.state';
 import { getGraphRuntimeConfig } from '../runtime-config';
 
-function estimateTokens(text: string): number {
+/** Clearly-marked fallback — replace when provider usage is guaranteed */
+function FALLBACK_estimateTokensFromChars(text: string): number {
   return Math.ceil(text.length / 4);
 }
 
@@ -60,7 +61,7 @@ export async function generateResponseNode(
     retrievedChunks: state.retrievedChunks,
     personalization: state.personalization,
   });
-  const inputTokens = estimateTokens(
+  const inputTokens = FALLBACK_estimateTokensFromChars(
     `${systemPrompt}\n${messages.map((message) => message.content).join('\n')}`,
   );
 
@@ -78,27 +79,36 @@ export async function generateResponseNode(
       messages,
       temperature: runtime.temperature,
       maxTokens: runtime.maxTokens,
+      model: runtime.model,
       tools: toLlmTools(allowedTools),
     });
 
     if (response.toolCalls && response.toolCalls.length > 0) {
+      const usageEstimated = !response.usage;
       return {
         pendingToolCalls: response.toolCalls,
         tokensUsed: {
-          input: inputTokens,
-          output: estimateTokens(response.content),
+          input: response.usage?.input ?? inputTokens,
+          output: response.usage?.output ?? FALLBACK_estimateTokensFromChars(response.content),
         },
+        ...(usageEstimated
+          ? { runSignals: { ...state.runSignals, tokenUsageEstimated: true } }
+          : {}),
       };
     }
 
     const finalResponse = response.content;
+    const usageEstimated = !response.usage;
     return {
       finalResponse,
       pendingToolCalls: [],
       tokensUsed: {
-        input: inputTokens,
-        output: estimateTokens(finalResponse),
+        input: response.usage?.input ?? inputTokens,
+        output: response.usage?.output ?? FALLBACK_estimateTokensFromChars(finalResponse),
       },
+      ...(usageEstimated
+        ? { runSignals: { ...state.runSignals, tokenUsageEstimated: true } }
+        : {}),
     };
   }
 
@@ -110,6 +120,7 @@ export async function generateResponseNode(
     messages,
     temperature: runtime.temperature,
     maxTokens: runtime.maxTokens,
+    model: runtime.model,
     signal: config.signal,
     onUsage: (usage) => {
       measuredUsage = usage;
@@ -126,7 +137,10 @@ export async function generateResponseNode(
     pendingToolCalls: [],
     tokensUsed: measuredUsage ?? {
       input: inputTokens,
-      output: estimateTokens(finalResponse),
+      output: FALLBACK_estimateTokensFromChars(finalResponse),
     },
+    ...(!measuredUsage
+      ? { runSignals: { ...state.runSignals, tokenUsageEstimated: true } }
+      : {}),
   };
 }

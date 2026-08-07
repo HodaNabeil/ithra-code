@@ -10,6 +10,7 @@ export interface AgentExecutionState {
   executionPolicy: ExecutionPolicy;
   finalResponse: string;
   tokensUsed: { input: number; output: number };
+  embeddingTokensUsed: number;
   validationErrors: string[];
   runSignals: Record<string, unknown>;
 }
@@ -31,9 +32,24 @@ export const executionPolicyChannel = Annotation<ExecutionPolicy>({
   default: () => 'LIVE',
 });
 
+export function accumulateTokensUsed(
+  left: { input: number; output: number },
+  right: { input: number; output: number },
+): { input: number; output: number } {
+  return {
+    input: left.input + right.input,
+    output: left.output + right.output,
+  };
+}
+
 export const tokensUsedChannel = Annotation<{ input: number; output: number }>({
-  reducer: (_left, right) => right,
+  reducer: accumulateTokensUsed,
   default: () => ({ input: 0, output: 0 }),
+});
+
+export const embeddingTokensUsedChannel = Annotation<number>({
+  reducer: (left, right) => left + right,
+  default: () => 0,
 });
 
 export const validationErrorsChannel = Annotation<string[]>({
@@ -50,6 +66,7 @@ export const runSignalsChannel = Annotation<Record<string, unknown>>({
 export const agentExecutionChannels = {
   executionPolicy: executionPolicyChannel,
   tokensUsed: tokensUsedChannel,
+  embeddingTokensUsed: embeddingTokensUsedChannel,
   validationErrors: validationErrorsChannel,
   runSignals: runSignalsChannel,
 } as const;

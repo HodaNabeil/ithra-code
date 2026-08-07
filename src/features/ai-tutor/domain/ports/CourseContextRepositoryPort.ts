@@ -41,4 +41,9 @@ export interface CourseContextRepositoryPort {
     courseSlug: string;
     userId: string;
   }): Promise<EnrolledCourseWithProgressDTO | null>;
+
+  getAccessibleCourseIds(
+    userId: string,
+    courseIds: string[],
+  ): Promise<Set<string>>;
 }

@@ -4,10 +4,12 @@ import { apiError, apiSuccess } from '@/lib/api-response';
 import {
   buildTutorSessionContext,
 } from '../../application/services/course-context.service';
+import { filterConversationsByAccessibleCourses } from '../../application/services/enrollment-access.service';
 import { AskTutorError } from '../../application/errors/ask-tutor.errors';
 import { AITutorConfig } from '../../infrastructure/config/ai-tutor.config';
 import {
   getConversationRepository,
+  getCourseContextRepository,
   getSessionContextDeps,
 } from '../../infrastructure/di/ai-tutor-container';
 
@@ -45,7 +47,17 @@ export async function handleListTutorConversationsRequest(
     }
 
     const conversations = await repository.getUserConversations(session.user.id);
-    return apiSuccess(conversations, 'تم تحميل المحادثات');
+    const courseIds = [...new Set(conversations.map((conversation) => conversation.courseId))];
+    const accessibleCourseIds = await getCourseContextRepository().getAccessibleCourseIds(
+      session.user.id,
+      courseIds,
+    );
+    const accessibleConversations = filterConversationsByAccessibleCourses(
+      conversations,
+      accessibleCourseIds,
+    );
+
+    return apiSuccess(accessibleConversations, 'تم تحميل المحادثات');
   } catch (error) {
     if (error instanceof AskTutorError) {
       return apiError(error.message, error.status);

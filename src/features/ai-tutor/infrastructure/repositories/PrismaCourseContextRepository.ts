@@ -82,6 +82,28 @@ export class PrismaCourseContextRepository implements CourseContextRepositoryPor
       },
     });
   }
+
+  async getAccessibleCourseIds(
+    userId: string,
+    courseIds: string[],
+  ): Promise<Set<string>> {
+    if (courseIds.length === 0) {
+      return new Set();
+    }
+
+    const enrollments = await prisma.enrollment.findMany({
+      where: {
+        studentId: userId,
+        courseId: { in: courseIds },
+        status: {
+          in: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED],
+        },
+      },
+      select: { courseId: true },
+    });
+
+    return new Set(enrollments.map((enrollment) => enrollment.courseId));
+  }
 }
 
 export const prismaCourseContextRepository = new PrismaCourseContextRepository();
