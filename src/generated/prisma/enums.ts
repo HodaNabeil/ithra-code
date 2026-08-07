@@ -316,6 +316,7 @@ export type KnowledgeSensitivity = (typeof KnowledgeSensitivity)[keyof typeof Kn
 export const CourseIndexingOutboxStatus = {
   PENDING: 'PENDING',
   SENT: 'SENT',
+  COMPLETED: 'COMPLETED',
   FAILED: 'FAILED'
 } as const
 

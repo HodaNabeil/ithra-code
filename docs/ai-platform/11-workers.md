@@ -242,7 +242,7 @@ const EvalJobSchema = z.object({
 
 ```mermaid
 flowchart TD
-  Start([Process Start]) --> Validate[validatePlatformInfrastructure]
+  Start([Process Start]) --> Validate[validateIndexingInfrastructure]
   Validate --> Connect[Connect Redis + Prisma]
   Connect --> Recover[Recover pending outbox]
   Recover --> Bootstrap[Bootstrap unindexed courses]
@@ -253,7 +253,7 @@ flowchart TD
 
 Migrated from `course-indexing.worker.ts` startup pattern:
 
-1. `validatePlatformInfrastructure()` — check pgvector, Redis, provider keys
+1. `validateIndexingInfrastructure()` — check pgvector, Redis, provider keys (indexing worker). Next.js web process calls `validatePlatformInfrastructure()` when `AI_PLATFORM_ENABLED=true`.
 2. Connect to Redis and Prisma
 3. Recover pending outbox rows
 4. Bootstrap unindexed courses (with distributed lock)

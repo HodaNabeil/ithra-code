@@ -1,5 +1,7 @@
 import { LectureType } from '@/generated/prisma/enums';
 
+import { sanitizeAssessmentBody } from '@/ai-platform/indexing/services/assessment-content.service';
+
 import { createInlineTextExtractor } from './base-extractor';
 
 export const lessonTitleExtractor = createInlineTextExtractor({
@@ -36,6 +38,7 @@ export const assignmentExtractor = createInlineTextExtractor({
       source.lectureType === LectureType.ASSIGNMENT),
   preserveMarkdown: true,
   extractionMethod: 'assignment',
+  sanitizeText: sanitizeAssessmentBody,
 });
 
 export const quizExtractor = createInlineTextExtractor({
@@ -46,6 +49,7 @@ export const quizExtractor = createInlineTextExtractor({
       source.lectureType === LectureType.QUIZ),
   preserveMarkdown: true,
   extractionMethod: 'quiz',
+  sanitizeText: sanitizeAssessmentBody,
 });
 
 export const courseOverviewExtractor = createInlineTextExtractor({

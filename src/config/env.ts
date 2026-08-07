@@ -243,6 +243,10 @@ export const env = createEnv({
       .string()
       .optional()
       .describe('Default max completion tokens for platform LLM calls'),
+    AI_PLATFORM_HISTORY_TOKEN_BUDGET: z
+      .string()
+      .optional()
+      .describe('Max estimated tokens for conversation history sent to the LLM'),
     AI_PLATFORM_TOP_K: z
       .string()
       .optional()
@@ -251,6 +255,10 @@ export const env = createEnv({
       .string()
       .optional()
       .describe('Default minimum cosine similarity for retrieval (0-1)'),
+    AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY: z
+      .string()
+      .optional()
+      .describe('Minimum similarity when lecture-scoped retrieval fallback is used'),
     AI_PLATFORM_DAILY_COST_CAP: z
       .string()
       .optional()
@@ -323,6 +331,10 @@ export const env = createEnv({
       .url()
       .optional()
       .describe('LangSmith API endpoint'),
+    LANGSMITH_PII_SALT: z
+      .string()
+      .optional()
+      .describe('Salt used when hashing identifiers before LangSmith export'),
 
     // OpenTelemetry
     OTEL_ENABLED: z
@@ -381,6 +393,10 @@ export const env = createEnv({
       .string()
       .optional()
       .describe('Minimum cosine similarity threshold for retrieval (0-1)'),
+    AI_TUTOR_LECTURE_FALLBACK_MIN_SIMILARITY: z
+      .string()
+      .optional()
+      .describe('Lecture fallback minimum similarity for tutor retrieval'),
     INTERNAL_HEALTH_TOKEN: z
       .string()
       .optional()
@@ -397,6 +413,10 @@ export const env = createEnv({
       .string()
       .optional()
       .describe('BullMQ worker concurrency for course indexing jobs'),
+    KNOWLEDGE_INGESTION_SOURCE_CONCURRENCY: z
+      .string()
+      .optional()
+      .describe('Parallel source ingestion concurrency within a single indexing job'),
   },
 
   client: {
@@ -474,8 +494,11 @@ export const env = createEnv({
     AI_PLATFORM_EMBEDDING_MODEL: process.env.AI_PLATFORM_EMBEDDING_MODEL,
     AI_PLATFORM_LLM_TIMEOUT_MS: process.env.AI_PLATFORM_LLM_TIMEOUT_MS,
     AI_PLATFORM_LLM_MAX_TOKENS: process.env.AI_PLATFORM_LLM_MAX_TOKENS,
+    AI_PLATFORM_HISTORY_TOKEN_BUDGET: process.env.AI_PLATFORM_HISTORY_TOKEN_BUDGET,
     AI_PLATFORM_TOP_K: process.env.AI_PLATFORM_TOP_K,
     AI_PLATFORM_MIN_SIMILARITY: process.env.AI_PLATFORM_MIN_SIMILARITY,
+    AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY:
+      process.env.AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY,
     AI_PLATFORM_DAILY_COST_CAP: process.env.AI_PLATFORM_DAILY_COST_CAP,
     AI_PLATFORM_USER_DAILY_BUDGET_USD: process.env.AI_PLATFORM_USER_DAILY_BUDGET_USD,
     AI_PLATFORM_GLOBAL_DAILY_BUDGET_USD: process.env.AI_PLATFORM_GLOBAL_DAILY_BUDGET_USD,
@@ -494,6 +517,7 @@ export const env = createEnv({
     LANGCHAIN_API_KEY: process.env.LANGCHAIN_API_KEY,
     LANGCHAIN_PROJECT: process.env.LANGCHAIN_PROJECT,
     LANGCHAIN_ENDPOINT: process.env.LANGCHAIN_ENDPOINT,
+    LANGSMITH_PII_SALT: process.env.LANGSMITH_PII_SALT,
     OTEL_ENABLED: process.env.OTEL_ENABLED,
     OTEL_SERVICE_NAME: process.env.OTEL_SERVICE_NAME,
     OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
@@ -506,10 +530,14 @@ export const env = createEnv({
     AI_TUTOR_EMBEDDING_MODEL: process.env.AI_TUTOR_EMBEDDING_MODEL,
     AI_TUTOR_TOP_K: process.env.AI_TUTOR_TOP_K,
     AI_TUTOR_MIN_SIMILARITY: process.env.AI_TUTOR_MIN_SIMILARITY,
+    AI_TUTOR_LECTURE_FALLBACK_MIN_SIMILARITY:
+      process.env.AI_TUTOR_LECTURE_FALLBACK_MIN_SIMILARITY,
     INTERNAL_HEALTH_TOKEN: process.env.INTERNAL_HEALTH_TOKEN,
     AI_TUTOR_DAILY_COST_CAP: process.env.AI_TUTOR_DAILY_COST_CAP,
     AI_TUTOR_USER_DAILY_BUDGET_USD: process.env.AI_TUTOR_USER_DAILY_BUDGET_USD,
     COURSE_INDEXING_CONCURRENCY: process.env.COURSE_INDEXING_CONCURRENCY,
+    KNOWLEDGE_INGESTION_SOURCE_CONCURRENCY:
+      process.env.KNOWLEDGE_INGESTION_SOURCE_CONCURRENCY,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

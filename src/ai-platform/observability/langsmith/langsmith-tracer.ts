@@ -6,6 +6,7 @@ import { logger } from '@/lib/logger';
 
 import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
 import { getLangsmithRunId, setLangsmithRunId } from './trace-context';
+import { redactTraceInputs, redactTraceMetadata } from './trace-redactor';
 
 export type AgentTraceMetadata = {
   runId: string;
@@ -58,9 +59,9 @@ export function createAgentTraceSession(
       id: metadata.runId,
       name: `agent:${metadata.agentId}`,
       run_type: 'chain',
-      inputs,
+      inputs: redactTraceInputs(inputs),
       project_name: project,
-      metadata: {
+      metadata: redactTraceMetadata({
         agentId: metadata.agentId,
         userId: metadata.userId,
         courseId: metadata.courseId,
@@ -68,7 +69,7 @@ export function createAgentTraceSession(
         promptVersion: metadata.promptVersion,
         correlationId: metadata.correlationId,
         model: metadata.model,
-      },
+      }),
       tags: [metadata.agentId, metadata.promptVersion ?? 'unknown-prompt'],
     });
 

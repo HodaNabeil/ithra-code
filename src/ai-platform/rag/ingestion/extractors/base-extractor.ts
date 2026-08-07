@@ -13,6 +13,7 @@ export function createInlineTextExtractor(params: {
   canExtract: (source: KnowledgeSource) => boolean;
   preserveMarkdown?: boolean;
   extractionMethod?: string;
+  sanitizeText?: (text: string) => string;
 }): TextExtractorPort {
   return {
     sourceType: params.sourceType,
@@ -30,9 +31,21 @@ export function createInlineTextExtractor(params: {
         };
       }
 
+      const text = params.sanitizeText
+        ? params.sanitizeText(normalized)
+        : normalized;
+
+      if (!text.trim()) {
+        return {
+          source,
+          skipped: true,
+          skipReason: 'empty_content',
+        };
+      }
+
       return {
         source,
-        text: normalized,
+        text,
         extractionMethod: params.extractionMethod ?? 'inline_text',
       };
     },

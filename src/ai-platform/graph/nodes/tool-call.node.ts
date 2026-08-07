@@ -24,6 +24,7 @@ export async function toolCallNode(
   const results: Array<{ toolCallId: string; output: Record<string, unknown> }> = [];
 
   for (const call of state.pendingToolCalls) {
+    const courseId = runtime.courseId;
     const result = await executeTool(
       call.name,
       call.arguments,
@@ -33,10 +34,11 @@ export async function toolCallNode(
         scope: {
           type: 'course',
           userId: state.userId,
-          courseId: state.courseId,
+          courseId,
+          lectureId: runtime.lectureId,
         },
         signal: config.signal ?? AbortSignal.timeout(30_000),
-        courseId: state.courseId,
+        courseId,
       },
       allowedTools,
     );

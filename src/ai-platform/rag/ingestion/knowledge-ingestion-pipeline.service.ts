@@ -6,13 +6,13 @@ import type { KnowledgeSource } from '@/ai-platform/indexing/domain/models/Knowl
 import { isExtractionSkipped } from '@/ai-platform/indexing/domain/models/KnowledgeSource';
 import { logger } from '@/lib/logger';
 
+import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
 import { embedRecords } from '@/ai-platform/embeddings/pipeline';
 import { buildKnowledgeChunkRecords } from './chunk-builder.service';
 import {
   cleanupStaleHashes,
   detectContentChange,
   loadExistingHashes,
-  persistContentHash,
 } from './content-hash.service';
 import {
   collectCourseKnowledgeSources,
@@ -141,13 +141,12 @@ async function processSource(params: {
     );
 
     if (chunkRecords.length === 0) {
-      await deps.knowledgeChunkRepository.deleteBySourceId(source.sourceId);
-      await persistContentHash({
+      await deps.knowledgeChunkRepository.replaceSourceChunks({
         sourceId: source.sourceId,
         courseId: source.courseId,
         lectureId: source.lessonId,
         contentHash: change.contentHash,
-        hashRepository: deps.hashRepository,
+        chunks: [],
       });
       return;
     }
@@ -163,14 +162,12 @@ async function processSource(params: {
       '[KNOWLEDGE_INGESTION_EMBEDDINGS_GENERATED]',
     );
 
-    await deps.knowledgeChunkRepository.deleteBySourceId(source.sourceId);
-    await deps.knowledgeChunkRepository.insertMany(indexedChunks);
-    await persistContentHash({
+    await deps.knowledgeChunkRepository.replaceSourceChunks({
       sourceId: source.sourceId,
       courseId: source.courseId,
       lectureId: source.lessonId,
       contentHash: change.contentHash,
-      hashRepository: deps.hashRepository,
+      chunks: indexedChunks,
     });
 
     stats.chunksIndexed += indexedChunks.length;
@@ -192,6 +189,29 @@ async function processSource(params: {
       '[KNOWLEDGE_INGESTION_RESOURCE_ERROR]',
     );
   }
+}
+
+async function runWithConcurrency<T>(
+  items: T[],
+  concurrency: number,
+  worker: (item: T) => Promise<void>,
+): Promise<void> {
+  if (items.length === 0) {
+    return;
+  }
+
+  let nextIndex = 0;
+  const limit = Math.max(1, concurrency);
+
+  async function runWorker(): Promise<void> {
+    while (nextIndex < items.length) {
+      const currentIndex = nextIndex;
+      nextIndex += 1;
+      await worker(items[currentIndex]!);
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => runWorker()));
 }
 
 async function runIngestion(params: {
@@ -221,14 +241,16 @@ async function runIngestion(params: {
     hashRepository: params.deps.hashRepository,
   });
 
-  for (const source of params.sources) {
+  const sourceConcurrency = AIPlatformConfig.getKnowledgeIngestionSourceConcurrency();
+
+  await runWithConcurrency(params.sources, sourceConcurrency, async (source) => {
     await processSource({
       source,
       existingHashes,
       deps: params.deps,
       stats,
     });
-  }
+  });
 
   const activeSourceIds = new Set(params.sources.map((source) => source.sourceId));
   const staleSourceIds = await cleanupStaleHashes({

@@ -3,6 +3,10 @@ import type { Job } from 'bullmq';
 
 import { logger } from '@/lib/logger';
 
+import {
+  markIndexingOutboxCompleted,
+  markIndexingOutboxWorkerFailed,
+} from '../outbox/indexing-outbox.service';
 import { IndexingError, IndexingErrorCodes } from '../../application/errors/indexing.error';
 import type { CourseIndexingRequestedEvent } from '../constants';
 
@@ -121,8 +125,16 @@ export async function handleCourseIndexingJob(
       '[COURSE_INDEXING_WORKER_JOB_COMPLETED]',
     );
 
+    if (event.outboxId) {
+      await markIndexingOutboxCompleted(event.outboxId);
+    }
+
     return result;
   } catch (error) {
+    if (event.outboxId) {
+      await markIndexingOutboxWorkerFailed(event.outboxId, error);
+    }
+
     if (error instanceof IndexingError && NON_RETRYABLE_INDEXING_CODES.has(error.code)) {
       throw toUnrecoverableError(error);
     }

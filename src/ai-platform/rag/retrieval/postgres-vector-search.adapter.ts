@@ -97,6 +97,7 @@ export class PostgresVectorSearchAdapter implements VectorSearchPort {
               WHERE course_id = $2
                 AND sensitivity = $3::"knowledge_sensitivity"
                 AND embedding IS NOT NULL
+                AND (1 - (embedding <=> $1::vector)) >= $6
               ORDER BY
                 CASE WHEN lecture_id = $4 THEN 0 ELSE 1 END,
                 embedding <=> $1::vector
@@ -107,6 +108,7 @@ export class PostgresVectorSearchAdapter implements VectorSearchPort {
             KnowledgeSensitivity.PUBLIC,
             lectureId,
             topK,
+            minScore,
           )
         : await prisma.$queryRawUnsafe<VectorSearchRow[]>(
             `
@@ -123,6 +125,7 @@ export class PostgresVectorSearchAdapter implements VectorSearchPort {
               WHERE course_id = $2
                 AND sensitivity = $3::"knowledge_sensitivity"
                 AND embedding IS NOT NULL
+                AND (1 - (embedding <=> $1::vector)) >= $5
               ORDER BY embedding <=> $1::vector
               LIMIT $4
             `,
@@ -130,9 +133,10 @@ export class PostgresVectorSearchAdapter implements VectorSearchPort {
             courseId,
             KnowledgeSensitivity.PUBLIC,
             topK,
+            minScore,
           );
 
-      return rows.map(mapRow).filter((result) => result.score >= minScore);
+      return rows.map(mapRow);
     } catch (error) {
       console.error('[VECTOR_SEARCH_ERROR]', error);
       throw new VectorSearchError(

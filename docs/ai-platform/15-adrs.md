@@ -627,6 +627,78 @@ Each phase is independently revertible:
 
 ---
 
+## ADR-011: Fail-Fast Platform Infrastructure Validation
+
+### Status
+
+Accepted (P1-8)
+
+### Decision
+
+Call `validatePlatformInfrastructure()` during Next.js boot (`instrumentation.ts`) when `AI_PLATFORM_ENABLED=true`. Extend validation to probe HNSW index presence and a lightweight vector query.
+
+### Consequences
+
+Fail fast before serving traffic when pgvector/HNSW/Redis/DB are misconfigured. Empty vector tables skip the probe check.
+
+---
+
+## ADR-012: SQL-Level Similarity Threshold for Vector Retrieval
+
+### Status
+
+Accepted (P1-2)
+
+### Decision
+
+Apply `minScore` in the SQL `WHERE` clause before `LIMIT`, not as a post-query JavaScript filter.
+
+### Alternatives Considered
+
+Over-fetch (`topK * oversampleFactor`) — rejected; wastes DB work and still approximate.
+
+---
+
+## ADR-013: Transactional Per-Source Chunk Replace
+
+### Status
+
+Accepted (P1-9)
+
+### Decision
+
+Wrap `deleteBySourceId` + batched `insertMany` + hash upsert in a single Prisma transaction via `replaceSourceChunks()`.
+
+### Alternatives Considered
+
+Version-swap (dual-table cutover) — rejected as disproportionate for current per-source hash model.
+
+---
+
+## ADR-014: Application-Level PII Redaction Before LangSmith Export
+
+### Status
+
+Accepted (P1-7)
+
+### Decision
+
+Hash `userId` and redact emails/phones in trace inputs via `trace-redactor.ts` before `RunTree` creation. Configure `LANGSMITH_PII_SALT` for stable hashing.
+
+---
+
+## ADR-015: Runtime-Bound Search Tool Course Scope
+
+### Status
+
+Accepted (P1-1)
+
+### Decision
+
+Remove `courseId` from the LLM-visible search tool schema. Bind course scope from authenticated graph runtime config (`ToolContext.scope.courseId`).
+
+---
+
 ## Related Documentation
 
 - [01-overview.md](./01-overview.md) — Vision and goals

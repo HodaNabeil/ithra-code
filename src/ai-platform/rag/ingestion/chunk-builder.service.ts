@@ -87,7 +87,10 @@ export function buildKnowledgeChunkRecords(
     isAssessmentHint: source.metadata?.field === 'assessment_hints',
   });
 
-  if (classification.sensitivity === KnowledgeSensitivity.INSTRUCTOR) {
+  if (
+    classification.sensitivity === KnowledgeSensitivity.INSTRUCTOR ||
+    classification.sensitivity === KnowledgeSensitivity.ASSESSMENT
+  ) {
     return [];
   }
 

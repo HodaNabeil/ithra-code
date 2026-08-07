@@ -1,13 +1,17 @@
 import type { EmbeddingPort, VectorSearchPort } from '../../domain/ports';
+import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
 import { getCachedEmbedding, setCachedEmbedding } from '../../embeddings/cache/embedding-cache';
 import { withSpan } from '../../observability/opentelemetry/span-helpers';
 import { platformMetrics } from '../../observability/metrics/platform-metrics';
-import { AI_PLATFORM_CONSTANTS } from '../../shared/constants';
 import {
   buildRetrievalQuery,
   type RetrievalHistoryMessage,
 } from './retrieval-query';
-import type { ContentRetrievalResult, RetrievedContentChunk } from './types';
+import type {
+  ContentRetrievalResult,
+  RetrievedContentChunk,
+  RetrievalStrategy,
+} from './types';
 
 export type RetrieveRelevantContentInput = {
   question: string;
@@ -21,6 +25,7 @@ export type RetrieveRelevantContentInput = {
 export type VectorSearchConfig = {
   topK: number;
   minScore: number;
+  lectureFallbackMinSimilarity: number;
 };
 
 export type ContentRetrieverDeps = {
@@ -28,6 +33,19 @@ export type ContentRetrieverDeps = {
   vectorSearchPort: VectorSearchPort;
   vectorSearchConfig?: VectorSearchConfig;
 };
+
+function resolveSearchConfig(deps: ContentRetrieverDeps): VectorSearchConfig {
+  if (deps.vectorSearchConfig) {
+    return deps.vectorSearchConfig;
+  }
+
+  const config = AIPlatformConfig.getRetrievalConfig();
+  return {
+    topK: config.topK,
+    minScore: config.minSimilarity,
+    lectureFallbackMinSimilarity: config.lectureFallbackMinSimilarity,
+  };
+}
 
 function mapSearchResults(
   results: Awaited<ReturnType<VectorSearchPort['search']>>,
@@ -69,10 +87,7 @@ async function searchChunks(
   deps: ContentRetrieverDeps,
   minScore: number,
 ): Promise<{ chunks: RetrievedContentChunk[]; embeddingTokensUsed: number }> {
-  const searchConfig = deps.vectorSearchConfig ?? {
-    topK: AI_PLATFORM_CONSTANTS.DEFAULT_TOP_K,
-    minScore: AI_PLATFORM_CONSTANTS.DEFAULT_MIN_SIMILARITY,
-  };
+  const searchConfig = resolveSearchConfig(deps);
 
   const { embedding, tokensUsed } = await embedQuery(query, deps.embeddingPort);
   const results = await deps.vectorSearchPort.search(embedding, {
@@ -87,6 +102,21 @@ async function searchChunks(
   return {
     chunks: mapSearchResults(results),
     embeddingTokensUsed: tokensUsed,
+  };
+}
+
+function buildSuccessResult(
+  chunks: RetrievedContentChunk[],
+  strategy: RetrievalStrategy,
+  embeddingTokensUsed: number,
+): ContentRetrievalResult {
+  const usedFallback = strategy === 'lecture-relaxed' || strategy === 'none';
+  return {
+    chunks,
+    hasResults: chunks.length > 0,
+    usedFallback,
+    retrievalStrategy: strategy,
+    embeddingTokensUsed,
   };
 }
 
@@ -113,13 +143,16 @@ async function retrieveRelevantContentInternal(
 ): Promise<ContentRetrievalResult> {
   const question = input.question.trim();
   if (!question) {
-    return { chunks: [], hasResults: false, usedFallback: true, embeddingTokensUsed: 0 };
+    return {
+      chunks: [],
+      hasResults: false,
+      usedFallback: true,
+      retrievalStrategy: 'none',
+      embeddingTokensUsed: 0,
+    };
   }
 
-  const searchConfig = deps.vectorSearchConfig ?? {
-    topK: AI_PLATFORM_CONSTANTS.DEFAULT_TOP_K,
-    minScore: AI_PLATFORM_CONSTANTS.DEFAULT_MIN_SIMILARITY,
-  };
+  const searchConfig = resolveSearchConfig(deps);
 
   let embeddingTokensUsed = 0;
 
@@ -127,7 +160,7 @@ async function retrieveRelevantContentInternal(
   embeddingTokensUsed += searchResult.embeddingTokensUsed;
   let chunks = searchResult.chunks;
   if (chunks.length > 0) {
-    return { chunks, hasResults: true, usedFallback: false, embeddingTokensUsed };
+    return buildSuccessResult(chunks, 'strict', embeddingTokensUsed);
   }
 
   const expandedQuery = buildRetrievalQuery({
@@ -142,19 +175,30 @@ async function retrieveRelevantContentInternal(
     embeddingTokensUsed += searchResult.embeddingTokensUsed;
     chunks = searchResult.chunks;
     if (chunks.length > 0) {
-      return { chunks, hasResults: true, usedFallback: false, embeddingTokensUsed };
+      return buildSuccessResult(chunks, 'expanded', embeddingTokensUsed);
     }
   }
 
   if (input.lectureId) {
     const fallbackQuery = expandedQuery !== question ? expandedQuery : question;
-    searchResult = await searchChunks(fallbackQuery, input, deps, 0);
+    searchResult = await searchChunks(
+      fallbackQuery,
+      input,
+      deps,
+      searchConfig.lectureFallbackMinSimilarity,
+    );
     embeddingTokensUsed += searchResult.embeddingTokensUsed;
     chunks = searchResult.chunks;
     if (chunks.length > 0) {
-      return { chunks, hasResults: true, usedFallback: false, embeddingTokensUsed };
+      return buildSuccessResult(chunks, 'lecture-relaxed', embeddingTokensUsed);
     }
   }
 
-  return { chunks: [], hasResults: false, usedFallback: true, embeddingTokensUsed };
+  return {
+    chunks: [],
+    hasResults: false,
+    usedFallback: true,
+    retrievalStrategy: 'none',
+    embeddingTokensUsed,
+  };
 }

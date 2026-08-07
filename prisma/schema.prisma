@@ -1318,6 +1318,10 @@ model KnowledgeChunk {
   chunkIndex  Int                  @map("chunk_index")
   tokenCount  Int?                 @map("token_count")
   metadata    Json?
+  /// pgvector column (1536 dims). HNSW index `knowledge_chunks_embedding_idx`
+  /// is created in migration `20260729180000_add_knowledge_chunks_pgvector`
+  /// (and reaffirmed in `20260807140000_ensure_knowledge_chunks_hnsw_index`).
+  /// Always use `prisma migrate deploy` — never `db push` for this table.
   embedding   Unsupported("vector(1536)")?
   createdAt   DateTime             @default(now()) @map("created_at")
   updatedAt   DateTime             @updatedAt @map("updated_at")
@@ -1353,6 +1357,7 @@ model KnowledgeSourceHash {
 enum CourseIndexingOutboxStatus {
   PENDING
   SENT
+  COMPLETED
   FAILED
 
   @@map("course_indexing_outbox_status")

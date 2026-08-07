@@ -67,6 +67,14 @@ export async function retrieveContextNode(
         question,
         courseId: runtime.courseId,
         lectureId: runtime.lectureId,
+        lectureTitle:
+          typeof state.personalization?.lectureTitle === 'string'
+            ? state.personalization.lectureTitle
+            : undefined,
+        courseTitle:
+          typeof state.personalization?.courseTitle === 'string'
+            ? state.personalization.courseTitle
+            : undefined,
         recentHistory: state.conversationHistory
           .filter((message) => message.role === 'user' || message.role === 'assistant')
           .map((message) => ({

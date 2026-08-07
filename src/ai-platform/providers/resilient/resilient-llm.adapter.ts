@@ -42,6 +42,10 @@ async function* streamWithRetry(
 
       return;
     } catch (error) {
+      if (options.signal?.aborted) {
+        throw error;
+      }
+
       if (!(error instanceof LlmError) || !error.retryable || attempt === MAX_RETRIES - 1) {
         throw error;
       }

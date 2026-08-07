@@ -16,9 +16,16 @@ function searchCacheScope(query: string, courseId: string, topK?: number): strin
   return `tool:search:${courseId}:${topK ?? 'default'}:${query}`;
 }
 
+function resolveRuntimeCourseId(context: ToolContext): string {
+  const courseId = context.scope?.courseId ?? context.courseId;
+  if (!courseId) {
+    throw new Error('Course scope is required for knowledge search');
+  }
+  return courseId;
+}
+
 const searchInputSchema = z.object({
   query: z.string().min(1).max(2000),
-  courseId: z.string().min(1),
   topK: z.number().int().min(1).max(20).optional(),
 });
 
@@ -36,7 +43,8 @@ const searchOutputSchema = z.object({
 export const searchToolDefinition: ToolDefinition = {
   id: 'search',
   name: 'Knowledge Search',
-  description: 'Search the course knowledge base for relevant content',
+  description:
+    'Search the current course knowledge base for relevant educational content',
   source: 'builtin',
   inputSchema: searchInputSchema,
   outputSchema: searchOutputSchema,
@@ -49,11 +57,9 @@ export async function searchToolHandler(
   context: ToolContext,
 ): Promise<Record<string, unknown>> {
   const parsed = searchInputSchema.parse(input);
-  const scope = searchCacheScope(parsed.query, parsed.courseId, parsed.topK);
+  const courseId = resolveRuntimeCourseId(context);
+  const scope = searchCacheScope(parsed.query, courseId, parsed.topK);
 
-  // Multi-turn tool loops can re-issue the same search query within a run
-  // (e.g. the LLM re-checking results across iterations); reuse the cached
-  // result instead of re-embedding and re-searching.
   const cached = await getWorkingMemory(context.agentRunId, scope);
   if (cached && Array.isArray(cached.results)) {
     return cached;
@@ -67,7 +73,10 @@ export async function searchToolHandler(
   const results = await vectorSearchPort.search(embeddingResult.embedding, {
     topK: parsed.topK ?? retrievalConfig.topK,
     minScore: retrievalConfig.minSimilarity,
-    filter: { courseId: parsed.courseId },
+    filter: {
+      courseId,
+      lectureId: context.scope?.lectureId,
+    },
   });
 
   const output = {

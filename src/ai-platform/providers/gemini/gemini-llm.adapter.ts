@@ -7,6 +7,7 @@ import {
   type LlmPort,
   type LlmStreamOptions,
 } from '../../domain/ports/llm.port';
+import { createLinkedAbortController } from '../abort-signal';
 
 export class GeminiLlmAdapter implements LlmPort {
   private readonly apiKey: string;
@@ -25,16 +26,78 @@ export class GeminiLlmAdapter implements LlmPort {
   }
 
   async *streamAnswer(options: LlmStreamOptions): AsyncIterableIterator<string> {
-    const result = await this.complete({
-      ...options,
-      responseFormat: 'text',
-    });
-    yield result.content;
+    const { controller, cleanup } = createLinkedAbortController(
+      this.requestTimeoutMs,
+      options.signal,
+    );
+    const model = options.model ?? this.model;
+
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${this.apiKey}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.buildRequestBody(options)),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        throw await this.mapHttpError(response);
+      }
+
+      if (!response.body) {
+        throw new LlmError(LlmErrorCodes.UNKNOWN, 'Gemini stream body missing', false);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) {
+            continue;
+          }
+
+          const payload = line.slice(6).trim();
+          if (!payload) {
+            continue;
+          }
+
+          try {
+            const event = JSON.parse(payload) as {
+              candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+            };
+            const text = event.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) {
+              yield text;
+            }
+          } catch {
+            // Ignore malformed SSE chunks.
+          }
+        }
+      }
+    } catch (error) {
+      throw this.mapError(error, options.signal);
+    } finally {
+      cleanup();
+    }
   }
 
   async complete(options: LlmCompleteOptions): Promise<LlmCompleteResult> {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.requestTimeoutMs);
+    const { controller, cleanup } = createLinkedAbortController(
+      this.requestTimeoutMs,
+      options.signal,
+    );
     const model = options.model ?? this.model;
 
     try {
@@ -42,19 +105,7 @@ export class GeminiLlmAdapter implements LlmPort {
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: options.systemPrompt }] },
-          contents: options.messages.map((message) => ({
-            role: message.role === 'assistant' ? 'model' : 'user',
-            parts: [{ text: message.content }],
-          })),
-          generationConfig: {
-            temperature: options.temperature ?? this.defaultTemperature,
-            maxOutputTokens: options.maxTokens ?? this.defaultMaxTokens,
-            responseMimeType:
-              options.responseFormat === 'json' ? 'application/json' : 'text/plain',
-          },
-        }),
+        body: JSON.stringify(this.buildRequestBody(options)),
         signal: controller.signal,
       });
 
@@ -69,10 +120,30 @@ export class GeminiLlmAdapter implements LlmPort {
       const content = payload.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
       return { content };
     } catch (error) {
-      throw this.mapError(error);
+      throw this.mapError(error, options.signal);
     } finally {
-      clearTimeout(timeout);
+      cleanup();
     }
+  }
+
+  private buildRequestBody(
+    options: LlmCompleteOptions | LlmStreamOptions,
+  ): Record<string, unknown> {
+    return {
+      systemInstruction: { parts: [{ text: options.systemPrompt }] },
+      contents: options.messages.map((message) => ({
+        role: message.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: message.content }],
+      })),
+      generationConfig: {
+        temperature: options.temperature ?? this.defaultTemperature,
+        maxOutputTokens: options.maxTokens ?? this.defaultMaxTokens,
+        responseMimeType:
+          'responseFormat' in options && options.responseFormat === 'json'
+            ? 'application/json'
+            : 'text/plain',
+      },
+    };
   }
 
   private async mapHttpError(response: Response): Promise<LlmError> {
@@ -87,11 +158,14 @@ export class GeminiLlmAdapter implements LlmPort {
     return new LlmError(LlmErrorCodes.UNKNOWN, body || 'Gemini request failed', false);
   }
 
-  private mapError(error: unknown): LlmError {
+  private mapError(error: unknown, signal?: AbortSignal): LlmError {
     if (error instanceof LlmError) {
       return error;
     }
     if (error instanceof Error && error.name === 'AbortError') {
+      if (signal?.aborted) {
+        return new LlmError(LlmErrorCodes.INVALID_REQUEST, 'Gemini request aborted', false);
+      }
       return new LlmError(LlmErrorCodes.TIMEOUT, 'Gemini request timed out', true);
     }
     return new LlmError(

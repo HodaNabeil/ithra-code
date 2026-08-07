@@ -7,6 +7,7 @@ import { prisma as appPrisma } from '@/lib/prisma';
 import type { EvalDataset, EvalReport, RagasThresholds } from '../types';
 import { DEFAULT_RAGAS_THRESHOLDS } from '../types';
 import { runRagasEvaluation } from '../ragas/ragas-runner';
+import { enrichDatasetWithAgentOutput } from './tutor-agent-eval.runner';
 
 const prisma = appPrisma as unknown as PrismaClient;
 
@@ -19,13 +20,59 @@ export async function runOfflineEvaluation(params: {
   datasetFile: string;
   thresholds?: RagasThresholds;
 }): Promise<EvalReport> {
-  const dataset = loadDataset(params.datasetFile);
+  const loadedDataset = loadDataset(params.datasetFile);
   const thresholds = params.thresholds ?? DEFAULT_RAGAS_THRESHOLDS;
-  const result = await runRagasEvaluation(dataset, thresholds);
+
+  const enrichment =
+    loadedDataset.agentId === 'tutor'
+      ? await enrichDatasetWithAgentOutput(loadedDataset)
+      : {
+          dataset: loadedDataset,
+          mustNotContainViolations: [],
+          agentInvoked: false,
+        };
+
+  if (enrichment.mustNotContainViolations.length > 0) {
+    const report: EvalReport = {
+      datasetName: loadedDataset.name,
+      agentId: loadedDataset.agentId,
+      status: 'failed',
+      metrics: {
+        faithfulness: 0,
+        answerRelevancy: 0,
+        contextPrecision: 0,
+        contextRecall: 0,
+      },
+      thresholds,
+      perSample: enrichment.mustNotContainViolations.map((violation) => ({
+        sampleId: violation.sampleId,
+        metrics: {},
+        passed: false,
+      })),
+      durationMs: 0,
+      generatedAt: new Date().toISOString(),
+      usedFallback: false,
+    };
+
+    await prisma.aiEvaluationRun.create({
+      data: {
+        datasetName: report.datasetName,
+        agentId: report.agentId,
+        status: report.status,
+        metrics: report.metrics,
+        thresholds: report.thresholds,
+        durationMs: report.durationMs,
+      },
+    });
+
+    return report;
+  }
+
+  const result = await runRagasEvaluation(enrichment.dataset, thresholds);
 
   const report: EvalReport = {
-    datasetName: dataset.name,
-    agentId: dataset.agentId,
+    datasetName: enrichment.dataset.name,
+    agentId: enrichment.dataset.agentId,
     status: result.passed ? 'passed' : 'failed',
     metrics: result.metrics,
     thresholds,

@@ -47,7 +47,7 @@ export class BullmqCourseKnowledgeIndexer implements CourseKnowledgeIndexerPort 
       contentVersion: request.contentVersion,
     });
 
-    const event = buildIndexingEvent(request);
+    const event = buildIndexingEvent({ ...request, outboxId });
 
     try {
       const jobId = await addIndexingJobToQueue(event);

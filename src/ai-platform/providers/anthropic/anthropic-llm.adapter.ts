@@ -8,6 +8,7 @@ import {
   type LlmPort,
   type LlmStreamOptions,
 } from '../../domain/ports/llm.port';
+import { createLinkedAbortController } from '../abort-signal';
 
 interface AnthropicMessage {
   role: 'user' | 'assistant';
@@ -31,16 +32,92 @@ export class AnthropicLlmAdapter implements LlmPort {
   }
 
   async *streamAnswer(options: LlmStreamOptions): AsyncIterableIterator<string> {
-    const result = await this.complete({
-      ...options,
-      responseFormat: 'text',
-    });
-    yield result.content;
+    const { controller, cleanup } = createLinkedAbortController(
+      this.requestTimeoutMs,
+      options.signal,
+    );
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: options.model ?? this.model,
+          system: options.systemPrompt,
+          messages: this.toAnthropicMessages(options.messages),
+          max_tokens: options.maxTokens ?? this.defaultMaxTokens,
+          temperature: options.temperature ?? this.defaultTemperature,
+          stream: true,
+        }),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        throw await this.mapHttpError(response);
+      }
+
+      if (!response.body) {
+        throw new LlmError(LlmErrorCodes.UNKNOWN, 'Anthropic stream body missing', false);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) {
+            continue;
+          }
+
+          const payload = line.slice(6).trim();
+          if (!payload || payload === '[DONE]') {
+            continue;
+          }
+
+          try {
+            const event = JSON.parse(payload) as {
+              type?: string;
+              delta?: { type?: string; text?: string };
+            };
+
+            if (
+              event.type === 'content_block_delta' &&
+              event.delta?.type === 'text_delta' &&
+              event.delta.text
+            ) {
+              yield event.delta.text;
+            }
+          } catch {
+            // Ignore malformed SSE chunks.
+          }
+        }
+      }
+    } catch (error) {
+      throw this.mapError(error, options.signal);
+    } finally {
+      cleanup();
+    }
   }
 
   async complete(options: LlmCompleteOptions): Promise<LlmCompleteResult> {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.requestTimeoutMs);
+    const { controller, cleanup } = createLinkedAbortController(
+      this.requestTimeoutMs,
+      options.signal,
+    );
 
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -73,9 +150,9 @@ export class AnthropicLlmAdapter implements LlmPort {
 
       return { content };
     } catch (error) {
-      throw this.mapError(error);
+      throw this.mapError(error, options.signal);
     } finally {
-      clearTimeout(timeout);
+      cleanup();
     }
   }
 
@@ -100,11 +177,14 @@ export class AnthropicLlmAdapter implements LlmPort {
     return new LlmError(LlmErrorCodes.UNKNOWN, body || 'Anthropic request failed', false);
   }
 
-  private mapError(error: unknown): LlmError {
+  private mapError(error: unknown, signal?: AbortSignal): LlmError {
     if (error instanceof LlmError) {
       return error;
     }
     if (error instanceof Error && error.name === 'AbortError') {
+      if (signal?.aborted) {
+        return new LlmError(LlmErrorCodes.INVALID_REQUEST, 'Anthropic request aborted', false);
+      }
       return new LlmError(LlmErrorCodes.TIMEOUT, 'Anthropic request timed out', true);
     }
     return new LlmError(

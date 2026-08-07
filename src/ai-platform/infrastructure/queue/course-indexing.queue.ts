@@ -31,6 +31,7 @@ export function getCourseIndexingQueue(): Queue<CourseIndexingRequestedEvent> {
 
 export function buildIndexingEvent(
   request: {
+    outboxId?: string;
     courseId: string;
     courseSlug: string;
     scope: CourseIndexingRequestedEvent['scope'];
@@ -41,6 +42,7 @@ export function buildIndexingEvent(
 ): CourseIndexingRequestedEvent {
   return {
     eventId: randomUUID(),
+    outboxId: request.outboxId,
     courseId: request.courseId,
     courseSlug: request.courseSlug,
     scope: request.scope,

@@ -16,6 +16,7 @@ export const COURSE_INDEXING_JOBS = {
 
 export type CourseIndexingRequestedEvent = {
   eventId: string;
+  outboxId?: string;
   courseId: string;
   courseSlug: string;
   scope: CourseKnowledgeIndexingScope;

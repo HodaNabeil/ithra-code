@@ -22,6 +22,7 @@ export interface TutorPersonalizationContext {
   studentName?: string;
   learningLevel?: string;
   courseTitle?: string;
+  lectureTitle?: string;
   progressPercent?: number;
   knowledgeGaps?: string[];
   sessionMetaMode?: boolean;

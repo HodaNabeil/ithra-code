@@ -58,6 +58,32 @@ export async function markIndexingOutboxFailed(
   });
 }
 
+export async function markIndexingOutboxCompleted(outboxId: string): Promise<void> {
+  await prisma.courseIndexingOutbox.update({
+    where: { id: outboxId },
+    data: {
+      status: CourseIndexingOutboxStatus.COMPLETED,
+      lastError: null,
+    },
+  });
+}
+
+export async function markIndexingOutboxWorkerFailed(
+  outboxId: string,
+  error: unknown,
+): Promise<void> {
+  const message = error instanceof Error ? error.message : 'Indexing failed';
+
+  await prisma.courseIndexingOutbox.update({
+    where: { id: outboxId },
+    data: {
+      status: CourseIndexingOutboxStatus.FAILED,
+      attempts: { increment: 1 },
+      lastError: message,
+    },
+  });
+}
+
 export async function enqueueIndexingFromOutbox(
   outboxId: string,
   request: IndexingOutboxRequest,

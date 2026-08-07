@@ -5,6 +5,7 @@ import { enrichResponseNode } from '../nodes/enrich-response.node';
 import { generateResponseNode } from '../nodes/generate-response.node';
 import { integrityCheckNode, routeAfterIntegrityCheck } from '../nodes/integrity-check.node';
 import { loadHistoryNode } from '../nodes/load-history.node';
+import { prepareHistoryNode } from '../nodes/prepare-history.node';
 import { persistTurnNode } from '../nodes/persist-turn.node';
 import { retrieveContextNode } from '../nodes/retrieve-context.node';
 import { sanitizeInputNode } from '../nodes/sanitize-input.node';
@@ -37,6 +38,7 @@ export function buildTutorGraph() {
     .addNode('load-history', wrapGraphNode('load-history', loadHistoryNode))
     .addNode('integrity-check', wrapGraphNode('integrity-check', integrityCheckNode))
     .addNode('retrieve-context', wrapGraphNode('retrieve-context', retrieveContextNode))
+    .addNode('prepare-history', wrapGraphNode('prepare-history', prepareHistoryNode))
     .addNode('generate-response', wrapGraphNode('generate-response', generateResponseNode))
     .addNode('tool-call', wrapGraphNode('tool-call', toolCallNode as never))
     .addNode('validate-output', wrapGraphNode('validate-output', validateOutputNode))
@@ -49,7 +51,8 @@ export function buildTutorGraph() {
       'retrieve-context': 'retrieve-context',
       'validate-output': 'validate-output',
     })
-    .addEdge('retrieve-context', 'generate-response')
+    .addEdge('retrieve-context', 'prepare-history')
+    .addEdge('prepare-history', 'generate-response')
     .addConditionalEdges('generate-response', routeAfterGenerate, {
       'tool-call': 'tool-call',
       'validate-output': 'validate-output',

@@ -2,6 +2,8 @@ export type EvalSample = {
   id: string;
   input: string;
   locale?: 'ar' | 'en';
+  courseId?: string;
+  answer?: string;
   expectedTopics?: string[];
   retrievedContext?: string[];
   groundTruth?: string;

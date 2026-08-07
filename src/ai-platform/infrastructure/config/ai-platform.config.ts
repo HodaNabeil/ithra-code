@@ -75,12 +75,25 @@ export class AIPlatformConfig {
         ? Number(env.AI_TUTOR_MIN_SIMILARITY)
         : AI_PLATFORM_CONSTANTS.DEFAULT_MIN_SIMILARITY;
 
-    return { topK, minSimilarity };
+    const lectureFallbackMinSimilarity = env.AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY
+      ? Number(env.AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY)
+      : env.AI_TUTOR_LECTURE_FALLBACK_MIN_SIMILARITY
+        ? Number(env.AI_TUTOR_LECTURE_FALLBACK_MIN_SIMILARITY)
+        : AI_PLATFORM_CONSTANTS.DEFAULT_LECTURE_FALLBACK_MIN_SIMILARITY;
+
+    return { topK, minSimilarity, lectureFallbackMinSimilarity };
   }
 
   static getIndexingWorkerConcurrency(): number {
     const value = Number(env.COURSE_INDEXING_CONCURRENCY);
     return Number.isFinite(value) && value > 0 ? Math.floor(value) : 1;
+  }
+
+  static getKnowledgeIngestionSourceConcurrency(): number {
+    const value = Number(env.KNOWLEDGE_INGESTION_SOURCE_CONCURRENCY);
+    return Number.isFinite(value) && value > 0
+      ? Math.floor(value)
+      : AI_PLATFORM_CONSTANTS.KNOWLEDGE_INGESTION_SOURCE_CONCURRENCY;
   }
 
   static getRateLimitConfig() {

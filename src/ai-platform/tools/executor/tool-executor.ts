@@ -97,6 +97,21 @@ async function executeToolInternal(
     };
   }
 
+  if (entry.definition.requiresAuth) {
+    const courseId = context.scope?.courseId ?? context.courseId;
+    if (!courseId) {
+      return {
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Authenticated course scope is required for this tool',
+          retryable: false,
+        },
+        durationMs: Date.now() - startedAt,
+      };
+    }
+  }
+
   const validation = validateToolInput(toolId, input);
   if (!validation.success) {
     return {

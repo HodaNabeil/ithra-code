@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
 import { redis } from '@/lib/redis';
 
+import { AI_PLATFORM_CONSTANTS } from '../../shared/constants';
 import {
   AIPlatformConfig,
   validateAIPlatformConfig,
@@ -15,6 +16,8 @@ export type PlatformInfrastructureValidationResult = {
     database: PlatformInfrastructureCheckStatus;
     redis: PlatformInfrastructureCheckStatus;
     pgvector: PlatformInfrastructureCheckStatus;
+    hnswIndex: PlatformInfrastructureCheckStatus;
+    vectorProbe: PlatformInfrastructureCheckStatus;
     platformConfigured: PlatformInfrastructureCheckStatus;
   };
 };
@@ -53,6 +56,53 @@ async function checkPgvector(): Promise<PlatformInfrastructureCheckStatus> {
   }
 }
 
+async function checkHnswIndex(): Promise<PlatformInfrastructureCheckStatus> {
+  try {
+    const result = await prisma.$queryRaw<Array<{ exists: boolean }>>`
+      SELECT EXISTS (
+        SELECT 1
+        FROM pg_indexes
+        WHERE schemaname = 'public'
+          AND tablename = 'knowledge_chunks'
+          AND indexname = 'knowledge_chunks_embedding_idx'
+      ) AS exists
+    `;
+    return result[0]?.exists ? 'ok' : 'error';
+  } catch (error) {
+    logger.error({ error }, '[AI_PLATFORM_STARTUP] HNSW index check failed');
+    return 'error';
+  }
+}
+
+async function checkVectorProbe(): Promise<PlatformInfrastructureCheckStatus> {
+  try {
+    const countResult = await prisma.$queryRaw<Array<{ count: bigint }>>`
+      SELECT COUNT(*)::bigint AS count
+      FROM knowledge_chunks
+      WHERE embedding IS NOT NULL
+    `;
+    const indexedCount = Number(countResult[0]?.count ?? 0);
+    if (indexedCount === 0) {
+      return 'skipped';
+    }
+
+    const dimensions = AI_PLATFORM_CONSTANTS.EMBEDDING_DIMENSIONS;
+    const zeroVector = `[${Array(dimensions).fill(0).join(',')}]`;
+    await prisma.$queryRawUnsafe(
+      `SELECT id
+       FROM knowledge_chunks
+       WHERE embedding IS NOT NULL
+       ORDER BY embedding <=> $1::vector
+       LIMIT 1`,
+      zeroVector,
+    );
+    return 'ok';
+  } catch (error) {
+    logger.error({ error }, '[AI_PLATFORM_STARTUP] Vector probe check failed');
+    return 'error';
+  }
+}
+
 function checkPlatformConfigured(): PlatformInfrastructureCheckStatus {
   if (!AIPlatformConfig.isEnabled()) {
     return 'skipped';
@@ -70,11 +120,14 @@ function checkPlatformConfigured(): PlatformInfrastructureCheckStatus {
 export async function probePlatformInfrastructure(): Promise<PlatformInfrastructureValidationResult> {
   const enabled = AIPlatformConfig.isEnabled();
 
-  const [database, redisStatus, pgvector] = await Promise.all([
-    checkDatabase(),
-    checkRedis(),
-    checkPgvector(),
-  ]);
+  const [database, redisStatus, pgvector, hnswIndex, vectorProbe] =
+    await Promise.all([
+      checkDatabase(),
+      checkRedis(),
+      checkPgvector(),
+      checkHnswIndex(),
+      checkVectorProbe(),
+    ]);
 
   const platformConfigured = checkPlatformConfigured();
 
@@ -84,6 +137,8 @@ export async function probePlatformInfrastructure(): Promise<PlatformInfrastruct
       database,
       redis: redisStatus,
       pgvector,
+      hnswIndex,
+      vectorProbe,
       platformConfigured,
     },
   };
@@ -96,6 +151,8 @@ function hasCriticalFailures(
     checks.database === 'error' ||
     checks.redis === 'error' ||
     checks.pgvector === 'error' ||
+    checks.hnswIndex === 'error' ||
+    checks.vectorProbe === 'error' ||
     checks.platformConfigured === 'error'
   );
 }
@@ -117,7 +174,7 @@ export async function validatePlatformInfrastructure(): Promise<PlatformInfrastr
       '[AI_PLATFORM_STARTUP] Critical dependency check failed',
     );
     throw new Error(
-      'AI Platform infrastructure validation failed. Check DATABASE_URL, REDIS_URL, pgvector extension, and OPENAI_API_KEY.',
+      'AI Platform infrastructure validation failed. Check DATABASE_URL, REDIS_URL, pgvector extension, HNSW index on knowledge_chunks.embedding, and OPENAI_API_KEY.',
     );
   }
 
