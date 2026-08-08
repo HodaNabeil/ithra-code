@@ -65,6 +65,7 @@ export async function chat(request: ChatRequest): Promise<ChatResult> {
       completionTokens: result.tokensUsed.output,
       totalTokens: result.tokensUsed.input + result.tokensUsed.output,
       estimatedCostUsd: result.estimatedCost,
+      tokenUsageEstimated: result.tokensUsed.tokenUsageEstimated,
     },
   };
 }

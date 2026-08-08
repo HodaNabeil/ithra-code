@@ -7,6 +7,7 @@ import {
   type BudgetReservation,
 } from '../../infrastructure/guards';
 import { computeRunCostUsd } from '../../observability/cost/token-pricing';
+import { withSpan } from '../../observability/opentelemetry/span-helpers';
 import { PlatformError, PlatformErrorCodes } from '../../shared/errors';
 
 export type GuardChainResult = {
@@ -30,19 +31,36 @@ async function runBaseGuards(
   estimatedMaxCostUsd: number,
 ): Promise<BudgetReservation | null> {
   const rateLimits = AIPlatformConfig.getRateLimitConfig();
+  const scope = `agent:${agent.id}`;
 
-  await assertMessageRateLimit({
-    userId,
-    limits: rateLimits,
-    scope: `agent:${agent.id}`,
-  });
+  await withSpan(
+    'ai.guard.rate-limit',
+    {
+      'ai.agent.id': agent.id,
+      'ai.guard.scope': scope,
+    },
+    async () =>
+      assertMessageRateLimit({
+        userId,
+        limits: rateLimits,
+        scope,
+      }),
+  );
 
-  return reserveDailyBudgetUsd({
-    userId,
-    estimatedUsd: estimatedMaxCostUsd,
-    userCapUsd: AIPlatformConfig.getUserDailyBudgetUsd(),
-    globalCapUsd: AIPlatformConfig.getGlobalDailyBudgetUsd(),
-  });
+  return withSpan(
+    'ai.guard.budget',
+    {
+      'ai.agent.id': agent.id,
+      'ai.budget.estimated_usd': estimatedMaxCostUsd,
+    },
+    async () =>
+      reserveDailyBudgetUsd({
+        userId,
+        estimatedUsd: estimatedMaxCostUsd,
+        userCapUsd: AIPlatformConfig.getUserDailyBudgetUsd(),
+        globalCapUsd: AIPlatformConfig.getGlobalDailyBudgetUsd(),
+      }),
+  );
 }
 
 export async function runGuards(

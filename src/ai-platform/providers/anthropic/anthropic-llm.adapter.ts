@@ -8,6 +8,12 @@ import {
   type LlmPort,
   type LlmStreamOptions,
 } from '../../domain/ports/llm.port';
+import {
+  mapAnthropicUsage,
+  mergeProviderRawUsage,
+  parseAnthropicStreamUsageEvent,
+  type ProviderRawUsage,
+} from '../../observability/usage';
 import { createLinkedAbortController } from '../abort-signal';
 
 interface AnthropicMessage {
@@ -36,6 +42,8 @@ export class AnthropicLlmAdapter implements LlmPort {
       this.requestTimeoutMs,
       options.signal,
     );
+
+    let accumulatedUsage: ProviderRawUsage = {};
 
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -92,7 +100,14 @@ export class AnthropicLlmAdapter implements LlmPort {
             const event = JSON.parse(payload) as {
               type?: string;
               delta?: { type?: string; text?: string };
+              message?: { usage?: { input_tokens?: number; output_tokens?: number } };
+              usage?: { input_tokens?: number; output_tokens?: number };
             };
+
+            const usagePatch = parseAnthropicStreamUsageEvent(event);
+            if (usagePatch) {
+              accumulatedUsage = mergeProviderRawUsage(accumulatedUsage, usagePatch);
+            }
 
             if (
               event.type === 'content_block_delta' &&
@@ -104,6 +119,14 @@ export class AnthropicLlmAdapter implements LlmPort {
           } catch {
             // Ignore malformed SSE chunks.
           }
+        }
+      }
+
+      if (options.onUsage) {
+        const input = accumulatedUsage.inputTokens ?? 0;
+        const output = accumulatedUsage.outputTokens ?? 0;
+        if (input > 0 || output > 0) {
+          options.onUsage({ input, output });
         }
       }
     } catch (error) {
@@ -143,12 +166,25 @@ export class AnthropicLlmAdapter implements LlmPort {
 
       const payload = (await response.json()) as {
         content?: Array<{ type: string; text?: string }>;
+        usage?: { input_tokens?: number; output_tokens?: number };
       };
 
       const content =
         payload.content?.find((block) => block.type === 'text')?.text ?? '';
 
-      return { content };
+      const mappedUsage = payload.usage
+        ? mapAnthropicUsage(payload.usage)
+        : undefined;
+
+      return {
+        content,
+        usage: mappedUsage
+          ? {
+              input: mappedUsage.inputTokens ?? 0,
+              output: mappedUsage.outputTokens ?? 0,
+            }
+          : undefined,
+      };
     } catch (error) {
       throw this.mapError(error, options.signal);
     } finally {

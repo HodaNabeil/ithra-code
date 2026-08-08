@@ -2,9 +2,11 @@ import type { EmbeddingPort, VectorSearchPort } from '../../domain/ports';
 import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
 import { getCachedEmbedding, setCachedEmbedding } from '../../embeddings/cache/embedding-cache';
 import { withSpan } from '../../observability/opentelemetry/span-helpers';
+import { buildScopeSpanAttributes } from '../../observability/opentelemetry/otel-attributes';
 import { platformMetrics } from '../../observability/metrics/platform-metrics';
 import {
   buildRetrievalQuery,
+  buildScopedRetrievalQuery,
   type RetrievalHistoryMessage,
 } from './retrieval-query';
 import type {
@@ -86,6 +88,7 @@ async function searchChunks(
   input: Pick<RetrieveRelevantContentInput, 'courseId' | 'lectureId'>,
   deps: ContentRetrieverDeps,
   minScore: number,
+  lectureOnly = false,
 ): Promise<{ chunks: RetrievedContentChunk[]; embeddingTokensUsed: number }> {
   const searchConfig = resolveSearchConfig(deps);
 
@@ -96,6 +99,7 @@ async function searchChunks(
     filter: {
       courseId: input.courseId,
       lectureId: input.lectureId,
+      ...(lectureOnly && input.lectureId ? { lectureOnly: true } : {}),
     },
   });
 
@@ -127,7 +131,10 @@ export async function retrieveRelevantContent(
   const startedAt = Date.now();
   return withSpan(
     'ai.rag.retrieve',
-    { 'ai.course.id': input.courseId, 'ai.lecture.id': input.lectureId ?? 'none' },
+    buildScopeSpanAttributes({
+      courseId: input.courseId,
+      lectureId: input.lectureId,
+    }),
     async () => {
       const result = await retrieveRelevantContentInternal(input, deps);
       platformMetrics.incrementRetrieval('tutor', result.chunks.length);
@@ -153,10 +160,30 @@ async function retrieveRelevantContentInternal(
   }
 
   const searchConfig = resolveSearchConfig(deps);
+  const scopedQuery = buildScopedRetrievalQuery(input);
 
   let embeddingTokensUsed = 0;
 
-  let searchResult = await searchChunks(question, input, deps, searchConfig.minScore);
+  if (input.lectureId) {
+    const searchResult = await searchChunks(
+      scopedQuery,
+      input,
+      deps,
+      searchConfig.minScore,
+      true,
+    );
+    embeddingTokensUsed += searchResult.embeddingTokensUsed;
+    if (searchResult.chunks.length > 0) {
+      return buildSuccessResult(searchResult.chunks, 'strict', embeddingTokensUsed);
+    }
+  }
+
+  let searchResult = await searchChunks(
+    scopedQuery,
+    input,
+    deps,
+    searchConfig.minScore,
+  );
   embeddingTokensUsed += searchResult.embeddingTokensUsed;
   let chunks = searchResult.chunks;
   if (chunks.length > 0) {
@@ -171,7 +198,26 @@ async function retrieveRelevantContentInternal(
   });
 
   if (expandedQuery !== question) {
-    searchResult = await searchChunks(expandedQuery, input, deps, searchConfig.minScore);
+    if (input.lectureId) {
+      searchResult = await searchChunks(
+        expandedQuery,
+        input,
+        deps,
+        searchConfig.minScore,
+        true,
+      );
+      embeddingTokensUsed += searchResult.embeddingTokensUsed;
+      if (searchResult.chunks.length > 0) {
+        return buildSuccessResult(searchResult.chunks, 'expanded', embeddingTokensUsed);
+      }
+    }
+
+    searchResult = await searchChunks(
+      expandedQuery,
+      input,
+      deps,
+      searchConfig.minScore,
+    );
     embeddingTokensUsed += searchResult.embeddingTokensUsed;
     chunks = searchResult.chunks;
     if (chunks.length > 0) {
@@ -180,12 +226,13 @@ async function retrieveRelevantContentInternal(
   }
 
   if (input.lectureId) {
-    const fallbackQuery = expandedQuery !== question ? expandedQuery : question;
+    const fallbackQuery = expandedQuery !== question ? expandedQuery : scopedQuery;
     searchResult = await searchChunks(
       fallbackQuery,
       input,
       deps,
       searchConfig.lectureFallbackMinSimilarity,
+      true,
     );
     embeddingTokensUsed += searchResult.embeddingTokensUsed;
     chunks = searchResult.chunks;

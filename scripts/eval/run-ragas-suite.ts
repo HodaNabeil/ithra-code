@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import { runNightlyEvaluationSuite } from '@/ai-platform/evaluation/runners/offline-eval.runner';
 import {
   formatEvaluationMarkdown,

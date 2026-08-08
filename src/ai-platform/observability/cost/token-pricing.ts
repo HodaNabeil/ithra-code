@@ -2,6 +2,8 @@
  * Per-model token pricing (USD per token).
  * @see docs/ai-platform/09-observability.md
  */
+import { logger } from '@/lib/logger';
+
 const TOKEN_PRICING: Record<string, { input: number; output: number }> = {
   'gpt-3.5-turbo': { input: 0.5 / 1_000_000, output: 1.5 / 1_000_000 },
   'gpt-4o-mini': { input: 0.15 / 1_000_000, output: 0.6 / 1_000_000 },
@@ -16,7 +18,76 @@ const TOKEN_PRICING: Record<string, { input: number; output: number }> = {
 
 const DEFAULT_PRICING = { input: 1.0 / 1_000_000, output: 2.0 / 1_000_000 };
 
+let envPricingOverride: Record<string, { input: number; output: number }> | null =
+  null;
+let envPricingLoaded = false;
+
+function parseEnvPricingJson(
+  raw: string,
+): Record<string, { input: number; output: number }> | null {
+  try {
+    const parsed = JSON.parse(raw) as Record<
+      string,
+      { input?: number; output?: number }
+    >;
+
+    const normalized: Record<string, { input: number; output: number }> = {};
+    for (const [model, rates] of Object.entries(parsed)) {
+      if (
+        typeof rates?.input !== 'number' ||
+        typeof rates?.output !== 'number' ||
+        rates.input < 0 ||
+        rates.output < 0
+      ) {
+        logger.warn(
+          { model },
+          '[AI_TOKEN_PRICING] Skipping invalid env pricing entry',
+        );
+        continue;
+      }
+      normalized[model] = { input: rates.input, output: rates.output };
+    }
+
+    return normalized;
+  } catch (error) {
+    logger.warn(
+      { error },
+      '[AI_TOKEN_PRICING] Failed to parse AI_PLATFORM_MODEL_PRICING_JSON',
+    );
+    return null;
+  }
+}
+
+function loadEnvPricingOverride(): Record<
+  string,
+  { input: number; output: number }
+> | null {
+  if (envPricingLoaded) {
+    return envPricingOverride;
+  }
+
+  envPricingLoaded = true;
+  const raw = process.env.AI_PLATFORM_MODEL_PRICING_JSON;
+  if (!raw) {
+    envPricingOverride = null;
+    return null;
+  }
+
+  envPricingOverride = parseEnvPricingJson(raw);
+  return envPricingOverride;
+}
+
+/** Clears cached env pricing — for tests only. */
+export function resetTokenPricingForTests(): void {
+  envPricingOverride = null;
+  envPricingLoaded = false;
+}
+
 export function getModelPricing(model: string): { input: number; output: number } {
+  const envPricing = loadEnvPricingOverride();
+  if (envPricing?.[model]) {
+    return envPricing[model];
+  }
   return TOKEN_PRICING[model] ?? DEFAULT_PRICING;
 }
 

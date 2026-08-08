@@ -1,15 +1,14 @@
 import type { LangGraphRunnableConfig } from '@langchain/langgraph';
 import { z } from 'zod';
 
+import {
+  resolveTokenUsage,
+  toGraphTokenUpdate,
+} from '../../observability/usage';
 import { buildTutorSystemPrompt } from '../../prompts/tutor-system-prompt.builder';
 import { listTools } from '../../tools/registry/tool-registry';
 import type { TutorAgentState } from '../state/tutor-agent.state';
 import { getGraphRuntimeConfig } from '../runtime-config';
-
-/** Clearly-marked fallback — replace when provider usage is guaranteed */
-function FALLBACK_estimateTokensFromChars(text: string): number {
-  return Math.ceil(text.length / 4);
-}
 
 function buildMessages(state: TutorAgentState) {
   const userContent = state.sanitizedInput || state.input;
@@ -49,6 +48,28 @@ function toLlmTools(allowedTools: string[]) {
   });
 }
 
+function resolveLlmUsage(params: {
+  providerUsage?: { input: number; output: number } | null;
+  systemPrompt: string;
+  messages: ReturnType<typeof buildMessages>;
+  outputText: string;
+  model?: string;
+}) {
+  const inputText = `${params.systemPrompt}\n${params.messages.map((message) => message.content).join('\n')}`;
+  const providerRaw = params.providerUsage
+    ? {
+        inputTokens: params.providerUsage.input,
+        outputTokens: params.providerUsage.output,
+      }
+    : null;
+
+  return resolveTokenUsage(providerRaw, {
+    inputText,
+    outputText: params.outputText,
+    model: params.model,
+  });
+}
+
 export async function generateResponseNode(
   state: TutorAgentState,
   config: LangGraphRunnableConfig,
@@ -61,9 +82,6 @@ export async function generateResponseNode(
     retrievedChunks: state.retrievedChunks,
     personalization: state.personalization,
   });
-  const inputTokens = FALLBACK_estimateTokensFromChars(
-    `${systemPrompt}\n${messages.map((message) => message.content).join('\n')}`,
-  );
 
   const allowedTools = runtime.allowedTools ?? [];
   // SSE tutor runs stream tokens to the client — use streamAnswer there.
@@ -74,6 +92,7 @@ export async function generateResponseNode(
     Boolean(runtime.llmPort.complete);
 
   if (useToolComplete && runtime.llmPort.complete) {
+    let servedModel = runtime.model;
     const response = await runtime.llmPort.complete({
       systemPrompt,
       messages,
@@ -81,39 +100,44 @@ export async function generateResponseNode(
       maxTokens: runtime.maxTokens,
       model: runtime.model,
       tools: toLlmTools(allowedTools),
+      onModelServed: (model) => {
+        servedModel = model;
+      },
     });
 
     if (response.toolCalls && response.toolCalls.length > 0) {
-      const usageEstimated = !response.usage;
+      const usage = resolveLlmUsage({
+        providerUsage: response.usage,
+        systemPrompt,
+        messages,
+        outputText: response.content,
+        model: runtime.model,
+      });
+
       return {
         pendingToolCalls: response.toolCalls,
-        tokensUsed: {
-          input: response.usage?.input ?? inputTokens,
-          output: response.usage?.output ?? FALLBACK_estimateTokensFromChars(response.content),
-        },
-        ...(usageEstimated
-          ? { runSignals: { ...state.runSignals, tokenUsageEstimated: true } }
-          : {}),
+        ...toGraphTokenUpdate(usage, servedModel),
       };
     }
 
-    const finalResponse = response.content;
-    const usageEstimated = !response.usage;
+    const usage = resolveLlmUsage({
+      providerUsage: response.usage,
+      systemPrompt,
+      messages,
+      outputText: response.content,
+      model: runtime.model,
+    });
+
     return {
-      finalResponse,
+      finalResponse: response.content,
       pendingToolCalls: [],
-      tokensUsed: {
-        input: response.usage?.input ?? inputTokens,
-        output: response.usage?.output ?? FALLBACK_estimateTokensFromChars(finalResponse),
-      },
-      ...(usageEstimated
-        ? { runSignals: { ...state.runSignals, tokenUsageEstimated: true } }
-        : {}),
+      ...toGraphTokenUpdate(usage, servedModel),
     };
   }
 
   let finalResponse = '';
   let measuredUsage: { input: number; output: number } | undefined;
+  let servedModel = runtime.model;
 
   for await (const token of runtime.llmPort.streamAnswer({
     systemPrompt,
@@ -122,6 +146,9 @@ export async function generateResponseNode(
     maxTokens: runtime.maxTokens,
     model: runtime.model,
     signal: config.signal,
+    onModelServed: (model) => {
+      servedModel = model;
+    },
     onUsage: (usage) => {
       measuredUsage = usage;
     },
@@ -132,15 +159,23 @@ export async function generateResponseNode(
     }
   }
 
+  const usage = measuredUsage
+    ? resolveLlmUsage({
+        providerUsage: measuredUsage,
+        systemPrompt,
+        messages,
+        outputText: finalResponse,
+        model: runtime.model,
+      })
+    : resolveTokenUsage(null, {
+        inputText: `${systemPrompt}\n${messages.map((message) => message.content).join('\n')}`,
+        outputText: finalResponse,
+        model: runtime.model,
+      });
+
   return {
     finalResponse,
     pendingToolCalls: [],
-    tokensUsed: measuredUsage ?? {
-      input: inputTokens,
-      output: FALLBACK_estimateTokensFromChars(finalResponse),
-    },
-    ...(!measuredUsage
-      ? { runSignals: { ...state.runSignals, tokenUsageEstimated: true } }
-      : {}),
+    ...toGraphTokenUpdate(usage, servedModel),
   };
 }

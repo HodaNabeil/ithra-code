@@ -18,3 +18,5 @@ build
 # misc
 .DS_Store
 *.pem
+eval/.venv
+eval/reports

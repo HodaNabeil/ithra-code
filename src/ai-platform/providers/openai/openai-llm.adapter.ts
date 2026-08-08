@@ -11,6 +11,7 @@ import {
   type LlmPort,
   type LlmStreamOptions,
 } from '../../domain/ports/llm.port';
+import { mapOpenAiUsage } from '../../observability/usage';
 import { createLinkedAbortController } from '../abort-signal';
 
 export class OpenAILlmAdapter implements LlmPort {
@@ -69,9 +70,10 @@ export class OpenAILlmAdapter implements LlmPort {
       for await (const chunk of stream) {
         const usage = chunk.usage;
         if (usage && options.onUsage) {
+          const mapped = mapOpenAiUsage(usage);
           options.onUsage({
-            input: usage.prompt_tokens ?? 0,
-            output: usage.completion_tokens ?? 0,
+            input: mapped.inputTokens ?? 0,
+            output: mapped.outputTokens ?? 0,
           });
         }
 
@@ -153,12 +155,16 @@ export class OpenAILlmAdapter implements LlmPort {
         };
       });
 
+      const mappedUsage = response.usage
+        ? mapOpenAiUsage(response.usage)
+        : undefined;
+
       return {
         content,
-        usage: response.usage
+        usage: mappedUsage
           ? {
-              input: response.usage.prompt_tokens ?? 0,
-              output: response.usage.completion_tokens ?? 0,
+              input: mappedUsage.inputTokens ?? 0,
+              output: mappedUsage.outputTokens ?? 0,
             }
           : undefined,
         toolCalls,

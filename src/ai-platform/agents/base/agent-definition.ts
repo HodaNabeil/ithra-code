@@ -72,6 +72,8 @@ export interface TokenUsage {
   input: number;
   output: number;
   embedding?: number;
+  totalTokens?: number;
+  tokenUsageEstimated?: boolean;
 }
 
 export interface AgentRunResult {

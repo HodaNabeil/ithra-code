@@ -25,6 +25,9 @@ export type CompleteAgentRunInput = {
   inputTokens: number;
   outputTokens: number;
   embeddingTokens?: number;
+  tokenUsageEstimated?: boolean;
+  actualModel?: string;
+  actualProvider?: string;
   latencyMs: number;
   promptVersion?: string;
   langsmithRunId?: string;
@@ -64,15 +67,17 @@ export async function completeAgentRun(input: CompleteAgentRunInput): Promise<vo
   try {
     const existing = await prisma.aiAgentRun.findUnique({
       where: { id: input.runId },
-      select: { model: true },
+      select: { model: true, provider: true },
     });
 
     if (!existing) {
       return;
     }
 
+    const billingModel = input.actualModel ?? existing.model;
+
     const estimatedCostUsd = computeRunCostUsd({
-      model: existing.model,
+      model: billingModel,
       inputTokens: input.inputTokens,
       outputTokens: input.outputTokens,
       embeddingModel: AIPlatformConfig.getEmbeddingConfig().model,
@@ -86,6 +91,9 @@ export async function completeAgentRun(input: CompleteAgentRunInput): Promise<vo
         inputTokens: input.inputTokens,
         outputTokens: input.outputTokens,
         embeddingTokens: input.embeddingTokens ?? 0,
+        tokenUsageEstimated: input.tokenUsageEstimated ?? false,
+        actualModel: input.actualModel,
+        actualProvider: input.actualProvider,
         estimatedCostUsd,
         latencyMs: input.latencyMs,
         promptVersion: input.promptVersion,

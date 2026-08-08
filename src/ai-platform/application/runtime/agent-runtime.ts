@@ -36,7 +36,7 @@ import {
   extractGraphInjectionPorts,
   extractRunMetadata,
 } from './graph-port-extractor';
-import { runGuards, runStreamGuards } from './guard-runner';
+import { runGuards, runStreamGuards, type GuardChainResult } from './guard-runner';
 import type { RuntimeExecutionContext } from './types';
 import {
   createAgentTraceSession,
@@ -46,9 +46,78 @@ import {
   runWithTraceContext,
   runWithTraceContextAsync,
 } from '../../observability/langsmith/trace-context';
-import { withSpan, getTracer, isOtelActive } from '../../observability/opentelemetry/span-helpers';
+import { withSpan, getTracer, isOtelActive, runInSpanContextAsync } from '../../observability/opentelemetry/span-helpers';
+import {
+  buildAgentRunSpanAttributes,
+  buildLedgerCompleteSpanAttributes,
+  setSafeSpanAttributes,
+} from '../../observability/opentelemetry/otel-attributes';
+import { readRunTokenUsageEstimated, readActualModelFromRunSignals, readActualProviderFromRunSignals } from '../../observability/usage';
+import { logAgentRunCompleted, logAgentRunFailed } from '../../observability/logging';
+import { getProviderForModel } from '../../providers/registry/provider-registry';
 import { platformMetrics } from '../../observability/metrics/platform-metrics';
 import { LiveStreamGuard } from './live-stream-guard';
+
+function resolveErrorCode(error: unknown): string {
+  return error instanceof PlatformError ? error.code : PlatformErrorCodes.RUNTIME_ERROR;
+}
+
+function recordSuccessfulAgentRun(params: {
+  context: RuntimeExecutionContext;
+  parsed: AgentRunRequest;
+  billing: { model: string; provider: string };
+  tokensUsed: { input: number; output: number };
+  embeddingTokensUsed: number;
+  tokenUsageEstimated: boolean;
+  estimatedCost: number;
+  durationMs: number;
+}): void {
+  platformMetrics.recordRunOutcome({
+    agentId: params.context.agentId,
+    model: params.billing.model,
+    provider: params.billing.provider,
+    embeddingModel: AIPlatformConfig.getEmbeddingConfig().model,
+    durationMs: params.durationMs,
+    inputTokens: params.tokensUsed.input,
+    outputTokens: params.tokensUsed.output,
+    embeddingTokens: params.embeddingTokensUsed,
+    costUsd: params.estimatedCost,
+  });
+
+  logAgentRunCompleted({
+    runId: params.context.runId,
+    agentId: params.context.agentId,
+    correlationId: params.parsed.options?.correlationId,
+    model: params.billing.model,
+    provider: params.billing.provider,
+    inputTokens: params.tokensUsed.input,
+    outputTokens: params.tokensUsed.output,
+    embeddingTokens: params.embeddingTokensUsed,
+    costUsd: params.estimatedCost,
+    durationMs: params.durationMs,
+    tokenUsageEstimated: params.tokenUsageEstimated,
+  });
+}
+
+function recordFailedAgentRun(params: {
+  context: RuntimeExecutionContext;
+  parsed: AgentRunRequest;
+  error: unknown;
+  durationMs?: number;
+}): void {
+  const errorCode = resolveErrorCode(params.error);
+
+  platformMetrics.incrementAgentRun(params.context.agentId, 'failed');
+  platformMetrics.incrementRequestError(params.context.agentId, errorCode);
+
+  logAgentRunFailed({
+    runId: params.context.runId,
+    agentId: params.context.agentId,
+    correlationId: params.parsed.options?.correlationId,
+    durationMs: params.durationMs ?? Date.now() - params.context.startedAt,
+    errorCode,
+  });
+}
 
 function assertRuntimeReady(): void {
   assertPlatformEnabled();
@@ -120,6 +189,34 @@ function computeFinalRunCost(
   });
 }
 
+function readRunSignals(finalState: AgentGraphState): Record<string, unknown> | undefined {
+  return 'runSignals' in finalState
+    ? (finalState.runSignals as Record<string, unknown> | undefined)
+    : undefined;
+}
+
+function readBillingContextFromState(
+  finalState: AgentGraphState,
+  resolved: { model: string; provider: string },
+): { model: string; provider: string } {
+  const runSignals = readRunSignals(finalState);
+  const model = readActualModelFromRunSignals(runSignals) ?? resolved.model;
+  const provider =
+    readActualProviderFromRunSignals(runSignals) ?? getProviderForModel(model);
+
+  return { model, provider };
+}
+
+function readTokenUsageFromState(finalState: AgentGraphState): {
+  tokensUsed: { input: number; output: number };
+  tokenUsageEstimated: boolean;
+} {
+  const tokensUsed = finalState.tokensUsed ?? { input: 0, output: 0 };
+  const tokenUsageEstimated = readRunTokenUsageEstimated(readRunSignals(finalState));
+
+  return { tokensUsed, tokenUsageEstimated };
+}
+
 function extractRunOutput(finalState: AgentGraphState): {
   output: string;
   structuredOutput?: unknown;
@@ -132,6 +229,50 @@ function extractRunOutput(finalState: AgentGraphState): {
   }
 
   return { output: finalState.finalResponse };
+}
+
+async function recordLedgerComplete(params: {
+  runId: string;
+  agentId: string;
+  inputTokens: number;
+  outputTokens: number;
+  embeddingTokens: number;
+  tokenUsageEstimated: boolean;
+  actualModel: string;
+  actualProvider: string;
+  estimatedCostUsd: number;
+  latencyMs: number;
+  promptVersion?: string;
+  langsmithRunId?: string;
+}): Promise<void> {
+  await withSpan(
+    'ai.ledger.complete',
+    buildLedgerCompleteSpanAttributes({
+      runId: params.runId,
+      agentId: params.agentId,
+      model: params.actualModel,
+      provider: params.actualProvider,
+      inputTokens: params.inputTokens,
+      outputTokens: params.outputTokens,
+      embeddingTokens: params.embeddingTokens,
+      estimatedCostUsd: params.estimatedCostUsd,
+      tokenUsageEstimated: params.tokenUsageEstimated,
+      latencyMs: params.latencyMs,
+    }),
+    async () =>
+      completeAgentRun({
+        runId: params.runId,
+        inputTokens: params.inputTokens,
+        outputTokens: params.outputTokens,
+        embeddingTokens: params.embeddingTokens,
+        tokenUsageEstimated: params.tokenUsageEstimated,
+        actualModel: params.actualModel,
+        actualProvider: params.actualProvider,
+        latencyMs: params.latencyMs,
+        promptVersion: params.promptVersion,
+        langsmithRunId: params.langsmithRunId,
+      }),
+  );
 }
 
 export async function executeAgentRun(
@@ -147,12 +288,8 @@ export async function executeAgentRun(
   );
 
   const maxTokens = parsed.options?.maxTokens ?? resolved.maxTokens;
-  const guards = await runGuards(context.agent, parsed.userId, {
-    model: resolved.model,
-    maxTokens,
-  });
-
   const built = buildAgentContext(context.agent, parsed);
+  let guards: GuardChainResult = {};
 
   await startAgentRun({
     runId: context.runId,
@@ -178,12 +315,20 @@ export async function executeAgentRun(
       async () =>
         withSpan(
           'ai.agent.run',
-          {
-            'ai.agent.id': context.agentId,
-            'ai.user.id': parsed.userId,
-            'ai.prompt.version': built.promptVersion,
-          },
+          buildAgentRunSpanAttributes({
+            agentId: context.agentId,
+            runId: context.runId,
+            userId: parsed.userId,
+            correlationId: parsed.options?.correlationId,
+            promptVersion: built.promptVersion,
+            mode: 'execute',
+          }),
           async () => {
+        guards = await runGuards(context.agent, parsed.userId, {
+          model: resolved.model,
+          maxTokens,
+        });
+
         const trace = createAgentTraceSession(
           {
             runId: context.runId,
@@ -224,10 +369,11 @@ export async function executeAgentRun(
         });
 
         const durationMs = Date.now() - context.startedAt;
-        const tokensUsed = finalState.tokensUsed ?? { input: 0, output: 0 };
+        const { tokensUsed, tokenUsageEstimated } = readTokenUsageFromState(finalState);
         const embeddingTokensUsed = finalState.embeddingTokensUsed ?? 0;
+        const billing = readBillingContextFromState(finalState, resolved);
         const estimatedCost = computeFinalRunCost(
-          resolved.model,
+          billing.model,
           tokensUsed,
           embeddingTokensUsed,
         );
@@ -239,11 +385,16 @@ export async function executeAgentRun(
           tokensUsed,
         });
 
-        await completeAgentRun({
+        await recordLedgerComplete({
           runId: context.runId,
+          agentId: context.agentId,
           inputTokens: tokensUsed.input,
           outputTokens: tokensUsed.output,
           embeddingTokens: embeddingTokensUsed,
+          tokenUsageEstimated,
+          actualModel: billing.model,
+          actualProvider: billing.provider,
+          estimatedCostUsd: estimatedCost,
           latencyMs: durationMs,
           promptVersion: built.promptVersion,
           langsmithRunId: resolveLangsmithRunIdForLedger(),
@@ -255,19 +406,31 @@ export async function executeAgentRun(
           actualUsd: estimatedCost,
         });
 
-        platformMetrics.incrementAgentRun(context.agentId, 'completed');
-        platformMetrics.recordAgentDuration(context.agentId, durationMs);
-        platformMetrics.incrementLlmTokens(resolved.model, 'input', tokensUsed.input);
-        platformMetrics.incrementLlmTokens(resolved.model, 'output', tokensUsed.output);
+        recordSuccessfulAgentRun({
+          context,
+          parsed,
+          billing,
+          tokensUsed,
+          embeddingTokensUsed,
+          tokenUsageEstimated,
+          estimatedCost,
+          durationMs,
+        });
 
         return {
           runId: context.runId,
           output,
           structuredOutput,
-          tokensUsed,
+          tokensUsed: {
+            input: tokensUsed.input,
+            output: tokensUsed.output,
+            embedding: embeddingTokensUsed,
+            totalTokens: tokensUsed.input + tokensUsed.output,
+            tokenUsageEstimated,
+          },
           estimatedCost,
           promptVersion: built.promptVersion,
-          model: resolved.model,
+          model: billing.model,
           durationMs,
         };
           },
@@ -275,6 +438,7 @@ export async function executeAgentRun(
     );
   } catch (error) {
     await releaseDailyBudgetReservation(guards.budgetReservation ?? null);
+    recordFailedAgentRun({ context, parsed, error });
     await failAgentRun(context.runId, {
       error: error instanceof Error ? error.message : 'Unknown error',
     });
@@ -317,12 +481,8 @@ async function* executeAgentStreamCore(
     parsed.options?.modelOverride,
   );
   const maxTokens = parsed.options?.maxTokens ?? resolved.maxTokens;
-  const guards = await runStreamGuards(context.agent, parsed.userId, {
-    model: resolved.model,
-    maxTokens,
-  });
-
   const built = buildAgentContext(context.agent, parsed);
+  let guards: GuardChainResult = {};
 
   await startAgentRun({
     runId: context.runId,
@@ -372,78 +532,100 @@ async function* executeAgentStreamCore(
   let latestObservedState: AgentGraphState = built.initialState;
   const liveStreamGuard = new LiveStreamGuard();
 
-  const graphPromise = streamAgentGraph({
-    agentId: context.agentId,
-    runId: context.runId,
-    state: built.initialState,
-    llmPort: getLlmPort(),
-    ...getRagPorts(context.agent),
-    ...getConversationMemory(context.agent),
-    ...extractGraphPorts(parsed.options?.metadata),
-    allowedTools: context.agent.allowedTools,
-    courseId: parsed.scope.courseId,
-    lectureId: parsed.scope.lectureId,
-    threadId: parsed.scope.threadId,
-    maxTokens: parsed.options?.maxTokens ?? resolved.maxTokens,
-    temperature: resolved.temperature,
-    model: resolved.model,
-    signal: parsed.options?.signal,
-    callbacks: trace.callbacks,
-    traceMetadata: {
-      runId: context.runId,
-      agentId: context.agentId,
-      userId: parsed.userId,
-      promptVersion: built.promptVersion,
-    },
-    onStateUpdate: (state) => {
-      latestObservedState = state;
-    },
-    onToken: async (token) => {
-      if (readExecutionPolicy(latestObservedState) !== 'LIVE') {
-        notifyToken?.();
-        return;
-      }
-
-      const { emit, blocked } = liveStreamGuard.push(token);
-      if (blocked) {
-        notifyToken?.();
-        return;
-      }
-
-      if (emit) {
-        pendingEvents.push({ kind: 'token', text: emit });
-      }
-      notifyToken?.();
-    },
-    onRetrieval: async (chunks, usedFallback) => {
-      pendingEvents.push({ kind: 'retrieval', chunks, usedFallback });
-      notifyToken?.();
-    },
-  })
-    .then((result) => {
-      graphResult.finalState = result.finalState;
-    })
-    .catch((error) => {
-      graphError = error;
-    })
-    .finally(() => {
-      graphDone = true;
-      notifyToken?.();
-    });
-
   const span = isOtelActive()
     ? getTracer().startSpan('ai.agent.run', {
-        attributes: {
-          'ai.agent.id': context.agentId,
-          'ai.user.id': parsed.userId,
-          'ai.prompt.version': built.promptVersion,
-          'ai.agent.mode': 'stream',
-        },
+        attributes: buildAgentRunSpanAttributes({
+          agentId: context.agentId,
+          runId: context.runId,
+          userId: parsed.userId,
+          correlationId: parsed.options?.correlationId,
+          promptVersion: built.promptVersion,
+          mode: 'stream',
+        }),
       })
     : null;
 
   try {
+    if (span) {
+      guards = await runInSpanContextAsync(span, () =>
+        runStreamGuards(context.agent, parsed.userId, {
+          model: resolved.model,
+          maxTokens,
+        }),
+      );
+    } else {
+      guards = await runStreamGuards(context.agent, parsed.userId, {
+        model: resolved.model,
+        maxTokens,
+      });
+    }
+
+    const streamGraphInput = {
+      agentId: context.agentId,
+      runId: context.runId,
+      state: built.initialState,
+      llmPort: getLlmPort(),
+      ...getRagPorts(context.agent),
+      ...getConversationMemory(context.agent),
+      ...extractGraphPorts(parsed.options?.metadata),
+      allowedTools: context.agent.allowedTools,
+      courseId: parsed.scope.courseId,
+      lectureId: parsed.scope.lectureId,
+      threadId: parsed.scope.threadId,
+      maxTokens: parsed.options?.maxTokens ?? resolved.maxTokens,
+      temperature: resolved.temperature,
+      model: resolved.model,
+      signal: parsed.options?.signal,
+      callbacks: trace.callbacks,
+      traceMetadata: {
+        runId: context.runId,
+        agentId: context.agentId,
+        userId: parsed.userId,
+        promptVersion: built.promptVersion,
+      },
+      onStateUpdate: (state: AgentGraphState) => {
+        latestObservedState = state;
+      },
+      onToken: async (token: string) => {
+        if (readExecutionPolicy(latestObservedState) !== 'LIVE') {
+          notifyToken?.();
+          return;
+        }
+
+        const { emit, blocked } = liveStreamGuard.push(token);
+        if (blocked) {
+          notifyToken?.();
+          return;
+        }
+
+        if (emit) {
+          pendingEvents.push({ kind: 'token', text: emit });
+        }
+        notifyToken?.();
+      },
+      onRetrieval: async (chunks: RetrievedChunkState[], usedFallback: boolean) => {
+        pendingEvents.push({ kind: 'retrieval', chunks, usedFallback });
+        notifyToken?.();
+      },
+    };
+
+    const graphPromise = (span
+      ? runInSpanContextAsync(span, () => streamAgentGraph(streamGraphInput))
+      : streamAgentGraph(streamGraphInput)
+    )
+      .then((result) => {
+        graphResult.finalState = result.finalState;
+      })
+      .catch((error) => {
+        graphError = error;
+      })
+      .finally(() => {
+        graphDone = true;
+        notifyToken?.();
+      });
+
     let streamedTokenCount = 0;
+    let firstTokenEmittedAt: number | undefined;
 
     while (!graphDone || pendingEvents.length > 0) {
       if (pendingEvents.length === 0) {
@@ -460,6 +642,15 @@ async function* executeAgentStreamCore(
       }
       if (event.kind === 'token') {
         streamedTokenCount += 1;
+        if (firstTokenEmittedAt === undefined) {
+          firstTokenEmittedAt = Date.now();
+          if (span) {
+            setSafeSpanAttributes(span, {
+              'ai.stream.time_to_first_token_ms':
+                firstTokenEmittedAt - context.startedAt,
+            });
+          }
+        }
         yield { type: 'token', text: event.text };
       } else {
         yield {
@@ -500,10 +691,16 @@ async function* executeAgentStreamCore(
     }
 
     const durationMs = Date.now() - context.startedAt;
-    const usage = graphResult.finalState?.tokensUsed ?? { input: 0, output: 0 };
+    const { tokensUsed: usage, tokenUsageEstimated } = readTokenUsageFromState(
+      graphResult.finalState ?? ({} as AgentGraphState),
+    );
     const embeddingTokensUsed = graphResult.finalState?.embeddingTokensUsed ?? 0;
+    const billing = readBillingContextFromState(
+      graphResult.finalState ?? ({} as AgentGraphState),
+      resolved,
+    );
     const estimatedCost = computeFinalRunCost(
-      resolved.model,
+      billing.model,
       usage,
       embeddingTokensUsed,
     );
@@ -513,15 +710,27 @@ async function* executeAgentStreamCore(
       tokensUsed: usage,
     });
 
-    await completeAgentRun({
-      runId: context.runId,
-      inputTokens: usage.input,
-      outputTokens: usage.output,
-      embeddingTokens: embeddingTokensUsed,
-      latencyMs: durationMs,
-      promptVersion: built.promptVersion,
-      langsmithRunId: resolveLangsmithRunIdForLedger(),
-    });
+    const recordLedger = () =>
+      recordLedgerComplete({
+        runId: context.runId,
+        agentId: context.agentId,
+        inputTokens: usage.input,
+        outputTokens: usage.output,
+        embeddingTokens: embeddingTokensUsed,
+        tokenUsageEstimated,
+        actualModel: billing.model,
+        actualProvider: billing.provider,
+        estimatedCostUsd: estimatedCost,
+        latencyMs: durationMs,
+        promptVersion: built.promptVersion,
+        langsmithRunId: resolveLangsmithRunIdForLedger(),
+      });
+
+    if (span) {
+      await runInSpanContextAsync(span, recordLedger);
+    } else {
+      await recordLedger();
+    }
 
     await reconcileDailyBudgetUsd({
       userId: parsed.userId,
@@ -529,10 +738,16 @@ async function* executeAgentStreamCore(
       actualUsd: estimatedCost,
     });
 
-    platformMetrics.incrementAgentRun(context.agentId, 'completed');
-    platformMetrics.recordAgentDuration(context.agentId, durationMs);
-    platformMetrics.incrementLlmTokens(resolved.model, 'input', usage.input);
-    platformMetrics.incrementLlmTokens(resolved.model, 'output', usage.output);
+    recordSuccessfulAgentRun({
+      context,
+      parsed,
+      billing,
+      tokensUsed: usage,
+      embeddingTokensUsed,
+      tokenUsageEstimated,
+      estimatedCost,
+      durationMs,
+    });
 
     yield {
       type: 'done',
@@ -545,6 +760,7 @@ async function* executeAgentStreamCore(
         completionTokens: usage.output,
         totalTokens: usage.input + usage.output,
         estimatedCostUsd: estimatedCost,
+        tokenUsageEstimated,
       },
     };
     span?.setStatus({ code: 1 });
@@ -558,7 +774,7 @@ async function* executeAgentStreamCore(
       code: 2,
       message: error instanceof Error ? error.message : 'error',
     });
-    platformMetrics.incrementAgentRun(context.agentId, 'failed');
+    recordFailedAgentRun({ context, parsed, error, durationMs: Date.now() - context.startedAt });
     await trace.endTrace(undefined, error instanceof Error ? error.message : 'Unknown error');
     await failAgentRun(context.runId, {
       error: error instanceof Error ? error.message : 'Unknown error',

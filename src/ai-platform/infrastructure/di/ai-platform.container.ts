@@ -42,7 +42,11 @@ import { resetToolExecutorForTests } from '../../tools/executor/tool-executor';
 import { McpClient, parseMcpServerConfigs } from '../../tools/mcp/mcp-client';
 import { registerTool, resetToolRegistryForTests } from '../../tools/registry/tool-registry';
 import { PlatformError, PlatformErrorCodes } from '../../shared/errors';
-import { AIPlatformConfig, validateAIPlatformConfig } from '../config/ai-platform.config';
+import {
+  AIPlatformConfig,
+  resetAIPlatformConfigValidationForTests,
+  validateAIPlatformConfig,
+} from '../config/ai-platform.config';
 import { env } from '@/config/env';
 
 type PlatformGlobalState = {
@@ -229,6 +233,7 @@ export function getCourseIndexingDeps(): CourseIndexingDeps {
 export function resetPlatformContainerForTests(): void {
   globalForPlatform.__aiPlatformState = {};
   platformBootstrapped = false;
+  resetAIPlatformConfigValidationForTests();
   resetToolRegistryForTests();
   resetToolExecutorForTests();
   resetSchemaRegistryForTests();

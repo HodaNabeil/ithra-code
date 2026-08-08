@@ -21,6 +21,7 @@ export interface LlmStreamOptions {
   tools?: LlmToolDefinition[];
   signal?: AbortSignal;
   onUsage?: (usage: LlmTokenUsage) => void;
+  onModelServed?: (model: string) => void;
 }
 
 export interface LlmCompleteOptions {
@@ -33,6 +34,7 @@ export interface LlmCompleteOptions {
   jsonSchema?: Record<string, unknown>;
   tools?: LlmToolDefinition[];
   signal?: AbortSignal;
+  onModelServed?: (model: string) => void;
 }
 
 export interface LlmToolDefinition {

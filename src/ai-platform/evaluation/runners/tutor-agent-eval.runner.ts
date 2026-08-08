@@ -2,8 +2,7 @@ import { streamAgent } from '@/ai-platform';
 
 import type { EvalDataset, EvalSample } from '../types';
 import { assertMustNotContain } from '../assertions/must-not-contain';
-
-const DEFAULT_EVAL_COURSE_ID = 'eval-course-id';
+import { EVAL_COURSE_ID, EVAL_USER_ID } from '../fixtures/eval-fixtures';
 
 export type AgentEvalEnrichmentResult = {
   dataset: EvalDataset;
@@ -20,12 +19,12 @@ async function invokeTutorAgent(sample: EvalSample): Promise<{
   const retrievedContext: string[] = [];
 
   for await (const event of streamAgent('tutor', {
-    userId: 'eval-user',
+    userId: EVAL_USER_ID,
     input: sample.input,
     locale: sample.locale ?? 'ar',
     scope: {
-      userId: 'eval-user',
-      courseId: sample.courseId ?? DEFAULT_EVAL_COURSE_ID,
+      userId: EVAL_USER_ID,
+      courseId: sample.courseId ?? EVAL_COURSE_ID,
     },
     options: {
       metadata: {

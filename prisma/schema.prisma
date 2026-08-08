@@ -1435,9 +1435,12 @@ model AiAgentRun {
   inputTokens      Int?              @map("input_tokens")
   outputTokens     Int?              @map("output_tokens")
   embeddingTokens  Int?              @default(0) @map("embedding_tokens")
+  tokenUsageEstimated Boolean        @default(false) @map("token_usage_estimated")
   estimatedCostUsd Decimal?          @map("estimated_cost_usd") @db.Decimal(12, 6)
   model            String
   provider         String            @default("openai")
+  actualModel      String?           @map("actual_model")
+  actualProvider   String?           @map("actual_provider")
   promptVersion    String?           @map("prompt_version")
   latencyMs        Int?              @map("latency_ms")
   langsmithRunId   String?           @map("langsmith_run_id")
@@ -1450,6 +1453,11 @@ model AiAgentRun {
 
   @@index([userId, createdAt])
   @@index([agentId, createdAt])
+  @@index([createdAt(sort: Desc)])
+  @@index([status, createdAt(sort: Desc)])
+  @@index([status, completedAt(sort: Desc)])
+  @@index([provider, createdAt(sort: Desc)])
+  @@index([model, createdAt(sort: Desc)])
   @@map("ai_agent_runs")
 }
 
@@ -1470,6 +1478,8 @@ model AiUsageDaily {
 
   @@unique([date, userId, agentId])
   @@index([date, userId, agentId])
+  @@index([date(sort: Desc)])
+  @@index([agentId, date(sort: Desc)])
   @@map("ai_usage_daily")
 }
 

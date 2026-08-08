@@ -104,6 +104,15 @@ export function computeHeuristicMetrics(dataset: EvalDataset): RagasResult {
   };
 }
 
+function resolvePythonExecutable(): string {
+  const venvPython = join(process.cwd(), 'eval/.venv/bin/python3');
+  if (existsSync(venvPython)) {
+    return venvPython;
+  }
+
+  return 'python3';
+}
+
 async function runPythonRagas(
   dataset: EvalDataset,
   outputDir: string,
@@ -123,7 +132,8 @@ async function runPythonRagas(
   writeFileSync(datasetPath, JSON.stringify(dataset, null, 2));
 
   return new Promise((resolve) => {
-    const child = spawn('python3', [scriptPath, datasetPath, outputPath], {
+    const pythonExecutable = resolvePythonExecutable();
+    const child = spawn(pythonExecutable, [scriptPath, datasetPath, outputPath], {
       stdio: 'inherit',
     });
 

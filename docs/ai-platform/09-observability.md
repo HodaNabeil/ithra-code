@@ -3,6 +3,8 @@
 > LangSmith tracing, OpenTelemetry spans, cost analytics, and logging.  
 > **Last updated:** August 2026
 
+> **Implementation plan:** See [AI Usage + Cost + OpenTelemetry Architecture Plan](./ai-usage-observability-plan.md) for the phased rollout source of truth.
+
 ---
 
 ## Table of Contents
@@ -18,6 +20,7 @@
 9. [Cost Analytics Dashboard](#cost-analytics-dashboard)
 10. [Alerting](#alerting)
 11. [Migration from AI Tutor](#migration-from-ai-tutor)
+12. [Implementation Plan](./ai-usage-observability-plan.md)
 
 ---
 
@@ -154,41 +157,59 @@ LangSmith enables comparing runs across prompt versions:
 ### Configuration
 
 ```env
+OTEL_ENABLED=true
 OTEL_SERVICE_NAME=ithracode-ai-platform
-OTEL_EXPORTER_OTLP_ENDPOINT=https://otel-collector.example.com
+OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:4318
+OTEL_METRICS_PORT=9464
 OTEL_TRACES_SAMPLER=parentbased_traceidratio
 OTEL_TRACES_SAMPLER_ARG=0.1  # 10% sampling in production
 ```
+
+When `OTEL_ENABLED=true`:
+
+- **Traces** export to OTLP (`/v1/traces`) when `OTEL_EXPORTER_OTLP_ENDPOINT` is set
+- **Metrics** export via Prometheus pull (`OTEL_METRICS_PORT`, default `9464`) and OTLP push (`/v1/metrics`) when endpoint is set
+- **Health:** `/api/health/ai-platform` returns JSON status and export URLs — not a duplicate metrics scrape target
+
+Initialization is fail-safe: OTEL exporter failures log a warning and do not block AI requests.
 
 ### Span Hierarchy
 
 ```mermaid
 flowchart TD
-  AgentRun[ai.agent.run] --> GraphExec[ai.graph.execute]
+  AgentRun[ai.agent.run] --> GuardRate[ai.guard.rate-limit]
+  AgentRun --> GuardBudget[ai.guard.budget]
+  AgentRun --> GraphExec[ai.graph.execute / ai.graph.stream]
   GraphExec --> Sanitize[ai.node.sanitize-input]
+  GraphExec --> PrepareHistory[ai.node.prepare-history]
+  PrepareHistory --> Summarize[ai.memory.summarize]
   GraphExec --> Retrieve[ai.node.retrieve-context]
-  Retrieve --> Embed[ai.embedding.generate]
-  Retrieve --> VectorSearch[ai.vector.search]
+  Retrieve --> RagRetrieve[ai.rag.retrieve]
+  RagRetrieve --> Embed[ai.embedding.generate]
   GraphExec --> Generate[ai.node.generate-response]
-  Generate --> LLMCall[ai.llm.stream]
-  GraphExec --> Validate[ai.node.validate-output]
+  Generate --> LLMCall[ai.llm.call]
+  AgentRun --> LedgerComplete[ai.ledger.complete]
 ```
 
 ### Span Attributes
 
-Standard attributes on all platform spans:
+Standard attributes on platform spans are sanitized before export:
+
+- Raw `userId`, `courseId`, `lectureId`, and `threadId` are hashed (`hash:<16-hex>`)
+- Forbidden keys (`prompt`, `response`, `content`, `messages`, etc.) are dropped
+- Allowed operational fields: `agentId`, `runId`, `correlationId`, `model`, `provider`, token counts, cost, latency, `tokenUsageEstimated`
 
 ```typescript
 {
   'ai.agent.id': 'tutor',
-  'ai.user.id': 'user-uuid',
-  'ai.course.id': 'course-uuid',
+  'ai.user.id_hash': 'hash:abc123...',
   'ai.correlation.id': 'req-uuid',
   'ai.model': 'gpt-4o-mini',
   'ai.provider': 'openai',
   'ai.tokens.input': 1500,
   'ai.tokens.output': 350,
   'ai.cost.usd': 0.0023,
+  'ai.llm.time_to_first_token_ms': 420,
 }
 ```
 
@@ -237,6 +258,7 @@ Track token usage and estimated cost for every AI operation. Enables per-user, p
 | `input_tokens` | INT | Total input tokens |
 | `output_tokens` | INT | Total output tokens |
 | `embedding_tokens` | INT | Tokens used for embeddings |
+| `token_usage_estimated` | BOOLEAN | `true` when counts are not provider-reported |
 | `estimated_cost_usd` | DECIMAL | Calculated cost |
 | `model` | TEXT | Model used |
 | `provider` | TEXT | Provider used |
@@ -259,6 +281,33 @@ Track token usage and estimated cost for every AI operation. Enables per-user, p
 | `total_input_tokens` | BIGINT | Sum of input tokens |
 | `total_output_tokens` | BIGINT | Sum of output tokens |
 | `total_cost_usd` | DECIMAL | Sum of estimated cost |
+
+### Token Accounting (Phase 1)
+
+Normalized usage shape (`observability/usage/`):
+
+```typescript
+{
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  tokenUsageEstimated: boolean; // true = not provider-reported; do not treat as billing truth
+}
+```
+
+**Provider usage mapping:**
+
+| Provider | Stream | Complete |
+|----------|--------|----------|
+| OpenAI | `chunk.usage` (`prompt_tokens`, `completion_tokens`) | `response.usage` |
+| Anthropic | SSE `message_start` + `message_delta` `usage` | `usage.input_tokens` / `output_tokens` |
+| Gemini | `usageMetadata` per SSE chunk | `usageMetadata` in response |
+
+**Fallback:** When provider usage is missing, `resolveTokenUsage()` estimates from text (`chars/4` heuristic) and sets `tokenUsageEstimated=true`. Provider-reported usage is never marked estimated.
+
+**Streaming:** Adapters call `onUsage` once at stream end with final counts. Graph state accumulates via `tokensUsed` reducer across nodes (generate, summarization, evaluator).
+
+See [AI Usage Observability Plan](./ai-usage-observability-plan.md) for full architecture.
 
 ### Cost Calculation
 
@@ -301,35 +350,69 @@ Fail-closed: if the cost ledger is unreachable, deny the request.
 
 | Metric | Type | Labels |
 |--------|------|--------|
-| `ai_agent_runs_total` | Counter | `agent_id`, `status` |
-| `ai_agent_run_duration_ms` | Histogram | `agent_id` |
-| `ai_llm_tokens_total` | Counter | `model`, `direction` (input/output) |
+| `ai_requests_total` | Counter | `agent_id`, `status` |
+| `ai_request_duration_ms` | Histogram | `agent_id` |
+| `ai_request_errors_total` | Counter | `agent_id`, `error_code` |
+| `ai_tokens_input_total` | Counter | `model`, `provider` |
+| `ai_tokens_output_total` | Counter | `model`, `provider` |
+| `ai_cost_usd_total` | Counter | `model`, `provider`, `agent_id` |
+| `ai_embedding_tokens_total` | Counter | `model` |
 | `ai_retrieval_chunks_total` | Counter | `agent_id` |
-| `ai_retrieval_latency_ms` | Histogram | `agent_id` |
-| `ai_embedding_cache_hits_total` | Counter | — |
-| `ai_rate_limit_exceeded_total` | Counter | `user_id`, `limit_type` |
-| `ai_cost_cap_exceeded_total` | Counter | — |
-| `ai_indexing_jobs_total` | Counter | `job_type`, `status` |
+| `ai_rag_retrieval_duration_ms` | Histogram | `agent_id` |
 | `ai_tool_invocations_total` | Counter | `tool_id`, `status` |
+
+Legacy aliases (`ai_agent_runs_total`, `ai_agent_run_duration_ms`, `ai_llm_tokens_total`, `ai_retrieval_latency_ms`) are still emitted for backward compatibility.
 
 ### Export
 
-Phase 1: Structured Pino log lines with metric fields (queryable via log aggregator).
-Phase 2: OTEL Metrics exporter to Prometheus/Grafana.
+Metrics are recorded through the OpenTelemetry SDK (`platform-metrics.ts` → OTEL meter API).
+
+- **Prometheus:** scrape `http://<host>:9464/metrics` (configurable via `OTEL_METRICS_PORT`)
+- **OTLP:** pushed to `<OTEL_EXPORTER_OTLP_ENDPOINT>/v1/metrics` when endpoint is configured
+- **Legacy:** in-memory `toPrometheusText()` on `/api/health/ai-platform` removed in Phase 3
 
 ---
 
 ## Structured Logging
 
-The platform extends the existing Pino logger (`src/lib/logger.ts`) with AI-specific log tags.
+Agent run lifecycle logs use a unified schema via `observability/logging/ai-event-logger.ts`.
 
-### Log Tags
+### Run Events
+
+| Event | Level | Message tag |
+|-------|-------|-------------|
+| `ai.agent.run.completed` | info | `[AI_AGENT_RUN_COMPLETED]` |
+| `ai.agent.run.failed` | warn | `[AI_AGENT_RUN_FAILED]` |
+
+### Log Structure
+
+```json
+{
+  "level": "info",
+  "event": "ai.agent.run.completed",
+  "traceId": "abc123...",
+  "spanId": "def456...",
+  "runId": "run-uuid",
+  "agentId": "tutor",
+  "correlationId": "req-uuid",
+  "model": "gpt-4o-mini",
+  "provider": "openai",
+  "inputTokens": 1500,
+  "outputTokens": 350,
+  "embeddingTokens": 120,
+  "costUsd": 0.0023,
+  "durationMs": 4200,
+  "status": "completed",
+  "tokenUsageEstimated": false
+}
+```
+
+`traceId` / `spanId` are populated from the active OTEL span when available; `runId` / `agentId` come from the agent trace context. Prompt, response, and RAG content are never logged.
+
+### Other Log Tags
 
 | Tag | Level | When |
 |-----|-------|------|
-| `[AI_AGENT_RUN_START]` | info | Agent run begins |
-| `[AI_AGENT_RUN_COMPLETE]` | info | Agent run succeeds |
-| `[AI_AGENT_RUN_FAILED]` | error | Agent run fails |
 | `[AI_LLM_CALL]` | debug | LLM request/response metadata |
 | `[AI_RETRIEVAL]` | debug | RAG retrieval results count |
 | `[AI_EMBEDDING]` | debug | Embedding generation (cache hit/miss) |
@@ -339,25 +422,6 @@ The platform extends the existing Pino logger (`src/lib/logger.ts`) with AI-spec
 | `[AI_INDEXING_COMPLETE]` | info | Indexing job succeeds |
 | `[AI_TOOL_CALL]` | info | Tool invocation |
 | `[AI_PROMPT_RESOLVED]` | debug | Prompt resolved from Langfuse/local |
-
-### Log Structure
-
-```json
-{
-  "level": "info",
-  "tag": "AI_AGENT_RUN_COMPLETE",
-  "agentId": "tutor",
-  "userId": "user-uuid",
-  "runId": "run-uuid",
-  "correlationId": "req-uuid",
-  "inputTokens": 1500,
-  "outputTokens": 350,
-  "estimatedCostUsd": 0.0023,
-  "latencyMs": 2340,
-  "model": "gpt-4o-mini",
-  "promptVersion": "3"
-}
-```
 
 ---
 
@@ -398,35 +462,101 @@ Set at agent run start, available via `getAITraceContext()` throughout the call 
 
 ## Cost Analytics Dashboard
 
-The platform provides a **data layer** for an admin cost analytics UI. UI components live in the admin feature; the platform exposes query functions.
+The platform exposes analytics queries for admin UI (Phase 6) and ops scripts (Bearer API).
 
-### Data API
+### Data layer
 
 `observability/dashboard/cost-analytics.service.ts`:
 
-```typescript
-interface CostAnalyticsService {
-  getDailySummary(date: Date): Promise<DailyCostSummary>;
-  getUserCosts(userId: string, range: DateRange): Promise<UserCostBreakdown>;
-  getAgentCosts(agentId: string, range: DateRange): Promise<AgentCostBreakdown>;
-  getTopUsers(range: DateRange, limit: number): Promise<UserCostEntry[]>;
-  getCostTrend(range: DateRange, granularity: 'hour' | 'day'): Promise<CostTrendPoint[]>;
-}
-```
+| Function | Purpose |
+|----------|---------|
+| `getOverviewAnalytics()` | Total requests, error rate, avg latency, tokens, cost |
+| `getModelBreakdownAnalytics()` | Per model/provider runs, cost, error rate, latency |
+| `getCostSummaryAnalytics()` | Completed-run cost/token totals |
+| `listAgentRuns()` | Paginated runs (all statuses; optional `status` filter) |
+| `getDailyUsageAnalytics()` | Daily rollups from `ai_usage_daily` |
+| `getUsageByProvider()` / `getUsageByModel()` | Completed-run aggregations |
 
-### Dashboard Views (Admin Feature)
+Filters are normalized via `analytics-filters.ts` (`agentId`, `provider`, `model`, date range, `tokenUsageEstimated`, `status`).
 
-| View | Data Source | Purpose |
-|------|-----------|---------|
-| **Daily spend** | `ai_usage_daily` | Total platform cost today |
-| **Per-agent breakdown** | `ai_usage_daily` grouped by `agent_id` | Which products cost most |
-| **Per-user top spenders** | `ai_agent_runs` aggregated | Identify heavy users |
-| **Cost trend** | `ai_usage_daily` time series | Spending over time |
-| **Token efficiency** | `ai_agent_runs` avg tokens/run | Optimization opportunities |
+### Admin UI access (session auth)
 
-### Access Control
+Server Actions in `features/admin/actions/ai-analytics.actions.ts` call the analytics service after `requireAdminSession()` (`Role.ADMIN` via NextAuth). No Bearer secret in the browser.
 
-Dashboard data API is called from admin routes only. The platform does not enforce admin auth — the admin feature verifies role before calling `getCostSummary()`.
+### Ops API access (Bearer auth)
+
+When `AI_ADMIN_API_SECRET` is set:
+
+| Route | Data |
+|-------|------|
+| `GET /api/admin/ai/overview` | Overview metrics |
+| `GET /api/admin/ai/breakdown` | Model breakdown |
+| `GET /api/admin/ai/costs` | Cost summary |
+| `GET /api/admin/ai/runs` | Paginated runs |
+| `GET /api/admin/ai/usage` | Daily usage |
+| `GET /api/admin/ai/models` | Usage by model |
+| `GET /api/admin/ai/providers` | Usage by provider |
+
+Authorization: `Authorization: Bearer <AI_ADMIN_API_SECRET>`
+
+### Admin UI (session auth)
+
+Route: `/admin/analytics/ai`
+
+The dashboard uses Server Actions from `features/admin/actions/ai-analytics.actions.ts` (ADMIN session). Sections:
+
+- Overview metric cards
+- Recharts time-series (cost, tokens, requests vs errors)
+- Model breakdown table
+- Recent runs table with estimated-usage badge
+
+Date range: `?days=7|30|90` (default 30).
+
+Recharts is lazy-loaded (`lazy-usage-charts.tsx`) to reduce initial admin bundle size.
+
+---
+
+## Production hardening (Phase 8)
+
+### Telemetry failure isolation
+
+Span and metric helpers wrap OTEL calls in `telemetry-isolation.ts` (`runTelemetrySafely` / `runTelemetrySafelyAsync`). Exporter or span-creation failures are logged and **never** propagate into agent request handling.
+
+Structured AI logs (`ai-event-logger.ts`) use the same isolation pattern.
+
+### Metric cardinality guard
+
+`metric-labels.ts` enforces an allowlist per metric name and strips forbidden keys (`user_id`, `course_id`, `thread_id`, prompt/response content). See [`production/cardinality-review.md`](./production/cardinality-review.md).
+
+### Analytics query performance
+
+Indexes on `ai_agent_runs` and `ai_usage_daily` support dashboard date-range and breakdown queries (migration `20260808140000_add_ai_analytics_indexes`).
+
+### Production deployment docs
+
+| Artifact | Purpose |
+|----------|---------|
+| [`production/vps-observability.env.example`](./production/vps-observability.env.example) | VPS env template |
+| [`production/otel-collector.config.yaml`](./production/otel-collector.config.yaml) | Collector pipelines reference |
+| [`production/security-privacy-review.md`](./production/security-privacy-review.md) | Security/privacy sign-off |
+
+Optional OTEL batch span processor tuning via `OTEL_BSP_*` env vars (see `.env.example`).
+
+---
+
+## Final verification (Phase 9)
+
+All phases of the [AI Usage Observability Plan](./ai-usage-observability-plan.md) are complete.
+
+| Verification | Result (Aug 2026) |
+|--------------|-------------------|
+| Unit tests (`pnpm test:unit`) | 85 passed |
+| Integration tests (`pnpm test:integration`) | 7 passed |
+| Full vitest (`pnpm test`) | 86 passed, 6 skipped |
+| ESLint (`pnpm lint`) | 0 errors |
+| Type-check (`pnpm type-check`) | Pre-existing `.next/types` failures — not observability-related |
+
+**Deploy sign-off:** [production/production-readiness-checklist.md](./production/production-readiness-checklist.md)
 
 ---
 
@@ -462,6 +592,8 @@ The tutor health endpoint (`/api/health/tutor`) remains but delegates to platfor
 
 ## Related Documentation
 
+- [AI Usage Observability Plan](./ai-usage-observability-plan.md) — phased implementation (complete)
+- [Production Readiness Checklist](./production/production-readiness-checklist.md) — deploy sign-off
 - [08-prompts.md](./08-prompts.md) — Langfuse (prompts) vs LangSmith (traces)
 - [11-workers.md](./11-workers.md) — Worker heartbeat and logging
 - [13-security.md](./13-security.md) — PII in traces and logs

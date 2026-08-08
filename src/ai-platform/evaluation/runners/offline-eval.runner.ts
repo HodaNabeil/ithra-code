@@ -6,6 +6,7 @@ import { prisma as appPrisma } from '@/lib/prisma';
 
 import type { EvalDataset, EvalReport, RagasThresholds } from '../types';
 import { DEFAULT_RAGAS_THRESHOLDS } from '../types';
+import { ensureEvalUser } from '../fixtures/eval-fixtures';
 import { runRagasEvaluation } from '../ragas/ragas-runner';
 import { enrichDatasetWithAgentOutput } from './tutor-agent-eval.runner';
 
@@ -22,6 +23,15 @@ export async function runOfflineEvaluation(params: {
 }): Promise<EvalReport> {
   const loadedDataset = loadDataset(params.datasetFile);
   const thresholds = params.thresholds ?? DEFAULT_RAGAS_THRESHOLDS;
+
+  const platformEnabled = process.env.AI_PLATFORM_ENABLED === 'true';
+  const hasApiKey = Boolean(process.env.OPENAI_API_KEY);
+  const willInvokeAgent =
+    platformEnabled && hasApiKey && loadedDataset.agentId === 'tutor';
+
+  if (willInvokeAgent) {
+    await ensureEvalUser();
+  }
 
   const enrichment =
     loadedDataset.agentId === 'tutor'

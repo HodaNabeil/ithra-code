@@ -29,8 +29,16 @@ export class FallbackLlmAdapter implements LlmPort {
     for (const model of models) {
       try {
         const adapter = getLlmForModel(model);
+        let served = false;
         for await (const token of adapter.streamAnswer({ ...options, model })) {
+          if (!served) {
+            options.onModelServed?.(model);
+            served = true;
+          }
           yield token;
+        }
+        if (!served) {
+          options.onModelServed?.(model);
         }
         return;
       } catch (error) {
@@ -51,7 +59,9 @@ export class FallbackLlmAdapter implements LlmPort {
         if (!adapter.complete) {
           continue;
         }
-        return await adapter.complete({ ...options, model });
+        const result = await adapter.complete({ ...options, model });
+        options.onModelServed?.(model);
+        return result;
       } catch (error) {
         lastError = error;
       }

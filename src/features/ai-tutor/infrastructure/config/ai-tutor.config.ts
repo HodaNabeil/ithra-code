@@ -63,12 +63,25 @@ export class AITutorConfig {
   }
 }
 
+let tutorConfigValidated = false;
+
+export function resetAITutorConfigValidationForTests(): void {
+  tutorConfigValidated = false;
+}
+
 /**
  * Validate configuration at startup
  */
 export function validateAITutorConfig(): void {
   if (!AITutorConfig.isEnabled()) {
-    logger.info('[AI_TUTOR_CONFIG] AI Tutor feature is disabled (AI_TUTOR_ENABLED=false)');
+    if (!tutorConfigValidated) {
+      logger.info('[AI_TUTOR_CONFIG] AI Tutor feature is disabled (AI_TUTOR_ENABLED=false)');
+      tutorConfigValidated = true;
+    }
+    return;
+  }
+
+  if (tutorConfigValidated) {
     return;
   }
 
@@ -89,6 +102,7 @@ export function validateAITutorConfig(): void {
       },
       '[AI_TUTOR_CONFIG] AI Tutor configuration is valid',
     );
+    tutorConfigValidated = true;
   } catch (error) {
     logger.error({ error }, '[AI_TUTOR_CONFIG] AI Tutor configuration error');
     throw error;

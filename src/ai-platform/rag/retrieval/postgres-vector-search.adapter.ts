@@ -78,10 +78,42 @@ export class PostgresVectorSearchAdapter implements VectorSearchPort {
     const minScore = options?.minScore ?? config.minSimilarity;
     const lectureId =
       typeof options?.filter?.lectureId === 'string' ? options.filter.lectureId : undefined;
+    const lectureOnly =
+      options?.filter?.lectureOnly === true &&
+      typeof lectureId === 'string' &&
+      lectureId.length > 0;
 
     try {
       const vectorLiteral = toVectorLiteral(embedding);
-      const rows = lectureId
+      const rows = lectureOnly
+        ? await prisma.$queryRawUnsafe<VectorSearchRow[]>(
+            `
+              SELECT
+                id,
+                title,
+                content,
+                lecture_id,
+                section_id,
+                content_type::text AS content_type,
+                metadata,
+                (1 - (embedding <=> $1::vector))::float8 AS score
+              FROM knowledge_chunks
+              WHERE course_id = $2
+                AND sensitivity = $3::"knowledge_sensitivity"
+                AND embedding IS NOT NULL
+                AND lecture_id = $4
+                AND (1 - (embedding <=> $1::vector)) >= $6
+              ORDER BY embedding <=> $1::vector
+              LIMIT $5
+            `,
+            vectorLiteral,
+            courseId,
+            KnowledgeSensitivity.PUBLIC,
+            lectureId,
+            topK,
+            minScore,
+          )
+        : lectureId
         ? await prisma.$queryRawUnsafe<VectorSearchRow[]>(
             `
               SELECT

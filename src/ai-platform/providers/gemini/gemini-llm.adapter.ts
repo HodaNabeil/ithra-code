@@ -7,6 +7,12 @@ import {
   type LlmPort,
   type LlmStreamOptions,
 } from '../../domain/ports/llm.port';
+import {
+  mapGeminiUsage,
+  mergeProviderRawUsage,
+  parseGeminiStreamUsageEvent,
+  type ProviderRawUsage,
+} from '../../observability/usage';
 import { createLinkedAbortController } from '../abort-signal';
 
 export class GeminiLlmAdapter implements LlmPort {
@@ -31,6 +37,7 @@ export class GeminiLlmAdapter implements LlmPort {
       options.signal,
     );
     const model = options.model ?? this.model;
+    let accumulatedUsage: ProviderRawUsage = {};
 
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${this.apiKey}`;
@@ -76,7 +83,18 @@ export class GeminiLlmAdapter implements LlmPort {
           try {
             const event = JSON.parse(payload) as {
               candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+              usageMetadata?: {
+                promptTokenCount?: number;
+                candidatesTokenCount?: number;
+                totalTokenCount?: number;
+              };
             };
+
+            const usagePatch = parseGeminiStreamUsageEvent(event);
+            if (usagePatch) {
+              accumulatedUsage = mergeProviderRawUsage(accumulatedUsage, usagePatch);
+            }
+
             const text = event.candidates?.[0]?.content?.parts?.[0]?.text;
             if (text) {
               yield text;
@@ -84,6 +102,14 @@ export class GeminiLlmAdapter implements LlmPort {
           } catch {
             // Ignore malformed SSE chunks.
           }
+        }
+      }
+
+      if (options.onUsage) {
+        const input = accumulatedUsage.inputTokens ?? 0;
+        const output = accumulatedUsage.outputTokens ?? 0;
+        if (input > 0 || output > 0) {
+          options.onUsage({ input, output });
         }
       }
     } catch (error) {
@@ -115,10 +141,27 @@ export class GeminiLlmAdapter implements LlmPort {
 
       const payload = (await response.json()) as {
         candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+        usageMetadata?: {
+          promptTokenCount?: number;
+          candidatesTokenCount?: number;
+          totalTokenCount?: number;
+        };
       };
 
       const content = payload.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
-      return { content };
+      const mappedUsage = payload.usageMetadata
+        ? mapGeminiUsage(payload.usageMetadata)
+        : undefined;
+
+      return {
+        content,
+        usage: mappedUsage
+          ? {
+              input: mappedUsage.inputTokens ?? 0,
+              output: mappedUsage.outputTokens ?? 0,
+            }
+          : undefined,
+      };
     } catch (error) {
       throw this.mapError(error, options.signal);
     } finally {

@@ -6,7 +6,12 @@ import {
   type LlmPort,
   type LlmStreamOptions,
 } from '../../domain/ports/llm.port';
-import { withSpan, isOtelActive, getTracer } from '../../observability/opentelemetry/span-helpers';
+import {
+  withSpan,
+  isOtelActive,
+  getTracer,
+} from '../../observability/opentelemetry/span-helpers';
+import { setSafeSpanAttributes } from '../../observability/opentelemetry/otel-attributes';
 
 const MAX_RETRIES = 3;
 const BASE_DELAY_MS = process.env.NODE_ENV === 'test' ? 1 : 1000;
@@ -78,12 +83,34 @@ export class ResilientLlmAdapter implements LlmPort {
     }
 
     const span = getTracer().startSpan('ai.llm.call', { attributes });
+    const startedAt = Date.now();
+    let firstTokenAt: number | undefined;
+    let tokenCount = 0;
+
     try {
       for await (const token of streamWithRetry(this.inner, options)) {
+        tokenCount += 1;
+        if (firstTokenAt === undefined) {
+          firstTokenAt = Date.now();
+          setSafeSpanAttributes(span, {
+            'ai.llm.time_to_first_token_ms': firstTokenAt - startedAt,
+          });
+        }
         yield token;
       }
+
+      setSafeSpanAttributes(span, {
+        'ai.llm.stream.token_count': tokenCount,
+        'ai.llm.stream.duration_ms': Date.now() - startedAt,
+        'ai.llm.stream.aborted': options.signal?.aborted === true,
+      });
       span.setStatus({ code: 1 });
     } catch (error) {
+      setSafeSpanAttributes(span, {
+        'ai.llm.stream.token_count': tokenCount,
+        'ai.llm.stream.duration_ms': Date.now() - startedAt,
+        'ai.llm.stream.aborted': options.signal?.aborted === true,
+      });
       span.recordException(error as Error);
       span.setStatus({
         code: 2,

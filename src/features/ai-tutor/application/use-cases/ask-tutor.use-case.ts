@@ -47,6 +47,7 @@ function buildPersonalizationContext(
     studentName: sessionContext.student.displayName,
     learningLevel: sessionContext.student.learningLevel,
     courseTitle: sessionContext.course.title,
+    lectureTitle: sessionContext.lecture?.title,
     progressPercent: sessionContext.studentProgress.completionPercentage,
     knowledgeGaps: sessionContext.studentProgress.knowledgeGaps.map(
       (gap) => gap.lectureTitle,

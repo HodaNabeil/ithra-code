@@ -295,6 +295,10 @@ export const env = createEnv({
       .string()
       .optional()
       .describe('JSON array of MCP server configurations (Phase 3)'),
+    AI_PLATFORM_MODEL_PRICING_JSON: z
+      .string()
+      .optional()
+      .describe('JSON override for per-model token pricing (USD per token)'),
 
     // Langfuse prompt management
     LANGFUSE_PUBLIC_KEY: z.string().optional().describe('Langfuse public API key'),
@@ -356,6 +360,16 @@ export const env = createEnv({
       .string()
       .optional()
       .describe('Prometheus metrics exporter port'),
+    OTEL_TRACES_SAMPLER: z
+      .enum(['parentbased_traceidratio', 'traceidratio', 'always_on', 'always_off'])
+      .optional()
+      .default('parentbased_traceidratio')
+      .describe('OpenTelemetry trace sampling strategy'),
+    OTEL_TRACES_SAMPLER_ARG: z
+      .string()
+      .optional()
+      .default('1')
+      .describe('Trace sampling ratio (0–1) for ratio-based samplers'),
 
     // AI admin API
     AI_ADMIN_API_SECRET: z
@@ -508,6 +522,7 @@ export const env = createEnv({
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
     GOOGLE_AI_API_KEY: process.env.GOOGLE_AI_API_KEY,
     AI_PLATFORM_MCP_SERVERS: process.env.AI_PLATFORM_MCP_SERVERS,
+    AI_PLATFORM_MODEL_PRICING_JSON: process.env.AI_PLATFORM_MODEL_PRICING_JSON,
     LANGFUSE_PUBLIC_KEY: process.env.LANGFUSE_PUBLIC_KEY,
     LANGFUSE_SECRET_KEY: process.env.LANGFUSE_SECRET_KEY,
     LANGFUSE_HOST: process.env.LANGFUSE_HOST,
@@ -522,6 +537,8 @@ export const env = createEnv({
     OTEL_SERVICE_NAME: process.env.OTEL_SERVICE_NAME,
     OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
     OTEL_METRICS_PORT: process.env.OTEL_METRICS_PORT,
+    OTEL_TRACES_SAMPLER: process.env.OTEL_TRACES_SAMPLER,
+    OTEL_TRACES_SAMPLER_ARG: process.env.OTEL_TRACES_SAMPLER_ARG,
     AI_ADMIN_API_SECRET: process.env.AI_ADMIN_API_SECRET,
     AI_TUTOR_ENABLED: process.env.AI_TUTOR_ENABLED,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,

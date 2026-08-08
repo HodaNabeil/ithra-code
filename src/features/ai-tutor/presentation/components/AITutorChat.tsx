@@ -34,6 +34,7 @@ export function AITutorChat({
     retry,
     cancel,
     isStreaming,
+    streamingMessageId,
     isLoadingHistory,
     error,
   } = useAITutorChat({
@@ -110,7 +111,7 @@ export function AITutorChat({
               <MessageBubble
                 key={message.id}
                 message={message}
-                isStreaming={isStreaming && message.role === 'assistant'}
+                isStreaming={message.id === streamingMessageId}
                 compact={isSidebar}
               />
             ))

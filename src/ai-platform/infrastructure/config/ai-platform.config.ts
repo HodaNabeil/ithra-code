@@ -192,17 +192,31 @@ export class AIPlatformConfig {
 
   static getOtelConfig() {
     const metricsPort = Number(env.OTEL_METRICS_PORT);
+    const samplerArg = Number(env.OTEL_TRACES_SAMPLER_ARG);
+    const tracesSamplerRatio =
+      Number.isFinite(samplerArg) && samplerArg >= 0 && samplerArg <= 1
+        ? samplerArg
+        : 1;
+
     return {
       enabled: this.isOtelEnabled(),
       serviceName: env.OTEL_SERVICE_NAME ?? 'ithracode-ai-platform',
       otlpEndpoint: env.OTEL_EXPORTER_OTLP_ENDPOINT,
       metricsPort: Number.isFinite(metricsPort) && metricsPort > 0 ? metricsPort : 9464,
+      tracesSampler: env.OTEL_TRACES_SAMPLER ?? 'parentbased_traceidratio',
+      tracesSamplerRatio,
     };
   }
 }
 
+let platformConfigValidated = false;
+
+export function resetAIPlatformConfigValidationForTests(): void {
+  platformConfigValidated = false;
+}
+
 export function validateAIPlatformConfig(): void {
-  if (!AIPlatformConfig.isEnabled()) {
+  if (platformConfigValidated || !AIPlatformConfig.isEnabled()) {
     return;
   }
 
@@ -219,4 +233,6 @@ export function validateAIPlatformConfig(): void {
     },
     '[AI_PLATFORM_CONFIG] Configuration validated',
   );
+
+  platformConfigValidated = true;
 }

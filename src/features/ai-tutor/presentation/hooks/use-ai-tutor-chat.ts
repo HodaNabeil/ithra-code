@@ -214,6 +214,9 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [streamState, setStreamState] = useState<StreamState>('idle');
+  const [streamingMessageId, setStreamingMessageId] = useState<string | null>(
+    null,
+  );
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -352,6 +355,7 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
 
       setError(null);
       setStreamState('streaming');
+      setStreamingMessageId(assistantMessageId);
 
       const controller = new AbortController();
       abortControllerRef.current = controller;
@@ -365,11 +369,15 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
           onMeta: applyMeta,
           onToken: appendToken,
           onReplace: replaceContent,
-          onComplete: () => setStreamState('idle'),
+          onComplete: () => {
+            setStreamState('idle');
+            setStreamingMessageId(null);
+          },
         });
       } catch (requestError) {
         if (requestError instanceof DOMException && requestError.name === 'AbortError') {
           setStreamState('idle');
+          setStreamingMessageId(null);
           return;
         }
 
@@ -388,6 +396,7 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
         );
       } finally {
         abortControllerRef.current = null;
+        setStreamingMessageId(null);
       }
     },
     [appendToken, applyMeta, options, replaceContent],
@@ -420,6 +429,7 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
   const cancel = useCallback(() => {
     abortControllerRef.current?.abort();
     setStreamState('idle');
+    setStreamingMessageId(null);
   }, []);
 
   return {
@@ -430,6 +440,7 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
     retry,
     cancel,
     isStreaming,
+    streamingMessageId,
     isLoadingHistory,
     error,
   };

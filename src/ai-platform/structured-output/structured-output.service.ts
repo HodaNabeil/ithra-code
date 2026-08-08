@@ -1,4 +1,10 @@
 import type { LlmPort } from '../domain/ports/llm.port';
+import {
+  emptyNormalizedUsage,
+  mergeNormalizedUsage,
+  resolveTokenUsage,
+  type NormalizedTokenUsage,
+} from '../observability/usage';
 import { getOutputSchema } from './registry/schema-registry';
 import {
   repairStructuredOutput,
@@ -25,6 +31,7 @@ export interface StructuredOutputResult<T = unknown> {
   rawOutput: string;
   attempts: number;
   errors: ValidationResult['errors'];
+  usage: NormalizedTokenUsage;
 }
 
 export async function generateStructuredOutput<T>(
@@ -39,6 +46,7 @@ export async function generateStructuredOutput<T>(
   const maxAttempts = request.maxAttempts ?? 3;
   let lastRaw = '';
   let lastErrors: ValidationResult['errors'] = [];
+  let accumulatedUsage = emptyNormalizedUsage();
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const errorContext =
@@ -63,6 +71,20 @@ export async function generateStructuredOutput<T>(
     });
 
     lastRaw = response.content;
+    const attemptUsage = resolveTokenUsage(
+      response.usage
+        ? {
+            inputTokens: response.usage.input,
+            outputTokens: response.usage.output,
+          }
+        : null,
+      {
+        inputText: `${request.systemPrompt}\n${request.userPrompt}${errorContext}`,
+        outputText: response.content,
+      },
+    );
+    accumulatedUsage = mergeNormalizedUsage(accumulatedUsage, attemptUsage);
+
     let parsedValue: unknown = lastRaw;
     try {
       parsedValue = JSON.parse(lastRaw);
@@ -81,6 +103,7 @@ export async function generateStructuredOutput<T>(
         rawOutput: lastRaw,
         attempts: attempt,
         errors: [],
+        usage: accumulatedUsage,
       };
     }
 
@@ -97,6 +120,7 @@ export async function generateStructuredOutput<T>(
           rawOutput: lastRaw,
           attempts: attempt,
           errors: [],
+          usage: accumulatedUsage,
         };
       }
       parsedValue = repair.repaired;
@@ -119,5 +143,6 @@ export async function generateStructuredOutput<T>(
     rawOutput: lastRaw,
     attempts: maxAttempts,
     errors: lastErrors,
+    usage: accumulatedUsage,
   };
 }

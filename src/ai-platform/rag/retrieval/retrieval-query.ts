@@ -38,6 +38,30 @@ export function detectFollowUpQuestion(
   );
 }
 
+export function buildScopedRetrievalQuery(input: {
+  question: string;
+  lectureTitle?: string;
+  courseTitle?: string;
+}): string {
+  const question = input.question.trim();
+  if (!question) {
+    return '';
+  }
+
+  const parts: string[] = [];
+
+  if (input.lectureTitle?.trim()) {
+    parts.push(`محاضرة: ${input.lectureTitle.trim()}`);
+  }
+
+  if (input.courseTitle?.trim()) {
+    parts.push(`دورة: ${input.courseTitle.trim()}`);
+  }
+
+  parts.push(question);
+  return parts.join('\n');
+}
+
 export function buildRetrievalQuery(input: {
   question: string;
   recentHistory?: RetrievalHistoryMessage[];

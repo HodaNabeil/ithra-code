@@ -27,6 +27,7 @@ export interface ChatUsage {
   completionTokens?: number;
   totalTokens?: number;
   estimatedCostUsd?: number;
+  tokenUsageEstimated?: boolean;
 }
 
 export interface RetrievedSource {

@@ -50,9 +50,12 @@ export type AiAgentRunMinAggregateOutputType = {
   inputTokens: number | null
   outputTokens: number | null
   embeddingTokens: number | null
+  tokenUsageEstimated: boolean | null
   estimatedCostUsd: runtime.Decimal | null
   model: string | null
   provider: string | null
+  actualModel: string | null
+  actualProvider: string | null
   promptVersion: string | null
   latencyMs: number | null
   langsmithRunId: string | null
@@ -69,9 +72,12 @@ export type AiAgentRunMaxAggregateOutputType = {
   inputTokens: number | null
   outputTokens: number | null
   embeddingTokens: number | null
+  tokenUsageEstimated: boolean | null
   estimatedCostUsd: runtime.Decimal | null
   model: string | null
   provider: string | null
+  actualModel: string | null
+  actualProvider: string | null
   promptVersion: string | null
   latencyMs: number | null
   langsmithRunId: string | null
@@ -88,9 +94,12 @@ export type AiAgentRunCountAggregateOutputType = {
   inputTokens: number
   outputTokens: number
   embeddingTokens: number
+  tokenUsageEstimated: number
   estimatedCostUsd: number
   model: number
   provider: number
+  actualModel: number
+  actualProvider: number
   promptVersion: number
   latencyMs: number
   langsmithRunId: number
@@ -126,9 +135,12 @@ export type AiAgentRunMinAggregateInputType = {
   inputTokens?: true
   outputTokens?: true
   embeddingTokens?: true
+  tokenUsageEstimated?: true
   estimatedCostUsd?: true
   model?: true
   provider?: true
+  actualModel?: true
+  actualProvider?: true
   promptVersion?: true
   latencyMs?: true
   langsmithRunId?: true
@@ -145,9 +157,12 @@ export type AiAgentRunMaxAggregateInputType = {
   inputTokens?: true
   outputTokens?: true
   embeddingTokens?: true
+  tokenUsageEstimated?: true
   estimatedCostUsd?: true
   model?: true
   provider?: true
+  actualModel?: true
+  actualProvider?: true
   promptVersion?: true
   latencyMs?: true
   langsmithRunId?: true
@@ -164,9 +179,12 @@ export type AiAgentRunCountAggregateInputType = {
   inputTokens?: true
   outputTokens?: true
   embeddingTokens?: true
+  tokenUsageEstimated?: true
   estimatedCostUsd?: true
   model?: true
   provider?: true
+  actualModel?: true
+  actualProvider?: true
   promptVersion?: true
   latencyMs?: true
   langsmithRunId?: true
@@ -271,9 +289,12 @@ export type AiAgentRunGroupByOutputType = {
   inputTokens: number | null
   outputTokens: number | null
   embeddingTokens: number | null
+  tokenUsageEstimated: boolean
   estimatedCostUsd: runtime.Decimal | null
   model: string
   provider: string
+  actualModel: string | null
+  actualProvider: string | null
   promptVersion: string | null
   latencyMs: number | null
   langsmithRunId: string | null
@@ -314,9 +335,12 @@ export type AiAgentRunWhereInput = {
   inputTokens?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
   outputTokens?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
   embeddingTokens?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
+  tokenUsageEstimated?: Prisma.BoolFilter<"AiAgentRun"> | boolean
   estimatedCostUsd?: Prisma.DecimalNullableFilter<"AiAgentRun"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringFilter<"AiAgentRun"> | string
   provider?: Prisma.StringFilter<"AiAgentRun"> | string
+  actualModel?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
+  actualProvider?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
   promptVersion?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
   latencyMs?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
   langsmithRunId?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
@@ -335,9 +359,12 @@ export type AiAgentRunOrderByWithRelationInput = {
   inputTokens?: Prisma.SortOrderInput | Prisma.SortOrder
   outputTokens?: Prisma.SortOrderInput | Prisma.SortOrder
   embeddingTokens?: Prisma.SortOrderInput | Prisma.SortOrder
+  tokenUsageEstimated?: Prisma.SortOrder
   estimatedCostUsd?: Prisma.SortOrderInput | Prisma.SortOrder
   model?: Prisma.SortOrder
   provider?: Prisma.SortOrder
+  actualModel?: Prisma.SortOrderInput | Prisma.SortOrder
+  actualProvider?: Prisma.SortOrderInput | Prisma.SortOrder
   promptVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   latencyMs?: Prisma.SortOrderInput | Prisma.SortOrder
   langsmithRunId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -359,9 +386,12 @@ export type AiAgentRunWhereUniqueInput = Prisma.AtLeast<{
   inputTokens?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
   outputTokens?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
   embeddingTokens?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
+  tokenUsageEstimated?: Prisma.BoolFilter<"AiAgentRun"> | boolean
   estimatedCostUsd?: Prisma.DecimalNullableFilter<"AiAgentRun"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringFilter<"AiAgentRun"> | string
   provider?: Prisma.StringFilter<"AiAgentRun"> | string
+  actualModel?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
+  actualProvider?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
   promptVersion?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
   latencyMs?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
   langsmithRunId?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
@@ -380,9 +410,12 @@ export type AiAgentRunOrderByWithAggregationInput = {
   inputTokens?: Prisma.SortOrderInput | Prisma.SortOrder
   outputTokens?: Prisma.SortOrderInput | Prisma.SortOrder
   embeddingTokens?: Prisma.SortOrderInput | Prisma.SortOrder
+  tokenUsageEstimated?: Prisma.SortOrder
   estimatedCostUsd?: Prisma.SortOrderInput | Prisma.SortOrder
   model?: Prisma.SortOrder
   provider?: Prisma.SortOrder
+  actualModel?: Prisma.SortOrderInput | Prisma.SortOrder
+  actualProvider?: Prisma.SortOrderInput | Prisma.SortOrder
   promptVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   latencyMs?: Prisma.SortOrderInput | Prisma.SortOrder
   langsmithRunId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -408,9 +441,12 @@ export type AiAgentRunScalarWhereWithAggregatesInput = {
   inputTokens?: Prisma.IntNullableWithAggregatesFilter<"AiAgentRun"> | number | null
   outputTokens?: Prisma.IntNullableWithAggregatesFilter<"AiAgentRun"> | number | null
   embeddingTokens?: Prisma.IntNullableWithAggregatesFilter<"AiAgentRun"> | number | null
+  tokenUsageEstimated?: Prisma.BoolWithAggregatesFilter<"AiAgentRun"> | boolean
   estimatedCostUsd?: Prisma.DecimalNullableWithAggregatesFilter<"AiAgentRun"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringWithAggregatesFilter<"AiAgentRun"> | string
   provider?: Prisma.StringWithAggregatesFilter<"AiAgentRun"> | string
+  actualModel?: Prisma.StringNullableWithAggregatesFilter<"AiAgentRun"> | string | null
+  actualProvider?: Prisma.StringNullableWithAggregatesFilter<"AiAgentRun"> | string | null
   promptVersion?: Prisma.StringNullableWithAggregatesFilter<"AiAgentRun"> | string | null
   latencyMs?: Prisma.IntNullableWithAggregatesFilter<"AiAgentRun"> | number | null
   langsmithRunId?: Prisma.StringNullableWithAggregatesFilter<"AiAgentRun"> | string | null
@@ -427,9 +463,12 @@ export type AiAgentRunCreateInput = {
   inputTokens?: number | null
   outputTokens?: number | null
   embeddingTokens?: number | null
+  tokenUsageEstimated?: boolean
   estimatedCostUsd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model: string
   provider?: string
+  actualModel?: string | null
+  actualProvider?: string | null
   promptVersion?: string | null
   latencyMs?: number | null
   langsmithRunId?: string | null
@@ -448,9 +487,12 @@ export type AiAgentRunUncheckedCreateInput = {
   inputTokens?: number | null
   outputTokens?: number | null
   embeddingTokens?: number | null
+  tokenUsageEstimated?: boolean
   estimatedCostUsd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model: string
   provider?: string
+  actualModel?: string | null
+  actualProvider?: string | null
   promptVersion?: string | null
   latencyMs?: number | null
   langsmithRunId?: string | null
@@ -467,9 +509,12 @@ export type AiAgentRunUpdateInput = {
   inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   embeddingTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tokenUsageEstimated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   estimatedCostUsd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  actualModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promptVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   langsmithRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -488,9 +533,12 @@ export type AiAgentRunUncheckedUpdateInput = {
   inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   embeddingTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tokenUsageEstimated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   estimatedCostUsd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  actualModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promptVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   langsmithRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -508,9 +556,12 @@ export type AiAgentRunCreateManyInput = {
   inputTokens?: number | null
   outputTokens?: number | null
   embeddingTokens?: number | null
+  tokenUsageEstimated?: boolean
   estimatedCostUsd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model: string
   provider?: string
+  actualModel?: string | null
+  actualProvider?: string | null
   promptVersion?: string | null
   latencyMs?: number | null
   langsmithRunId?: string | null
@@ -527,9 +578,12 @@ export type AiAgentRunUpdateManyMutationInput = {
   inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   embeddingTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tokenUsageEstimated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   estimatedCostUsd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  actualModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promptVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   langsmithRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -547,9 +601,12 @@ export type AiAgentRunUncheckedUpdateManyInput = {
   inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   embeddingTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tokenUsageEstimated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   estimatedCostUsd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  actualModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promptVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   langsmithRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -577,9 +634,12 @@ export type AiAgentRunCountOrderByAggregateInput = {
   inputTokens?: Prisma.SortOrder
   outputTokens?: Prisma.SortOrder
   embeddingTokens?: Prisma.SortOrder
+  tokenUsageEstimated?: Prisma.SortOrder
   estimatedCostUsd?: Prisma.SortOrder
   model?: Prisma.SortOrder
   provider?: Prisma.SortOrder
+  actualModel?: Prisma.SortOrder
+  actualProvider?: Prisma.SortOrder
   promptVersion?: Prisma.SortOrder
   latencyMs?: Prisma.SortOrder
   langsmithRunId?: Prisma.SortOrder
@@ -605,9 +665,12 @@ export type AiAgentRunMaxOrderByAggregateInput = {
   inputTokens?: Prisma.SortOrder
   outputTokens?: Prisma.SortOrder
   embeddingTokens?: Prisma.SortOrder
+  tokenUsageEstimated?: Prisma.SortOrder
   estimatedCostUsd?: Prisma.SortOrder
   model?: Prisma.SortOrder
   provider?: Prisma.SortOrder
+  actualModel?: Prisma.SortOrder
+  actualProvider?: Prisma.SortOrder
   promptVersion?: Prisma.SortOrder
   latencyMs?: Prisma.SortOrder
   langsmithRunId?: Prisma.SortOrder
@@ -624,9 +687,12 @@ export type AiAgentRunMinOrderByAggregateInput = {
   inputTokens?: Prisma.SortOrder
   outputTokens?: Prisma.SortOrder
   embeddingTokens?: Prisma.SortOrder
+  tokenUsageEstimated?: Prisma.SortOrder
   estimatedCostUsd?: Prisma.SortOrder
   model?: Prisma.SortOrder
   provider?: Prisma.SortOrder
+  actualModel?: Prisma.SortOrder
+  actualProvider?: Prisma.SortOrder
   promptVersion?: Prisma.SortOrder
   latencyMs?: Prisma.SortOrder
   langsmithRunId?: Prisma.SortOrder
@@ -696,9 +762,12 @@ export type AiAgentRunCreateWithoutUserInput = {
   inputTokens?: number | null
   outputTokens?: number | null
   embeddingTokens?: number | null
+  tokenUsageEstimated?: boolean
   estimatedCostUsd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model: string
   provider?: string
+  actualModel?: string | null
+  actualProvider?: string | null
   promptVersion?: string | null
   latencyMs?: number | null
   langsmithRunId?: string | null
@@ -715,9 +784,12 @@ export type AiAgentRunUncheckedCreateWithoutUserInput = {
   inputTokens?: number | null
   outputTokens?: number | null
   embeddingTokens?: number | null
+  tokenUsageEstimated?: boolean
   estimatedCostUsd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model: string
   provider?: string
+  actualModel?: string | null
+  actualProvider?: string | null
   promptVersion?: string | null
   latencyMs?: number | null
   langsmithRunId?: string | null
@@ -764,9 +836,12 @@ export type AiAgentRunScalarWhereInput = {
   inputTokens?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
   outputTokens?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
   embeddingTokens?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
+  tokenUsageEstimated?: Prisma.BoolFilter<"AiAgentRun"> | boolean
   estimatedCostUsd?: Prisma.DecimalNullableFilter<"AiAgentRun"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringFilter<"AiAgentRun"> | string
   provider?: Prisma.StringFilter<"AiAgentRun"> | string
+  actualModel?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
+  actualProvider?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
   promptVersion?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
   latencyMs?: Prisma.IntNullableFilter<"AiAgentRun"> | number | null
   langsmithRunId?: Prisma.StringNullableFilter<"AiAgentRun"> | string | null
@@ -783,9 +858,12 @@ export type AiAgentRunCreateManyUserInput = {
   inputTokens?: number | null
   outputTokens?: number | null
   embeddingTokens?: number | null
+  tokenUsageEstimated?: boolean
   estimatedCostUsd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model: string
   provider?: string
+  actualModel?: string | null
+  actualProvider?: string | null
   promptVersion?: string | null
   latencyMs?: number | null
   langsmithRunId?: string | null
@@ -802,9 +880,12 @@ export type AiAgentRunUpdateWithoutUserInput = {
   inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   embeddingTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tokenUsageEstimated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   estimatedCostUsd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  actualModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promptVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   langsmithRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -821,9 +902,12 @@ export type AiAgentRunUncheckedUpdateWithoutUserInput = {
   inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   embeddingTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tokenUsageEstimated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   estimatedCostUsd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  actualModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promptVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   langsmithRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -840,9 +924,12 @@ export type AiAgentRunUncheckedUpdateManyWithoutUserInput = {
   inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   embeddingTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tokenUsageEstimated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   estimatedCostUsd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   model?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  actualModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actualProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promptVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   langsmithRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -862,9 +949,12 @@ export type AiAgentRunSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   inputTokens?: boolean
   outputTokens?: boolean
   embeddingTokens?: boolean
+  tokenUsageEstimated?: boolean
   estimatedCostUsd?: boolean
   model?: boolean
   provider?: boolean
+  actualModel?: boolean
+  actualProvider?: boolean
   promptVersion?: boolean
   latencyMs?: boolean
   langsmithRunId?: boolean
@@ -883,9 +973,12 @@ export type AiAgentRunSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   inputTokens?: boolean
   outputTokens?: boolean
   embeddingTokens?: boolean
+  tokenUsageEstimated?: boolean
   estimatedCostUsd?: boolean
   model?: boolean
   provider?: boolean
+  actualModel?: boolean
+  actualProvider?: boolean
   promptVersion?: boolean
   latencyMs?: boolean
   langsmithRunId?: boolean
@@ -904,9 +997,12 @@ export type AiAgentRunSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   inputTokens?: boolean
   outputTokens?: boolean
   embeddingTokens?: boolean
+  tokenUsageEstimated?: boolean
   estimatedCostUsd?: boolean
   model?: boolean
   provider?: boolean
+  actualModel?: boolean
+  actualProvider?: boolean
   promptVersion?: boolean
   latencyMs?: boolean
   langsmithRunId?: boolean
@@ -925,9 +1021,12 @@ export type AiAgentRunSelectScalar = {
   inputTokens?: boolean
   outputTokens?: boolean
   embeddingTokens?: boolean
+  tokenUsageEstimated?: boolean
   estimatedCostUsd?: boolean
   model?: boolean
   provider?: boolean
+  actualModel?: boolean
+  actualProvider?: boolean
   promptVersion?: boolean
   latencyMs?: boolean
   langsmithRunId?: boolean
@@ -937,7 +1036,7 @@ export type AiAgentRunSelectScalar = {
   completedAt?: boolean
 }
 
-export type AiAgentRunOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "agentId" | "userId" | "status" | "inputTokens" | "outputTokens" | "embeddingTokens" | "estimatedCostUsd" | "model" | "provider" | "promptVersion" | "latencyMs" | "langsmithRunId" | "correlationId" | "metadata" | "createdAt" | "completedAt", ExtArgs["result"]["aiAgentRun"]>
+export type AiAgentRunOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "agentId" | "userId" | "status" | "inputTokens" | "outputTokens" | "embeddingTokens" | "tokenUsageEstimated" | "estimatedCostUsd" | "model" | "provider" | "actualModel" | "actualProvider" | "promptVersion" | "latencyMs" | "langsmithRunId" | "correlationId" | "metadata" | "createdAt" | "completedAt", ExtArgs["result"]["aiAgentRun"]>
 export type AiAgentRunInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -961,9 +1060,12 @@ export type $AiAgentRunPayload<ExtArgs extends runtime.Types.Extensions.Internal
     inputTokens: number | null
     outputTokens: number | null
     embeddingTokens: number | null
+    tokenUsageEstimated: boolean
     estimatedCostUsd: runtime.Decimal | null
     model: string
     provider: string
+    actualModel: string | null
+    actualProvider: string | null
     promptVersion: string | null
     latencyMs: number | null
     langsmithRunId: string | null
@@ -1402,9 +1504,12 @@ export interface AiAgentRunFieldRefs {
   readonly inputTokens: Prisma.FieldRef<"AiAgentRun", 'Int'>
   readonly outputTokens: Prisma.FieldRef<"AiAgentRun", 'Int'>
   readonly embeddingTokens: Prisma.FieldRef<"AiAgentRun", 'Int'>
+  readonly tokenUsageEstimated: Prisma.FieldRef<"AiAgentRun", 'Boolean'>
   readonly estimatedCostUsd: Prisma.FieldRef<"AiAgentRun", 'Decimal'>
   readonly model: Prisma.FieldRef<"AiAgentRun", 'String'>
   readonly provider: Prisma.FieldRef<"AiAgentRun", 'String'>
+  readonly actualModel: Prisma.FieldRef<"AiAgentRun", 'String'>
+  readonly actualProvider: Prisma.FieldRef<"AiAgentRun", 'String'>
   readonly promptVersion: Prisma.FieldRef<"AiAgentRun", 'String'>
   readonly latencyMs: Prisma.FieldRef<"AiAgentRun", 'Int'>
   readonly langsmithRunId: Prisma.FieldRef<"AiAgentRun", 'String'>
