@@ -1,4 +1,9 @@
 export async function register() {
+  // Startup hooks use Node-only APIs (Prisma, Redis, OTEL).
+  if (process.env.NEXT_RUNTIME !== 'nodejs') {
+    return;
+  }
+
   if (process.env.OTEL_ENABLED === 'true') {
     const { initOtel } = await import(
       '@/ai-platform/observability/opentelemetry/otel-setup'
@@ -11,14 +16,6 @@ export async function register() {
       '@/ai-platform/infrastructure/startup/validate-platform-infrastructure'
     );
 
-    try {
-      await validatePlatformInfrastructure();
-    } catch (error) {
-      console.error(
-        '[AI_PLATFORM_STARTUP] Platform infrastructure validation failed:',
-        error,
-      );
-      process.exit(1);
-    }
+    await validatePlatformInfrastructure();
   }
 }
