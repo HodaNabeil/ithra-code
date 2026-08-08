@@ -1,11 +1,26 @@
 import { createHash } from 'node:crypto';
 
+import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
 import { AI_PLATFORM_CONSTANTS } from '../../shared/constants';
-import { EMBEDDING_DIMENSIONS } from '../dimensions';
 
-function buildEmbeddingCacheKey(text: string): string {
-  const hash = createHash('sha256').update(text.trim()).digest('hex');
+export function buildEmbeddingCacheKeyFromParts(
+  text: string,
+  model: string,
+  dimensions: number,
+): string {
+  const hash = createHash('sha256')
+    .update(`${model}:${dimensions}:${text.trim()}`)
+    .digest('hex');
   return `${AI_PLATFORM_CONSTANTS.KEY_PREFIX_EMBED}${hash}`;
+}
+
+export function buildEmbeddingCacheKey(text: string): string {
+  const embedding = AIPlatformConfig.getEmbeddingConfig();
+  return buildEmbeddingCacheKeyFromParts(
+    text,
+    embedding.model,
+    embedding.dimensions,
+  );
 }
 
 async function getRedisClient() {
@@ -18,6 +33,8 @@ export async function getCachedEmbedding(text: string): Promise<number[] | null>
     return null;
   }
 
+  const expectedDimensions = AIPlatformConfig.getEmbeddingConfig().dimensions;
+
   try {
     const redis = await getRedisClient();
     const cached = await redis.get(buildEmbeddingCacheKey(text));
@@ -26,7 +43,7 @@ export async function getCachedEmbedding(text: string): Promise<number[] | null>
     }
 
     const parsed = JSON.parse(cached) as number[];
-    if (!Array.isArray(parsed) || parsed.length !== EMBEDDING_DIMENSIONS) {
+    if (!Array.isArray(parsed) || parsed.length !== expectedDimensions) {
       return null;
     }
 
@@ -38,6 +55,11 @@ export async function getCachedEmbedding(text: string): Promise<number[] | null>
 
 export async function setCachedEmbedding(text: string, embedding: number[]): Promise<void> {
   if (process.env.NODE_ENV === 'test') {
+    return;
+  }
+
+  const expectedDimensions = AIPlatformConfig.getEmbeddingConfig().dimensions;
+  if (embedding.length !== expectedDimensions) {
     return;
   }
 

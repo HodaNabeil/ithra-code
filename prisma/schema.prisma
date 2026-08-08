@@ -1204,6 +1204,23 @@ enum TutorMessageRole {
   @@map("tutor_message_role")
 }
 
+enum TutorMessageStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+
+  @@map("tutor_message_status")
+}
+
+enum TutorTurnIdempotencyStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+
+  @@map("tutor_turn_idempotency_status")
+}
+
 model TutorConversation {
   id        String   @id @default(cuid())
   courseId  String   @map("course_id")
@@ -1239,18 +1256,36 @@ model TutorThread {
 }
 
 model TutorMessage {
-  id               String           @id @default(cuid())
-  threadId         String           @map("thread_id")
+  id               String             @id @default(cuid())
+  threadId         String             @map("thread_id")
   role             TutorMessageRole
-  content          String           @db.Text
-  retrievedSources Json?            @map("retrieved_sources")
-  createdAt        DateTime         @default(now()) @map("created_at")
-  updatedAt        DateTime         @updatedAt @map("updated_at")
+  content          String             @db.Text
+  status           TutorMessageStatus @default(COMPLETED) @map("status")
+  turnId           String?            @map("turn_id")
+  retrievedSources Json?              @map("retrieved_sources")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
 
   thread TutorThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
 
   @@index([threadId, createdAt])
+  @@index([turnId])
   @@map("tutor_messages")
+}
+
+model TutorTurnIdempotency {
+  id             String                     @id @default(cuid())
+  userId         String                     @map("user_id")
+  idempotencyKey String                     @map("idempotency_key")
+  threadId       String                     @map("thread_id")
+  turnId         String?                    @map("turn_id")
+  status         TutorTurnIdempotencyStatus @default(PROCESSING)
+  createdAt      DateTime                   @default(now()) @map("created_at")
+  updatedAt      DateTime                   @updatedAt @map("updated_at")
+
+  @@unique([userId, idempotencyKey])
+  @@index([threadId])
+  @@map("tutor_turn_idempotency")
 }
 
 model StudentLearningProfile {

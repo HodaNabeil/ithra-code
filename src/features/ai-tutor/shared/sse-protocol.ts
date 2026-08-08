@@ -8,6 +8,11 @@ export type TutorSseEvent =
   | { type: 'token'; text: string }
   | {
       type: 'meta';
+      threadId?: string;
+      conversationId?: string;
+      turnId?: string;
+      userMessageId?: string;
+      assistantMessageId?: string;
       sources: MessageSourceDTO[];
       usedFallback: boolean;
       educationalFilterApplied?: boolean;
@@ -34,4 +39,8 @@ export function parseTutorSseEvent(payload: string): TutorSseEvent | null {
 
 export function encodeSseDataLine(event: TutorSseEvent): Uint8Array {
   return new TextEncoder().encode(`data: ${encodeTutorSseEvent(event)}\n\n`);
+}
+
+export function encodeSseCommentLine(comment: string): Uint8Array {
+  return new TextEncoder().encode(`: ${comment}\n\n`);
 }

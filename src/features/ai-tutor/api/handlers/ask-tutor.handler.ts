@@ -14,13 +14,15 @@ import {
   askTutorUseCase,
   getAskTutorUseCaseDeps,
 } from '../../infrastructure/di/ai-tutor-container';
-import { encodeSseDataLine } from '../../shared/sse-protocol';
+import { encodeSseCommentLine, encodeSseDataLine } from '../../shared/sse-protocol';
 
 const STREAM_HEADERS = {
   'Content-Type': 'text/event-stream; charset=utf-8',
   'Cache-Control': 'no-cache, no-transform',
   Connection: 'keep-alive',
 } as const;
+
+const HEARTBEAT_INTERVAL_MS = 15_000;
 
 export async function handleAskTutorRequest(request: Request): Promise<Response> {
   if (!AITutorConfig.isEnabled()) {
@@ -54,17 +56,28 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
     return Response.json({ success: false, message }, { status: 400 });
   }
 
+  const idempotencyKey =
+    request.headers.get('idempotency-key')?.trim() ||
+    request.headers.get('Idempotency-Key')?.trim() ||
+    undefined;
+
   const { readable, writable } = new TransformStream();
   const writer = writable.getWriter();
   const startedAt = Date.now();
+  let heartbeatTimer: ReturnType<typeof setInterval> | undefined;
 
   void (async () => {
+    heartbeatTimer = setInterval(() => {
+      void writer.write(encodeSseCommentLine('ping')).catch(() => undefined);
+    }, HEARTBEAT_INTERVAL_MS);
+
     try {
       const generator = askTutorUseCase(
         {
           ...parsed.data,
           userId: session.user.id,
           signal: request.signal,
+          idempotencyKey,
         },
         getAskTutorUseCaseDeps(),
       );
@@ -128,6 +141,9 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
         }),
       );
     } finally {
+      if (heartbeatTimer) {
+        clearInterval(heartbeatTimer);
+      }
       await writer.close();
     }
   })();

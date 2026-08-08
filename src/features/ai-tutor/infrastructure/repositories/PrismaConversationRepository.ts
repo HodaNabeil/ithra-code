@@ -1,12 +1,20 @@
+import { randomUUID } from 'node:crypto';
+
 import { prisma } from '@/lib/prisma';
+import {
+  TutorMessageStatus,
+  TutorTurnIdempotencyStatus,
+} from '@/generated/prisma/enums';
 
 import {
   ConversationRepositoryError,
   ConversationRepositoryErrorCodes,
   type ConversationDTO,
   type ConversationRepositoryPort,
+  type IdempotencyRecord,
   type MessageDTO,
   type ThreadDTO,
+  type TurnHandle,
 } from '../../domain/ports/ConversationRepositoryPort';
 import {
   mapConversation,
@@ -233,6 +241,270 @@ export class PrismaConversationRepository implements ConversationRepositoryPort 
     });
 
     return messages.reverse().map(mapMessage);
+  }
+
+  async getThreadMessagesPaginated(
+    threadId: string,
+    params: { before?: string; limit?: number },
+  ): Promise<{ messages: MessageDTO[]; nextCursor: string | null }> {
+    const limit = params.limit ?? 20;
+    const cursorMessage = params.before
+      ? await prisma.tutorMessage.findUnique({
+          where: { id: params.before },
+          select: { createdAt: true, id: true },
+        })
+      : null;
+
+    const messages = await prisma.tutorMessage.findMany({
+      where: {
+        threadId,
+        ...(cursorMessage
+          ? {
+              OR: [
+                { createdAt: { lt: cursorMessage.createdAt } },
+                {
+                  createdAt: cursorMessage.createdAt,
+                  id: { lt: cursorMessage.id },
+                },
+              ],
+            }
+          : {}),
+      },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      take: limit + 1,
+    });
+
+    const hasMore = messages.length > limit;
+    const page = hasMore ? messages.slice(0, limit) : messages;
+    const nextCursor = hasMore ? page[page.length - 1]?.id ?? null : null;
+    const ordered = [...page].reverse().map(mapMessage);
+
+    return {
+      messages: ordered,
+      nextCursor,
+    };
+  }
+
+  async beginTurn(
+    threadId: string,
+    params: { userContent: string; turnId?: string },
+  ): Promise<TurnHandle> {
+    const thread = await prisma.tutorThread.findUnique({
+      where: { id: threadId },
+      select: { id: true, conversationId: true },
+    });
+
+    if (!thread) {
+      throw new ConversationRepositoryError(
+        ConversationRepositoryErrorCodes.NOT_FOUND,
+        'الموضوع غير موجود',
+      );
+    }
+
+    const turnId = params.turnId ?? randomUUID();
+
+    const result = await prisma.$transaction(async (tx) => {
+      const userMessage = await tx.tutorMessage.create({
+        data: {
+          threadId,
+          role: mapMessageRole('user'),
+          content: params.userContent,
+          status: TutorMessageStatus.COMPLETED,
+          turnId,
+        },
+      });
+
+      const assistantMessage = await tx.tutorMessage.create({
+        data: {
+          threadId,
+          role: mapMessageRole('assistant'),
+          content: '',
+          status: TutorMessageStatus.PENDING,
+          turnId,
+        },
+      });
+
+      const now = new Date();
+      await tx.tutorThread.update({
+        where: { id: threadId },
+        data: { updatedAt: now },
+      });
+      await tx.tutorConversation.update({
+        where: { id: thread.conversationId },
+        data: { updatedAt: now },
+      });
+
+      return { userMessage, assistantMessage };
+    });
+
+    return {
+      turnId,
+      userMessageId: result.userMessage.id,
+      assistantMessageId: result.assistantMessage.id,
+    };
+  }
+
+  async completeTurn(
+    turnId: string,
+    params: {
+      assistantContent: string;
+      retrievedSources?: MessageDTO['retrievedSources'];
+    },
+  ): Promise<void> {
+    const updated = await prisma.tutorMessage.updateMany({
+      where: {
+        turnId,
+        role: mapMessageRole('assistant'),
+      },
+      data: {
+        content: params.assistantContent,
+        retrievedSources: params.retrievedSources,
+        status: TutorMessageStatus.COMPLETED,
+      },
+    });
+
+    if (updated.count === 0) {
+      throw new ConversationRepositoryError(
+        ConversationRepositoryErrorCodes.NOT_FOUND,
+        'الرسالة غير موجودة',
+      );
+    }
+  }
+
+  async failTurn(
+    turnId: string,
+    status: 'failed' | 'cancelled' = 'failed',
+  ): Promise<void> {
+    const prismaStatus =
+      status === 'cancelled'
+        ? TutorMessageStatus.CANCELLED
+        : TutorMessageStatus.FAILED;
+
+    await prisma.tutorMessage.updateMany({
+      where: {
+        turnId,
+        role: mapMessageRole('assistant'),
+        status: TutorMessageStatus.PENDING,
+      },
+      data: {
+        status: prismaStatus,
+      },
+    });
+  }
+
+  async claimIdempotencyKey(params: {
+    userId: string;
+    idempotencyKey: string;
+    threadId: string;
+  }): Promise<
+    | { kind: 'created'; recordId: string }
+    | { kind: 'replay'; record: IdempotencyRecord }
+    | { kind: 'conflict' }
+  > {
+    const existing = await prisma.tutorTurnIdempotency.findUnique({
+      where: {
+        userId_idempotencyKey: {
+          userId: params.userId,
+          idempotencyKey: params.idempotencyKey,
+        },
+      },
+    });
+
+    if (existing) {
+      if (existing.status === TutorTurnIdempotencyStatus.COMPLETED && existing.turnId) {
+        return {
+          kind: 'replay',
+          record: {
+            id: existing.id,
+            userId: existing.userId,
+            idempotencyKey: existing.idempotencyKey,
+            threadId: existing.threadId,
+            turnId: existing.turnId,
+            status: 'completed',
+          },
+        };
+      }
+
+      if (existing.status === TutorTurnIdempotencyStatus.PROCESSING) {
+        return { kind: 'conflict' };
+      }
+    }
+
+    try {
+      const created = await prisma.tutorTurnIdempotency.create({
+        data: {
+          userId: params.userId,
+          idempotencyKey: params.idempotencyKey,
+          threadId: params.threadId,
+          status: TutorTurnIdempotencyStatus.PROCESSING,
+        },
+      });
+
+      return { kind: 'created', recordId: created.id };
+    } catch {
+      const raced = await prisma.tutorTurnIdempotency.findUnique({
+        where: {
+          userId_idempotencyKey: {
+            userId: params.userId,
+            idempotencyKey: params.idempotencyKey,
+          },
+        },
+      });
+
+      if (
+        raced?.status === TutorTurnIdempotencyStatus.COMPLETED &&
+        raced.turnId
+      ) {
+        return {
+          kind: 'replay',
+          record: {
+            id: raced.id,
+            userId: raced.userId,
+            idempotencyKey: raced.idempotencyKey,
+            threadId: raced.threadId,
+            turnId: raced.turnId,
+            status: 'completed',
+          },
+        };
+      }
+
+      return { kind: 'conflict' };
+    }
+  }
+
+  async completeIdempotencyKey(params: {
+    userId: string;
+    idempotencyKey: string;
+    turnId: string;
+  }): Promise<void> {
+    await prisma.tutorTurnIdempotency.update({
+      where: {
+        userId_idempotencyKey: {
+          userId: params.userId,
+          idempotencyKey: params.idempotencyKey,
+        },
+      },
+      data: {
+        turnId: params.turnId,
+        status: TutorTurnIdempotencyStatus.COMPLETED,
+      },
+    });
+  }
+
+  async failIdempotencyKey(params: {
+    userId: string;
+    idempotencyKey: string;
+  }): Promise<void> {
+    await prisma.tutorTurnIdempotency.updateMany({
+      where: {
+        userId: params.userId,
+        idempotencyKey: params.idempotencyKey,
+        status: TutorTurnIdempotencyStatus.PROCESSING,
+      },
+      data: {
+        status: TutorTurnIdempotencyStatus.FAILED,
+      },
+    });
   }
 
   async addMessage(

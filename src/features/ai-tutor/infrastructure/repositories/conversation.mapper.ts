@@ -3,11 +3,15 @@ import type {
   TutorThread as PrismaTutorThread,
   TutorConversation as PrismaTutorConversation,
 } from '@/generated/prisma/client';
-import { TutorMessageRole } from '@/generated/prisma/enums';
+import {
+  TutorMessageRole,
+  TutorMessageStatus,
+} from '@/generated/prisma/enums';
 
 import type {
   ConversationDTO,
   MessageDTO,
+  MessageStatus,
   ThreadDTO,
 } from '../../domain/ports/ConversationRepositoryPort';
 import type { MessageSourceDTO } from '../../application/dto/message-source.dto';
@@ -54,12 +58,40 @@ function parseRetrievedSources(value: unknown): MessageSourceDTO[] | undefined {
     .filter((source) => source.id.length > 0);
 }
 
+function mapMessageStatus(status: TutorMessageStatus): MessageStatus {
+  switch (status) {
+    case TutorMessageStatus.PENDING:
+      return 'pending';
+    case TutorMessageStatus.FAILED:
+      return 'failed';
+    case TutorMessageStatus.CANCELLED:
+      return 'cancelled';
+    default:
+      return 'completed';
+  }
+}
+
+function toPrismaMessageStatus(status: MessageStatus): TutorMessageStatus {
+  switch (status) {
+    case 'pending':
+      return TutorMessageStatus.PENDING;
+    case 'failed':
+      return TutorMessageStatus.FAILED;
+    case 'cancelled':
+      return TutorMessageStatus.CANCELLED;
+    default:
+      return TutorMessageStatus.COMPLETED;
+  }
+}
+
 export function mapMessage(message: PrismaTutorMessage): MessageDTO {
   return {
     id: message.id,
     threadId: message.threadId,
     role: message.role === TutorMessageRole.USER ? 'user' : 'assistant',
     content: message.content,
+    status: mapMessageStatus(message.status),
+    turnId: message.turnId ?? undefined,
     retrievedSources: parseRetrievedSources(message.retrievedSources),
     createdAt: message.createdAt,
     updatedAt: message.updatedAt,
@@ -92,3 +124,5 @@ export function mapConversation(conversation: ConversationWithThreads): Conversa
 export function mapMessageRole(role: MessageDTO['role']): TutorMessageRole {
   return role === 'user' ? TutorMessageRole.USER : TutorMessageRole.ASSISTANT;
 }
+
+export { toPrismaMessageStatus };

@@ -2,12 +2,45 @@ import { EnrollmentStatus } from '@prisma/client';
 
 import { prisma } from '@/lib/prisma';
 
+import {
+  AskTutorError,
+  AskTutorErrorCodes,
+} from '../../application/errors/ask-tutor.errors';
+import { platformMetrics } from '@/ai-platform/observability/metrics/platform-metrics';
 import type {
   CourseContextRepositoryPort,
   EnrolledCourseWithProgressDTO,
 } from '../../domain/ports/CourseContextRepositoryPort';
 
+const ACTIVE_ENROLLMENT_STATUSES = [
+  EnrollmentStatus.ACTIVE,
+  EnrollmentStatus.COMPLETED,
+] as const;
+
 export class PrismaCourseContextRepository implements CourseContextRepositoryPort {
+  async assertStudentEnrolled(params: {
+    userId: string;
+    courseSlug: string;
+  }): Promise<void> {
+    const enrollment = await prisma.enrollment.findFirst({
+      where: {
+        studentId: params.userId,
+        status: { in: [...ACTIVE_ENROLLMENT_STATUSES] },
+        course: { slug: params.courseSlug },
+      },
+      select: { id: true },
+    });
+
+    if (!enrollment) {
+      platformMetrics.incrementAuthFailure('enrollment_not_found');
+      throw new AskTutorError(
+        403,
+        'لا يمكنك الوصول إلى مدرس هذه الدورة',
+        AskTutorErrorCodes.UNAUTHORIZED,
+      );
+    }
+  }
+
   async findEnrolledCourseWithProgress(params: {
     courseSlug: string;
     userId: string;

@@ -16,6 +16,7 @@ import type {
 } from '../../domain/ports/CourseContextRepositoryPort';
 import type { SessionContextCachePort } from '../../domain/ports/SessionContextCachePort';
 import { detectKnowledgeGaps } from './knowledge-gap.service';
+import { assertLectureBelongsToCourse } from './lecture-validation.service';
 import {
   analyzeAssessmentPerformance,
   buildSectionProgressSummaries,
@@ -31,12 +32,20 @@ export type CourseContextServiceDeps = LearningProfileServiceDeps & {
   sessionContextCache: SessionContextCachePort;
 };
 
-function getCacheKey(params: {
+export function getSessionContextCacheKey(params: {
   userId: string;
   courseSlug: string;
   lectureId?: string;
 }): string {
   return `${params.userId}:${params.courseSlug}:${params.lectureId ?? 'general'}`;
+}
+
+function getCacheKey(params: {
+  userId: string;
+  courseSlug: string;
+  lectureId?: string;
+}): string {
+  return getSessionContextCacheKey(params);
 }
 
 function findLectureContext(
@@ -143,6 +152,11 @@ export async function buildTutorSessionContext(
   },
   deps: CourseContextServiceDeps,
 ): Promise<TutorSessionContext> {
+  await deps.courseContextRepository.assertStudentEnrolled({
+    userId: params.userId,
+    courseSlug: params.courseSlug,
+  });
+
   const cacheKey = getCacheKey(params);
   const cached = await deps.sessionContextCache.get(cacheKey);
   if (cached) {
@@ -161,6 +175,8 @@ export async function buildTutorSessionContext(
       AskTutorErrorCodes.UNAUTHORIZED,
     );
   }
+
+  assertLectureBelongsToCourse(params.lectureId, course);
 
   const enrollment = course.enrollments[0];
   if (!enrollment) {

@@ -76,6 +76,20 @@ export class PrismaStudentLearningProfileRepository
 
     return mapRecord(record);
   }
+
+  async deleteByUserAndCourse(params: {
+    userId: string;
+    courseId: string;
+  }): Promise<boolean> {
+    const result = await prisma.studentLearningProfile.deleteMany({
+      where: {
+        userId: params.userId,
+        courseId: params.courseId,
+      },
+    });
+
+    return result.count > 0;
+  }
 }
 
 export const prismaStudentLearningProfileRepository =

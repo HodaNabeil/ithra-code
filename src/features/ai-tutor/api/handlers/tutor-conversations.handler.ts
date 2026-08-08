@@ -11,7 +11,9 @@ import {
   getConversationRepository,
   getCourseContextRepository,
   getSessionContextDeps,
+  getStudentLearningProfileRepository,
 } from '../../infrastructure/di/ai-tutor-container';
+import { getSessionContextCacheKey } from '../../application/services/course-context.service';
 
 export async function handleListTutorConversationsRequest(
   request: Request,
@@ -105,6 +107,19 @@ export async function handleDeleteTutorConversationsRequest(
     }
 
     const deleted = await repository.deleteConversation(conversation.id);
+
+    await getStudentLearningProfileRepository().deleteByUserAndCourse({
+      userId: session.user.id,
+      courseId: context.courseId,
+    });
+
+    await getSessionContextDeps().sessionContextCache.invalidate(
+      getSessionContextCacheKey({
+        userId: session.user.id,
+        courseSlug,
+      }),
+    );
+
     return apiSuccess({ deleted }, 'تم حذف سجل المحادثة');
   } catch (error) {
     if (error instanceof AskTutorError) {

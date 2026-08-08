@@ -1,6 +1,7 @@
 import type { AskTutorInputDTO, AskTutorResultDTO } from '../dto/ask-tutor.dto';
 import {
   buildTutorSessionContext,
+  getSessionContextCacheKey,
   type CourseContextServiceDeps,
 } from '../services/course-context.service';
 import { getTutorBasePromptVersion } from '../services/prompt-builder';
@@ -10,6 +11,7 @@ import { AskTutorError, AskTutorErrorCodes } from '../errors/ask-tutor.errors';
 import type {
   ConversationRepositoryPort,
   MessageDTO,
+  TurnHandle,
 } from '../../domain/ports/ConversationRepositoryPort';
 import { ConversationRepositoryError } from '../../domain/ports/ConversationRepositoryPort';
 import type { ContentFilterPort } from '../../domain/ports/ContentFilterPort';
@@ -36,20 +38,6 @@ export type AskTutorRequestOutcome = {
   assessmentBlocked: boolean;
   retrievalChunkCount: number;
 };
-
-async function persistCompletedTurn(
-  conversationRepository: ConversationRepositoryPort,
-  threadId: string,
-  userContent: string,
-  assistantContent: string,
-  sources?: MessageSourceDTO[],
-): Promise<void> {
-  await conversationRepository.persistTurn(threadId, {
-    userContent,
-    assistantContent,
-    retrievedSources: sources,
-  });
-}
 
 function buildPersonalizationContext(
   sessionContext: TutorSessionContext,
@@ -102,6 +90,27 @@ function mapRunMetadataToOutcome(
   }
 }
 
+function buildTurnMetaEvent(params: {
+  threadId: string;
+  conversationId: string;
+  turn: TurnHandle;
+  sources?: MessageSourceDTO[];
+  usedFallback?: boolean;
+  educationalFilterApplied?: boolean;
+}): TutorSseEvent {
+  return {
+    type: 'meta',
+    threadId: params.threadId,
+    conversationId: params.conversationId,
+    turnId: params.turn.turnId,
+    userMessageId: params.turn.userMessageId,
+    assistantMessageId: params.turn.assistantMessageId,
+    sources: params.sources ?? [],
+    usedFallback: params.usedFallback ?? false,
+    educationalFilterApplied: params.educationalFilterApplied,
+  };
+}
+
 async function* streamTutorViaPlatformRuntime(input: {
   userId: string;
   question: string;
@@ -109,13 +118,15 @@ async function* streamTutorViaPlatformRuntime(input: {
   lectureId?: string;
   threadId: string;
   conversationId: string;
+  turn: TurnHandle;
   history: MessageDTO[];
   conversationRepository: ConversationRepositoryPort;
   contentFilter: ContentFilterPort;
   outcome: AskTutorRequestOutcome;
+  idempotencyKey?: string;
   signal?: AbortSignal;
 }): AsyncGenerator<TutorSseEvent, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
-  const { outcome } = input;
+  const { outcome, conversationRepository, turn } = input;
   const sessionMetaIntent = detectSessionMetaIntent(input.question);
   const personalization = buildPersonalizationContext(
     input.sessionContext,
@@ -125,6 +136,12 @@ async function* streamTutorViaPlatformRuntime(input: {
 
   let sources: MessageSourceDTO[] = [];
   let validatedOutput: string | undefined;
+
+  yield buildTurnMetaEvent({
+    threadId: input.threadId,
+    conversationId: input.conversationId,
+    turn,
+  });
 
   try {
     for await (const event of streamAgent('tutor', {
@@ -162,12 +179,14 @@ async function* streamTutorViaPlatformRuntime(input: {
         outcome.retrievalChunkCount = event.sources.length;
         outcome.usedFallback = event.usedFallback ?? false;
 
-        yield {
-          type: 'meta',
+        yield buildTurnMetaEvent({
+          threadId: input.threadId,
+          conversationId: input.conversationId,
+          turn,
           sources,
           usedFallback: outcome.usedFallback,
           educationalFilterApplied: outcome.filterTriggered,
-        };
+        });
       }
 
       if (event.type === 'token') {
@@ -185,13 +204,15 @@ async function* streamTutorViaPlatformRuntime(input: {
         mapRunMetadataToOutcome(event.metadata, outcome);
 
         if (outcome.assessmentBlocked || outcome.filterTriggered) {
-          yield {
-            type: 'meta',
+          yield buildTurnMetaEvent({
+            threadId: input.threadId,
+            conversationId: input.conversationId,
+            turn,
             sources,
             usedFallback: outcome.usedFallback || outcome.assessmentBlocked,
             educationalFilterApplied:
               outcome.filterTriggered || outcome.assessmentBlocked,
-          };
+          });
         }
       }
 
@@ -203,13 +224,26 @@ async function* streamTutorViaPlatformRuntime(input: {
     const finalResponse = validatedOutput?.trim() ?? '';
 
     if (finalResponse) {
-      await persistCompletedTurn(
-        input.conversationRepository,
-        input.threadId,
-        input.question,
-        finalResponse,
-        sources,
-      );
+      await conversationRepository.completeTurn(turn.turnId, {
+        assistantContent: finalResponse,
+        retrievedSources: sources,
+      });
+
+      if (input.idempotencyKey) {
+        await conversationRepository.completeIdempotencyKey({
+          userId: input.userId,
+          idempotencyKey: input.idempotencyKey,
+          turnId: turn.turnId,
+        });
+      }
+    } else {
+      await conversationRepository.failTurn(turn.turnId, 'failed');
+      if (input.idempotencyKey) {
+        await conversationRepository.failIdempotencyKey({
+          userId: input.userId,
+          idempotencyKey: input.idempotencyKey,
+        });
+      }
     }
 
     return {
@@ -220,6 +254,22 @@ async function* streamTutorViaPlatformRuntime(input: {
       outcome,
     };
   } catch (error) {
+    const isAbort =
+      input.signal?.aborted ||
+      (error instanceof Error && error.name === 'AbortError');
+
+    await conversationRepository.failTurn(
+      turn.turnId,
+      isAbort ? 'cancelled' : 'failed',
+    );
+
+    if (input.idempotencyKey) {
+      await conversationRepository.failIdempotencyKey({
+        userId: input.userId,
+        idempotencyKey: input.idempotencyKey,
+      });
+    }
+
     if (error instanceof AskTutorError) {
       throw error;
     }
@@ -245,7 +295,11 @@ async function* streamTutorViaPlatformRuntime(input: {
 }
 
 export async function* askTutorUseCase(
-  input: AskTutorInputDTO & { userId: string; signal?: AbortSignal },
+  input: AskTutorInputDTO & {
+    userId: string;
+    signal?: AbortSignal;
+    idempotencyKey?: string;
+  },
   deps: AskTutorUseCaseDeps,
 ): AsyncGenerator<TutorSseEvent, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
   const { conversationRepository, contentFilter } = deps;
@@ -282,6 +336,67 @@ export async function* askTutorUseCase(
       input.lectureId,
     );
 
+    if (input.idempotencyKey) {
+      const claim = await conversationRepository.claimIdempotencyKey({
+        userId: input.userId,
+        idempotencyKey: input.idempotencyKey,
+        threadId: thread.id,
+      });
+
+      if (claim.kind === 'replay' && claim.record.turnId) {
+        const messages = await conversationRepository.getThreadMessages(
+          thread.id,
+          AI_TUTOR_CONSTANTS.CONVERSATION_HISTORY_LIMIT,
+        );
+        const assistant = messages.find(
+          (message) =>
+            message.turnId === claim.record.turnId &&
+            message.role === 'assistant',
+        );
+
+        yield buildTurnMetaEvent({
+          threadId: thread.id,
+          conversationId: conversation.id,
+          turn: {
+            turnId: claim.record.turnId,
+            userMessageId:
+              messages.find(
+                (message) =>
+                  message.turnId === claim.record.turnId &&
+                  message.role === 'user',
+              )?.id ?? '',
+            assistantMessageId: assistant?.id ?? '',
+          },
+          sources: assistant?.retrievedSources ?? [],
+          usedFallback: false,
+        });
+
+        if (assistant?.content) {
+          yield { type: 'token', text: assistant.content };
+        }
+
+        return {
+          threadId: thread.id,
+          conversationId: conversation.id,
+          sources: assistant?.retrievedSources,
+          usedFallback: false,
+          outcome,
+        };
+      }
+
+      if (claim.kind === 'conflict') {
+        throw new AskTutorError(
+          409,
+          'طلب مكرر قيد المعالجة',
+          AskTutorErrorCodes.IDEMPOTENCY_CONFLICT,
+        );
+      }
+    }
+
+    const turn = await conversationRepository.beginTurn(thread.id, {
+      userContent: input.question,
+    });
+
     const history = await conversationRepository.getThreadMessages(
       thread.id,
       AI_TUTOR_CONSTANTS.CONVERSATION_HISTORY_LIMIT,
@@ -295,11 +410,21 @@ export async function* askTutorUseCase(
         recentMessages: history,
       },
       deps,
-    ).catch((error) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('[AI_TUTOR_PROFILE] Failed to update learning profile', error);
-      }
-    });
+    )
+      .then(async () => {
+        await deps.sessionContextCache.invalidate(
+          getSessionContextCacheKey({
+            userId: input.userId,
+            courseSlug: input.courseSlug,
+            lectureId: input.lectureId,
+          }),
+        );
+      })
+      .catch((error) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('[AI_TUTOR_PROFILE] Failed to update learning profile', error);
+        }
+      });
 
     return yield* streamTutorViaPlatformRuntime({
       userId: input.userId,
@@ -308,10 +433,12 @@ export async function* askTutorUseCase(
       lectureId: input.lectureId,
       threadId: thread.id,
       conversationId: conversation.id,
+      turn,
       history,
       conversationRepository,
       contentFilter,
       outcome,
+      idempotencyKey: input.idempotencyKey,
       signal: input.signal,
     });
   } catch (error) {

@@ -37,6 +37,11 @@ export type EnrolledCourseWithProgressDTO = {
 };
 
 export interface CourseContextRepositoryPort {
+  assertStudentEnrolled(params: {
+    userId: string;
+    courseSlug: string;
+  }): Promise<void>;
+
   findEnrolledCourseWithProgress(params: {
     courseSlug: string;
     userId: string;

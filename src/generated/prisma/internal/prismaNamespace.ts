@@ -428,6 +428,7 @@ export const ModelName = {
   TutorConversation: 'TutorConversation',
   TutorThread: 'TutorThread',
   TutorMessage: 'TutorMessage',
+  TutorTurnIdempotency: 'TutorTurnIdempotency',
   StudentLearningProfile: 'StudentLearningProfile',
   LectureTranscript: 'LectureTranscript',
   KnowledgeChunk: 'KnowledgeChunk',
@@ -453,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "course" | "section" | "lecture" | "video" | "videoCollection" | "attachment" | "path" | "track" | "user" | "account" | "session" | "userSession" | "verificationToken" | "trackedDevice" | "tokenFamily" | "enrollment" | "progress" | "cart" | "cartItem" | "coupon" | "couponCourse" | "order" | "orderItem" | "payment" | "paymentReconcileAttempt" | "paymentDomainOutbox" | "paymentDispute" | "refund" | "checkoutSession" | "invoice" | "webhookEvent" | "review" | "instructorAvailability" | "availabilityDateOverride" | "instructorScheduleSettings" | "consultationBooking" | "googleCalendarToken" | "refundRequest" | "instructorEarning" | "testimonial" | "faq" | "tutorConversation" | "tutorThread" | "tutorMessage" | "studentLearningProfile" | "lectureTranscript" | "knowledgeChunk" | "knowledgeSourceHash" | "courseIndexingOutbox" | "aiAgentRun" | "aiUsageDaily" | "aiEvaluationRun" | "aiMemoryFact" | "aiToolInvocation"
+    modelProps: "course" | "section" | "lecture" | "video" | "videoCollection" | "attachment" | "path" | "track" | "user" | "account" | "session" | "userSession" | "verificationToken" | "trackedDevice" | "tokenFamily" | "enrollment" | "progress" | "cart" | "cartItem" | "coupon" | "couponCourse" | "order" | "orderItem" | "payment" | "paymentReconcileAttempt" | "paymentDomainOutbox" | "paymentDispute" | "refund" | "checkoutSession" | "invoice" | "webhookEvent" | "review" | "instructorAvailability" | "availabilityDateOverride" | "instructorScheduleSettings" | "consultationBooking" | "googleCalendarToken" | "refundRequest" | "instructorEarning" | "testimonial" | "faq" | "tutorConversation" | "tutorThread" | "tutorMessage" | "tutorTurnIdempotency" | "studentLearningProfile" | "lectureTranscript" | "knowledgeChunk" | "knowledgeSourceHash" | "courseIndexingOutbox" | "aiAgentRun" | "aiUsageDaily" | "aiEvaluationRun" | "aiMemoryFact" | "aiToolInvocation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3713,6 +3714,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TutorTurnIdempotency: {
+      payload: Prisma.$TutorTurnIdempotencyPayload<ExtArgs>
+      fields: Prisma.TutorTurnIdempotencyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TutorTurnIdempotencyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TutorTurnIdempotencyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload>
+        }
+        findFirst: {
+          args: Prisma.TutorTurnIdempotencyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TutorTurnIdempotencyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload>
+        }
+        findMany: {
+          args: Prisma.TutorTurnIdempotencyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload>[]
+        }
+        create: {
+          args: Prisma.TutorTurnIdempotencyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload>
+        }
+        createMany: {
+          args: Prisma.TutorTurnIdempotencyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TutorTurnIdempotencyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload>[]
+        }
+        delete: {
+          args: Prisma.TutorTurnIdempotencyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload>
+        }
+        update: {
+          args: Prisma.TutorTurnIdempotencyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload>
+        }
+        deleteMany: {
+          args: Prisma.TutorTurnIdempotencyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TutorTurnIdempotencyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TutorTurnIdempotencyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload>[]
+        }
+        upsert: {
+          args: Prisma.TutorTurnIdempotencyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TutorTurnIdempotencyPayload>
+        }
+        aggregate: {
+          args: Prisma.TutorTurnIdempotencyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTutorTurnIdempotency>
+        }
+        groupBy: {
+          args: Prisma.TutorTurnIdempotencyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TutorTurnIdempotencyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TutorTurnIdempotencyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TutorTurnIdempotencyCountAggregateOutputType> | number
+        }
+      }
+    }
     StudentLearningProfile: {
       payload: Prisma.$StudentLearningProfilePayload<ExtArgs>
       fields: Prisma.StudentLearningProfileFieldRefs
@@ -5227,12 +5302,28 @@ export const TutorMessageScalarFieldEnum = {
   threadId: 'threadId',
   role: 'role',
   content: 'content',
+  status: 'status',
+  turnId: 'turnId',
   retrievedSources: 'retrievedSources',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type TutorMessageScalarFieldEnum = (typeof TutorMessageScalarFieldEnum)[keyof typeof TutorMessageScalarFieldEnum]
+
+
+export const TutorTurnIdempotencyScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  idempotencyKey: 'idempotencyKey',
+  threadId: 'threadId',
+  turnId: 'turnId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TutorTurnIdempotencyScalarFieldEnum = (typeof TutorTurnIdempotencyScalarFieldEnum)[keyof typeof TutorTurnIdempotencyScalarFieldEnum]
 
 
 export const StudentLearningProfileScalarFieldEnum = {
@@ -5910,6 +6001,34 @@ export type ListEnumTutorMessageRoleFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'TutorMessageStatus'
+ */
+export type EnumTutorMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TutorMessageStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TutorMessageStatus[]'
+ */
+export type ListEnumTutorMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TutorMessageStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TutorTurnIdempotencyStatus'
+ */
+export type EnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TutorTurnIdempotencyStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TutorTurnIdempotencyStatus[]'
+ */
+export type ListEnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TutorTurnIdempotencyStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -6145,6 +6264,7 @@ export type GlobalOmitConfig = {
   tutorConversation?: Prisma.TutorConversationOmit
   tutorThread?: Prisma.TutorThreadOmit
   tutorMessage?: Prisma.TutorMessageOmit
+  tutorTurnIdempotency?: Prisma.TutorTurnIdempotencyOmit
   studentLearningProfile?: Prisma.StudentLearningProfileOmit
   lectureTranscript?: Prisma.LectureTranscriptOmit
   knowledgeChunk?: Prisma.KnowledgeChunkOmit

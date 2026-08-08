@@ -12,8 +12,8 @@ Use the conversations delete endpoint to remove:
 
 - `tutor_conversations` row for `(courseId, userId)`
 - cascading `tutor_threads` and `tutor_messages`
-
-Learning profiles (`student_learning_profiles`) are not deleted automatically and should be handled by a separate data-erasure workflow if required.
+- associated `student_learning_profiles` row for `(userId, courseId)`
+- cached session context in Redis for that user/course
 
 ## Audit
 

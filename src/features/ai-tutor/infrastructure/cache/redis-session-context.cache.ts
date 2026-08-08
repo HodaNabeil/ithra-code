@@ -62,6 +62,14 @@ export class RedisSessionContextCache implements SessionContextCachePort {
       console.error('[AI_TUTOR_SESSION_CONTEXT_CACHE_SET]', error);
     }
   }
+
+  async invalidate(cacheKey: string): Promise<void> {
+    try {
+      await redis.del(buildRedisKey(cacheKey));
+    } catch (error) {
+      console.error('[AI_TUTOR_SESSION_CONTEXT_CACHE_INVALIDATE]', error);
+    }
+  }
 }
 
 export const redisSessionContextCache = new RedisSessionContextCache();

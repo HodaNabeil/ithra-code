@@ -70,6 +70,8 @@ export async function getTutorThreadMessagesUseCase(
         id: message.id,
         role: message.role,
         content: message.content,
+        status: message.status,
+        turnId: message.turnId,
         sources: message.retrievedSources,
         createdAt: message.createdAt.toISOString(),
       })),

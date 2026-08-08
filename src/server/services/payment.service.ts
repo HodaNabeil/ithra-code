@@ -1,9 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import {
-  PaymentProvider,
-  PaymentStatus,
-  Prisma,
-} from '@prisma/client';
+import { PaymentProvider, PaymentStatus, Prisma } from '@prisma/client';
 
 const TERMINAL_PAYMENT_STATUSES: PaymentStatus[] = [
   'SUCCEEDED',

@@ -1,19 +1,29 @@
-export {
-  buildTutorSessionContext,
-} from './course-context.service';
+export { buildTutorSessionContext } from './course-context.service';
 export type { CourseContextServiceDeps } from './course-context.service';
 
-export { getTutorBasePromptVersion, trimConversationHistory } from './prompt-builder';
+export {
+  getTutorBasePromptVersion,
+  trimConversationHistory,
+} from './prompt-builder';
 
 export {
   loadCourseForIndexing,
   extractCourseSources,
   buildChunkRecords,
 } from './content-extraction.service';
-export type { ExtractedSource, ExtractionStats } from './content-extraction.service';
+export type {
+  ExtractedSource,
+  ExtractionStats,
+} from './content-extraction.service';
 
-export { chunkText, chunkContentByKind } from '@/ai-platform/indexing/services/text-chunker.service';
-export type { TextChunk, ContentChunkKind } from '@/ai-platform/indexing/services/text-chunker.service';
+export {
+  chunkText,
+  chunkContentByKind,
+} from '@/ai-platform/indexing/services/text-chunker.service';
+export type {
+  TextChunk,
+  ContentChunkKind,
+} from '@/ai-platform/indexing/services/text-chunker.service';
 
 export {
   classifyContent,

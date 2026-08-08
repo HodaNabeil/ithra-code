@@ -240,3 +240,23 @@ Incremental reindex skips unchanged sources via SHA-256 content hashes in `knowl
 - **Default worker concurrency is 1** — large courses index sequentially
 - **OpenAI rate limits** — retries help but no dedicated rate limiter in pipeline
 - **HNSW index not in Prisma schema** — always use `migrate deploy`, not `db push`
+
+---
+
+## Observability & Alert Thresholds
+
+Metrics exported via OpenTelemetry (`platform-metrics.ts`):
+
+| Metric | Suggested alert |
+|--------|-----------------|
+| `ai_budget_reservation_rejected_total` | > 50/hour per environment |
+| `ai_rate_limit_rejected_total` | sustained spike > 3× baseline |
+| `ai_auth_failure_total` | > 100/hour (possible abuse) |
+| `ai_stream_abort_total` | > 20% of `ai_agent_runs_total` |
+| `ai_redis_guard_failure_total` | any sustained > 0 for 5 min |
+| `ai_agent_run_duration_ms` | p95 > 45s |
+| Indexing queue `failed` | > 0 for 15 min |
+
+### SSE / reverse proxy
+
+Tutor streaming emits SSE comment heartbeats (`: ping`) every 15 seconds. Configure reverse proxies with `proxy_read_timeout` ≥ 120s (nginx) or equivalent.

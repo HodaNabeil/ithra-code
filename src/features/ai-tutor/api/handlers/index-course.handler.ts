@@ -1,5 +1,7 @@
 import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
+import { assertMessageRateLimit } from '@/ai-platform';
+import { PlatformError, PlatformErrorCodes } from '@/ai-platform/shared/errors';
 
 import { indexCourseInputSchema } from '../../application/dto/index-course.dto';
 import { IndexingError } from '../../application/errors/indexing.errors';
@@ -9,6 +11,12 @@ import {
   indexCourseUseCase,
 } from '../../infrastructure/di/ai-tutor-container';
 
+const INDEX_RATE_LIMITS = {
+  requestsPerMinute: 5,
+  requestsPerHour: 20,
+  requestsPerDay: 100,
+} as const;
+
 export async function handleIndexCourseRequest(request: Request): Promise<Response> {
   if (!AITutorConfig.isEnabled()) {
     return apiError('ميزة المدرس الذكي غير مفعّلة', 503);
@@ -17,6 +25,19 @@ export async function handleIndexCourseRequest(request: Request): Promise<Respon
   const session = await auth();
   if (!session?.user?.id) {
     return apiError('يجب تسجيل الدخول لفهرسة المحتوى', 401);
+  }
+
+  try {
+    await assertMessageRateLimit({
+      userId: session.user.id,
+      limits: INDEX_RATE_LIMITS,
+      scope: 'index:course',
+    });
+  } catch (error) {
+    if (error instanceof PlatformError && error.code === PlatformErrorCodes.RATE_LIMITED) {
+      return apiError(error.message, 429);
+    }
+    throw error;
   }
 
   let body: unknown;

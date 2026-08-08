@@ -80,6 +80,34 @@ export const platformMetrics = {
     getHistogram('ai_retrieval_latency_ms', 'Retrieval latency').record(durationMs, labels);
   },
 
+  incrementBudgetReservationRejected(reason: string): void {
+    const labels = { reason };
+    getCounter('ai_budget_reservation_rejected_total', 'Budget reservation rejections').add(
+      1,
+      labels,
+    );
+  },
+
+  incrementRateLimitRejected(scope: string): void {
+    const labels = { scope };
+    getCounter('ai_rate_limit_rejected_total', 'Rate limit rejections').add(1, labels);
+  },
+
+  incrementAuthFailure(reason: string): void {
+    const labels = { reason };
+    getCounter('ai_auth_failure_total', 'Authorization failures').add(1, labels);
+  },
+
+  incrementStreamAbort(agentId: string): void {
+    const labels = { agent_id: agentId };
+    getCounter('ai_stream_abort_total', 'Stream aborts').add(1, labels);
+  },
+
+  incrementRedisGuardFailure(guard: string): void {
+    const labels = { guard };
+    getCounter('ai_redis_guard_failure_total', 'Redis guard failures').add(1, labels);
+  },
+
   toPrometheusText(): string {
     const lines: string[] = [];
 

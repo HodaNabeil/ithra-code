@@ -95,6 +95,7 @@ export const ModelName = {
   TutorConversation: 'TutorConversation',
   TutorThread: 'TutorThread',
   TutorMessage: 'TutorMessage',
+  TutorTurnIdempotency: 'TutorTurnIdempotency',
   StudentLearningProfile: 'StudentLearningProfile',
   LectureTranscript: 'LectureTranscript',
   KnowledgeChunk: 'KnowledgeChunk',
@@ -858,12 +859,28 @@ export const TutorMessageScalarFieldEnum = {
   threadId: 'threadId',
   role: 'role',
   content: 'content',
+  status: 'status',
+  turnId: 'turnId',
   retrievedSources: 'retrievedSources',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type TutorMessageScalarFieldEnum = (typeof TutorMessageScalarFieldEnum)[keyof typeof TutorMessageScalarFieldEnum]
+
+
+export const TutorTurnIdempotencyScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  idempotencyKey: 'idempotencyKey',
+  threadId: 'threadId',
+  turnId: 'turnId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TutorTurnIdempotencyScalarFieldEnum = (typeof TutorTurnIdempotencyScalarFieldEnum)[keyof typeof TutorTurnIdempotencyScalarFieldEnum]
 
 
 export const StudentLearningProfileScalarFieldEnum = {

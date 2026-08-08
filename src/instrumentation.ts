@@ -18,4 +18,12 @@ export async function register() {
 
     await validatePlatformInfrastructure();
   }
+
+  if (process.env.AI_TUTOR_ENABLED === 'true') {
+    const { validateAITutorConfig } = await import(
+      '@/features/ai-tutor/infrastructure/config/ai-tutor.config'
+    );
+
+    validateAITutorConfig();
+  }
 }

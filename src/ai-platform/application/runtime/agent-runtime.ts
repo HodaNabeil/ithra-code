@@ -22,7 +22,10 @@ import {
 import { computeRunCostUsd } from '../../observability/cost/token-pricing';
 import { resolveModelForPolicy } from '../../router/model-router';
 import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
-import { recordDailySpendUsd } from '../../infrastructure/guards';
+import {
+  reconcileDailyBudgetUsd,
+  releaseDailyBudgetReservation,
+} from '../../infrastructure/guards';
 import { readExecutionPolicy } from '../../graph/state/shared-channels';
 import { PlatformError, PlatformErrorCodes } from '../../shared/errors';
 import type { ChatStreamEvent } from '../../shared/types';
@@ -143,7 +146,11 @@ export async function executeAgentRun(
     parsed.options?.modelOverride,
   );
 
-  await runGuards(context.agent, parsed.userId);
+  const maxTokens = parsed.options?.maxTokens ?? resolved.maxTokens;
+  const guards = await runGuards(context.agent, parsed.userId, {
+    model: resolved.model,
+    maxTokens,
+  });
 
   const built = buildAgentContext(context.agent, parsed);
 
@@ -242,9 +249,10 @@ export async function executeAgentRun(
           langsmithRunId: resolveLangsmithRunIdForLedger(),
         });
 
-        await recordDailySpendUsd({
+        await reconcileDailyBudgetUsd({
           userId: parsed.userId,
-          usd: estimatedCost,
+          reservedMicroUsd: guards.budgetReservation?.reservedMicroUsd ?? 0,
+          actualUsd: estimatedCost,
         });
 
         platformMetrics.incrementAgentRun(context.agentId, 'completed');
@@ -266,6 +274,7 @@ export async function executeAgentRun(
         ),
     );
   } catch (error) {
+    await releaseDailyBudgetReservation(guards.budgetReservation ?? null);
     await failAgentRun(context.runId, {
       error: error instanceof Error ? error.message : 'Unknown error',
     });
@@ -307,7 +316,11 @@ async function* executeAgentStreamCore(
     context.agent.defaultModelPolicy,
     parsed.options?.modelOverride,
   );
-  const guards = await runStreamGuards(context.agent, parsed.userId);
+  const maxTokens = parsed.options?.maxTokens ?? resolved.maxTokens;
+  const guards = await runStreamGuards(context.agent, parsed.userId, {
+    model: resolved.model,
+    maxTokens,
+  });
 
   const built = buildAgentContext(context.agent, parsed);
 
@@ -510,9 +523,10 @@ async function* executeAgentStreamCore(
       langsmithRunId: resolveLangsmithRunIdForLedger(),
     });
 
-    await recordDailySpendUsd({
+    await reconcileDailyBudgetUsd({
       userId: parsed.userId,
-      usd: estimatedCost,
+      reservedMicroUsd: guards.budgetReservation?.reservedMicroUsd ?? 0,
+      actualUsd: estimatedCost,
     });
 
     platformMetrics.incrementAgentRun(context.agentId, 'completed');
@@ -535,6 +549,10 @@ async function* executeAgentStreamCore(
     };
     span?.setStatus({ code: 1 });
   } catch (error) {
+    if (parsed.options?.signal?.aborted) {
+      platformMetrics.incrementStreamAbort(context.agentId);
+    }
+    await releaseDailyBudgetReservation(guards.budgetReservation ?? null);
     span?.recordException(error as Error);
     span?.setStatus({
       code: 2,

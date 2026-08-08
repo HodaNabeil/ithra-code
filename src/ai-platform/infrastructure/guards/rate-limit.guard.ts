@@ -3,6 +3,7 @@ import { logger } from '@/lib/logger';
 
 import { PlatformError, PlatformErrorCodes } from '../../shared/errors';
 import { AI_PLATFORM_CONSTANTS } from '../../shared/constants';
+import { platformMetrics } from '../../observability/metrics/platform-metrics';
 
 export type RateLimitWindows = {
   requestsPerMinute: number;
@@ -41,6 +42,7 @@ export async function assertMessageRateLimit(options: MessageRateLimitOptions): 
     );
 
     if (minuteCount > options.limits.requestsPerMinute) {
+      platformMetrics.incrementRateLimitRejected(`${scope}:minute`);
       throw new PlatformError(
         PlatformErrorCodes.RATE_LIMITED,
         'تم تجاوز حد الرسائل في الدقيقة. حاول مرة أخرى بعد قليل.',
@@ -53,6 +55,7 @@ export async function assertMessageRateLimit(options: MessageRateLimitOptions): 
     );
 
     if (hourCount > options.limits.requestsPerHour) {
+      platformMetrics.incrementRateLimitRejected(`${scope}:hour`);
       throw new PlatformError(
         PlatformErrorCodes.RATE_LIMITED,
         'تم تجاوز حد الرسائل في الساعة. حاول مرة أخرى لاحقاً.',
@@ -65,6 +68,7 @@ export async function assertMessageRateLimit(options: MessageRateLimitOptions): 
     );
 
     if (dayCount > options.limits.requestsPerDay) {
+      platformMetrics.incrementRateLimitRejected(`${scope}:day`);
       throw new PlatformError(
         PlatformErrorCodes.RATE_LIMITED,
         'تم تجاوز حد الرسائل اليومي. حاول مرة أخرى غداً.',
@@ -76,6 +80,7 @@ export async function assertMessageRateLimit(options: MessageRateLimitOptions): 
     }
 
     logger.error({ userId: options.userId, guard: 'rate_limit' }, '[AI_RATE_LIMIT_REDIS_FAILURE]');
+    platformMetrics.incrementRedisGuardFailure('rate_limit');
     throw new PlatformError(
       PlatformErrorCodes.PROVIDER_UNAVAILABLE,
       'خدمة الذكاء الاصطناعي غير متاحة مؤقتاً. حاول مرة أخرى بعد قليل.',

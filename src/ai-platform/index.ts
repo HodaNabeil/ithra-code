@@ -43,9 +43,14 @@ export {
   assertGlobalDailyBudgetUsd,
   assertUserDailyBudgetUsd,
   recordDailySpendUsd,
+  reserveDailyBudgetUsd,
+  reconcileDailyBudgetUsd,
+  releaseDailyBudgetReservation,
   usdToMicro,
+  microToUsd,
   isOverBudget,
 } from './infrastructure/guards';
+export type { BudgetReservation } from './infrastructure/guards';
 export {
   probePlatformInfrastructure,
   validatePlatformInfrastructure,

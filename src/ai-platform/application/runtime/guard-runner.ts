@@ -1,18 +1,34 @@
 import type { AgentDefinition } from '../../agents/base/agent-definition';
 import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
 import {
-  assertGlobalDailyBudgetUsd,
   assertMessageRateLimit,
-  assertUserDailyBudgetUsd,
   acquireConcurrencySlot,
+  reserveDailyBudgetUsd,
+  type BudgetReservation,
 } from '../../infrastructure/guards';
+import { computeRunCostUsd } from '../../observability/cost/token-pricing';
 import { PlatformError, PlatformErrorCodes } from '../../shared/errors';
 
 export type GuardChainResult = {
   releaseConcurrencySlot?: () => Promise<void>;
+  budgetReservation?: BudgetReservation | null;
 };
 
-async function runBaseGuards(agent: AgentDefinition, userId: string): Promise<void> {
+function estimateMaxRunCostUsd(model: string, maxTokens: number): number {
+  return computeRunCostUsd({
+    model,
+    inputTokens: 4_000,
+    outputTokens: maxTokens,
+    embeddingModel: AIPlatformConfig.getEmbeddingConfig().model,
+    embeddingTokens: 500,
+  });
+}
+
+async function runBaseGuards(
+  agent: AgentDefinition,
+  userId: string,
+  estimatedMaxCostUsd: number,
+): Promise<BudgetReservation | null> {
   const rateLimits = AIPlatformConfig.getRateLimitConfig();
 
   await assertMessageRateLimit({
@@ -20,17 +36,30 @@ async function runBaseGuards(agent: AgentDefinition, userId: string): Promise<vo
     limits: rateLimits,
     scope: `agent:${agent.id}`,
   });
-  await assertUserDailyBudgetUsd(userId, AIPlatformConfig.getUserDailyBudgetUsd());
-  await assertGlobalDailyBudgetUsd(AIPlatformConfig.getGlobalDailyBudgetUsd());
+
+  return reserveDailyBudgetUsd({
+    userId,
+    estimatedUsd: estimatedMaxCostUsd,
+    userCapUsd: AIPlatformConfig.getUserDailyBudgetUsd(),
+    globalCapUsd: AIPlatformConfig.getGlobalDailyBudgetUsd(),
+  });
 }
 
 export async function runGuards(
   agent: AgentDefinition,
   userId: string,
+  options?: { model: string; maxTokens: number },
 ): Promise<GuardChainResult> {
   try {
-    await runBaseGuards(agent, userId);
-    return {};
+    const estimatedMaxCostUsd = options
+      ? estimateMaxRunCostUsd(options.model, options.maxTokens)
+      : 0.05;
+    const budgetReservation = await runBaseGuards(
+      agent,
+      userId,
+      estimatedMaxCostUsd,
+    );
+    return { budgetReservation };
   } catch (error) {
     if (error instanceof PlatformError) {
       throw error;
@@ -46,9 +75,17 @@ export async function runGuards(
 export async function runStreamGuards(
   agent: AgentDefinition,
   userId: string,
+  options?: { model: string; maxTokens: number },
 ): Promise<GuardChainResult> {
   try {
-    await runBaseGuards(agent, userId);
+    const estimatedMaxCostUsd = options
+      ? estimateMaxRunCostUsd(options.model, options.maxTokens)
+      : 0.05;
+    const budgetReservation = await runBaseGuards(
+      agent,
+      userId,
+      estimatedMaxCostUsd,
+    );
 
     const streamConfig = AIPlatformConfig.getStreamConfig();
     const releaseConcurrencySlot = await acquireConcurrencySlot({
@@ -60,7 +97,7 @@ export async function runStreamGuards(
       scope: `agent:${agent.id}`,
     });
 
-    return { releaseConcurrencySlot };
+    return { releaseConcurrencySlot, budgetReservation };
   } catch (error) {
     if (error instanceof PlatformError) {
       throw error;

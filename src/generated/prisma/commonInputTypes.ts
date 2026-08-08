@@ -807,6 +807,13 @@ export type EnumTutorMessageRoleFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel> | $Enums.TutorMessageRole
 }
 
+export type EnumTutorMessageStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorMessageStatus | Prisma.EnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorMessageStatus[] | Prisma.ListEnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorMessageStatus[] | Prisma.ListEnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorMessageStatusFilter<$PrismaModel> | $Enums.TutorMessageStatus
+}
+
 export type EnumTutorMessageRoleWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TutorMessageRole | Prisma.EnumTutorMessageRoleFieldRefInput<$PrismaModel>
   in?: $Enums.TutorMessageRole[] | Prisma.ListEnumTutorMessageRoleFieldRefInput<$PrismaModel>
@@ -815,6 +822,33 @@ export type EnumTutorMessageRoleWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel>
+}
+
+export type EnumTutorMessageStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorMessageStatus | Prisma.EnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorMessageStatus[] | Prisma.ListEnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorMessageStatus[] | Prisma.ListEnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorMessageStatusWithAggregatesFilter<$PrismaModel> | $Enums.TutorMessageStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTutorMessageStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTutorMessageStatusFilter<$PrismaModel>
+}
+
+export type EnumTutorTurnIdempotencyStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorTurnIdempotencyStatus | Prisma.EnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorTurnIdempotencyStatus[] | Prisma.ListEnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorTurnIdempotencyStatus[] | Prisma.ListEnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorTurnIdempotencyStatusFilter<$PrismaModel> | $Enums.TutorTurnIdempotencyStatus
+}
+
+export type EnumTutorTurnIdempotencyStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorTurnIdempotencyStatus | Prisma.EnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorTurnIdempotencyStatus[] | Prisma.ListEnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorTurnIdempotencyStatus[] | Prisma.ListEnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorTurnIdempotencyStatusWithAggregatesFilter<$PrismaModel> | $Enums.TutorTurnIdempotencyStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTutorTurnIdempotencyStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTutorTurnIdempotencyStatusFilter<$PrismaModel>
 }
 
 export type FloatFilter<$PrismaModel = never> = {
@@ -1708,6 +1742,13 @@ export type NestedEnumTutorMessageRoleFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel> | $Enums.TutorMessageRole
 }
 
+export type NestedEnumTutorMessageStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorMessageStatus | Prisma.EnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorMessageStatus[] | Prisma.ListEnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorMessageStatus[] | Prisma.ListEnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorMessageStatusFilter<$PrismaModel> | $Enums.TutorMessageStatus
+}
+
 export type NestedEnumTutorMessageRoleWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TutorMessageRole | Prisma.EnumTutorMessageRoleFieldRefInput<$PrismaModel>
   in?: $Enums.TutorMessageRole[] | Prisma.ListEnumTutorMessageRoleFieldRefInput<$PrismaModel>
@@ -1716,6 +1757,33 @@ export type NestedEnumTutorMessageRoleWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTutorMessageRoleFilter<$PrismaModel>
+}
+
+export type NestedEnumTutorMessageStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorMessageStatus | Prisma.EnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorMessageStatus[] | Prisma.ListEnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorMessageStatus[] | Prisma.ListEnumTutorMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorMessageStatusWithAggregatesFilter<$PrismaModel> | $Enums.TutorMessageStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTutorMessageStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTutorMessageStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumTutorTurnIdempotencyStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorTurnIdempotencyStatus | Prisma.EnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorTurnIdempotencyStatus[] | Prisma.ListEnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorTurnIdempotencyStatus[] | Prisma.ListEnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorTurnIdempotencyStatusFilter<$PrismaModel> | $Enums.TutorTurnIdempotencyStatus
+}
+
+export type NestedEnumTutorTurnIdempotencyStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TutorTurnIdempotencyStatus | Prisma.EnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TutorTurnIdempotencyStatus[] | Prisma.ListEnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TutorTurnIdempotencyStatus[] | Prisma.ListEnumTutorTurnIdempotencyStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTutorTurnIdempotencyStatusWithAggregatesFilter<$PrismaModel> | $Enums.TutorTurnIdempotencyStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTutorTurnIdempotencyStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTutorTurnIdempotencyStatusFilter<$PrismaModel>
 }
 
 export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {

@@ -262,6 +262,11 @@ export type TutorThread = Prisma.TutorThreadModel
  */
 export type TutorMessage = Prisma.TutorMessageModel
 /**
+ * Model TutorTurnIdempotency
+ * 
+ */
+export type TutorTurnIdempotency = Prisma.TutorTurnIdempotencyModel
+/**
  * Model StudentLearningProfile
  * 
  */

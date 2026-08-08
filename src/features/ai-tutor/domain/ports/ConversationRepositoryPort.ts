@@ -32,15 +32,34 @@ export interface ThreadDTO {
 
 import type { MessageSourceDTO } from '../models/MessageSource';
 
+export type MessageStatus = 'pending' | 'completed' | 'failed' | 'cancelled';
+
 export interface MessageDTO {
   id: string;
   threadId: string;
   role: 'user' | 'assistant';
   content: string;
+  status?: MessageStatus;
+  turnId?: string;
   retrievedSources?: MessageSourceDTO[];
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type TurnHandle = {
+  turnId: string;
+  userMessageId: string;
+  assistantMessageId: string;
+};
+
+export type IdempotencyRecord = {
+  id: string;
+  userId: string;
+  idempotencyKey: string;
+  threadId: string;
+  turnId: string | null;
+  status: 'processing' | 'completed' | 'failed';
+};
 
 export interface ConversationRepositoryPort {
   /**
@@ -116,6 +135,53 @@ export interface ConversationRepositoryPort {
    * @returns Recent messages in thread
    */
   getThreadMessages(threadId: string, limit?: number): Promise<MessageDTO[]>;
+
+  getThreadMessagesPaginated(
+    threadId: string,
+    params: { before?: string; limit?: number },
+  ): Promise<{
+    messages: MessageDTO[];
+    nextCursor: string | null;
+  }>;
+
+  beginTurn(
+    threadId: string,
+    params: { userContent: string; turnId?: string },
+  ): Promise<TurnHandle>;
+
+  completeTurn(
+    turnId: string,
+    params: {
+      assistantContent: string;
+      retrievedSources?: MessageDTO['retrievedSources'];
+    },
+  ): Promise<void>;
+
+  failTurn(
+    turnId: string,
+    status?: 'failed' | 'cancelled',
+  ): Promise<void>;
+
+  claimIdempotencyKey(params: {
+    userId: string;
+    idempotencyKey: string;
+    threadId: string;
+  }): Promise<
+    | { kind: 'created'; recordId: string }
+    | { kind: 'replay'; record: IdempotencyRecord }
+    | { kind: 'conflict' }
+  >;
+
+  completeIdempotencyKey(params: {
+    userId: string;
+    idempotencyKey: string;
+    turnId: string;
+  }): Promise<void>;
+
+  failIdempotencyKey(params: {
+    userId: string;
+    idempotencyKey: string;
+  }): Promise<void>;
 
   /**
    * Add message to thread

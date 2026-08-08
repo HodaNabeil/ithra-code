@@ -17,6 +17,8 @@ export type TutorThreadMessagesDTO = {
     id: string;
     role: 'user' | 'assistant';
     content: string;
+    status?: 'pending' | 'completed' | 'failed' | 'cancelled';
+    turnId?: string;
     sources?: MessageSourceDTO[];
     createdAt: string;
   }>;

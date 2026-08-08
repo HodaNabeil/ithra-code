@@ -29,6 +29,8 @@ export type TutorMessageMinAggregateOutputType = {
   threadId: string | null
   role: $Enums.TutorMessageRole | null
   content: string | null
+  status: $Enums.TutorMessageStatus | null
+  turnId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -38,6 +40,8 @@ export type TutorMessageMaxAggregateOutputType = {
   threadId: string | null
   role: $Enums.TutorMessageRole | null
   content: string | null
+  status: $Enums.TutorMessageStatus | null
+  turnId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -47,6 +51,8 @@ export type TutorMessageCountAggregateOutputType = {
   threadId: number
   role: number
   content: number
+  status: number
+  turnId: number
   retrievedSources: number
   createdAt: number
   updatedAt: number
@@ -59,6 +65,8 @@ export type TutorMessageMinAggregateInputType = {
   threadId?: true
   role?: true
   content?: true
+  status?: true
+  turnId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -68,6 +76,8 @@ export type TutorMessageMaxAggregateInputType = {
   threadId?: true
   role?: true
   content?: true
+  status?: true
+  turnId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -77,6 +87,8 @@ export type TutorMessageCountAggregateInputType = {
   threadId?: true
   role?: true
   content?: true
+  status?: true
+  turnId?: true
   retrievedSources?: true
   createdAt?: true
   updatedAt?: true
@@ -160,6 +172,8 @@ export type TutorMessageGroupByOutputType = {
   threadId: string
   role: $Enums.TutorMessageRole
   content: string
+  status: $Enums.TutorMessageStatus
+  turnId: string | null
   retrievedSources: runtime.JsonValue | null
   createdAt: Date
   updatedAt: Date
@@ -191,6 +205,8 @@ export type TutorMessageWhereInput = {
   threadId?: Prisma.StringFilter<"TutorMessage"> | string
   role?: Prisma.EnumTutorMessageRoleFilter<"TutorMessage"> | $Enums.TutorMessageRole
   content?: Prisma.StringFilter<"TutorMessage"> | string
+  status?: Prisma.EnumTutorMessageStatusFilter<"TutorMessage"> | $Enums.TutorMessageStatus
+  turnId?: Prisma.StringNullableFilter<"TutorMessage"> | string | null
   retrievedSources?: Prisma.JsonNullableFilter<"TutorMessage">
   createdAt?: Prisma.DateTimeFilter<"TutorMessage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TutorMessage"> | Date | string
@@ -202,6 +218,8 @@ export type TutorMessageOrderByWithRelationInput = {
   threadId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  turnId?: Prisma.SortOrderInput | Prisma.SortOrder
   retrievedSources?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -216,6 +234,8 @@ export type TutorMessageWhereUniqueInput = Prisma.AtLeast<{
   threadId?: Prisma.StringFilter<"TutorMessage"> | string
   role?: Prisma.EnumTutorMessageRoleFilter<"TutorMessage"> | $Enums.TutorMessageRole
   content?: Prisma.StringFilter<"TutorMessage"> | string
+  status?: Prisma.EnumTutorMessageStatusFilter<"TutorMessage"> | $Enums.TutorMessageStatus
+  turnId?: Prisma.StringNullableFilter<"TutorMessage"> | string | null
   retrievedSources?: Prisma.JsonNullableFilter<"TutorMessage">
   createdAt?: Prisma.DateTimeFilter<"TutorMessage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TutorMessage"> | Date | string
@@ -227,6 +247,8 @@ export type TutorMessageOrderByWithAggregationInput = {
   threadId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  turnId?: Prisma.SortOrderInput | Prisma.SortOrder
   retrievedSources?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -243,6 +265,8 @@ export type TutorMessageScalarWhereWithAggregatesInput = {
   threadId?: Prisma.StringWithAggregatesFilter<"TutorMessage"> | string
   role?: Prisma.EnumTutorMessageRoleWithAggregatesFilter<"TutorMessage"> | $Enums.TutorMessageRole
   content?: Prisma.StringWithAggregatesFilter<"TutorMessage"> | string
+  status?: Prisma.EnumTutorMessageStatusWithAggregatesFilter<"TutorMessage"> | $Enums.TutorMessageStatus
+  turnId?: Prisma.StringNullableWithAggregatesFilter<"TutorMessage"> | string | null
   retrievedSources?: Prisma.JsonNullableWithAggregatesFilter<"TutorMessage">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TutorMessage"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TutorMessage"> | Date | string
@@ -252,6 +276,8 @@ export type TutorMessageCreateInput = {
   id?: string
   role: $Enums.TutorMessageRole
   content: string
+  status?: $Enums.TutorMessageStatus
+  turnId?: string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -263,6 +289,8 @@ export type TutorMessageUncheckedCreateInput = {
   threadId: string
   role: $Enums.TutorMessageRole
   content: string
+  status?: $Enums.TutorMessageStatus
+  turnId?: string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -272,6 +300,8 @@ export type TutorMessageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumTutorMessageRoleFieldUpdateOperationsInput | $Enums.TutorMessageRole
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTutorMessageStatusFieldUpdateOperationsInput | $Enums.TutorMessageStatus
+  turnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -283,6 +313,8 @@ export type TutorMessageUncheckedUpdateInput = {
   threadId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumTutorMessageRoleFieldUpdateOperationsInput | $Enums.TutorMessageRole
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTutorMessageStatusFieldUpdateOperationsInput | $Enums.TutorMessageStatus
+  turnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -293,6 +325,8 @@ export type TutorMessageCreateManyInput = {
   threadId: string
   role: $Enums.TutorMessageRole
   content: string
+  status?: $Enums.TutorMessageStatus
+  turnId?: string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -302,6 +336,8 @@ export type TutorMessageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumTutorMessageRoleFieldUpdateOperationsInput | $Enums.TutorMessageRole
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTutorMessageStatusFieldUpdateOperationsInput | $Enums.TutorMessageStatus
+  turnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -312,6 +348,8 @@ export type TutorMessageUncheckedUpdateManyInput = {
   threadId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumTutorMessageRoleFieldUpdateOperationsInput | $Enums.TutorMessageRole
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTutorMessageStatusFieldUpdateOperationsInput | $Enums.TutorMessageStatus
+  turnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -332,6 +370,8 @@ export type TutorMessageCountOrderByAggregateInput = {
   threadId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  turnId?: Prisma.SortOrder
   retrievedSources?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -342,6 +382,8 @@ export type TutorMessageMaxOrderByAggregateInput = {
   threadId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  turnId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -351,6 +393,8 @@ export type TutorMessageMinOrderByAggregateInput = {
   threadId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  turnId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -401,10 +445,16 @@ export type EnumTutorMessageRoleFieldUpdateOperationsInput = {
   set?: $Enums.TutorMessageRole
 }
 
+export type EnumTutorMessageStatusFieldUpdateOperationsInput = {
+  set?: $Enums.TutorMessageStatus
+}
+
 export type TutorMessageCreateWithoutThreadInput = {
   id?: string
   role: $Enums.TutorMessageRole
   content: string
+  status?: $Enums.TutorMessageStatus
+  turnId?: string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -414,6 +464,8 @@ export type TutorMessageUncheckedCreateWithoutThreadInput = {
   id?: string
   role: $Enums.TutorMessageRole
   content: string
+  status?: $Enums.TutorMessageStatus
+  turnId?: string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -453,6 +505,8 @@ export type TutorMessageScalarWhereInput = {
   threadId?: Prisma.StringFilter<"TutorMessage"> | string
   role?: Prisma.EnumTutorMessageRoleFilter<"TutorMessage"> | $Enums.TutorMessageRole
   content?: Prisma.StringFilter<"TutorMessage"> | string
+  status?: Prisma.EnumTutorMessageStatusFilter<"TutorMessage"> | $Enums.TutorMessageStatus
+  turnId?: Prisma.StringNullableFilter<"TutorMessage"> | string | null
   retrievedSources?: Prisma.JsonNullableFilter<"TutorMessage">
   createdAt?: Prisma.DateTimeFilter<"TutorMessage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TutorMessage"> | Date | string
@@ -462,6 +516,8 @@ export type TutorMessageCreateManyThreadInput = {
   id?: string
   role: $Enums.TutorMessageRole
   content: string
+  status?: $Enums.TutorMessageStatus
+  turnId?: string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -471,6 +527,8 @@ export type TutorMessageUpdateWithoutThreadInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumTutorMessageRoleFieldUpdateOperationsInput | $Enums.TutorMessageRole
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTutorMessageStatusFieldUpdateOperationsInput | $Enums.TutorMessageStatus
+  turnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -480,6 +538,8 @@ export type TutorMessageUncheckedUpdateWithoutThreadInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumTutorMessageRoleFieldUpdateOperationsInput | $Enums.TutorMessageRole
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTutorMessageStatusFieldUpdateOperationsInput | $Enums.TutorMessageStatus
+  turnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -489,6 +549,8 @@ export type TutorMessageUncheckedUpdateManyWithoutThreadInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumTutorMessageRoleFieldUpdateOperationsInput | $Enums.TutorMessageRole
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTutorMessageStatusFieldUpdateOperationsInput | $Enums.TutorMessageStatus
+  turnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   retrievedSources?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -501,6 +563,8 @@ export type TutorMessageSelect<ExtArgs extends runtime.Types.Extensions.Internal
   threadId?: boolean
   role?: boolean
   content?: boolean
+  status?: boolean
+  turnId?: boolean
   retrievedSources?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -512,6 +576,8 @@ export type TutorMessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   threadId?: boolean
   role?: boolean
   content?: boolean
+  status?: boolean
+  turnId?: boolean
   retrievedSources?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -523,6 +589,8 @@ export type TutorMessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   threadId?: boolean
   role?: boolean
   content?: boolean
+  status?: boolean
+  turnId?: boolean
   retrievedSources?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -534,12 +602,14 @@ export type TutorMessageSelectScalar = {
   threadId?: boolean
   role?: boolean
   content?: boolean
+  status?: boolean
+  turnId?: boolean
   retrievedSources?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TutorMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "threadId" | "role" | "content" | "retrievedSources" | "createdAt" | "updatedAt", ExtArgs["result"]["tutorMessage"]>
+export type TutorMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "threadId" | "role" | "content" | "status" | "turnId" | "retrievedSources" | "createdAt" | "updatedAt", ExtArgs["result"]["tutorMessage"]>
 export type TutorMessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   thread?: boolean | Prisma.TutorThreadDefaultArgs<ExtArgs>
 }
@@ -560,6 +630,8 @@ export type $TutorMessagePayload<ExtArgs extends runtime.Types.Extensions.Intern
     threadId: string
     role: $Enums.TutorMessageRole
     content: string
+    status: $Enums.TutorMessageStatus
+    turnId: string | null
     retrievedSources: runtime.JsonValue | null
     createdAt: Date
     updatedAt: Date
@@ -991,6 +1063,8 @@ export interface TutorMessageFieldRefs {
   readonly threadId: Prisma.FieldRef<"TutorMessage", 'String'>
   readonly role: Prisma.FieldRef<"TutorMessage", 'TutorMessageRole'>
   readonly content: Prisma.FieldRef<"TutorMessage", 'String'>
+  readonly status: Prisma.FieldRef<"TutorMessage", 'TutorMessageStatus'>
+  readonly turnId: Prisma.FieldRef<"TutorMessage", 'String'>
   readonly retrievedSources: Prisma.FieldRef<"TutorMessage", 'Json'>
   readonly createdAt: Prisma.FieldRef<"TutorMessage", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TutorMessage", 'DateTime'>

@@ -13,6 +13,8 @@ export type ChatMessage = {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  status?: 'pending' | 'completed' | 'failed' | 'cancelled';
+  turnId?: string;
   sources?: MessageSourceDTO[];
 };
 
@@ -31,17 +33,51 @@ type ThreadMessagesResponse = {
   data: {
     threadId: string | null;
     conversationId: string | null;
-    messages: ChatMessage[];
+    messages: Array<{
+      id: string;
+      role: 'user' | 'assistant';
+      content: string;
+      status?: ChatMessage['status'];
+      turnId?: string;
+      sources?: MessageSourceDTO[];
+    }>;
   };
 };
 
 type StreamMeta = {
+  threadId?: string;
+  conversationId?: string;
+  turnId?: string;
+  userMessageId?: string;
+  assistantMessageId?: string;
   sources: MessageSourceDTO[];
   usedFallback: boolean;
 };
 
 function createMessageId(): string {
   return crypto.randomUUID();
+}
+
+function formatHistoryMessage(message: ThreadMessagesResponse['data']['messages'][number]): ChatMessage {
+  const status = message.status ?? 'completed';
+  let content = message.content;
+
+  if (message.role === 'assistant') {
+    if (status === 'pending' && !content.trim()) {
+      content = 'جاري توليد الرد...';
+    } else if ((status === 'failed' || status === 'cancelled') && !content.trim()) {
+      content = 'تعذر إكمال الرد';
+    }
+  }
+
+  return {
+    id: message.id,
+    role: message.role,
+    content,
+    status,
+    turnId: message.turnId,
+    sources: message.sources,
+  };
 }
 
 function buildThreadQuery(options: UseAITutorChatOptions): string {
@@ -68,6 +104,11 @@ function parseStreamMeta(event: TutorSseEvent): StreamMeta | null {
   return {
     sources: event.sources,
     usedFallback: event.usedFallback,
+    threadId: event.threadId,
+    conversationId: event.conversationId,
+    turnId: event.turnId,
+    userMessageId: event.userMessageId,
+    assistantMessageId: event.assistantMessageId,
   };
 }
 
@@ -207,7 +248,7 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
         }
 
         const payload = (await response.json()) as ThreadMessagesResponse;
-        setMessages(payload.data.messages);
+        setMessages(payload.data.messages.map(formatHistoryMessage));
       } catch (requestError) {
         if (requestError instanceof DOMException && requestError.name === 'AbortError') {
           return;
@@ -245,16 +286,37 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
 
   const applyMeta = useCallback(
     (assistantMessageId: string, meta: StreamMeta) => {
-      setMessages((current) =>
-        current.map((message) =>
-          message.id === assistantMessageId
-            ? {
-                ...message,
-                sources: meta.sources.length > 0 ? meta.sources : undefined,
-              }
-            : message,
-        ),
-      );
+      setMessages((current) => {
+        const assistantIndex = current.findIndex(
+          (message) => message.id === assistantMessageId,
+        );
+
+        return current.map((message, index) => {
+          if (message.id === assistantMessageId) {
+            return {
+              ...message,
+              id: meta.assistantMessageId ?? message.id,
+              turnId: meta.turnId ?? message.turnId,
+              sources: meta.sources.length > 0 ? meta.sources : undefined,
+            };
+          }
+
+          if (
+            meta.userMessageId &&
+            assistantIndex > 0 &&
+            index === assistantIndex - 1 &&
+            message.role === 'user'
+          ) {
+            return {
+              ...message,
+              id: meta.userMessageId,
+              turnId: meta.turnId ?? message.turnId,
+            };
+          }
+
+          return message;
+        });
+      });
     },
     [],
   );

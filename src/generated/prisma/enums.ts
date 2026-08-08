@@ -293,6 +293,25 @@ export const TutorMessageRole = {
 export type TutorMessageRole = (typeof TutorMessageRole)[keyof typeof TutorMessageRole]
 
 
+export const TutorMessageStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type TutorMessageStatus = (typeof TutorMessageStatus)[keyof typeof TutorMessageStatus]
+
+
+export const TutorTurnIdempotencyStatus = {
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type TutorTurnIdempotencyStatus = (typeof TutorTurnIdempotencyStatus)[keyof typeof TutorTurnIdempotencyStatus]
+
+
 export const KnowledgeContentType = {
   COURSE_OVERVIEW: 'COURSE_OVERVIEW',
   LECTURE_DESCRIPTION: 'LECTURE_DESCRIPTION',
