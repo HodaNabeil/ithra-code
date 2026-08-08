@@ -1,4 +1,4 @@
-import { APP_ROUTES, InputTypes, Level } from '@/constant/enums';
+import { APP_ROUTES, InputTypes, Level } from '@/constants/enums';
 import { IFormField, IFormFieldsVariables, IOption } from '@/types/app';
 
 const useFormFields = ({ slug }: IFormFieldsVariables) => {

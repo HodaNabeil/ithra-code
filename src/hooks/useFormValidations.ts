@@ -1,7 +1,7 @@
 import * as z from 'zod';
 import type { IFormFieldsVariables } from '@/types/app';
 import { contactSchema } from '@/validation/contact';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 
 type ValidationSchema =
   | typeof contactSchema

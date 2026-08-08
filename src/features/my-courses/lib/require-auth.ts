@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { auth } from '@/lib/auth';
-import { AUTH_ENDPOINTS } from '@/constant/auth';
+import { AUTH_ENDPOINTS } from '@/constants/auth';
 
 /**
  * Server-side auth guard — validates session and redirects to login if absent.

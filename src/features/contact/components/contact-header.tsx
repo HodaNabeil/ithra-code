@@ -1,4 +1,4 @@
-import { CONTACT_INFO } from '@/constant/contact';
+import { CONTACT_INFO } from '@/constants/contact';
 import { MessageCircle } from 'lucide-react';
 
 const ContactHeader = () => {

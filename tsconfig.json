@@ -12,7 +12,8 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "testConnection.js"
+    "testConnection.js",
+    "tests/**/*.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "prisma/seeds"]
 }

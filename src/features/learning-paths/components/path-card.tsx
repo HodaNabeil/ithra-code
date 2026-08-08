@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/components/shared/link';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 
 import { PathListDTO } from '@/types/path/path.dto';
 

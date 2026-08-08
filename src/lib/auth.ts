@@ -4,22 +4,23 @@ import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import { env } from '@/config';
-import { AUTH_ROUTES } from '@/constant/auth';
-import { mergeCart } from '@/features/cart/actions/cart';
+import { authConfig } from '@/lib/auth.config';
+import { syncGuestCartUseCase } from '@/features/cart/application/use-cases/sync-guest-cart.use-case';
+import { readAndClearPendingGuestCartCookie } from '@/features/cart/lib/pending-guest-cart.cookie';
 import { Role } from '@prisma/client';
 
 export const config: NextAuthConfig = {
+  ...authConfig,
+
   adapter: PrismaAdapter(prisma),
 
   providers: [
-    // ── Google ───────────────────────────────────────
     GoogleProvider({
       clientId: env.AUTH_GOOGLE_ID,
       clientSecret: env.AUTH_GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
 
-    // ── GitHub ───────────────────────────────────────
     GithubProvider({
       clientId: env.AUTH_GITHUB_ID,
       clientSecret: env.AUTH_GITHUB_SECRET,
@@ -27,71 +28,56 @@ export const config: NextAuthConfig = {
     }),
   ],
 
-  session: {
-    strategy: 'jwt',
+  events: {
+    async signIn({ user }) {
+      if (!user.id) return;
+
+      const courseIds = await readAndClearPendingGuestCartCookie();
+      if (courseIds.length === 0) return;
+
+      try {
+        await syncGuestCartUseCase(user.id, courseIds);
+      } catch (error) {
+        console.error('[GUEST_CART_SYNC_ON_SIGNIN]', error);
+      }
+    },
+
+    async createUser({ user }) {
+      const [firstName, ...rest] = (user.name ?? '').split(' ');
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          firstName: firstName || null,
+          lastName: rest.join(' ') || null,
+          isEmailVerified: !!(user as { emailVerified?: Date | null })
+            .emailVerified,
+          role: Role.STUDENT,
+        },
+      });
+    },
   },
 
   callbacks: {
-    // ── JWT Callback
+    ...authConfig.callbacks,
 
     async jwt({ token, user }) {
-      if (user) {
+      if (user?.id) {
         token.id = user.id;
-        token.role = user.role || Role.STUDENT;
+
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { role: true },
+        });
+        token.role = dbUser?.role ?? Role.STUDENT;
       }
+
       return token;
     },
-
-    // ── Session Callback
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
-        session.user.image = token.picture as string;
-      }
-      return session;
-    },
-
-    async signIn({ user, account }) {
-      if (account?.provider === 'google' || account?.provider === 'github') {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email as string },
-        });
-
-        if (!existingUser) {
-          await prisma.user.create({
-            data: {
-              firstName: user.name?.split(' ')[0] || '',
-              lastName: user.name?.split(' ')[1] || '',
-              email: user.email as string,
-              profilePicture: user.image,
-              role: Role.STUDENT,
-            },
-          });
-        }
-      }
-      return true;
-    },
-  },
-
-  pages: {
-    signIn: AUTH_ROUTES.SIGN_IN,
-    error: AUTH_ROUTES.SIGN_IN,
   },
 
   secret: env.AUTH_SECRET,
-  trustHost: true,
+};
 
-  events: {
-    async signIn({ user }) {
-      if (user?.id) {
-        await mergeCart(user.id);
-      }
-    },
-  },
-} satisfies NextAuthConfig;
-
-// ── Export simplified handlers for NextAuth v5
 const {
   handlers: authHandlers,
   auth: authMethod,

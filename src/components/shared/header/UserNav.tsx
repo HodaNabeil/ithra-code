@@ -14,7 +14,7 @@ import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 
 import { Session } from 'next-auth';
-import { AUTH_ROUTES } from '@/constant/auth';
+import { AUTH_ROUTES } from '@/constants/auth';
 
 export function UserNav({ session }: { session: Session | null }) {
   const user = session?.user;

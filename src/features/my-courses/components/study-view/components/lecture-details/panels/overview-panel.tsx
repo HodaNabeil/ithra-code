@@ -2,7 +2,7 @@ import { Info } from 'lucide-react';
 
 interface OverviewPanelProps {
   description: string;
-  updatedAt?: Date;
+  updatedAt?: string;
 }
 
 export function OverviewPanel({ description, updatedAt }: OverviewPanelProps) {

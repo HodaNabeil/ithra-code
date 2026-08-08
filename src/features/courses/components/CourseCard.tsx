@@ -1,4 +1,4 @@
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 import { formatDuration, formatPrice } from '@/lib/formatters';
 import Image from 'next/image';
 import Link from 'next/link';

@@ -6,7 +6,7 @@ import type {
 } from 'react-hook-form';
 import { FormInput, FormTextarea } from '@/components/ui/form';
 import { IFormField } from '@/types/app';
-import { INPUT_TYPES } from '@/constant/forms';
+import { INPUT_TYPES } from '@/constants/forms';
 import ImageField from './image-field';
 
 interface Props<

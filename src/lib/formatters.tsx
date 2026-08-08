@@ -216,3 +216,22 @@ export function formatTimestamp(
 
   return formatAgo(diffYears, t.years, locale, t);
 }
+
+/** Compact video timestamp for a single clip (e.g. `5:30`). Input in seconds. */
+export function formatVideoTimestamp(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds <= 0) {
+    return '0:00';
+  }
+
+  const total = Math.round(seconds);
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  const secs = total % 60;
+  const pad = (value: number) => value.toString().padStart(2, '0');
+
+  if (hours > 0) {
+    return `${hours}:${pad(minutes)}:${pad(secs)}`;
+  }
+
+  return `${minutes}:${pad(secs)}`;
+}

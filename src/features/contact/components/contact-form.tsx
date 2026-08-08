@@ -11,7 +11,7 @@ import { contactAction } from '../actions/contact.actions';
 import { useState } from 'react';
 import { ContactInput, contactSchema } from '@/validation/contact';
 import FormField from '@/components/shared/form-fields';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 
 export default function ContactForm() {
   const [error, setError] = useState('');

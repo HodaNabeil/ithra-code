@@ -4,7 +4,7 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
-import { APP_LINK_ROLES, APP_ROUTES, APP_USER_ROLES } from '@/constant/enums';
+import { APP_LINK_ROLES, APP_ROUTES, APP_USER_ROLES } from '@/constants/enums';
 import { Link } from '../link';
 
 const NAV_LINKS: { label: string; href: string; role: string }[] = [

@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { env } from '@/config/env';
-import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/constant/auth';
+import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/constants/auth';
 
 /**
  * 🍪 Cookie Manager

@@ -1,4 +1,4 @@
-import { CourseLevel } from '@prisma/client';
+import { CourseLevel } from '@/generated/prisma/enums';
 
 export enum PathCategoryDTO {
   WEB = 'WEB',

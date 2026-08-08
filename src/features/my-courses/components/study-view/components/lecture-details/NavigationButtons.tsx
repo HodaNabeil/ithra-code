@@ -33,7 +33,7 @@ export const NavigationButtons = ({
           variant="default"
           size="icon"
           onClick={() =>
-            router.push(`/my-courses/${slug}/learn/lecture/${prevId}`)
+            router.push(`/my-courses/${slug}/lecture/${prevId}`)
           }
           className="pointer-events-auto h-11 w-11 shadow-2xl disabled:opacity-0 transition-all duration-300"
         >
@@ -52,7 +52,7 @@ export const NavigationButtons = ({
           variant="default"
           size="icon"
           onClick={() =>
-            router.push(`/my-courses/${slug}/learn/lecture/${nextId}`)
+            router.push(`/my-courses/${slug}/lecture/${nextId}`)
           }
           className="pointer-events-auto h-11 w-11 shadow-2xl disabled:opacity-0 transition-all duration-300"
         >

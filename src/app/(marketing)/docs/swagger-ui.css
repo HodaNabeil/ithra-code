@@ -1,0 +1,62 @@
+.api-docs-ltr {
+  color-scheme: light;
+}
+
+.swagger-docs {
+  background: #fff;
+  min-height: 100vh;
+}
+
+/* Classic Swagger UI top bar (standalone preset look) */
+.swagger-docs .swagger-topbar {
+  background-color: #1b1b1b;
+  padding: 8px 30px;
+}
+
+.swagger-docs .swagger-topbar-wrapper {
+  max-width: 1460px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+}
+
+.swagger-docs .swagger-topbar-wrapper img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.api-docs-ltr .swagger-ui {
+  direction: ltr;
+  text-align: left;
+}
+
+.api-docs-ltr .swagger-ui .opblock-summary {
+  flex-direction: row;
+}
+
+.api-docs-ltr .swagger-ui .opblock-summary-method {
+  margin-right: 0.75rem;
+  margin-left: 0;
+}
+
+.api-docs-ltr .swagger-ui table thead tr th,
+.api-docs-ltr .swagger-ui table tbody tr td {
+  text-align: left;
+}
+
+.api-docs-ltr .swagger-ui .parameter__name,
+.api-docs-ltr .swagger-ui .parameter__type,
+.api-docs-ltr .swagger-ui .response-col_status,
+.api-docs-ltr .swagger-ui .response-col_description {
+  text-align: left;
+}
+
+.api-docs-ltr .swagger-ui .info .title,
+.api-docs-ltr .swagger-ui .info .description,
+.api-docs-ltr .swagger-ui .opblock-tag,
+.api-docs-ltr .swagger-ui .opblock-description-wrapper,
+.api-docs-ltr .swagger-ui .opblock-title {
+  text-align: left;
+}

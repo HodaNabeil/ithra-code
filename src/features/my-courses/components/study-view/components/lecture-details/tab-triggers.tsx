@@ -1,9 +1,14 @@
 import React from 'react';
 import { TabsList, TabsTrigger } from '@/components/shared/Tabs';
-export function TabTriggers() {
+
+type TabTriggersProps = {
+  aiTutorEnabled?: boolean;
+};
+
+export function TabTriggers({ aiTutorEnabled = false }: TabTriggersProps) {
   const tabs = [
     { value: 'overview', label: 'نظرة عامة' },
-    { value: 'qna', label: 'الأسئلة والأجوبة', soon: true },
+    { value: 'qna', label: aiTutorEnabled ? 'المدرس الذكي' : 'الأسئلة والأجوبة', soon: !aiTutorEnabled },
     { value: 'notes', label: 'الملاحظات', soon: true },
     { value: 'reviews', label: 'المراجعات', soon: true },
   ];

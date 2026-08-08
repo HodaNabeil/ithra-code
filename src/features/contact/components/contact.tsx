@@ -2,7 +2,7 @@ import { Link } from '@/components/shared/link';
 
 import ContactForm from './contact-form';
 import ContactHeader from './contact-header';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 
 export default function Contact() {
   return (

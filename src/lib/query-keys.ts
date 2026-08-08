@@ -1,3 +1,9 @@
+export const queryKeys = {
+  cart: {
+    detail: () => ['cart', 'detail'] as const,
+  },
+};
+
 export const COURSE_TAGS = {
   course: {
     all: () => ['courses'] as const,

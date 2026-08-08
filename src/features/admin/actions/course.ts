@@ -1,10 +1,13 @@
 'use server';
-import { Prisma } from '@prisma/client';
+import { CourseStatus, Prisma } from '@prisma/client';
 
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+
+import { publishCourseUseCase } from '@/features/courses/use-cases/publish-course.use-case';
+import { defaultPublishCourseUseCaseDeps } from '@/features/courses/wiring/publish-course.wiring';
 
 // 0. الحصول على المسارات (Paths)
 export async function getPaths() {
@@ -59,10 +62,66 @@ export async function updateCourse(
 
   if (!userId) throw new Error('Unauthorized');
 
+  const existing = await prisma.course.findFirst({
+    where: {
+      id: courseId,
+      instructorId: userId,
+    },
+    select: {
+      id: true,
+      slug: true,
+      status: true,
+    },
+  });
+
+  if (!existing) {
+    throw new Error('Unauthorized');
+  }
+
+  const nextStatus =
+    typeof values.status === 'string'
+      ? values.status
+      : values.status?.set;
+
+  if (nextStatus === CourseStatus.PUBLISHED && existing.status !== CourseStatus.PUBLISHED) {
+    const published = await publishCourseUseCase(
+      {
+        idOrSlug: existing.id,
+        user: { id: userId, role: session.user.role },
+      },
+      defaultPublishCourseUseCaseDeps,
+    );
+
+    const {
+      status: _status,
+      publishedAt: _publishedAt,
+      visibility: _visibility,
+      ...remainingValues
+    } = values;
+
+    if (Object.keys(remainingValues).length === 0) {
+      revalidatePath(`/admin/courses/${courseId}`);
+      revalidatePath('/courses');
+      return published;
+    }
+
+    const course = await prisma.course.update({
+      where: {
+        id: courseId,
+        instructorId: userId,
+      },
+      data: remainingValues,
+    });
+
+    revalidatePath(`/admin/courses/${courseId}`);
+    revalidatePath('/courses');
+    return course;
+  }
+
   const course = await prisma.course.update({
     where: {
       id: courseId,
-      instructorId: userId, // ضمان إن الشخص بيعدل الكورس بتاعه بس
+      instructorId: userId,
     },
     data: {
       ...values,

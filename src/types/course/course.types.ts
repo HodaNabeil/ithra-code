@@ -3,8 +3,16 @@ import {
   CourseStatus,
   CourseVisibility,
   Currency,
-} from '@prisma/client';
-import type { CourseListDTO } from './course.dto';
+} from '@/generated/prisma/enums';
+import type { CourseDetailApiDTO } from '@/features/courses/course-detail/dto/course-detail.dto';
+import type { CourseOverviewDTO } from '@/features/courses/course-overview/dto/course-overview.dto';
+import type { CourseDetailDTO, CourseListDTO } from './course.dto';
+
+/** Course detail returned by `getCourseDetail`. */
+export type Course = CourseDetailApiDTO;
+
+/** Overview stats returned by `getCourseOverview`. */
+export type CourseOverview = CourseOverviewDTO;
 
 // ── Shared Options ──────────────────────────────────────────────────
 
@@ -47,6 +55,10 @@ export interface GetCoursesParams extends Record<string, unknown> {
   search?: string;
   page?: number;
   sort?: SortOption;
+  path?: string;
+  level?: CourseLevel;
+  featured?: boolean;
+  /** @deprecated Use `path` (learning path slug) instead. */
   category?: CategoryOption;
 }
 
@@ -57,6 +69,18 @@ export interface GetCoursesResult {
   totalPages: number;
   currentPage: number;
 }
+
+/** Response returned by getCourseBySlug to the page loader. */
+export interface GetCourseBySlugResult {
+  data: {
+    course: CourseDetailDTO;
+  };
+}
+
+export type LoadCourseDetailResult =
+  | { status: 'ok'; course: CourseDetailDTO }
+  | { status: 'not_found' }
+  | { status: 'error'; error: unknown };
 
 /** Props accepted by the public CourseCard component. */
 export type CourseCardProps = {

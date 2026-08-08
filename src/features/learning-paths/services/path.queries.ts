@@ -71,7 +71,7 @@ const getPublicPathsCached = cache(
   },
 );
 
-// ── Public API ──────────────────────────────────────────────────────
+// ── Public API (legacy — prefer @/features/learning-paths/api for reads) ──
 export const getPublicPaths = (params: GetPublicPathsParams = {}) =>
   getPublicPathsCached(params);
 

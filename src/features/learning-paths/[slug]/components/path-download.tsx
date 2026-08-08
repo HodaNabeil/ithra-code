@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Download } from 'lucide-react';
-import { APP_ROUTES } from '@/constant/enums';
+import { APP_ROUTES } from '@/constants/enums';
 
 interface PathDownloadProps {
   slug: string;

@@ -1,56 +1,12 @@
 @import 'tailwindcss';
+@plugin "@tailwindcss/typography";
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sf-arabic: var(--font-sf-arabic);
+  --font-noto-kufi: var(--font-noto-kufi);
   --font-sf-pro: var(--font-sf-pro);
-}
-
-@keyframes mobile-menu-slide-in {
-  from {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* Accordion Animations */
-@keyframes accordion-down {
-  from {
-    height: 0;
-    opacity: 0;
-  }
-
-  to {
-    height: var(--radix-accordion-content-height);
-    opacity: 1;
-  }
-}
-
-@keyframes accordion-up {
-  from {
-    height: var(--radix-accordion-content-height);
-    opacity: 1;
-  }
-
-  to {
-    height: 0;
-    opacity: 0;
-  }
-}
-
-.animate-accordion-down {
-  animation: accordion-down 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.animate-accordion-up {
-  animation: accordion-up 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @theme inline {
@@ -178,6 +134,7 @@
   --color-accent-11: var(--accent-11);
   --color-accent-12: var(--accent-12);
   --color-star: var(--star-color);
+  --color-brand: var(--brand);
   --color-accent-a1: var(--accent-a1);
   --color-accent-a2: var(--accent-a2);
   --color-accent-a3: var(--accent-a3);
@@ -236,15 +193,6 @@
   .shadow-popover-lg {
     box-shadow: var(--shadow-popover-lg);
   }
-
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
 }
 
 :root {
@@ -265,6 +213,7 @@
   --success: hsl(142 76% 36%);
   --success-foreground: hsl(210 20% 98%);
   --star-color: #c4710d;
+  --brand: rgb(0 153 255);
   --border: var(--gray-alpha-150);
   --input: hsl(220 13% 91%);
   --ring: hsl(224 71.4% 4.1%);
@@ -419,7 +368,7 @@
   --blur-2xl: 40px;
   --default-transition-duration: 0.15s;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --default-font-family: var(--font-sf-arabic);
+  --default-font-family: var(--font-noto-kufi);
   --default-mono-font-family: var(--font-mono);
   --default-mono-font-feature-settings: var(--font-mono--font-feature-settings);
   --default-mono-font-variation-settings: var(
@@ -576,7 +525,7 @@
   --sidebar-accent: hsl(240 3.7% 15.9%);
   --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
   --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(0, 0%, 94%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
   --chart-primary-fill: hsl(224 100% 10%);
   --chart-primary-stroke: hsl(224 100% 55%);
   --chart-success-fill: hsl(140 100% 10%);
@@ -650,6 +599,303 @@
   @apply mx-auto px-4 sm:px-6 lg:px-8;
 }
 
+/* ============================================
+   Order Success Page Styles & Animations
+   ============================================ */
+
+@keyframes order-success-scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes order-success-circle-draw {
+  0% {
+    stroke-dashoffset: 166;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes order-success-check-draw {
+  0% {
+    stroke-dashoffset: 50;
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes order-success-ring-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes order-success-fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Order Success Card */
+.order-success-card {
+  @apply flex flex-col items-center text-center max-w-md w-full mx-auto py-16 px-6 gap-6;
+  animation: order-success-fade-up 0.5s var(--ease-shift) both;
+}
+
+/* Icon wrapper */
+.order-success-icon-wrapper {
+  @apply relative flex items-center justify-center w-28 h-28;
+  animation: order-success-scale-in 0.6s var(--ease-shift) both;
+  animation-delay: 0.1s;
+}
+
+/* Pulsing ring behind the circle */
+.order-success-ring {
+  @apply absolute inset-0 rounded-full bg-success/20;
+  animation: order-success-ring-pulse 1.8s ease-out infinite;
+  animation-delay: 0.7s;
+}
+
+/* SVG icon */
+.order-success-svg {
+  @apply w-24 h-24 relative z-10;
+}
+
+/* Animated circle stroke */
+.order-success-circle {
+  stroke: var(--success);
+  stroke-width: 2;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: order-success-circle-draw 0.6s var(--ease-shift) forwards;
+  animation-delay: 0.2s;
+}
+
+/* Animated checkmark stroke */
+.order-success-check {
+  stroke: var(--success);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: order-success-check-draw 0.4s var(--ease-shift) forwards;
+  animation-delay: 0.75s;
+}
+
+/* Title */
+.order-success-title {
+  @apply text-2xl md:text-3xl font-bold text-foreground leading-tight;
+  animation: order-success-fade-up 0.5s var(--ease-shift) both;
+  animation-delay: 0.35s;
+}
+
+/* Description */
+.order-success-description {
+  @apply text-base text-muted-foreground leading-relaxed max-w-sm;
+  animation: order-success-fade-up 0.5s var(--ease-shift) both;
+  animation-delay: 0.5s;
+}
+
+.order-success-transaction {
+  @apply text-sm text-muted-foreground text-center max-w-sm mt-1;
+  animation: order-success-fade-up 0.5s var(--ease-shift) both;
+  animation-delay: 0.575s;
+}
+
+/* Buttons row */
+.order-success-actions {
+  @apply flex flex-col sm:flex-row gap-3 w-full justify-center mt-2;
+  animation: order-success-fade-up 0.5s var(--ease-shift) both;
+  animation-delay: 0.7s;
+}
+
+.order-success-btn-outline {
+  @apply sm:w-auto w-full rounded-lg font-semibold;
+}
+
+.order-success-btn-primary {
+  @apply sm:w-auto w-full rounded-lg font-semibold;
+}
+
+/* Page wrapper — centers content with max-width */
+.order-detail-wrapper {
+  @apply max-w-2xl mx-auto w-full px-4 py-10 flex flex-col gap-6;
+}
+
+/* Back navigation link */
+.order-detail-back-link {
+  @apply text-sm text-muted-foreground hover:text-foreground transition-colors self-start;
+}
+
+/* Main card */
+.order-detail-card {
+  @apply bg-card border border-border rounded-2xl p-6 md:p-8 flex flex-col gap-5 shadow-sm;
+}
+
+/* Card header row */
+.order-detail-header {
+  @apply flex items-start justify-between gap-4 flex-wrap;
+}
+
+.order-detail-title {
+  @apply text-xl md:text-2xl font-bold text-foreground leading-snug;
+}
+
+.order-detail-number {
+  @apply text-sm text-muted-foreground mt-1;
+}
+
+.order-detail-date {
+  @apply text-xs text-muted-foreground mt-0.5;
+}
+
+/* Status badge */
+.order-detail-status-badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold shrink-0;
+}
+
+.order-status-pending {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
+}
+
+.order-status-completed {
+  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+.order-status-failed {
+  @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+}
+
+.order-status-refunded {
+  @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+.order-status-cancelled {
+  @apply bg-gray-100 text-gray-600 dark:bg-gray-800/60 dark:text-gray-400;
+}
+
+/* Horizontal divider */
+.order-detail-divider {
+  @apply border-t border-border;
+}
+
+/* Items list */
+.order-detail-items-list {
+  @apply flex flex-col gap-4;
+}
+
+/* Single item row */
+.order-detail-item {
+  @apply flex items-center gap-4;
+}
+
+/* Thumbnail */
+.order-detail-item-thumb {
+  @apply relative w-16 h-16 rounded-lg overflow-hidden bg-muted shrink-0;
+}
+
+.order-detail-item-thumb-placeholder {
+  @apply w-full h-full bg-muted rounded-lg;
+}
+
+/* Item text */
+.order-detail-item-info {
+  @apply flex-1 min-w-0;
+}
+
+.order-detail-item-title {
+  @apply text-sm font-semibold text-foreground truncate;
+}
+
+.order-detail-item-instructor {
+  @apply text-xs text-muted-foreground mt-0.5 truncate;
+}
+
+/* Item price */
+.order-detail-item-price {
+  @apply text-sm font-medium text-foreground shrink-0;
+}
+
+/* Totals section */
+.order-detail-totals {
+  @apply flex flex-col gap-2;
+}
+
+.order-detail-total-row {
+  @apply flex items-center justify-between gap-2;
+}
+
+.order-detail-total-label {
+  @apply text-sm text-muted-foreground;
+}
+
+.order-detail-total-value {
+  @apply text-sm font-medium text-foreground;
+}
+
+/* Discount row */
+.order-detail-discount-row {
+  @apply text-success;
+}
+
+.order-detail-discount-value {
+  @apply text-success font-semibold;
+}
+
+/* Grand total row */
+.order-detail-grand-total-row {
+  @apply pt-2 border-t border-border mt-1;
+}
+
+.order-detail-grand-total-label {
+  @apply text-base font-bold text-foreground;
+}
+
+.order-detail-grand-total-value {
+  @apply text-base font-bold text-foreground;
+}
+
+/* Payment method note */
+.order-detail-payment-method {
+  @apply text-xs text-muted-foreground text-end;
+}
+
+/* Error state */
+.order-detail-error {
+  @apply flex flex-col items-center gap-6 text-center py-20 text-muted-foreground;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -704,11 +950,6 @@
     @apply cursor-pointer transition-all duration-200 ease-in-out;
   }
 
-  /* Vertical spacing with consistent rhythm */
-  .section-padding {
-    @apply py-8 sm:py-12 md:py-16 lg:py-20 xl:py-24 2xl:py-32;
-  }
-
   /* Brand logo with responsive sizing */
   .logo {
     @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-1.5 font-bold text-foreground;
@@ -717,11 +958,6 @@
   /* Utility: center content */
   .element-center {
     @apply flex items-center justify-center;
-  }
-
-  .section-gap {
-    padding-top: 1.25rem;
-    padding-bottom: 1.25rem;
   }
 
   .dialog-overlay {
@@ -746,4 +982,29 @@
     position: fixed;
     z-index: 40;
   }
+}
+
+/* Vidstack player: fill the sized wrapper from `VideoPlayer` (replaces video.js `fill`). */
+media-player {
+  width: 100%;
+  height: 100%;
+}
+media-player media-provider,
+media-player video {
+  width: 100%;
+  height: 100%;
+}
+media-player video {
+  object-fit: contain;
+}
+
+/* Paymob Pixel embed host — keep block layout; field height comes from SDK styles. */
+[id^='paymob-checkout-embed'] {
+  display: block;
+  width: 100%;
+}
+
+[id^='paymob-checkout-embed'] > * {
+  display: block;
+  width: 100%;
 }

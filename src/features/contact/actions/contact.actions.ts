@@ -1,6 +1,6 @@
 'use server';
 
-import { CONTACT_ENDPOINTS } from '@/constant/contact';
+import { CONTACT_ENDPOINTS } from '@/constants/contact';
 import { http } from '@/lib/http-client';
 import { contactSchema, type ContactInput } from '@/validation/contact';
 

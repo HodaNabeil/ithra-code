@@ -1,4 +1,5 @@
-import type { GetPublicPathsParams } from '@/types/path/path.types';
+import type { PathCatalogQuery } from '@/features/learning-paths/api/dto/path-catalog.dto';
+import { PATHS_PAGE_LIMIT } from '@/features/learning-paths/api/lib/path-catalog-query';
 import { PathCategoryDTO } from '@/types/path/path.dto';
 import type { PathSortOption } from '@/types/path/path.types';
 
@@ -55,12 +56,13 @@ export function parseLearningPathsPageSearchParams(
   };
 }
 
-export function learningPathsPageQueryToGetPublicPathsParams(
+export function learningPathsPageQueryToPathCatalogQuery(
   query: LearningPathsPageQuery,
-): GetPublicPathsParams {
+): PathCatalogQuery {
   return {
     search: query.search,
     page: query.page,
+    limit: PATHS_PAGE_LIMIT,
     sort: query.sort,
     category: query.category,
   };

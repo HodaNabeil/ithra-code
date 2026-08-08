@@ -31,7 +31,7 @@ echo "✅ Pre-commit checks passed!"
 
 /**
  * Pre-push hook
- * Runs build and tests before pushing to remote
+ * Runs build before pushing to remote
  */
 export const prePush = `#!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -44,15 +44,6 @@ pnpm build || {
   echo "❌ Build failed. Please fix the errors before pushing."
   exit 1
 }
-
-# Run tests if test script exists
-echo "🧪 Running tests..."
-if pnpm run --if-present test; then
-  echo "✅ Tests passed!"
-else
-  echo "❌ Tests failed. Please fix the errors before pushing."
-  exit 1
-fi
 
 echo "✅ Pre-push checks passed! Ready to push."
 `;

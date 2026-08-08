@@ -1,94 +1,62 @@
-import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
-
-// ✅ GET all courses
-// The return type is inferred as Course[], but you can be explicit
-// app/api/courses/route.ts
+import { auth } from '@/lib/auth';
+import { apiError, apiSuccess } from '@/lib/api-response';
+import {
+  CourseCreationError,
+  createCourseUseCase,
+} from '@/features/courses/course-creation';
+import { getCourseCatalog } from '@/features/courses/catalog/use-cases/get-course-catalog.use-case';
+import { parseCourseCatalogSearchParams } from '@/features/courses/catalog/lib/catalog-api-query';
 
 export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-
-  // ✅ Pagination
-  const page = Number(searchParams.get('page') || 1);
-  const limit = Number(searchParams.get('limit') || 10);
-
-  // ✅ Search
-  const search = searchParams.get('search') || '';
-
-  // ✅ Price Filter
-  const minPrice = Number(searchParams.get('minPrice') || 0);
-  const maxPrice = Number(searchParams.get('maxPrice') || 100000);
-
-  // ✅ Build where dynamically
-  const where: Prisma.CourseWhereInput = {};
-
-  if (search) {
-    where.title = {
-      contains: search,
-      mode: 'insensitive',
-    };
-  }
-
-  if (minPrice || maxPrice) {
-    where.price = {
-      gte: minPrice,
-      lte: maxPrice,
-    };
-  }
-
-  // ✅ Query + Count
-  const [courses, total] = await Promise.all([
-    prisma.course.findMany({
-      where,
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: { createdAt: 'desc' },
-    }),
-    prisma.course.count({ where }),
-  ]);
-
-  return Response.json({
-    data: courses,
-    pagination: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-  });
-}
-
-// ✅ CREATE course
-export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const session = await auth();
+    const { searchParams } = new URL(req.url);
 
-    // Use Prisma.CourseCreateInput for the incoming data
-    // This type knows which fields are required vs optional based on your schema
-    const { title, description, price, slug, thumbnailUrl, pathId } = body;
-
-    if (!title || !description || !pathId) {
-      return new Response(
-        'Missing fields: title, description, and pathId are required',
-        { status: 400 },
-      );
-    }
-
-    const course = await prisma.course.create({
-      data: {
-        title,
-        description,
-        thumbnailUrl,
-        price: Number(price),
-        slug,
-        instructorId: '1', // This should be dynamic in a real app
-        pathId,
-      },
+    const data = await getCourseCatalog({
+      query: parseCourseCatalogSearchParams({
+        page: searchParams.get('page') ?? undefined,
+        limit: searchParams.get('limit') ?? undefined,
+        search: searchParams.get('search') ?? undefined,
+        sort: searchParams.get('sort') ?? undefined,
+        path: searchParams.get('path') ?? undefined,
+        category: searchParams.get('category') ?? undefined,
+        level: searchParams.get('level') ?? undefined,
+        featured: searchParams.get('featured') ?? undefined,
+      }),
+      viewer: session?.user?.id
+        ? { id: session.user.id, role: session.user.role }
+        : null,
     });
 
-    return Response.json(course);
+    return apiSuccess(data, 'Courses fetched successfully');
   } catch (error) {
-    console.error(error);
-    return new Response('Error creating course', { status: 500 });
+    console.error('[COURSE_CATALOG_ERROR]', error);
+    return apiError('Internal Error', 500);
+  }
+}
+
+export async function POST(req: Request) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return apiError('Unauthorized', 401);
+  }
+
+  try {
+    const body = await req.json();
+    const course = await createCourseUseCase({
+      input: body,
+      userId: session.user.id,
+      userRole: session.user.role,
+    });
+
+    return apiSuccess({ course }, 'Course draft created', 201);
+  } catch (error) {
+    if (error instanceof CourseCreationError) {
+      return apiError(error.message, error.status);
+    }
+
+    console.error('[COURSE_CREATE_ERROR]', error);
+    return apiError('Internal Error', 500);
   }
 }

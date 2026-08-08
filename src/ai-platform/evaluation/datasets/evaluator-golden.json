@@ -1,0 +1,46 @@
+{
+  "name": "evaluator-golden-v1",
+  "agentId": "evaluator",
+  "samples": [
+    {
+      "id": "evaluator-001",
+      "input": "Student implemented recursion correctly with base case.",
+      "retrievedContext": [
+        "Rubric requires base case, recursive step, and readable naming."
+      ],
+      "groundTruth": "Pass with high score for recursion implementation."
+    },
+    {
+      "id": "evaluator-002",
+      "input": "Submission uses var instead of let/const throughout.",
+      "retrievedContext": [
+        "Rubric penalizes var usage when block scope alternatives are expected."
+      ],
+      "groundTruth": "Partial credit with feedback to prefer let/const."
+    },
+    {
+      "id": "evaluator-003",
+      "input": "Student code has no error handling for file I/O.",
+      "retrievedContext": [
+        "Rubric requires try/catch or equivalent error handling for I/O operations."
+      ],
+      "groundTruth": "Needs revision for missing error handling."
+    },
+    {
+      "id": "evaluator-004",
+      "input": "CSS layout matches the responsive design requirements.",
+      "retrievedContext": [
+        "Rubric checks mobile breakpoints, flex/grid usage, and semantic HTML."
+      ],
+      "groundTruth": "Pass with high score for responsive layout."
+    },
+    {
+      "id": "evaluator-005",
+      "input": "API endpoint returns 500 for valid requests.",
+      "retrievedContext": [
+        "Rubric expects correct status codes and input validation for REST endpoints."
+      ],
+      "groundTruth": "Fail until server error is fixed and validation is added."
+    }
+  ]
+}
