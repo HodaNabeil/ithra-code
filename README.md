@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="public/img/logo.png" alt="IthraCode Logo" width="180" />
-</p>
-
 <h1 align="center">IthraCode</h1>
 
 <p align="center">
