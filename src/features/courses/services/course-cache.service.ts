@@ -1,5 +1,6 @@
 import { courseDetailCache } from '@/features/courses/course-detail/cache/course-detail.cache';
 import { courseOverviewCache } from '@/features/courses/course-overview/cache/course-overview.cache';
+import { courseSectionsCache } from '@/features/courses/course-sections/cache/course-sections.cache';
 import { invalidateCourseListCache } from '@/features/courses/course-creation/cache/course-creation.cache';
 
 export const courseCacheService = {
@@ -7,6 +8,7 @@ export const courseCacheService = {
     await Promise.all([
       courseDetailCache.invalidate(slug),
       courseOverviewCache.invalidate(slug),
+      courseSectionsCache.invalidate(slug),
     ]);
   },
 

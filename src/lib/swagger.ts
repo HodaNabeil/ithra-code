@@ -755,6 +755,242 @@ registry.registerPath({
   },
 });
 
+const lectureProgressExample = {
+  isCompleted: true,
+  timeSpent: 120,
+  lastAccessedAt: '2026-06-01T10:00:00.000Z',
+  completedAt: '2026-06-01T10:30:00.000Z',
+};
+
+const LectureProgressSchema = registry.register(
+  'LectureProgress',
+  z.object({
+    isCompleted: z.boolean().openapi({ example: lectureProgressExample.isCompleted }),
+    timeSpent: z.number().int().openapi({ example: lectureProgressExample.timeSpent }),
+    lastAccessedAt: z
+      .string()
+      .nullable()
+      .openapi({ example: lectureProgressExample.lastAccessedAt }),
+    completedAt: z
+      .string()
+      .nullable()
+      .openapi({ example: lectureProgressExample.completedAt }),
+  }),
+);
+
+const videoExample = {
+  id: 'clvideo2k4m00008l5d6e3k1n',
+  bunnyVideoId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  libraryId: '12345',
+  status: 'ready',
+  duration: 600,
+  thumbnailUrl: 'https://example.com/thumb.jpg',
+  hlsUrl:
+    'https://vz-xxxxx.b-cdn.net/a1b2c3d4-e5f6-7890-abcd-ef1234567890/playlist.m3u8?token=abc&expires=1234567890',
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+};
+
+const VideoSchema = registry.register(
+  'CourseSectionVideo',
+  z.object({
+    id: z.string().openapi({ example: videoExample.id }),
+    bunnyVideoId: z.string().openapi({ example: videoExample.bunnyVideoId }),
+    libraryId: z.string().openapi({ example: videoExample.libraryId }),
+    status: z.string().openapi({ example: videoExample.status }),
+    duration: z.number().nullable().openapi({ example: videoExample.duration }),
+    thumbnailUrl: z
+      .string()
+      .nullable()
+      .openapi({ example: videoExample.thumbnailUrl }),
+    hlsUrl: z.string().optional().openapi({ example: videoExample.hlsUrl }),
+    createdAt: z.string().openapi({ example: videoExample.createdAt }),
+    updatedAt: z.string().openapi({ example: videoExample.updatedAt }),
+  }),
+);
+
+const attachmentExample = {
+  id: 'clattach2k4m00008l5d6e3k1n',
+  name: 'slides.pdf',
+  type: 'PDF',
+  url: 'https://example.com/slides.pdf',
+  isDownloadable: true,
+  position: 0,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+};
+
+const AttachmentSchema = registry.register(
+  'CourseSectionAttachment',
+  z.object({
+    id: z.string().openapi({ example: attachmentExample.id }),
+    name: z.string().openapi({ example: attachmentExample.name }),
+    type: z.string().openapi({ example: attachmentExample.type }),
+    url: z.string().openapi({ example: attachmentExample.url }),
+    isDownloadable: z
+      .boolean()
+      .openapi({ example: attachmentExample.isDownloadable }),
+    position: z.number().int().openapi({ example: attachmentExample.position }),
+    createdAt: z.string().openapi({ example: attachmentExample.createdAt }),
+    updatedAt: z.string().openapi({ example: attachmentExample.updatedAt }),
+  }),
+);
+
+const lectureExample = {
+  id: 'cllecture2k4m00008l5d6e3k1n',
+  title: 'Introduction to Node.js',
+  description: 'Overview of Node.js runtime',
+  type: 'VIDEO',
+  videoDuration: 600,
+  position: 1,
+  isPublished: true,
+  isFree: true,
+  video: videoExample,
+  attachments: [attachmentExample],
+  progress: lectureProgressExample,
+};
+
+const LectureSchema = registry.register(
+  'CourseSectionLecture',
+  z.object({
+    id: z.string().openapi({ example: lectureExample.id }),
+    title: z.string().openapi({ example: lectureExample.title }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ example: lectureExample.description }),
+    type: z.string().openapi({ example: lectureExample.type }),
+    videoDuration: z
+      .number()
+      .nullable()
+      .openapi({ example: lectureExample.videoDuration }),
+    position: z.number().int().openapi({ example: lectureExample.position }),
+    isPublished: z.boolean().openapi({ example: lectureExample.isPublished }),
+    isFree: z.boolean().openapi({ example: lectureExample.isFree }),
+    video: VideoSchema.optional().openapi({ example: lectureExample.video }),
+    attachments: z
+      .array(AttachmentSchema)
+      .openapi({ example: lectureExample.attachments }),
+    progress: LectureProgressSchema.nullable()
+      .optional()
+      .openapi({ example: lectureExample.progress }),
+  }),
+);
+
+const sectionStatisticsExample = {
+  totalLectures: 3,
+  totalDuration: 1800,
+  completedLectures: 1,
+};
+
+const SectionStatisticsSchema = registry.register(
+  'SectionStatistics',
+  z.object({
+    totalLectures: z
+      .number()
+      .int()
+      .openapi({ example: sectionStatisticsExample.totalLectures }),
+    totalDuration: z
+      .number()
+      .int()
+      .openapi({ example: sectionStatisticsExample.totalDuration }),
+    completedLectures: z
+      .number()
+      .int()
+      .openapi({ example: sectionStatisticsExample.completedLectures }),
+  }),
+);
+
+const sectionExample = {
+  id: 'clsection2k4m00008l5d6e3k1n',
+  courseId: EX.courseId,
+  title: 'Getting Started',
+  description: 'Introduction section',
+  position: 1,
+  isPublished: true,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+  lectures: [lectureExample],
+  statistics: sectionStatisticsExample,
+};
+
+const SectionWithStatsSchema = registry.register(
+  'SectionWithStats',
+  z.object({
+    id: z.string().openapi({ example: sectionExample.id }),
+    courseId: z.string().openapi({ example: sectionExample.courseId }),
+    title: z.string().openapi({ example: sectionExample.title }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ example: sectionExample.description }),
+    position: z.number().int().openapi({ example: sectionExample.position }),
+    isPublished: z.boolean().openapi({ example: sectionExample.isPublished }),
+    createdAt: z.string().openapi({ example: sectionExample.createdAt }),
+    updatedAt: z.string().openapi({ example: sectionExample.updatedAt }),
+    lectures: z.array(LectureSchema).openapi({ example: sectionExample.lectures }),
+    statistics: SectionStatisticsSchema.openapi({
+      example: sectionExample.statistics,
+    }),
+  }),
+);
+
+const courseSectionsSuccessExample = {
+  success: true,
+  message: 'تم جلب الأقسام بنجاح',
+  data: {
+    sections: [sectionExample],
+    total: 1,
+  },
+};
+
+registry.registerPath({
+  method: 'get',
+  path: '/courses/{idOrSlug}/sections',
+  tags: ['Courses'],
+  summary: 'Get course sections with lectures and progress',
+  description:
+    'Returns ordered course sections with nested lectures, attachments, video metadata, and optional progress for enrolled users. Works with a course ID or slug — e.g. `GET /api/courses/nodejs-complete-guide/sections`. Authentication is optional.',
+  request: {
+    params: idOrSlugParams,
+  },
+  responses: {
+    200: {
+      description: 'Course sections',
+      content: {
+        'application/json': {
+          schema: registerApiSuccess(
+            'CourseSectionsResponse',
+            z.object({
+              sections: z.array(SectionWithStatsSchema),
+              total: z.number().int(),
+            }),
+          ),
+          example: courseSectionsSuccessExample,
+        },
+      },
+    },
+    404: {
+      description: 'Course not found',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+  },
+});
+
 registry.registerPath({
   method: 'get',
   path: '/paths',

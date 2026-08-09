@@ -207,6 +207,16 @@ export const env = createEnv({
     MUX_TOKEN_ID: z.string().describe('Mux Token ID'),
     MUX_TOKEN_SECRET: z.string().describe('Mux Token Secret'),
 
+    // Bunny Stream (optional — signed HLS URLs for course video playback)
+    BUNNY_STREAM_CDN_HOSTNAME: z
+      .string()
+      .optional()
+      .describe('Bunny Stream CDN hostname (e.g. vz-xxxxx.b-cdn.net)'),
+    BUNNY_STREAM_TOKEN_AUTH_KEY: z
+      .string()
+      .optional()
+      .describe('Bunny Stream token authentication security key'),
+
     // Optional cookie domain (production)
     COOKIE_DOMAIN: z
       .string()
@@ -497,6 +507,8 @@ export const env = createEnv({
     REDIS_URL: process.env.REDIS_URL,
     MUX_TOKEN_ID: process.env.MUX_TOKEN_ID,
     MUX_TOKEN_SECRET: process.env.MUX_TOKEN_SECRET,
+    BUNNY_STREAM_CDN_HOSTNAME: process.env.BUNNY_STREAM_CDN_HOSTNAME,
+    BUNNY_STREAM_TOKEN_AUTH_KEY: process.env.BUNNY_STREAM_TOKEN_AUTH_KEY,
     COOKIE_DOMAIN: process.env.COOKIE_DOMAIN,
     DIRECT_URL: process.env.DIRECT_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
