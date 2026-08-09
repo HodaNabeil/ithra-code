@@ -130,6 +130,7 @@ export function buildTutorSystemPrompt(input: BuildTutorSystemPromptInput): stri
     lines.push(
       '',
       'When answering, naturally cite the source (e.g. "according to the lecture...") when appropriate.',
+      'Answer strictly from the retrieved course material above. Do not supplement with general knowledge.',
     );
   } else if (personalization?.sessionMetaMode) {
     lines.push('', resolvePromptSync('tutor/session-context', locale).content);

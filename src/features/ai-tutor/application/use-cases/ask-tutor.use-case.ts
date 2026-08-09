@@ -36,6 +36,12 @@ export type AskTutorRequestOutcome = {
   usedFallback: boolean;
   filterTriggered: boolean;
   assessmentBlocked: boolean;
+  groundingBlocked: boolean;
+  grounded: boolean;
+  groundingReason?:
+    | 'SUFFICIENT_CONTEXT'
+    | 'INSUFFICIENT_CONTEXT'
+    | 'LOW_RELEVANCE';
   retrievalChunkCount: number;
 };
 
@@ -88,6 +94,24 @@ function mapRunMetadataToOutcome(
 
   if (metadata.filterTriggered === true) {
     outcome.filterTriggered = true;
+  }
+
+  if (metadata.groundingBlocked === true) {
+    outcome.groundingBlocked = true;
+    outcome.grounded = false;
+    outcome.usedFallback = true;
+  }
+
+  if (typeof metadata.grounded === 'boolean') {
+    outcome.grounded = metadata.grounded;
+  }
+
+  if (
+    metadata.groundingReason === 'SUFFICIENT_CONTEXT' ||
+    metadata.groundingReason === 'INSUFFICIENT_CONTEXT' ||
+    metadata.groundingReason === 'LOW_RELEVANCE'
+  ) {
+    outcome.groundingReason = metadata.groundingReason;
   }
 }
 
@@ -309,6 +333,8 @@ export async function* askTutorUseCase(
     usedFallback: false,
     filterTriggered: false,
     assessmentBlocked: false,
+    groundingBlocked: false,
+    grounded: true,
     retrievalChunkCount: 0,
   };
 

@@ -3,6 +3,10 @@ import { END, START, StateGraph } from '@langchain/langgraph';
 import { wrapGraphNode } from '../../observability/opentelemetry/span-helpers';
 import { enrichResponseNode } from '../nodes/enrich-response.node';
 import { generateResponseNode } from '../nodes/generate-response.node';
+import {
+  groundingCheckNode,
+  routeAfterGroundingCheck,
+} from '../nodes/grounding-check.node';
 import { integrityCheckNode, routeAfterIntegrityCheck } from '../nodes/integrity-check.node';
 import { loadHistoryNode } from '../nodes/load-history.node';
 import { prepareHistoryNode } from '../nodes/prepare-history.node';
@@ -38,6 +42,7 @@ export function buildTutorGraph() {
     .addNode('load-history', wrapGraphNode('load-history', loadHistoryNode))
     .addNode('integrity-check', wrapGraphNode('integrity-check', integrityCheckNode))
     .addNode('retrieve-context', wrapGraphNode('retrieve-context', retrieveContextNode))
+    .addNode('grounding-check', wrapGraphNode('grounding-check', groundingCheckNode))
     .addNode('prepare-history', wrapGraphNode('prepare-history', prepareHistoryNode))
     .addNode('generate-response', wrapGraphNode('generate-response', generateResponseNode))
     .addNode('tool-call', wrapGraphNode('tool-call', toolCallNode as never))
@@ -51,7 +56,11 @@ export function buildTutorGraph() {
       'retrieve-context': 'retrieve-context',
       'validate-output': 'validate-output',
     })
-    .addEdge('retrieve-context', 'prepare-history')
+    .addEdge('retrieve-context', 'grounding-check')
+    .addConditionalEdges('grounding-check', routeAfterGroundingCheck, {
+      'prepare-history': 'prepare-history',
+      'validate-output': 'validate-output',
+    })
     .addEdge('prepare-history', 'generate-response')
     .addConditionalEdges('generate-response', routeAfterGenerate, {
       'tool-call': 'tool-call',

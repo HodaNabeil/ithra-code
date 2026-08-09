@@ -5,7 +5,7 @@ import {
   setWorkingMemory,
 } from '../../memory/short-term/working-memory.cache';
 import { retrieveRelevantContent } from '../../rag/retrieval/content-retriever.service';
-import type { RetrievedContentChunk } from '../../rag/retrieval/types';
+import type { RetrievedContentChunk, RetrievalStrategy } from '../../rag/retrieval/types';
 import { isAssessmentAdjacent } from '../../prompts/tutor-system-prompt.builder';
 import { getGraphRuntimeConfig } from '../runtime-config';
 import type { RetrievedChunkState, TutorAgentState } from '../state/tutor-agent.state';
@@ -15,6 +15,7 @@ const WORKING_MEMORY_SCOPE = 'retrieval';
 interface CachedRetrieval {
   chunks: RetrievedChunkState[];
   usedFallback: boolean;
+  retrievalStrategy?: RetrievalStrategy;
 }
 
 function toRetrievedChunkState(chunk: RetrievedContentChunk): RetrievedChunkState {
@@ -56,11 +57,13 @@ export async function retrieveContextNode(
 
   let retrievedChunks: RetrievedChunkState[];
   let usedFallback: boolean;
+  let retrievalStrategy: RetrievalStrategy = 'none';
   let embeddingTokensUsed = 0;
 
   if (cached) {
     retrievedChunks = cached.chunks;
     usedFallback = cached.usedFallback;
+    retrievalStrategy = cached.retrievalStrategy ?? 'none';
   } else {
     const result = await retrieveRelevantContent(
       {
@@ -90,12 +93,14 @@ export async function retrieveContextNode(
 
     retrievedChunks = result.chunks.map(toRetrievedChunkState);
     usedFallback = result.usedFallback;
+    retrievalStrategy = result.retrievalStrategy;
     embeddingTokensUsed = result.embeddingTokensUsed;
 
     if (runtime.runId) {
       await setWorkingMemory(runtime.runId, WORKING_MEMORY_SCOPE, {
         chunks: retrievedChunks,
         usedFallback,
+        retrievalStrategy,
       } satisfies CachedRetrieval);
     }
   }
@@ -107,6 +112,13 @@ export async function retrieveContextNode(
   const stateUpdate: Partial<TutorAgentState> = {
     retrievedChunks,
     embeddingTokensUsed,
+    retrievalStrategy,
+    runSignals: {
+      ...state.runSignals,
+      usedFallback,
+      retrievalStrategy,
+      retrievalChunkCount: retrievedChunks.length,
+    },
   };
 
   if (isAssessmentAdjacent(retrievedChunks)) {

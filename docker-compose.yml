@@ -1,7 +1,21 @@
 services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ithracode
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
   redis:
     image: redis:latest
     ports:
       - '6380:6379'
-
     restart: always
+
+volumes:
+  postgres_data:

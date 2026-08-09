@@ -121,6 +121,10 @@ export function extractRunMetadata(
     metadata.assessmentBlocked = true;
   }
 
+  if ('groundingBlocked' in state && state.groundingBlocked === true) {
+    metadata.groundingBlocked = true;
+  }
+
   if (
     'validationErrors' in state &&
     Array.isArray(state.validationErrors) &&

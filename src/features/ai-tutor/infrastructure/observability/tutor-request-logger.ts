@@ -9,6 +9,9 @@ export type TutorRequestLogContext = {
   usedFallback?: boolean;
   filterTriggered?: boolean;
   assessmentBlocked?: boolean;
+  groundingBlocked?: boolean;
+  grounded?: boolean;
+  groundingReason?: string;
   retrievalChunkCount?: number;
   errorCode?: string;
 };

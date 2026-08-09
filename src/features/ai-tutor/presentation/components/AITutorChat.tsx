@@ -100,7 +100,7 @@ export function AITutorChat({
         <div
           aria-live="polite"
           aria-atomic="false"
-          className={cn('space-y-4', isSidebar ? 'px-3 py-3' : 'px-5 py-4')}
+          className={cn('space-y-3', isSidebar ? 'px-3 py-3' : 'px-5 py-4')}
         >
           {isLoadingHistory ? (
             <LoadingState />
@@ -301,21 +301,26 @@ function MessageBubble({
   isStreaming: boolean;
   compact?: boolean;
 }) {
-  const { role, content, sources } = message;
+  const { role, content, sources, status } = message;
   const isUser = role === 'user';
+  const hasContent = content.trim().length > 0;
+
+  if (!isUser && !hasContent && !isStreaming) {
+    return null;
+  }
 
   return (
     <div
       className={cn(
         'flex w-full',
-        isUser ? 'justify-start' : 'justify-end',
+        isUser ? 'justify-end' : 'justify-start',
       )}
     >
       <div
         className={cn(
           'flex gap-2.5',
-          isUser ? 'max-w-[78%] flex-row' : 'max-w-[92%] flex-row-reverse',
-          compact && (isUser ? 'max-w-[85%]' : 'max-w-full'),
+          isUser ? 'max-w-[85%] flex-row-reverse' : 'max-w-[92%] flex-row',
+          compact && (isUser ? 'max-w-[90%]' : 'max-w-full'),
         )}
       >
         <div
@@ -334,11 +339,13 @@ function MessageBubble({
             className={cn(
               'min-w-0 rounded-2xl px-3.5 py-2.5 shadow-sm',
               isUser
-                ? 'rounded-tr-md bg-primary text-primary-foreground'
-                : 'rounded-tl-md border border-border/50 bg-muted/40 text-foreground',
+                ? 'rounded-bl-md bg-primary text-primary-foreground'
+                : 'rounded-br-md border border-border/50 bg-muted/40 text-foreground',
+              status === 'failed' &&
+                'border-destructive/30 bg-destructive/5 text-destructive',
             )}
           >
-            {content ? (
+            {hasContent ? (
               isUser ? (
                 <p className="whitespace-pre-wrap text-sm leading-7">{content}</p>
               ) : (

@@ -173,6 +173,7 @@ function buildTutorState(
     retrievedChunks: [],
     sanitizedInput: '',
     assessmentBlocked: false,
+    groundingBlocked: false,
     executionPolicy: 'LIVE',
     finalResponse: '',
     outputValid: false,

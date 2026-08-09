@@ -104,6 +104,9 @@ export async function handleAskTutorRequest(request: Request): Promise<Response>
         usedFallback: result?.outcome.usedFallback,
         filterTriggered: result?.outcome.filterTriggered,
         assessmentBlocked: result?.outcome.assessmentBlocked,
+        groundingBlocked: result?.outcome.groundingBlocked,
+        grounded: result?.outcome.grounded,
+        groundingReason: result?.outcome.groundingReason,
         retrievalChunkCount: result?.outcome.retrievalChunkCount,
       });
     } catch (error) {

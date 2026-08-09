@@ -25,6 +25,7 @@
     "db:studio": "npx prisma studio",
     "worker:order-completed": "tsx src/server/workers/order-completed.worker.ts",
     "worker:course-indexing": "tsx src/server/workers/course-indexing.worker.ts",
+    "index:course": "tsx scripts/index-course.ts",
     "worker:ai-cost-aggregation": "tsx src/server/workers/ai-cost-aggregation.worker.ts",
     "payment:e2e": "tsx scripts/payment/e2e.ts",
     "payment:webhook-smoke": "tsx scripts/payment/paymob-webhook-smoke.ts",
