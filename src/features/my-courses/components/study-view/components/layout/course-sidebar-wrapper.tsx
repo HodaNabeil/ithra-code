@@ -12,12 +12,14 @@ import { CourseSidebarContent } from './course-sidebar-content';
 
 interface CourseSidebarWrapperProps {
   courseSlug: string;
+  aiTutorEnabled?: boolean;
   setSidebarOpen: (open: boolean) => void;
   toggleMaximized: () => void;
 }
 
 export const CourseSidebarWrapper: React.FC<CourseSidebarWrapperProps> = ({
   courseSlug,
+  aiTutorEnabled = false,
   setSidebarOpen,
   toggleMaximized,
 }) => {
@@ -39,6 +41,7 @@ export const CourseSidebarWrapper: React.FC<CourseSidebarWrapperProps> = ({
       >
         <CourseSidebarContent
           courseSlug={courseSlug}
+          aiTutorEnabled={aiTutorEnabled}
           onClose={() => setSidebarOpen(false)}
           onMaximize={() => toggleMaximized()}
           isMaximized={isMaximized}

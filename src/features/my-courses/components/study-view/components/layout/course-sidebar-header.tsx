@@ -18,7 +18,7 @@ export const CourseSidebarHeader: React.FC<CourseSidebarHeaderProps> = ({
   isMaximized,
 }) => {
   return (
-    <div className="flex min-w-0 items-center justify-between border-b border-border/50 bg-sidebar/50 px-2 pt-2">
+    <div className="relative z-10 flex min-w-0 shrink-0 items-center justify-between border-b border-border/50 bg-sidebar/50 px-2 pt-2">
       <TabsList
         variant="line"
         className="h-11 min-w-0 flex-1 gap-0.5 bg-transparent"

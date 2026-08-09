@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Tabs, TabsContent } from '@/components/shared/Tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AITutorChat } from '@/features/ai-tutor/presentation/components/AITutorChat';
@@ -11,6 +11,7 @@ import { CourseSidebarAssistant } from './course-sidebar-assistant';
 
 interface CourseSidebarContentProps {
   courseSlug: string;
+  aiTutorEnabled?: boolean;
   onClose?: () => void;
   onMaximize?: () => void;
   isMaximized?: boolean;
@@ -18,17 +19,19 @@ interface CourseSidebarContentProps {
 
 export const CourseSidebarContent: React.FC<CourseSidebarContentProps> = ({
   courseSlug,
+  aiTutorEnabled = false,
   onClose,
   onMaximize,
   isMaximized,
 }) => {
-  const aiTutorEnabled = useCourseLearningLayoutStore((s) => s.aiTutorEnabled);
+  const [activeTab, setActiveTab] = useState('content');
   const currentLecture = useCourseLearningLayoutStore((s) => s.currentLecture);
 
   return (
     <Tabs
-      defaultValue="content"
-      className="flex flex-col h-full bg-sidebar border-l border-border/50"
+      value={activeTab}
+      onValueChange={setActiveTab}
+      className="flex h-full flex-col gap-0 bg-sidebar border-l border-border/50"
       dir="rtl"
     >
       <CourseSidebarHeader
@@ -37,33 +40,34 @@ export const CourseSidebarContent: React.FC<CourseSidebarContentProps> = ({
         isMaximized={isMaximized}
       />
 
-      {/* Sidebar Content Area */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        {/* Content Tab */}
-        <TabsContent value="content" className="m-0 flex h-full min-h-0 flex-col">
-          <ScrollArea className="flex-1">
-            <SectionAccordion courseSlug={courseSlug} />
-          </ScrollArea>
-        </TabsContent>
+      <TabsContent
+        value="content"
+        className="m-0 flex min-h-0 flex-1 flex-col data-[state=inactive]:hidden"
+      >
+        <ScrollArea className="min-h-0 flex-1">
+          <SectionAccordion courseSlug={courseSlug} />
+        </ScrollArea>
+      </TabsContent>
 
-        {/* AI Assistant Tab */}
-        <TabsContent value="assistant" className="m-0 flex h-full min-h-0 flex-col overflow-hidden">
-          {aiTutorEnabled && currentLecture ? (
-            <AITutorChat
-              variant="sidebar"
-              courseSlug={courseSlug}
-              lectureId={currentLecture.lectureId}
-              lectureTitle={currentLecture.lectureTitle}
-              courseTitle={currentLecture.courseTitle}
-            />
-          ) : (
-            <CourseSidebarAssistant
-              aiTutorEnabled={aiTutorEnabled}
-              hasLectureContext={Boolean(currentLecture)}
-            />
-          )}
-        </TabsContent>
-      </div>
+      <TabsContent
+        value="assistant"
+        className="m-0 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
+      >
+        {aiTutorEnabled && currentLecture ? (
+          <AITutorChat
+            variant="sidebar"
+            courseSlug={courseSlug}
+            lectureId={currentLecture.lectureId}
+            lectureTitle={currentLecture.lectureTitle}
+            courseTitle={currentLecture.courseTitle}
+          />
+        ) : (
+          <CourseSidebarAssistant
+            aiTutorEnabled={aiTutorEnabled}
+            hasLectureContext={Boolean(currentLecture)}
+          />
+        )}
+      </TabsContent>
     </Tabs>
   );
 };

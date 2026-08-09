@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 
 import { CourseMainContainer } from './course-main-container';
 import { CourseSidebarWrapper } from './course-sidebar-wrapper';
@@ -29,7 +29,7 @@ export const CourseContentLayoutBody: React.FC<
     ensureCourse(courseSlug);
   }, [courseSlug, ensureCourse]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setAiTutorEnabled(aiTutorEnabled);
   }, [aiTutorEnabled, setAiTutorEnabled]);
 
@@ -46,6 +46,7 @@ export const CourseContentLayoutBody: React.FC<
       {/* Sidebar Area */}
       <CourseSidebarWrapper
         courseSlug={courseSlug}
+        aiTutorEnabled={aiTutorEnabled}
         setSidebarOpen={setSidebarOpen}
         toggleMaximized={toggleMaximized}
       />

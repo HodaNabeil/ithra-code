@@ -19,6 +19,12 @@
   background: transparent;
   color: var(--foreground);
   width: 100%;
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .ai-tutor-chatscope .cs-chat-container,
@@ -26,6 +32,19 @@
 .ai-tutor-chatscope .cs-message-list__scroll-wrapper {
   background: transparent;
   width: 100%;
+}
+
+.ai-tutor-chatscope .cs-chat-container {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ai-tutor-chatscope .cs-message-list {
+  flex: 1;
+  min-height: 0;
 }
 
 .ai-tutor-chatscope .cs-message-list__scroll-wrapper {
@@ -225,9 +244,15 @@
   display: flex;
   align-items: flex-end;
   gap: 0.5rem;
+  flex-shrink: 0;
   border-top: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
   background: color-mix(in oklch, var(--background) 80%, transparent);
   backdrop-filter: blur(8px);
+}
+
+.ai-tutor-chatscope .cs-chat-container > .cs-message-input,
+.ai-tutor-chatscope .cs-chat-container > .ai-tutor-input-row {
+  flex-shrink: 0;
 }
 
 .ai-tutor-chatscope.is-sidebar .ai-tutor-input-row {
