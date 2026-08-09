@@ -64,16 +64,15 @@ export function SectionAccordion({ courseSlug }: SectionAccordionProps) {
           <AccordionItem
             key={section.id}
             value={section.id}
-            className="border-b border-border/10 last:border-0 overflow-hidden"
+            className="border-b border-border/30 last:border-0 overflow-hidden"
             dir="rtl"
           >
             <AccordionTrigger
-              className="px-4 py-5 hover:bg-muted/10 hover:no-underline
-           transition-all **:data-[slot=accordion-trigger-icon]:text-primary/70"
+              className="px-4 py-4 hover:bg-muted/20 hover:no-underline transition-colors **:data-[slot=accordion-trigger-icon]:text-sidebar-primary/70"
             >
               <span className="flex flex-col items-start gap-1 text-start">
                 <span className="text-sm font-bold flex items-center gap-1.5">
-                  <span className="text-primary whitespace-nowrap">
+                  <span className="text-sidebar-primary whitespace-nowrap">
                     القسم {section.position}:
                   </span>
                   <span className="text-foreground/90 font-medium">

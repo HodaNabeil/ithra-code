@@ -58,5 +58,5 @@ export function getAsideWidthClass(
 }
 
 export function getSidebarInnerWidthClass(isMaximized: boolean): string {
-  return isMaximized ? 'w-full' : SIDEBAR_WIDTH_CLASS;
+  return isMaximized ? 'w-full min-w-0' : 'w-full min-w-0 max-w-[415px]';
 }

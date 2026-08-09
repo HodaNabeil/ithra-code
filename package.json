@@ -38,6 +38,8 @@
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^8.5.0",
     "@auth/prisma-adapter": "^2.11.1",
+    "@chatscope/chat-ui-kit-react": "^2.1.1",
+    "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@hookform/resolvers": "^5.2.2",
     "@langchain/core": "^1.2.4",
     "@langchain/langgraph": "^1.4.9",
@@ -121,6 +123,7 @@
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^3.2.4",
     "babel-plugin-react-compiler": "1.0.0",
     "dotenv": "^17.4.0",
     "eslint": "^9",
@@ -130,15 +133,14 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
     "husky": "^9.1.7",
+    "ioredis-mock": "^8.9.0",
     "prettier": "^3.8.1",
     "prisma": "^7.6.0",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5",
     "typescript-eslint": "^8.57.2",
-    "vitest": "^3.2.4",
-    "@vitest/coverage-v8": "^3.2.4",
-    "ioredis-mock": "^8.9.0"
+    "vitest": "^3.2.4"
   },
   "pnpm": {
     "overrides": {

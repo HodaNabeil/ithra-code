@@ -24,12 +24,14 @@ export function QnAPanel({
 }: QnAPanelProps) {
   if (aiTutorEnabled && courseSlug) {
     return (
-      <AITutorChat
-        courseSlug={courseSlug}
-        lectureId={lectureId}
-        lectureTitle={lectureTitle}
-        courseTitle={courseTitle}
-      />
+      <div className="w-full min-w-0">
+        <AITutorChat
+          courseSlug={courseSlug}
+          lectureId={lectureId}
+          lectureTitle={lectureTitle}
+          courseTitle={courseTitle}
+        />
+      </div>
     );
   }
 

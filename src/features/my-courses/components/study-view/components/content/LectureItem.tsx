@@ -43,7 +43,7 @@ export const LectureItem: React.FC<LectureItemProps> = ({
       dir="rtl"
       className={cn(
         'group flex flex-col gap-2 p-3 px-4 transition-all duration-200 cursor-pointer',
-        isActive ? 'bg-primary/5' : 'hover:bg-muted/30',
+        isActive ? 'bg-sidebar-primary/8 ring-1 ring-inset ring-sidebar-primary/10' : 'hover:bg-muted/25',
       )}
       onClick={handleSelect}
     >

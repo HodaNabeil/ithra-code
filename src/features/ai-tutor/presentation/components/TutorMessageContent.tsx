@@ -14,7 +14,11 @@ function formatInline(text: string): React.ReactNode[] {
 
   return parts.map((part, index) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={index}>{part.slice(2, -2)}</strong>;
+      return (
+        <strong key={index} className="font-semibold text-foreground">
+          {part.slice(2, -2)}
+        </strong>
+      );
     }
 
     if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
@@ -64,19 +68,21 @@ export function TutorMessageContent({
             <ListTag
               key={blockIndex}
               className={cn(
-                'space-y-1.5 ps-5',
+                'space-y-1.5 ps-5 marker:text-muted-foreground',
                 isOrdered ? 'list-decimal' : 'list-disc',
               )}
             >
               {lines.map((line, lineIndex) => (
-                <li key={lineIndex}>{formatInline(stripListMarker(line))}</li>
+                <li key={lineIndex} className="text-foreground/90">
+                  {formatInline(stripListMarker(line))}
+                </li>
               ))}
             </ListTag>
           );
         }
 
         return (
-          <p key={blockIndex}>
+          <p key={blockIndex} className="text-foreground/90">
             {lines.map((line, lineIndex) => (
               <React.Fragment key={lineIndex}>
                 {lineIndex > 0 ? <br /> : null}
