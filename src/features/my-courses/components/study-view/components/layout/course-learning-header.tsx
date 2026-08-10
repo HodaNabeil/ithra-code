@@ -16,11 +16,11 @@ export function CourseLearningHeader({
   totalCount,
 }: CourseLearningHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/8 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
+      <div className="container flex h-14 items-center justify-between gap-4 sm:h-16">
         {/* Right Section: Logo and Course Title */}
         <div className="flex items-center gap-4">
-          <Logo className=" h-13 w-auto" />
+          <Logo className="h-8 w-auto sm:h-9" />
           <h1 className="text-sm text-primary font-bold truncate max-w-[400px]">
             {courseTitle}
           </h1>
