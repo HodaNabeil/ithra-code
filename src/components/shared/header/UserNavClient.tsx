@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { signOut } from 'next-auth/react'; // Or your custom signout logic
 import Link from 'next/link';
 
@@ -33,10 +33,6 @@ export function UserNavClient({ user }: UserNavClientProps) {
     <DropdownMenu dir="rtl">
       <DropdownMenuTrigger className="outline-none focus:ring-0">
         <Avatar className="h-9 w-9 cursor-pointer border border-border hover:border-primary/50 transition-all duration-300 shadow-md">
-          <AvatarImage
-            src={user.image ?? undefined}
-            alt={user.name || 'User'}
-          />
           <AvatarFallback className="bg-muted text-foreground">
             {initials}
           </AvatarFallback>

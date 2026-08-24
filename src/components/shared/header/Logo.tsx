@@ -11,7 +11,7 @@ export function Logo({ className }: LogoProps) {
   return (
     <Link href={APP_ROUTES.ROOT}>
       <Image
-        src="/img/ithracode-logo.png"
+        src="/img/logo.png"
         alt="ithracode"
         width={1260}
         height={1260}
