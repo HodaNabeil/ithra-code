@@ -39,13 +39,16 @@ const mockRepository: CourseSectionsRepository = {
   findProgressByEnrollment: vi.fn(),
 };
 
-vi.mock('@/features/courses/course-sections/cache/course-sections.cache', () => ({
-  courseSectionsCache: {
-    get: vi.fn().mockResolvedValue(null),
-    set: vi.fn().mockResolvedValue(undefined),
-    invalidate: vi.fn().mockResolvedValue(undefined),
-  },
-}));
+vi.mock(
+  '@/features/courses/course-sections/cache/course-sections.cache',
+  () => ({
+    courseSectionsCache: {
+      get: vi.fn().mockResolvedValue(null),
+      set: vi.fn().mockResolvedValue(undefined),
+      invalidate: vi.fn().mockResolvedValue(undefined),
+    },
+  }),
+);
 
 vi.mock('@/lib/bunny-stream', () => ({
   signBunnyHlsUrl: vi.fn(() => null),
@@ -54,7 +57,9 @@ vi.mock('@/lib/bunny-stream', () => ({
 describe('getCourseSections use-case', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(mockRepository.findCourseIdentity).mockResolvedValue(courseIdentity);
+    vi.mocked(mockRepository.findCourseIdentity).mockResolvedValue(
+      courseIdentity,
+    );
     vi.mocked(mockRepository.findSectionsWithLectures).mockResolvedValue(
       courseWithSections,
     );
@@ -79,7 +84,10 @@ describe('getCourseSections use-case', () => {
     vi.mocked(mockRepository.findCourseIdentity).mockResolvedValue(null);
 
     await expect(
-      getCourseSections({ idOrSlug: 'missing-course', user: null }, mockRepository),
+      getCourseSections(
+        { idOrSlug: 'missing-course', user: null },
+        mockRepository,
+      ),
     ).rejects.toMatchObject({
       status: 404,
       message: expect.stringContaining('missing-course'),

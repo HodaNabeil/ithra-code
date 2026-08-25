@@ -54,7 +54,8 @@ export async function enrichDatasetWithAgentOutput(
 ): Promise<AgentEvalEnrichmentResult> {
   const platformEnabled = process.env.AI_PLATFORM_ENABLED === 'true';
   const hasApiKey = Boolean(process.env.OPENAI_API_KEY);
-  const agentInvoked = platformEnabled && hasApiKey && dataset.agentId === 'tutor';
+  const agentInvoked =
+    platformEnabled && hasApiKey && dataset.agentId === 'tutor';
 
   const answersBySampleId: Record<string, string> = {};
   const enrichedSamples: EvalSample[] = [];

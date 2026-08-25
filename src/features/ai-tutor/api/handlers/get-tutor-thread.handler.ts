@@ -2,9 +2,7 @@ import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
 
 import { getTutorThreadInputSchema } from '../../application/dto/tutor-thread.dto';
-import {
-  AskTutorError,
-} from '../../application/errors/ask-tutor.errors';
+import { AskTutorError } from '../../application/errors/ask-tutor.errors';
 import { AITutorConfig } from '../../infrastructure/config/ai-tutor.config';
 import {
   getTutorThreadMessagesUseCase,

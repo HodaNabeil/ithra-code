@@ -18,7 +18,9 @@ export async function GET() {
       active: isOtelActive(),
       serviceName: otelConfig.serviceName,
       metricsPort: otelConfig.enabled ? otelConfig.metricsPort : null,
-      otlpEndpoint: otelConfig.enabled ? otelConfig.otlpEndpoint ?? null : null,
+      otlpEndpoint: otelConfig.enabled
+        ? (otelConfig.otlpEndpoint ?? null)
+        : null,
       tracesSampler: otelConfig.tracesSampler,
       tracesSamplerRatio: otelConfig.tracesSamplerRatio,
     },

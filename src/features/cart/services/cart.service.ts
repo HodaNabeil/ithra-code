@@ -53,7 +53,10 @@ async function reconcileCart(
 
   const refreshedCart = await repository.findByUserId(userId);
   if (!refreshedCart || refreshedCart.items.length === 0) {
-    if (refreshedCart && (refreshedCart.couponId || staleCourseIds.length > 0)) {
+    if (
+      refreshedCart &&
+      (refreshedCart.couponId || staleCourseIds.length > 0)
+    ) {
       await repository.updateTotals(refreshedCart.id, {
         subtotal: 0,
         discount: 0,

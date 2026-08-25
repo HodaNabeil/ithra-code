@@ -1,6 +1,9 @@
 import type { EmbeddingPort } from '../domain/ports/embedding.port';
 import { EmbeddingError } from '../domain/ports/embedding.port';
-import { IndexingError, IndexingErrorCodes } from '../application/errors/indexing.error';
+import {
+  IndexingError,
+  IndexingErrorCodes,
+} from '../application/errors/indexing.error';
 import { AI_PLATFORM_CONSTANTS } from '../shared/constants';
 import { withSpan } from '../observability/opentelemetry/span-helpers';
 
@@ -31,7 +34,6 @@ async function embedRecordsInner<T extends EmbeddableRecord>(
   records: T[],
   embeddingPort: EmbeddingPort,
 ): Promise<IndexedRecord<T>[]> {
-
   const indexed: IndexedRecord<T>[] = [];
   const batchSize = AI_PLATFORM_CONSTANTS.EMBEDDING_BATCH_SIZE;
 
@@ -73,7 +75,11 @@ async function embedRecordsInner<T extends EmbeddableRecord>(
       }
 
       if (error instanceof EmbeddingError) {
-        throw new IndexingError(502, error.message, IndexingErrorCodes.EMBEDDING_FAILED);
+        throw new IndexingError(
+          502,
+          error.message,
+          IndexingErrorCodes.EMBEDDING_FAILED,
+        );
       }
 
       throw new IndexingError(

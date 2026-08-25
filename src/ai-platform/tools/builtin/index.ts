@@ -3,10 +3,7 @@ import {
   calculatorToolDefinition,
   calculatorToolHandler,
 } from './calculator.tool';
-import {
-  searchToolDefinition,
-  searchToolHandler,
-} from './search.tool';
+import { searchToolDefinition, searchToolHandler } from './search.tool';
 
 export function registerBuiltinTools(): void {
   registerTool(searchToolDefinition, searchToolHandler);

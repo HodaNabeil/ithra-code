@@ -73,14 +73,18 @@
 }
 
 .ai-tutor-chatscope .cs-message-list .cs-message.cs-message--incoming,
-.ai-tutor-chatscope .cs-message-list .cs-message-group.cs-message-group--incoming,
+.ai-tutor-chatscope
+  .cs-message-list
+  .cs-message-group.cs-message-group--incoming,
 .ai-tutor-chatscope .cs-message--incoming {
   margin-right: 0 !important;
   margin-left: 0 !important;
 }
 
 .ai-tutor-chatscope .cs-message-list .cs-message.cs-message--outgoing,
-.ai-tutor-chatscope .cs-message-list .cs-message-group.cs-message-group--outgoing,
+.ai-tutor-chatscope
+  .cs-message-list
+  .cs-message-group.cs-message-group--outgoing,
 .ai-tutor-chatscope .cs-message--outgoing {
   margin-left: 0 !important;
   margin-right: 0 !important;
@@ -205,12 +209,15 @@
   border-radius: 0.75rem;
   border: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
   background: var(--background);
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 }
 
 .ai-tutor-chatscope .cs-message-input__content-editor-wrapper:focus-within {
   border-color: color-mix(in oklch, var(--sidebar-primary) 50%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--sidebar-primary) 12%, transparent);
+  box-shadow: 0 0 0 3px
+    color-mix(in oklch, var(--sidebar-primary) 12%, transparent);
 }
 
 .ai-tutor-chatscope .cs-message-input__content-editor {

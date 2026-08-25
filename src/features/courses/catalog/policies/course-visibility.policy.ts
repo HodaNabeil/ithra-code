@@ -1,9 +1,4 @@
-import {
-  CourseStatus,
-  CourseVisibility,
-  Prisma,
-  Role,
-} from '@prisma/client';
+import { CourseStatus, CourseVisibility, Prisma, Role } from '@prisma/client';
 import type {
   CatalogViewer,
   CourseCatalogPublicItem,
@@ -35,10 +30,7 @@ export function buildVisibilityWhere(
 
   if (role === 'instructor' && viewer?.id) {
     return {
-      OR: [
-        PUBLIC_CATALOG_WHERE,
-        { instructorId: viewer.id },
-      ],
+      OR: [PUBLIC_CATALOG_WHERE, { instructorId: viewer.id }],
     };
   }
 

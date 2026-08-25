@@ -19,7 +19,8 @@ describe.skipIf(!isIntegrationEnabled)('lecture validation integration', () => {
   const deps = {
     courseContextRepository: new PrismaCourseContextRepository(),
     sessionContextCache: new InMemorySessionContextCache(),
-    studentLearningProfileRepository: new PrismaStudentLearningProfileRepository(),
+    studentLearningProfileRepository:
+      new PrismaStudentLearningProfileRepository(),
   };
 
   beforeAll(async () => {

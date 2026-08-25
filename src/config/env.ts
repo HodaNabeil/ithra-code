@@ -79,14 +79,18 @@ export const env = createEnv({
       .int()
       .positive()
       .default(900_000)
-      .describe('Reconciliation worker interval in milliseconds (default 15 min)'),
+      .describe(
+        'Reconciliation worker interval in milliseconds (default 15 min)',
+      ),
 
     PAYMENT_RECONCILE_MAX_ATTEMPTS: z.coerce
       .number()
       .int()
       .positive()
       .default(8)
-      .describe('Max automatic reconcile attempts before abandon/manual review'),
+      .describe(
+        'Max automatic reconcile attempts before abandon/manual review',
+      ),
 
     PAYMENT_RECONCILE_MAX_WINDOW_HOURS: z.coerce
       .number()
@@ -107,7 +111,9 @@ export const env = createEnv({
       .int()
       .positive()
       .default(720)
-      .describe('Maximum backoff delay between reconcile attempts (default 12h)'),
+      .describe(
+        'Maximum backoff delay between reconcile attempts (default 12h)',
+      ),
 
     PAYMENT_RECONCILE_ABANDON_NOT_FOUND_COUNT: z.coerce
       .number()
@@ -121,7 +127,9 @@ export const env = createEnv({
     PAYMENT_RECONCILE_USE_QUEUE: z
       .enum(['true', 'false'])
       .default('false')
-      .describe('Enqueue claimed payments to BullMQ instead of inline processing'),
+      .describe(
+        'Enqueue claimed payments to BullMQ instead of inline processing',
+      ),
 
     PAYMENT_RECONCILE_RATE_LIMIT_PER_MINUTE: z.coerce
       .number()
@@ -236,7 +244,9 @@ export const env = createEnv({
     AI_PLATFORM_ENABLED: z
       .enum(['true', 'false'])
       .default('false')
-      .describe('Enable AI Platform module (required when AI_TUTOR_ENABLED=true)'),
+      .describe(
+        'Enable AI Platform module (required when AI_TUTOR_ENABLED=true)',
+      ),
     AI_PLATFORM_LLM_MODEL: z
       .string()
       .optional()
@@ -256,7 +266,9 @@ export const env = createEnv({
     AI_PLATFORM_HISTORY_TOKEN_BUDGET: z
       .string()
       .optional()
-      .describe('Max estimated tokens for conversation history sent to the LLM'),
+      .describe(
+        'Max estimated tokens for conversation history sent to the LLM',
+      ),
     AI_PLATFORM_TOP_K: z
       .string()
       .optional()
@@ -268,11 +280,15 @@ export const env = createEnv({
     AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY: z
       .string()
       .optional()
-      .describe('Minimum similarity when lecture-scoped retrieval fallback is used'),
+      .describe(
+        'Minimum similarity when lecture-scoped retrieval fallback is used',
+      ),
     AI_PLATFORM_DAILY_COST_CAP: z
       .string()
       .optional()
-      .describe('Deprecated request-count cap (unused; see *_DAILY_BUDGET_USD)'),
+      .describe(
+        'Deprecated request-count cap (unused; see *_DAILY_BUDGET_USD)',
+      ),
     AI_PLATFORM_USER_DAILY_BUDGET_USD: z
       .string()
       .optional()
@@ -311,8 +327,14 @@ export const env = createEnv({
       .describe('JSON override for per-model token pricing (USD per token)'),
 
     // Langfuse prompt management
-    LANGFUSE_PUBLIC_KEY: z.string().optional().describe('Langfuse public API key'),
-    LANGFUSE_SECRET_KEY: z.string().optional().describe('Langfuse secret API key'),
+    LANGFUSE_PUBLIC_KEY: z
+      .string()
+      .optional()
+      .describe('Langfuse public API key'),
+    LANGFUSE_SECRET_KEY: z
+      .string()
+      .optional()
+      .describe('Langfuse secret API key'),
     LANGFUSE_HOST: z
       .string()
       .url()
@@ -371,7 +393,12 @@ export const env = createEnv({
       .optional()
       .describe('Prometheus metrics exporter port'),
     OTEL_TRACES_SAMPLER: z
-      .enum(['parentbased_traceidratio', 'traceidratio', 'always_on', 'always_off'])
+      .enum([
+        'parentbased_traceidratio',
+        'traceidratio',
+        'always_on',
+        'always_off',
+      ])
       .optional()
       .default('parentbased_traceidratio')
       .describe('OpenTelemetry trace sampling strategy'),
@@ -428,7 +455,9 @@ export const env = createEnv({
     AI_TUTOR_DAILY_COST_CAP: z
       .string()
       .optional()
-      .describe('Deprecated request-count cap (unused; see AI_TUTOR_USER_DAILY_BUDGET_USD)'),
+      .describe(
+        'Deprecated request-count cap (unused; see AI_TUTOR_USER_DAILY_BUDGET_USD)',
+      ),
     AI_TUTOR_USER_DAILY_BUDGET_USD: z
       .string()
       .optional()
@@ -440,7 +469,9 @@ export const env = createEnv({
     KNOWLEDGE_INGESTION_SOURCE_CONCURRENCY: z
       .string()
       .optional()
-      .describe('Parallel source ingestion concurrency within a single indexing job'),
+      .describe(
+        'Parallel source ingestion concurrency within a single indexing job',
+      ),
   },
 
   client: {
@@ -495,7 +526,8 @@ export const env = createEnv({
       process.env.PAYMENT_RECONCILE_SHUTDOWN_GRACE_MS,
     PAYMOB_CIRCUIT_BREAKER_THRESHOLD:
       process.env.PAYMOB_CIRCUIT_BREAKER_THRESHOLD,
-    PAYMOB_CIRCUIT_BREAKER_RESET_MS: process.env.PAYMOB_CIRCUIT_BREAKER_RESET_MS,
+    PAYMOB_CIRCUIT_BREAKER_RESET_MS:
+      process.env.PAYMOB_CIRCUIT_BREAKER_RESET_MS,
     PAYMOB_WEBHOOK_REPLAY_WINDOW_SECONDS:
       process.env.PAYMOB_WEBHOOK_REPLAY_WINDOW_SECONDS,
     PAYMOB_RETRY_MAX: process.env.PAYMOB_RETRY_MAX,
@@ -520,16 +552,21 @@ export const env = createEnv({
     AI_PLATFORM_EMBEDDING_MODEL: process.env.AI_PLATFORM_EMBEDDING_MODEL,
     AI_PLATFORM_LLM_TIMEOUT_MS: process.env.AI_PLATFORM_LLM_TIMEOUT_MS,
     AI_PLATFORM_LLM_MAX_TOKENS: process.env.AI_PLATFORM_LLM_MAX_TOKENS,
-    AI_PLATFORM_HISTORY_TOKEN_BUDGET: process.env.AI_PLATFORM_HISTORY_TOKEN_BUDGET,
+    AI_PLATFORM_HISTORY_TOKEN_BUDGET:
+      process.env.AI_PLATFORM_HISTORY_TOKEN_BUDGET,
     AI_PLATFORM_TOP_K: process.env.AI_PLATFORM_TOP_K,
     AI_PLATFORM_MIN_SIMILARITY: process.env.AI_PLATFORM_MIN_SIMILARITY,
     AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY:
       process.env.AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY,
     AI_PLATFORM_DAILY_COST_CAP: process.env.AI_PLATFORM_DAILY_COST_CAP,
-    AI_PLATFORM_USER_DAILY_BUDGET_USD: process.env.AI_PLATFORM_USER_DAILY_BUDGET_USD,
-    AI_PLATFORM_GLOBAL_DAILY_BUDGET_USD: process.env.AI_PLATFORM_GLOBAL_DAILY_BUDGET_USD,
-    AI_PLATFORM_RATE_LIMIT_PER_MINUTE: process.env.AI_PLATFORM_RATE_LIMIT_PER_MINUTE,
-    AI_PLATFORM_RATE_LIMIT_PER_HOUR: process.env.AI_PLATFORM_RATE_LIMIT_PER_HOUR,
+    AI_PLATFORM_USER_DAILY_BUDGET_USD:
+      process.env.AI_PLATFORM_USER_DAILY_BUDGET_USD,
+    AI_PLATFORM_GLOBAL_DAILY_BUDGET_USD:
+      process.env.AI_PLATFORM_GLOBAL_DAILY_BUDGET_USD,
+    AI_PLATFORM_RATE_LIMIT_PER_MINUTE:
+      process.env.AI_PLATFORM_RATE_LIMIT_PER_MINUTE,
+    AI_PLATFORM_RATE_LIMIT_PER_HOUR:
+      process.env.AI_PLATFORM_RATE_LIMIT_PER_HOUR,
     AI_PLATFORM_RATE_LIMIT_PER_DAY: process.env.AI_PLATFORM_RATE_LIMIT_PER_DAY,
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
     GOOGLE_AI_API_KEY: process.env.GOOGLE_AI_API_KEY,

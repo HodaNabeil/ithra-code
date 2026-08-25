@@ -5,10 +5,16 @@ import {
   setWorkingMemory,
 } from '../../memory/short-term/working-memory.cache';
 import { retrieveRelevantContent } from '../../rag/retrieval/content-retriever.service';
-import type { RetrievedContentChunk, RetrievalStrategy } from '../../rag/retrieval/types';
+import type {
+  RetrievedContentChunk,
+  RetrievalStrategy,
+} from '../../rag/retrieval/types';
 import { isAssessmentAdjacent } from '../../prompts/tutor-system-prompt.builder';
 import { getGraphRuntimeConfig } from '../runtime-config';
-import type { RetrievedChunkState, TutorAgentState } from '../state/tutor-agent.state';
+import type {
+  RetrievedChunkState,
+  TutorAgentState,
+} from '../state/tutor-agent.state';
 
 const WORKING_MEMORY_SCOPE = 'retrieval';
 
@@ -18,7 +24,9 @@ interface CachedRetrieval {
   retrievalStrategy?: RetrievalStrategy;
 }
 
-function toRetrievedChunkState(chunk: RetrievedContentChunk): RetrievedChunkState {
+function toRetrievedChunkState(
+  chunk: RetrievedContentChunk,
+): RetrievedChunkState {
   return {
     id: chunk.id,
     content: chunk.content,
@@ -43,7 +51,11 @@ export async function retrieveContextNode(
 ): Promise<Partial<TutorAgentState>> {
   const runtime = getGraphRuntimeConfig(config);
 
-  if (!runtime.embeddingPort || !runtime.vectorSearchPort || !runtime.courseId) {
+  if (
+    !runtime.embeddingPort ||
+    !runtime.vectorSearchPort ||
+    !runtime.courseId
+  ) {
     return {
       retrievedChunks: state.retrievedChunks ?? [],
     };
@@ -52,7 +64,10 @@ export async function retrieveContextNode(
   const question = state.sanitizedInput || state.input;
 
   const cached = runtime.runId
-    ? ((await getWorkingMemory(runtime.runId, WORKING_MEMORY_SCOPE)) as CachedRetrieval | null)
+    ? ((await getWorkingMemory(
+        runtime.runId,
+        WORKING_MEMORY_SCOPE,
+      )) as CachedRetrieval | null)
     : null;
 
   let retrievedChunks: RetrievedChunkState[];
@@ -79,7 +94,10 @@ export async function retrieveContextNode(
             ? state.personalization.courseTitle
             : undefined,
         recentHistory: state.conversationHistory
-          .filter((message) => message.role === 'user' || message.role === 'assistant')
+          .filter(
+            (message) =>
+              message.role === 'user' || message.role === 'assistant',
+          )
           .map((message) => ({
             role: message.role as 'user' | 'assistant',
             content: message.content,

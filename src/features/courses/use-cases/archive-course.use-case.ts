@@ -12,7 +12,10 @@ import {
   assertCourseOwnership,
 } from '../services/course-authorization.service';
 import { courseCacheService } from '../services/course-cache.service';
-import type { ArchiveCourseInput, ArchiveCourseResult } from '../types/archive-course.types';
+import type {
+  ArchiveCourseInput,
+  ArchiveCourseResult,
+} from '../types/archive-course.types';
 
 /** Soft-deletes a course by setting status to ARCHIVED and recording archivedAt. */
 export async function archiveCourseUseCase(
@@ -25,7 +28,11 @@ export async function archiveCourseUseCase(
 
   const course = await repository.findByIdOrSlug(idOrSlug);
   if (!course) {
-    throw new ArchiveCourseError(404, COURSE_NOT_FOUND_MESSAGE, 'COURSE_NOT_FOUND');
+    throw new ArchiveCourseError(
+      404,
+      COURSE_NOT_FOUND_MESSAGE,
+      'COURSE_NOT_FOUND',
+    );
   }
 
   assertCourseOwnership(user, course.instructorId);

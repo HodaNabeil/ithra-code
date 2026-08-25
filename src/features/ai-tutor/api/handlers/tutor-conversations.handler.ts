@@ -1,9 +1,7 @@
 import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
 
-import {
-  buildTutorSessionContext,
-} from '../../application/services/course-context.service';
+import { buildTutorSessionContext } from '../../application/services/course-context.service';
 import { filterConversationsByAccessibleCourses } from '../../application/services/enrollment-access.service';
 import { AskTutorError } from '../../application/errors/ask-tutor.errors';
 import { AITutorConfig } from '../../infrastructure/config/ai-tutor.config';
@@ -48,12 +46,17 @@ export async function handleListTutorConversationsRequest(
       );
     }
 
-    const conversations = await repository.getUserConversations(session.user.id);
-    const courseIds = [...new Set(conversations.map((conversation) => conversation.courseId))];
-    const accessibleCourseIds = await getCourseContextRepository().getAccessibleCourseIds(
+    const conversations = await repository.getUserConversations(
       session.user.id,
-      courseIds,
     );
+    const courseIds = [
+      ...new Set(conversations.map((conversation) => conversation.courseId)),
+    ];
+    const accessibleCourseIds =
+      await getCourseContextRepository().getAccessibleCourseIds(
+        session.user.id,
+        courseIds,
+      );
     const accessibleConversations = filterConversationsByAccessibleCourses(
       conversations,
       accessibleCourseIds,

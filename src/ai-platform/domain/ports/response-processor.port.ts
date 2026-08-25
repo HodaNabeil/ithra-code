@@ -8,7 +8,10 @@ export interface ResponseProcessorContext {
   metadata?: Record<string, unknown>;
 }
 
-export type ResponseProcessorDisposition = 'unchanged' | 'replaced' | 'rejected';
+export type ResponseProcessorDisposition =
+  | 'unchanged'
+  | 'replaced'
+  | 'rejected';
 
 export interface ResponseProcessorResult {
   output: string;

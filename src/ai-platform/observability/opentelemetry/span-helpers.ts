@@ -9,7 +9,10 @@ import type { LangGraphRunnableConfig } from '@langchain/langgraph';
 
 import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
 import { sanitizeOtelAttributes } from './otel-attributes';
-import { runTelemetrySafely, runTelemetrySafelyAsync } from './telemetry-isolation';
+import {
+  runTelemetrySafely,
+  runTelemetrySafelyAsync,
+} from './telemetry-isolation';
 
 let initialized = false;
 
@@ -38,7 +41,11 @@ export function runInSpanContext<T>(span: Span, fn: () => T): T {
     return fn();
   }
 
-  return runTelemetrySafely('runInSpanContext', () => context.with(trace.setSpan(context.active(), span), fn), fn());
+  return runTelemetrySafely(
+    'runInSpanContext',
+    () => context.with(trace.setSpan(context.active(), span), fn),
+    fn(),
+  );
 }
 
 export async function runInSpanContextAsync<T>(
@@ -73,22 +80,26 @@ export async function withSpan<T>(
       const tracer = getTracer();
       const safeAttributes = sanitizeOtelAttributes(attributes);
 
-      return tracer.startActiveSpan(name, { attributes: safeAttributes }, async (span) => {
-        try {
-          const result = await fn(span);
-          span.setStatus({ code: 1 });
-          return result;
-        } catch (error) {
-          span.recordException(error as Error);
-          span.setStatus({
-            code: 2,
-            message: error instanceof Error ? error.message : 'error',
-          });
-          throw error;
-        } finally {
-          span.end();
-        }
-      });
+      return tracer.startActiveSpan(
+        name,
+        { attributes: safeAttributes },
+        async (span) => {
+          try {
+            const result = await fn(span);
+            span.setStatus({ code: 1 });
+            return result;
+          } catch (error) {
+            span.recordException(error as Error);
+            span.setStatus({
+              code: 2,
+              message: error instanceof Error ? error.message : 'error',
+            });
+            throw error;
+          } finally {
+            span.end();
+          }
+        },
+      );
     },
     () => fn(noopSpan),
   );
@@ -111,22 +122,26 @@ export function withSpanSync<T>(
       const tracer = getTracer();
       const safeAttributes = sanitizeOtelAttributes(attributes);
 
-      return tracer.startActiveSpan(name, { attributes: safeAttributes }, (span) => {
-        try {
-          const result = fn(span);
-          span.setStatus({ code: 1 });
-          return result;
-        } catch (error) {
-          span.recordException(error as Error);
-          span.setStatus({
-            code: 2,
-            message: error instanceof Error ? error.message : 'error',
-          });
-          throw error;
-        } finally {
-          span.end();
-        }
-      });
+      return tracer.startActiveSpan(
+        name,
+        { attributes: safeAttributes },
+        (span) => {
+          try {
+            const result = fn(span);
+            span.setStatus({ code: 1 });
+            return result;
+          } catch (error) {
+            span.recordException(error as Error);
+            span.setStatus({
+              code: 2,
+              message: error instanceof Error ? error.message : 'error',
+            });
+            throw error;
+          } finally {
+            span.end();
+          }
+        },
+      );
     },
     fn(noopSpan),
   );
@@ -137,9 +152,7 @@ export function wrapGraphNode<TState, TResult>(
   fn: (state: TState, config: LangGraphRunnableConfig) => Promise<TResult>,
 ): (state: TState, config: LangGraphRunnableConfig) => Promise<TResult> {
   return async (state, config) =>
-    withSpan(
-      `ai.node.${nodeName}`,
-      { 'ai.node.name': nodeName },
-      async () => fn(state, config),
+    withSpan(`ai.node.${nodeName}`, { 'ai.node.name': nodeName }, async () =>
+      fn(state, config),
     );
 }

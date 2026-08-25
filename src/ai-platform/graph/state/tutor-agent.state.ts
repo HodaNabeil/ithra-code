@@ -43,7 +43,11 @@ export interface TutorAgentState extends AgentExecutionState {
   groundingBlocked: boolean;
   retrievalStrategy?: RetrievalStrategy;
   outputValid: boolean;
-  pendingToolCalls: Array<{ id: string; name: string; arguments: Record<string, unknown> }>;
+  pendingToolCalls: Array<{
+    id: string;
+    name: string;
+    arguments: Record<string, unknown>;
+  }>;
   toolResults: Array<{ toolCallId: string; output: Record<string, unknown> }>;
   toolIterations: number;
 }
@@ -88,7 +92,9 @@ export const TutorAgentStateAnnotation = Annotation.Root({
     reducer: (_left, right) => right,
     default: () => [],
   }),
-  toolResults: Annotation<Array<{ toolCallId: string; output: Record<string, unknown> }>>({
+  toolResults: Annotation<
+    Array<{ toolCallId: string; output: Record<string, unknown> }>
+  >({
     reducer: (left, right) => [...left, ...right],
     default: () => [],
   }),

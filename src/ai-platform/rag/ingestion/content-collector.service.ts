@@ -36,7 +36,9 @@ function resolveAttachmentSourceType(
   }
 }
 
-function collectCourseOverview(course: CourseForIndexingDTO): KnowledgeSource[] {
+function collectCourseOverview(
+  course: CourseForIndexingDTO,
+): KnowledgeSource[] {
   const overviewParts = [
     course.shortDescription?.trim(),
     course.description?.trim(),

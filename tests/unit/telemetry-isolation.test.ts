@@ -73,7 +73,11 @@ describe('telemetry-isolation', () => {
         } as never;
       });
 
-    const result = await withSpan('ai.test.span', {}, async () => 'business-result');
+    const result = await withSpan(
+      'ai.test.span',
+      {},
+      async () => 'business-result',
+    );
 
     expect(result).toBe('business-result');
     getTracerSpy.mockRestore();

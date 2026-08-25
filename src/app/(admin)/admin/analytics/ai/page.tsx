@@ -28,7 +28,9 @@ type AiAnalyticsPageProps = {
   }>;
 };
 
-export default async function AiAnalyticsPage({ searchParams }: AiAnalyticsPageProps) {
+export default async function AiAnalyticsPage({
+  searchParams,
+}: AiAnalyticsPageProps) {
   const session = await auth();
 
   if (!session || session.user.role !== 'ADMIN') {

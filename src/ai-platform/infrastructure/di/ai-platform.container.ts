@@ -1,4 +1,8 @@
-import type { EmbeddingPort, LlmPort, VectorSearchPort } from '../../domain/ports';
+import type {
+  EmbeddingPort,
+  LlmPort,
+  VectorSearchPort,
+} from '../../domain/ports';
 import type { ConversationMemoryPort } from '../../domain/ports/conversation-memory.port';
 import type { MemoryStorePort } from '../../domain/ports/memory-store.port';
 import { redisConversationMemoryAdapter } from '../../memory/short-term/conversation-memory.adapter';
@@ -20,19 +24,16 @@ import {
 } from '../../providers/registry/provider-registry';
 import { ResilientLlmAdapter } from '../../providers/resilient/resilient-llm.adapter';
 import { FallbackLlmAdapter } from '../../router/fallback-chain';
-import { getFallbackChainForTask, resolveModelForPolicy } from '../../router/model-router';
+import {
+  getFallbackChainForTask,
+  resolveModelForPolicy,
+} from '../../router/model-router';
 import type { CourseContentRepositoryPort } from '../../indexing/domain/ports/CourseContentRepositoryPort';
 import type { KnowledgeChunkRepositoryPort } from '../../indexing/domain/ports/KnowledgeChunkRepositoryPort';
 import type { KnowledgeSourceHashRepositoryPort } from '../../indexing/domain/ports/KnowledgeSourceHashRepositoryPort';
-import {
-  prismaCourseContentRepository,
-} from '../../indexing/infrastructure/prisma/PrismaCourseContentRepository';
-import {
-  prismaKnowledgeChunkRepository,
-} from '../../indexing/infrastructure/prisma/PrismaKnowledgeChunkRepository';
-import {
-  prismaKnowledgeSourceHashRepository,
-} from '../../indexing/infrastructure/prisma/PrismaKnowledgeSourceHashRepository';
+import { prismaCourseContentRepository } from '../../indexing/infrastructure/prisma/PrismaCourseContentRepository';
+import { prismaKnowledgeChunkRepository } from '../../indexing/infrastructure/prisma/PrismaKnowledgeChunkRepository';
+import { prismaKnowledgeSourceHashRepository } from '../../indexing/infrastructure/prisma/PrismaKnowledgeSourceHashRepository';
 import type { CourseIndexingDeps } from '../../indexing/pipelines/course-indexing.pipeline';
 import { postgresVectorSearchAdapter } from '../../rag/retrieval/postgres-vector-search.adapter';
 import { registerStructuredOutputSchemas } from '../../structured-output/bootstrap';
@@ -40,7 +41,10 @@ import { resetSchemaRegistryForTests } from '../../structured-output/registry/sc
 import { registerBuiltinTools } from '../../tools/builtin';
 import { resetToolExecutorForTests } from '../../tools/executor/tool-executor';
 import { McpClient, parseMcpServerConfigs } from '../../tools/mcp/mcp-client';
-import { registerTool, resetToolRegistryForTests } from '../../tools/registry/tool-registry';
+import {
+  registerTool,
+  resetToolRegistryForTests,
+} from '../../tools/registry/tool-registry';
 import { PlatformError, PlatformErrorCodes } from '../../shared/errors';
 import {
   AIPlatformConfig,
@@ -105,11 +109,10 @@ function bootstrapPlatform(): void {
   }
 
   if (env.GOOGLE_AI_API_KEY) {
-    registerLlmProvider(
-      'gemini',
-      new GeminiLlmAdapter(env.GOOGLE_AI_API_KEY),
-      ['gemini-2.0-flash', 'gemini-1.5-flash'],
-    );
+    registerLlmProvider('gemini', new GeminiLlmAdapter(env.GOOGLE_AI_API_KEY), [
+      'gemini-2.0-flash',
+      'gemini-1.5-flash',
+    ]);
   }
 
   const mcpConfigs = parseMcpServerConfigs(env.AI_PLATFORM_MCP_SERVERS);
@@ -128,7 +131,10 @@ function bootstrapPlatform(): void {
 
 export function assertPlatformEnabled(): void {
   if (!AIPlatformConfig.isEnabled()) {
-    throw new PlatformError(PlatformErrorCodes.AI_DISABLED, 'AI Platform is disabled');
+    throw new PlatformError(
+      PlatformErrorCodes.AI_DISABLED,
+      'AI Platform is disabled',
+    );
   }
 
   validateAIPlatformConfig();
@@ -165,10 +171,13 @@ export function getEmbeddingPort(): EmbeddingPort {
 
   if (!state.embeddingPort) {
     const embeddingConfig = AIPlatformConfig.getEmbeddingConfig();
-    state.embeddingPort = new OpenAIEmbeddingAdapter(AIPlatformConfig.getLlmApiKey(), {
-      baseURL: embeddingConfig.baseURL,
-      model: embeddingConfig.model,
-    });
+    state.embeddingPort = new OpenAIEmbeddingAdapter(
+      AIPlatformConfig.getLlmApiKey(),
+      {
+        baseURL: embeddingConfig.baseURL,
+        model: embeddingConfig.model,
+      },
+    );
   }
 
   return state.embeddingPort;

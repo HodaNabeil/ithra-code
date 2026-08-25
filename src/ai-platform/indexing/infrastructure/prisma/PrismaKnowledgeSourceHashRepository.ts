@@ -21,10 +21,10 @@ function mapRecord(row: {
   };
 }
 
-export class PrismaKnowledgeSourceHashRepository
-  implements KnowledgeSourceHashRepositoryPort
-{
-  async findBySourceId(sourceId: string): Promise<KnowledgeSourceHashRecord | null> {
+export class PrismaKnowledgeSourceHashRepository implements KnowledgeSourceHashRepositoryPort {
+  async findBySourceId(
+    sourceId: string,
+  ): Promise<KnowledgeSourceHashRecord | null> {
     const row = await prisma.knowledgeSourceHash.findUnique({
       where: { sourceId },
     });
@@ -40,7 +40,9 @@ export class PrismaKnowledgeSourceHashRepository
     return rows.map(mapRecord);
   }
 
-  async findByLectureId(lectureId: string): Promise<KnowledgeSourceHashRecord[]> {
+  async findByLectureId(
+    lectureId: string,
+  ): Promise<KnowledgeSourceHashRecord[]> {
     const rows = await prisma.knowledgeSourceHash.findMany({
       where: { lectureId },
     });

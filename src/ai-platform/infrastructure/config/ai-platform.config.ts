@@ -32,7 +32,9 @@ export class AIPlatformConfig {
     const model =
       env.AI_PLATFORM_EMBEDDING_MODEL ??
       env.AI_TUTOR_EMBEDDING_MODEL ??
-      (this.isOpenRouter() ? 'openai/text-embedding-3-small' : 'text-embedding-3-small');
+      (this.isOpenRouter()
+        ? 'openai/text-embedding-3-small'
+        : 'text-embedding-3-small');
 
     return {
       model,
@@ -52,9 +54,7 @@ export class AIPlatformConfig {
 
     return {
       model:
-        env.AI_PLATFORM_LLM_MODEL ??
-        env.AI_TUTOR_LLM_MODEL ??
-        'gpt-3.5-turbo',
+        env.AI_PLATFORM_LLM_MODEL ?? env.AI_TUTOR_LLM_MODEL ?? 'gpt-3.5-turbo',
       temperature: 0.7,
       maxTokens,
       requestTimeoutMs: timeoutMs,
@@ -75,11 +75,12 @@ export class AIPlatformConfig {
         ? Number(env.AI_TUTOR_MIN_SIMILARITY)
         : AI_PLATFORM_CONSTANTS.DEFAULT_MIN_SIMILARITY;
 
-    const lectureFallbackMinSimilarity = env.AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY
-      ? Number(env.AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY)
-      : env.AI_TUTOR_LECTURE_FALLBACK_MIN_SIMILARITY
-        ? Number(env.AI_TUTOR_LECTURE_FALLBACK_MIN_SIMILARITY)
-        : AI_PLATFORM_CONSTANTS.DEFAULT_LECTURE_FALLBACK_MIN_SIMILARITY;
+    const lectureFallbackMinSimilarity =
+      env.AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY
+        ? Number(env.AI_PLATFORM_LECTURE_FALLBACK_MIN_SIMILARITY)
+        : env.AI_TUTOR_LECTURE_FALLBACK_MIN_SIMILARITY
+          ? Number(env.AI_TUTOR_LECTURE_FALLBACK_MIN_SIMILARITY)
+          : AI_PLATFORM_CONSTANTS.DEFAULT_LECTURE_FALLBACK_MIN_SIMILARITY;
 
     return { topK, minSimilarity, lectureFallbackMinSimilarity };
   }
@@ -123,7 +124,8 @@ export class AIPlatformConfig {
       : AI_PLATFORM_CONSTANTS.REQUEST_TIMEOUT_MS;
 
     return {
-      maxConcurrentStreamsPerUser: AI_PLATFORM_CONSTANTS.MAX_CONCURRENT_STREAMS_PER_USER,
+      maxConcurrentStreamsPerUser:
+        AI_PLATFORM_CONSTANTS.MAX_CONCURRENT_STREAMS_PER_USER,
       requestTimeoutMs: timeoutMs,
     };
   }
@@ -174,7 +176,9 @@ export class AIPlatformConfig {
   }
 
   static isLangSmithTracingEnabled(): boolean {
-    return env.LANGCHAIN_TRACING_V2 === 'true' && Boolean(env.LANGCHAIN_API_KEY);
+    return (
+      env.LANGCHAIN_TRACING_V2 === 'true' && Boolean(env.LANGCHAIN_API_KEY)
+    );
   }
 
   static getLangSmithConfig() {
@@ -202,7 +206,8 @@ export class AIPlatformConfig {
       enabled: this.isOtelEnabled(),
       serviceName: env.OTEL_SERVICE_NAME ?? 'ithracode-ai-platform',
       otlpEndpoint: env.OTEL_EXPORTER_OTLP_ENDPOINT,
-      metricsPort: Number.isFinite(metricsPort) && metricsPort > 0 ? metricsPort : 9464,
+      metricsPort:
+        Number.isFinite(metricsPort) && metricsPort > 0 ? metricsPort : 9464,
       tracesSampler: env.OTEL_TRACES_SAMPLER ?? 'parentbased_traceidratio',
       tracesSamplerRatio,
     };

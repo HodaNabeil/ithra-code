@@ -5,9 +5,7 @@
     {
       "id": "evaluator-001",
       "input": "Student implemented recursion correctly with base case.",
-      "retrievedContext": [
-        "Rubric requires base case, recursive step, and readable naming."
-      ],
+      "retrievedContext": ["Rubric requires base case, recursive step, and readable naming."],
       "groundTruth": "Pass with high score for recursion implementation."
     },
     {
@@ -29,9 +27,7 @@
     {
       "id": "evaluator-004",
       "input": "CSS layout matches the responsive design requirements.",
-      "retrievedContext": [
-        "Rubric checks mobile breakpoints, flex/grid usage, and semantic HTML."
-      ],
+      "retrievedContext": ["Rubric checks mobile breakpoints, flex/grid usage, and semantic HTML."],
       "groundTruth": "Pass with high score for responsive layout."
     },
     {

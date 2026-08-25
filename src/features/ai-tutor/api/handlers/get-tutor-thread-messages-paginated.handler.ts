@@ -25,11 +25,16 @@ export async function handleGetTutorThreadMessagesPaginatedRequest(
   const { searchParams } = new URL(request.url);
   const before = searchParams.get('before') ?? undefined;
   const limitParam = Number(searchParams.get('limit') ?? 20);
-  const limit = Number.isFinite(limitParam) && limitParam > 0 ? Math.min(limitParam, 50) : 20;
+  const limit =
+    Number.isFinite(limitParam) && limitParam > 0
+      ? Math.min(limitParam, 50)
+      : 20;
 
   try {
     const repository = getConversationRepository();
-    const conversations = await repository.getUserConversations(session.user.id);
+    const conversations = await repository.getUserConversations(
+      session.user.id,
+    );
     const conversation = conversations.find((item) =>
       item.threads.some((thread) => thread.id === threadId),
     );
@@ -39,10 +44,11 @@ export async function handleGetTutorThreadMessagesPaginatedRequest(
       return apiError('الموضوع غير موجود', 404);
     }
 
-    const accessibleCourseIds = await getCourseContextRepository().getAccessibleCourseIds(
-      session.user.id,
-      [conversation.courseId],
-    );
+    const accessibleCourseIds =
+      await getCourseContextRepository().getAccessibleCourseIds(
+        session.user.id,
+        [conversation.courseId],
+      );
     if (!isCourseAccessible(conversation.courseId, accessibleCourseIds)) {
       return apiError('غير مصرح لك بالوصول إلى هذه المحادثة', 403);
     }

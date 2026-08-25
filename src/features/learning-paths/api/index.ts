@@ -43,7 +43,5 @@ export {
 export { getPathDetail } from './use-cases/get-path-detail.use-case';
 export type { GetPathDetailInput } from './use-cases/get-path-detail.use-case';
 
-export {
-  loadPathDetailBySlug,
-} from './use-cases/load-path-detail.use-case';
+export { loadPathDetailBySlug } from './use-cases/load-path-detail.use-case';
 export type { LoadPathDetailResult } from './use-cases/load-path-detail.use-case';

@@ -42,11 +42,15 @@ function mapRow(row: VectorSearchRow): SearchResult {
 }
 
 export class PostgresVectorSearchAdapter implements VectorSearchPort {
-  async search(embedding: number[], options?: VectorSearchOptions): Promise<SearchResult[]> {
+  async search(
+    embedding: number[],
+    options?: VectorSearchOptions,
+  ): Promise<SearchResult[]> {
     return withSpan(
       'ai.vector.search',
       {
-        'ai.vector.top_k': options?.topK ?? AIPlatformConfig.getRetrievalConfig().topK,
+        'ai.vector.top_k':
+          options?.topK ?? AIPlatformConfig.getRetrievalConfig().topK,
       },
       async () => this.searchInner(embedding, options),
     );
@@ -77,7 +81,9 @@ export class PostgresVectorSearchAdapter implements VectorSearchPort {
     const topK = options?.topK ?? config.topK;
     const minScore = options?.minScore ?? config.minSimilarity;
     const lectureId =
-      typeof options?.filter?.lectureId === 'string' ? options.filter.lectureId : undefined;
+      typeof options?.filter?.lectureId === 'string'
+        ? options.filter.lectureId
+        : undefined;
     const lectureOnly =
       options?.filter?.lectureOnly === true &&
       typeof lectureId === 'string' &&
@@ -114,8 +120,8 @@ export class PostgresVectorSearchAdapter implements VectorSearchPort {
             minScore,
           )
         : lectureId
-        ? await prisma.$queryRawUnsafe<VectorSearchRow[]>(
-            `
+          ? await prisma.$queryRawUnsafe<VectorSearchRow[]>(
+              `
               SELECT
                 id,
                 title,
@@ -135,15 +141,15 @@ export class PostgresVectorSearchAdapter implements VectorSearchPort {
                 embedding <=> $1::vector
               LIMIT $5
             `,
-            vectorLiteral,
-            courseId,
-            KnowledgeSensitivity.PUBLIC,
-            lectureId,
-            topK,
-            minScore,
-          )
-        : await prisma.$queryRawUnsafe<VectorSearchRow[]>(
-            `
+              vectorLiteral,
+              courseId,
+              KnowledgeSensitivity.PUBLIC,
+              lectureId,
+              topK,
+              minScore,
+            )
+          : await prisma.$queryRawUnsafe<VectorSearchRow[]>(
+              `
               SELECT
                 id,
                 title,
@@ -161,12 +167,12 @@ export class PostgresVectorSearchAdapter implements VectorSearchPort {
               ORDER BY embedding <=> $1::vector
               LIMIT $4
             `,
-            vectorLiteral,
-            courseId,
-            KnowledgeSensitivity.PUBLIC,
-            topK,
-            minScore,
-          );
+              vectorLiteral,
+              courseId,
+              KnowledgeSensitivity.PUBLIC,
+              topK,
+              minScore,
+            );
 
       return rows.map(mapRow);
     } catch (error) {

@@ -7,7 +7,10 @@ import {
   markIndexingOutboxCompleted,
   markIndexingOutboxWorkerFailed,
 } from '../outbox/indexing-outbox.service';
-import { IndexingError, IndexingErrorCodes } from '../../application/errors/indexing.error';
+import {
+  IndexingError,
+  IndexingErrorCodes,
+} from '../../application/errors/indexing.error';
 import type { CourseIndexingRequestedEvent } from '../constants';
 
 export type IndexingJobResult = Record<string, unknown> & {
@@ -135,7 +138,10 @@ export async function handleCourseIndexingJob(
       await markIndexingOutboxWorkerFailed(event.outboxId, error);
     }
 
-    if (error instanceof IndexingError && NON_RETRYABLE_INDEXING_CODES.has(error.code)) {
+    if (
+      error instanceof IndexingError &&
+      NON_RETRYABLE_INDEXING_CODES.has(error.code)
+    ) {
       throw toUnrecoverableError(error);
     }
 

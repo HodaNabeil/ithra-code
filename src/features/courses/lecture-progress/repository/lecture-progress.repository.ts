@@ -154,7 +154,7 @@ export class PrismaLectureProgressRepository implements LectureProgressRepositor
         update: {
           timeSpent: (existing?.timeSpent ?? 0) + actualIncrement,
           isCompleted,
-          completedAt: isCompleted ? now : existing?.completedAt ?? null,
+          completedAt: isCompleted ? now : (existing?.completedAt ?? null),
           lastAccessedAt: now,
         },
         create: {

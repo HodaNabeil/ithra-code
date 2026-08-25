@@ -32,9 +32,7 @@ export const NavigationButtons = ({
           disabled={!prevId}
           variant="default"
           size="icon"
-          onClick={() =>
-            router.push(`/my-courses/${slug}/lecture/${prevId}`)
-          }
+          onClick={() => router.push(`/my-courses/${slug}/lecture/${prevId}`)}
           className="pointer-events-auto h-11 w-11 shadow-2xl disabled:opacity-0 transition-all duration-300"
         >
           <ChevronRight className="w-6 h-6" />
@@ -51,9 +49,7 @@ export const NavigationButtons = ({
           disabled={!nextId}
           variant="default"
           size="icon"
-          onClick={() =>
-            router.push(`/my-courses/${slug}/lecture/${nextId}`)
-          }
+          onClick={() => router.push(`/my-courses/${slug}/lecture/${nextId}`)}
           className="pointer-events-auto h-11 w-11 shadow-2xl disabled:opacity-0 transition-all duration-300"
         >
           <ChevronLeft className="w-6 h-6" />

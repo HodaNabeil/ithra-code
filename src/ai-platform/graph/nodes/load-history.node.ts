@@ -15,10 +15,16 @@ export async function loadHistoryNode(
 ): Promise<Partial<TutorAgentState>> {
   const runtime = getGraphRuntimeConfig(config);
 
-  if (state.conversationHistory.length > 0 || !runtime.threadId || !runtime.conversationMemoryPort) {
+  if (
+    state.conversationHistory.length > 0 ||
+    !runtime.threadId ||
+    !runtime.conversationMemoryPort
+  ) {
     return {};
   }
 
-  const history = await runtime.conversationMemoryPort.getHistory(runtime.threadId);
+  const history = await runtime.conversationMemoryPort.getHistory(
+    runtime.threadId,
+  );
   return { conversationHistory: history };
 }

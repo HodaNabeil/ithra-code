@@ -11,8 +11,7 @@ import {
 } from '../errors/lecture-detail.errors';
 import { isEnrollmentEligibleForAccess } from '../repository/lecture-detail.repository';
 
-const PURCHASE_REQUIRED_MESSAGE =
-  'يجب شراء هذه الدورة للوصول إلى محاضراتها';
+const PURCHASE_REQUIRED_MESSAGE = 'يجب شراء هذه الدورة للوصول إلى محاضراتها';
 
 export function assertLecturePublishedContent(
   course: LectureDetailCourseIdentity,
@@ -22,17 +21,11 @@ export function assertLecturePublishedContent(
 ): void {
   if (viewer.role === Role.ADMIN) return;
 
-  if (
-    viewer.role === Role.INSTRUCTOR &&
-    viewer.id === course.instructorId
-  ) {
+  if (viewer.role === Role.INSTRUCTOR && viewer.id === course.instructorId) {
     return;
   }
 
-  if (
-    course.status !== CourseStatus.PUBLISHED ||
-    !lecture.isPublished
-  ) {
+  if (course.status !== CourseStatus.PUBLISHED || !lecture.isPublished) {
     throw new LectureDetailError(
       404,
       lectureNotFoundMessage(lectureId),

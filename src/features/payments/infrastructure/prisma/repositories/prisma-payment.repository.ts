@@ -95,8 +95,7 @@ export class PrismaPaymentRepository implements PaymentRepository {
           : {}),
         ...(input.providerMetadata != null
           ? {
-              providerMetadata:
-                input.providerMetadata as Prisma.InputJsonValue,
+              providerMetadata: input.providerMetadata as Prisma.InputJsonValue,
             }
           : {}),
       },
@@ -122,8 +121,7 @@ export class PrismaPaymentRepository implements PaymentRepository {
         failureMessage: input.failureMessage ?? null,
         ...(input.providerMetadata != null
           ? {
-              providerMetadata:
-                input.providerMetadata as Prisma.InputJsonValue,
+              providerMetadata: input.providerMetadata as Prisma.InputJsonValue,
             }
           : {}),
       },

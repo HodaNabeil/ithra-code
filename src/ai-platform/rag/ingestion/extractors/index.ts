@@ -8,10 +8,7 @@ import {
   quizExtractor,
   richTextContentExtractor,
 } from './inline-extractors';
-import {
-  pdfExtractor,
-  textAttachmentExtractor,
-} from './attachment-extractors';
+import { pdfExtractor, textAttachmentExtractor } from './attachment-extractors';
 import { codeExtractor } from './code-extractor';
 import { instructorNotesExtractor } from './instructor-notes-extractor';
 import { transcriptExtractor } from './transcript-extractor';

@@ -7,7 +7,11 @@ interface ToolCallState {
   userId: string;
   agentId: string;
   courseId?: string;
-  pendingToolCalls: Array<{ id: string; name: string; arguments: Record<string, unknown> }>;
+  pendingToolCalls: Array<{
+    id: string;
+    name: string;
+    arguments: Record<string, unknown>;
+  }>;
   toolIterations: number;
 }
 
@@ -21,7 +25,10 @@ export async function toolCallNode(
 }> {
   const runtime = getGraphRuntimeConfig(config);
   const allowedTools = runtime.allowedTools ?? [];
-  const results: Array<{ toolCallId: string; output: Record<string, unknown> }> = [];
+  const results: Array<{
+    toolCallId: string;
+    output: Record<string, unknown>;
+  }> = [];
 
   for (const call of state.pendingToolCalls) {
     const courseId = runtime.courseId;

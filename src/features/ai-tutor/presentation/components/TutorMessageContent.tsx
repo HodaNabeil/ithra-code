@@ -50,7 +50,9 @@ export function TutorMessageContent({
   return (
     <div className={cn('space-y-3 text-sm leading-7', className)}>
       {blocks.map((block, blockIndex) => {
-        const lines = block.split('\n').filter((line) => line.trim().length > 0);
+        const lines = block
+          .split('\n')
+          .filter((line) => line.trim().length > 0);
 
         if (lines.length === 0) {
           return null;

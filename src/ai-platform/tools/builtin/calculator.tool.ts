@@ -7,7 +7,10 @@ const calculatorInputSchema = z.object({
     .string()
     .min(1)
     .max(200)
-    .regex(/^[0-9+\-*/().%\s^]+$/, 'Expression contains unsupported characters'),
+    .regex(
+      /^[0-9+\-*/().%\s^]+$/,
+      'Expression contains unsupported characters',
+    ),
 });
 
 const calculatorOutputSchema = z.object({
@@ -17,7 +20,8 @@ const calculatorOutputSchema = z.object({
 export const calculatorToolDefinition: ToolDefinition = {
   id: 'calculator',
   name: 'Calculator',
-  description: 'Evaluate safe mathematical expressions (+, -, *, /, %, parentheses)',
+  description:
+    'Evaluate safe mathematical expressions (+, -, *, /, %, parentheses)',
   source: 'builtin',
   inputSchema: calculatorInputSchema,
   outputSchema: calculatorOutputSchema,

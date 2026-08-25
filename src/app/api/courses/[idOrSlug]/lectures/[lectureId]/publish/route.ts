@@ -8,9 +8,7 @@ import { apiError, apiSuccess } from '@/lib/api-response';
 
 export async function POST(
   _req: Request,
-  {
-    params,
-  }: { params: Promise<{ idOrSlug: string; lectureId: string }> },
+  { params }: { params: Promise<{ idOrSlug: string; lectureId: string }> },
 ): Promise<NextResponse> {
   try {
     const session = await auth();

@@ -35,14 +35,21 @@ export async function getCourseOverview(
     ({ idOrSlug } = parseCourseOverviewParams({ idOrSlug: input.idOrSlug }));
   } catch (error) {
     if (error instanceof ZodError) {
-      throw new CourseOverviewError(400, error.issues[0]?.message ?? 'Invalid request');
+      throw new CourseOverviewError(
+        400,
+        error.issues[0]?.message ?? 'Invalid request',
+      );
     }
     throw error;
   }
 
   const course = await repository.findCourseIdentity(idOrSlug);
   if (!course) {
-    throw new CourseOverviewError(404, COURSE_NOT_FOUND_MESSAGE, 'COURSE_NOT_FOUND');
+    throw new CourseOverviewError(
+      404,
+      COURSE_NOT_FOUND_MESSAGE,
+      'COURSE_NOT_FOUND',
+    );
   }
 
   assertCourseOverviewVisible(course, input.user ?? null);

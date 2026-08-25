@@ -23,6 +23,10 @@ export function assertCourseVisible(
     course.visibility === CourseVisibility.UNLISTED;
 
   if (!isPublished || !isPubliclyAccessible) {
-    throw new CourseDetailError(404, COURSE_NOT_FOUND_MESSAGE, 'COURSE_NOT_FOUND');
+    throw new CourseDetailError(
+      404,
+      COURSE_NOT_FOUND_MESSAGE,
+      'COURSE_NOT_FOUND',
+    );
   }
 }

@@ -79,11 +79,12 @@ export async function updateCourse(
   }
 
   const nextStatus =
-    typeof values.status === 'string'
-      ? values.status
-      : values.status?.set;
+    typeof values.status === 'string' ? values.status : values.status?.set;
 
-  if (nextStatus === CourseStatus.PUBLISHED && existing.status !== CourseStatus.PUBLISHED) {
+  if (
+    nextStatus === CourseStatus.PUBLISHED &&
+    existing.status !== CourseStatus.PUBLISHED
+  ) {
     const published = await publishCourseUseCase(
       {
         idOrSlug: existing.id,

@@ -42,7 +42,9 @@ export function getLlmForModel(model: string): LlmPort {
 }
 
 export function getProviderForModel(model: string): string {
-  return modelIndex.get(model)?.provider ?? llmProviders[0]?.provider ?? 'openai';
+  return (
+    modelIndex.get(model)?.provider ?? llmProviders[0]?.provider ?? 'openai'
+  );
 }
 
 export function listModels(): ModelInfo[] {

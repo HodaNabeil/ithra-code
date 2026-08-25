@@ -67,14 +67,10 @@ export type {
 
 export type { OrderCompletedEvent } from './events/order-completed.event';
 
-export {
-  CreateCheckoutUseCase,
-} from './use-cases/create-checkout.use-case';
+export { CreateCheckoutUseCase } from './use-cases/create-checkout.use-case';
 export type { CreateCheckoutUseCaseDeps } from './use-cases/create-checkout.use-case';
 
-export {
-  ProcessWebhookUseCase,
-} from './use-cases/process-webhook.use-case';
+export { ProcessWebhookUseCase } from './use-cases/process-webhook.use-case';
 export type { ProcessWebhookUseCaseDeps } from './use-cases/process-webhook.use-case';
 
 export { FulfillOrderService } from './services/fulfill-order.service';
@@ -90,9 +86,7 @@ export type {
   FulfillPaymentInput,
 } from './services/fulfill-order.service';
 
-export {
-  ReconcilePaymentsUseCase,
-} from './use-cases/reconcile-payments.use-case';
+export { ReconcilePaymentsUseCase } from './use-cases/reconcile-payments.use-case';
 export type {
   ReconcilePaymentsConfig,
   ReconcilePaymentsSummary,

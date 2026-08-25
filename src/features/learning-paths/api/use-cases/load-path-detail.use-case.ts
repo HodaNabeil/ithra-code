@@ -23,9 +23,9 @@ export type LoadPathDetailResult =
 function isNextNotFoundError(error: unknown): boolean {
   return Boolean(
     error &&
-      typeof error === 'object' &&
-      'digest' in error &&
-      String((error as { digest?: string }).digest).startsWith('NEXT_NOT_FOUND'),
+    typeof error === 'object' &&
+    'digest' in error &&
+    String((error as { digest?: string }).digest).startsWith('NEXT_NOT_FOUND'),
   );
 }
 

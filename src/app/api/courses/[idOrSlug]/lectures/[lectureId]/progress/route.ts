@@ -15,9 +15,7 @@ import { apiError, apiSuccess } from '@/lib/api-response';
 
 export async function PATCH(
   req: Request,
-  {
-    params,
-  }: { params: Promise<{ idOrSlug: string; lectureId: string }> },
+  { params }: { params: Promise<{ idOrSlug: string; lectureId: string }> },
 ): Promise<NextResponse> {
   try {
     const session = await auth();
@@ -53,10 +51,7 @@ export async function PATCH(
       incrementTime: parsed.data.incrementTime,
     });
 
-    return apiSuccess(
-      { progress },
-      'تم تحديث تقدم المحاضرة بنجاح',
-    );
+    return apiSuccess({ progress }, 'تم تحديث تقدم المحاضرة بنجاح');
   } catch (error) {
     if (error instanceof LectureProgressError) {
       return apiError(error.message, error.status);

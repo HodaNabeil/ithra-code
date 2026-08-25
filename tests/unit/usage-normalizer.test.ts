@@ -31,7 +31,9 @@ describe('usage-normalizer', () => {
   });
 
   it('returns null when provider usage is empty', () => {
-    expect(normalizeFromProvider({ inputTokens: 0, outputTokens: 0 })).toBeNull();
+    expect(
+      normalizeFromProvider({ inputTokens: 0, outputTokens: 0 }),
+    ).toBeNull();
   });
 
   it('marks text fallback as estimated', () => {
@@ -86,11 +88,16 @@ describe('usage-normalizer', () => {
 
   it('merges normalized usage and propagates estimated flag', () => {
     const actual = normalizeFromProvider({ inputTokens: 10, outputTokens: 5 })!;
-    const estimated = estimateUsageFromText({ inputText: 'x', outputText: 'y' });
+    const estimated = estimateUsageFromText({
+      inputText: 'x',
+      outputText: 'y',
+    });
     const merged = mergeNormalizedUsage(actual, estimated);
 
     expect(merged.inputTokens).toBe(actual.inputTokens + estimated.inputTokens);
-    expect(merged.outputTokens).toBe(actual.outputTokens + estimated.outputTokens);
+    expect(merged.outputTokens).toBe(
+      actual.outputTokens + estimated.outputTokens,
+    );
     expect(merged.totalTokens).toBe(merged.inputTokens + merged.outputTokens);
     expect(merged.tokenUsageEstimated).toBe(true);
   });
@@ -105,7 +112,9 @@ describe('usage-normalizer', () => {
   });
 
   it('reads tokenUsageEstimated from run signals', () => {
-    expect(readRunTokenUsageEstimated({ tokenUsageEstimated: true })).toBe(true);
+    expect(readRunTokenUsageEstimated({ tokenUsageEstimated: true })).toBe(
+      true,
+    );
     expect(readRunTokenUsageEstimated({})).toBe(false);
   });
 
@@ -124,10 +133,12 @@ describe('usage-normalizer', () => {
 
 describe('provider-usage-mappers', () => {
   it('maps OpenAI usage fields', () => {
-    expect(mapOpenAiUsage({ prompt_tokens: 11, completion_tokens: 7 })).toEqual({
-      inputTokens: 11,
-      outputTokens: 7,
-    });
+    expect(mapOpenAiUsage({ prompt_tokens: 11, completion_tokens: 7 })).toEqual(
+      {
+        inputTokens: 11,
+        outputTokens: 7,
+      },
+    );
   });
 
   it('maps Anthropic usage fields', () => {

@@ -13,33 +13,34 @@ import {
 let courseIndexingQueue: Queue<CourseIndexingRequestedEvent> | null = null;
 
 export function getCourseIndexingQueue(): Queue<CourseIndexingRequestedEvent> {
-  courseIndexingQueue ??= new Queue<CourseIndexingRequestedEvent>(COURSE_INDEXING_QUEUE, {
-    connection: redis,
-    defaultJobOptions: {
-      attempts: 5,
-      backoff: {
-        type: 'exponential',
-        delay: 60_000,
+  courseIndexingQueue ??= new Queue<CourseIndexingRequestedEvent>(
+    COURSE_INDEXING_QUEUE,
+    {
+      connection: redis,
+      defaultJobOptions: {
+        attempts: 5,
+        backoff: {
+          type: 'exponential',
+          delay: 60_000,
+        },
+        removeOnComplete: true,
+        removeOnFail: false,
       },
-      removeOnComplete: true,
-      removeOnFail: false,
     },
-  });
+  );
 
   return courseIndexingQueue;
 }
 
-export function buildIndexingEvent(
-  request: {
-    outboxId?: string;
-    courseId: string;
-    courseSlug: string;
-    scope: CourseIndexingRequestedEvent['scope'];
-    lectureId?: string;
-    triggeredByUserId: string;
-    contentVersion: string;
-  },
-): CourseIndexingRequestedEvent {
+export function buildIndexingEvent(request: {
+  outboxId?: string;
+  courseId: string;
+  courseSlug: string;
+  scope: CourseIndexingRequestedEvent['scope'];
+  lectureId?: string;
+  triggeredByUserId: string;
+  contentVersion: string;
+}): CourseIndexingRequestedEvent {
   return {
     eventId: randomUUID(),
     outboxId: request.outboxId,
@@ -67,4 +68,8 @@ export async function addIndexingJobToQueue(
   return jobId;
 }
 
-export { COURSE_INDEXING_QUEUE, COURSE_INDEXING_JOBS, buildCourseIndexingJobId };
+export {
+  COURSE_INDEXING_QUEUE,
+  COURSE_INDEXING_JOBS,
+  buildCourseIndexingJobId,
+};

@@ -1,16 +1,19 @@
 # AI Tutor Feature
 
-Intelligent tutoring system providing personalized, course-aware assistance through Retrieval Augmented Generation (RAG).
+Intelligent tutoring system providing personalized, course-aware assistance through Retrieval
+Augmented Generation (RAG).
 
 ## Documentation
 
 See `/docs/ai-tutor/` for complete documentation:
 
 - **[00-index.md](../../docs/ai-tutor/00-index.md)** - Documentation index
-- **[01-implementation-roadmap.md](../../docs/ai-tutor/01-implementation-roadmap.md)** - Sprint-by-sprint implementation plan
+- **[01-implementation-roadmap.md](../../docs/ai-tutor/01-implementation-roadmap.md)** -
+  Sprint-by-sprint implementation plan
 - **[02-architecture.md](../../docs/ai-tutor/02-architecture.md)** - Clean Architecture overview
 - **[03-runtime-pipeline.md](../../docs/ai-tutor/03-runtime-pipeline.md)** - Student question flow
-- **[04-indexing-pipeline.md](../../docs/ai-tutor/04-indexing-pipeline.md)** - Knowledge base indexing
+- **[04-indexing-pipeline.md](../../docs/ai-tutor/04-indexing-pipeline.md)** - Knowledge base
+  indexing
 - **[06-adr/](../../docs/ai-tutor/06-adr/)** - Architecture Decision Records
 - **[07-future-roadmap.md](../../docs/ai-tutor/07-future-roadmap.md)** - Post-MVP enhancements
 
@@ -48,6 +51,7 @@ AI_TUTOR_ENABLED=true  # or false
 ```
 
 When disabled:
+
 - Routes are not registered
 - Services are not available
 - Q&A tab shows placeholder message
@@ -99,15 +103,18 @@ npm run lint
 ## Integration Points
 
 ### Database
+
 - Prisma models: `TutorConversation`, `TutorMessage`, `TutorThread`, `KnowledgeChunk`
 - Vector storage: PostgreSQL with pgvector extension
 
 ### API
+
 - Routes under `/api/tutor/`
 - Streaming responses via Server-Sent Events
 - Authentication required (user must be enrolled)
 
 ### UI
+
 - Component in lecture view (replaces Q&A placeholder)
 - Integrated into `LectureView` component
 - Accessible from lecture tab interface
@@ -116,7 +123,8 @@ npm run lint
 
 - **Core chat + RAG:** Implemented (`POST /api/tutor/messages`, streaming, persistence)
 - **Thread history:** Implemented (`GET /api/tutor/threads`, read-only)
-- **Course indexing:** Implemented (publish hooks, worker, bootstrap, outbox, `POST /api/tutor/index`)
+- **Course indexing:** Implemented (publish hooks, worker, bootstrap, outbox,
+  `POST /api/tutor/index`)
 - **Repository ports + DI:** Implemented
 - **Session context cache:** Redis-backed (`tutor:session-context:v2`, 5 min TTL)
 - **Production hardening:** Rate limits (fail-closed), cost cap, LLM retries, integrity buffering

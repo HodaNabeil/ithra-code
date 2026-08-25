@@ -21,9 +21,7 @@ export function getPaymentTrace(): PaymentTraceContext | undefined {
   return storage.getStore();
 }
 
-export function mergePaymentTrace(
-  partial: Partial<PaymentTraceContext>,
-): void {
+export function mergePaymentTrace(partial: Partial<PaymentTraceContext>): void {
   const current = storage.getStore();
   if (!current) {
     return;

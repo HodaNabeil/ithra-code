@@ -58,12 +58,16 @@ export async function generateStructuredOutput<T>(
 
     const complete = llmPort.complete;
     if (!complete) {
-      throw new Error('LLM port does not support complete() for structured output');
+      throw new Error(
+        'LLM port does not support complete() for structured output',
+      );
     }
 
     const response = await complete({
       systemPrompt: request.systemPrompt,
-      messages: [{ role: 'user', content: `${request.userPrompt}${errorContext}` }],
+      messages: [
+        { role: 'user', content: `${request.userPrompt}${errorContext}` },
+      ],
       responseFormat: 'json',
       jsonSchema: schema.jsonSchema,
       temperature: 0.2,
@@ -92,7 +96,10 @@ export async function generateStructuredOutput<T>(
       // keep as string for repair path
     }
 
-    const directValidation = validateStructuredOutput(schema.zodSchema, parsedValue);
+    const directValidation = validateStructuredOutput(
+      schema.zodSchema,
+      parsedValue,
+    );
     if (directValidation.valid) {
       return {
         schemaId: schema.id,
@@ -109,7 +116,10 @@ export async function generateStructuredOutput<T>(
 
     const repair = repairStructuredOutput(lastRaw);
     if (repair.repaired !== null) {
-      const repairedValidation = validateStructuredOutput(schema.zodSchema, repair.repaired);
+      const repairedValidation = validateStructuredOutput(
+        schema.zodSchema,
+        repair.repaired,
+      );
       if (repairedValidation.valid) {
         return {
           schemaId: schema.id,
@@ -130,7 +140,10 @@ export async function generateStructuredOutput<T>(
     }
 
     if (parsedValue !== null && typeof parsedValue !== 'string') {
-      const validation = validateStructuredOutput(schema.zodSchema, parsedValue);
+      const validation = validateStructuredOutput(
+        schema.zodSchema,
+        parsedValue,
+      );
       lastErrors = validation.errors;
     }
   }

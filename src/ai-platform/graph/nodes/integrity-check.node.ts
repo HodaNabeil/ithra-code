@@ -1,6 +1,9 @@
 import type { LangGraphRunnableConfig } from '@langchain/langgraph';
 
-import { buildGuidedLearningResponse, detectAssessmentIntent } from './guards/educational-integrity';
+import {
+  buildGuidedLearningResponse,
+  detectAssessmentIntent,
+} from './guards/educational-integrity';
 import type { ExecutionPolicy } from '../state/shared-channels';
 import type { TutorAgentState } from '../state/tutor-agent.state';
 

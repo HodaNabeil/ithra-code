@@ -37,7 +37,9 @@ export class AnthropicLlmAdapter implements LlmPort {
     this.requestTimeoutMs = config.requestTimeoutMs;
   }
 
-  async *streamAnswer(options: LlmStreamOptions): AsyncIterableIterator<string> {
+  async *streamAnswer(
+    options: LlmStreamOptions,
+  ): AsyncIterableIterator<string> {
     const { controller, cleanup } = createLinkedAbortController(
       this.requestTimeoutMs,
       options.signal,
@@ -69,7 +71,11 @@ export class AnthropicLlmAdapter implements LlmPort {
       }
 
       if (!response.body) {
-        throw new LlmError(LlmErrorCodes.UNKNOWN, 'Anthropic stream body missing', false);
+        throw new LlmError(
+          LlmErrorCodes.UNKNOWN,
+          'Anthropic stream body missing',
+          false,
+        );
       }
 
       const reader = response.body.getReader();
@@ -100,13 +106,18 @@ export class AnthropicLlmAdapter implements LlmPort {
             const event = JSON.parse(payload) as {
               type?: string;
               delta?: { type?: string; text?: string };
-              message?: { usage?: { input_tokens?: number; output_tokens?: number } };
+              message?: {
+                usage?: { input_tokens?: number; output_tokens?: number };
+              };
               usage?: { input_tokens?: number; output_tokens?: number };
             };
 
             const usagePatch = parseAnthropicStreamUsageEvent(event);
             if (usagePatch) {
-              accumulatedUsage = mergeProviderRawUsage(accumulatedUsage, usagePatch);
+              accumulatedUsage = mergeProviderRawUsage(
+                accumulatedUsage,
+                usagePatch,
+              );
             }
 
             if (
@@ -204,13 +215,25 @@ export class AnthropicLlmAdapter implements LlmPort {
   private async mapHttpError(response: Response): Promise<LlmError> {
     const status = response.status;
     if (status === 429) {
-      return new LlmError(LlmErrorCodes.RATE_LIMITED, 'Anthropic rate limited', true);
+      return new LlmError(
+        LlmErrorCodes.RATE_LIMITED,
+        'Anthropic rate limited',
+        true,
+      );
     }
     if (status >= 500) {
-      return new LlmError(LlmErrorCodes.SERVICE_UNAVAILABLE, 'Anthropic unavailable', true);
+      return new LlmError(
+        LlmErrorCodes.SERVICE_UNAVAILABLE,
+        'Anthropic unavailable',
+        true,
+      );
     }
     const body = await response.text();
-    return new LlmError(LlmErrorCodes.UNKNOWN, body || 'Anthropic request failed', false);
+    return new LlmError(
+      LlmErrorCodes.UNKNOWN,
+      body || 'Anthropic request failed',
+      false,
+    );
   }
 
   private mapError(error: unknown, signal?: AbortSignal): LlmError {
@@ -219,9 +242,17 @@ export class AnthropicLlmAdapter implements LlmPort {
     }
     if (error instanceof Error && error.name === 'AbortError') {
       if (signal?.aborted) {
-        return new LlmError(LlmErrorCodes.INVALID_REQUEST, 'Anthropic request aborted', false);
+        return new LlmError(
+          LlmErrorCodes.INVALID_REQUEST,
+          'Anthropic request aborted',
+          false,
+        );
       }
-      return new LlmError(LlmErrorCodes.TIMEOUT, 'Anthropic request timed out', true);
+      return new LlmError(
+        LlmErrorCodes.TIMEOUT,
+        'Anthropic request timed out',
+        true,
+      );
     }
     return new LlmError(
       LlmErrorCodes.UNKNOWN,

@@ -1,4 +1,7 @@
-import type { MetricLabels, MetricsRecorder } from '@/features/payments/application/ports/metrics.recorder';
+import type {
+  MetricLabels,
+  MetricsRecorder,
+} from '@/features/payments/application/ports/metrics.recorder';
 
 type CounterKey = string;
 type HistogramSample = { valueMs: number; labels?: MetricLabels };
@@ -15,11 +18,7 @@ export class PrometheusMetricsRecorder implements MetricsRecorder {
     this.counters.set(key, (this.counters.get(key) ?? 0) + 1);
   }
 
-  observeHistogram(
-    name: string,
-    valueMs: number,
-    labels?: MetricLabels,
-  ): void {
+  observeHistogram(name: string, valueMs: number, labels?: MetricLabels): void {
     const samples = this.histograms.get(name) ?? [];
     samples.push({ valueMs, labels });
     this.histograms.set(name, samples);
@@ -30,10 +29,7 @@ export class PrometheusMetricsRecorder implements MetricsRecorder {
 
     for (const [key, value] of this.counters.entries()) {
       const { name, labelText } = this.parseCounterKey(key);
-      lines.push(
-        `# TYPE ${name} counter`,
-        `${name}${labelText} ${value}`,
-      );
+      lines.push(`# TYPE ${name} counter`, `${name}${labelText} ${value}`);
     }
 
     for (const [name, samples] of this.histograms.entries()) {

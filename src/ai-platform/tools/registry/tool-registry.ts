@@ -9,7 +9,10 @@ type RegisteredTool = {
 
 const tools = new Map<string, RegisteredTool>();
 
-export function registerTool(definition: ToolDefinition, handler: ToolHandler): void {
+export function registerTool(
+  definition: ToolDefinition,
+  handler: ToolHandler,
+): void {
   tools.set(definition.id, { definition, handler });
 }
 
@@ -25,7 +28,10 @@ export function listTools(agentAllowedTools?: string[]): ToolDefinition[] {
   return all.filter((tool) => agentAllowedTools.includes(tool.id));
 }
 
-export function validateToolInput(toolId: string, input: unknown): {
+export function validateToolInput(
+  toolId: string,
+  input: unknown,
+): {
   success: boolean;
   data?: Record<string, unknown>;
   error?: string;

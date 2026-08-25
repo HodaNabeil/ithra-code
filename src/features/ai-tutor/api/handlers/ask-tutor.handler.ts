@@ -14,7 +14,10 @@ import {
   askTutorUseCase,
   getAskTutorUseCaseDeps,
 } from '../../infrastructure/di/ai-tutor-container';
-import { encodeSseCommentLine, encodeSseDataLine } from '../../shared/sse-protocol';
+import {
+  encodeSseCommentLine,
+  encodeSseDataLine,
+} from '../../shared/sse-protocol';
 
 const STREAM_HEADERS = {
   'Content-Type': 'text/event-stream; charset=utf-8',
@@ -24,7 +27,9 @@ const STREAM_HEADERS = {
 
 const HEARTBEAT_INTERVAL_MS = 15_000;
 
-export async function handleAskTutorRequest(request: Request): Promise<Response> {
+export async function handleAskTutorRequest(
+  request: Request,
+): Promise<Response> {
   if (!AITutorConfig.isEnabled()) {
     return Response.json(
       { success: false, message: 'ميزة المدرس الذكي غير مفعّلة' },

@@ -38,11 +38,14 @@ export class LangfusePromptAdapter implements PromptRepositoryPort {
     try {
       const promptClient = await this.client.getPrompt(query.key, undefined, {
         label,
-        cacheTtlSeconds: Math.floor(AIPlatformConfig.getPromptCacheTtlMs() / 1000),
+        cacheTtlSeconds: Math.floor(
+          AIPlatformConfig.getPromptCacheTtlMs() / 1000,
+        ),
       });
 
       const compiled = promptClient.compile(query.variables ?? {});
-      const content = typeof compiled === 'string' ? compiled : String(compiled);
+      const content =
+        typeof compiled === 'string' ? compiled : String(compiled);
 
       return {
         key: query.key,

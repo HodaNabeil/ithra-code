@@ -16,7 +16,9 @@ export const evaluateSubmissionInputSchema = z.object({
   locale: z.enum(['ar', 'en']).optional(),
 });
 
-export type EvaluateSubmissionInputDTO = z.infer<typeof evaluateSubmissionInputSchema>;
+export type EvaluateSubmissionInputDTO = z.infer<
+  typeof evaluateSubmissionInputSchema
+>;
 
 export interface EvaluationResultDTO {
   runId: string;

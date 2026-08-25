@@ -5,10 +5,7 @@ import type {
   CartRepository,
   CartTotals,
 } from '../../../domain/repositories/cart.repository';
-import {
-  cartWithItemsInclude,
-  type DB_CartWithItems,
-} from '../cart.select';
+import { cartWithItemsInclude, type DB_CartWithItems } from '../cart.select';
 
 export class PrismaCartRepository implements CartRepository {
   async findByUserId(userId: string): Promise<DB_CartWithItems | null> {

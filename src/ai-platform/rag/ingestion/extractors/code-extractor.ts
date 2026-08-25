@@ -19,7 +19,9 @@ export const codeExtractor: TextExtractorPort = {
   },
 
   async extract(source: KnowledgeSource): Promise<ExtractionResult> {
-    const attachmentId = String(source.metadata?.attachmentId ?? source.sourceId);
+    const attachmentId = String(
+      source.metadata?.attachmentId ?? source.sourceId,
+    );
     const result = await extractAttachmentText({
       id: attachmentId,
       name: source.title,

@@ -25,13 +25,17 @@ export const EvaluatorAgentStateAnnotation = Annotation.Root({
   input: Annotation<string>,
   locale: Annotation<'ar' | 'en'>,
   systemPrompt: Annotation<string>,
-  rubricCriteria: Annotation<Array<{ id: string; name: string; maxScore: number }>>({
+  rubricCriteria: Annotation<
+    Array<{ id: string; name: string; maxScore: number }>
+  >({
     reducer: (_left, right) => right,
     default: () => [],
   }),
   sanitizedInput: Annotation<string>,
   structuredOutput: Annotation<EvaluatorRubricV1 | undefined>,
-  structuredOutputStatus: Annotation<'valid' | 'repaired' | 'rejected' | 'pending'>,
+  structuredOutputStatus: Annotation<
+    'valid' | 'repaired' | 'rejected' | 'pending'
+  >,
   finalResponse: Annotation<string>,
   ...agentExecutionChannels,
   conversationHistory: Annotation<LlmMessage[]>({
@@ -44,7 +48,9 @@ export const EvaluatorAgentStateAnnotation = Annotation.Root({
     reducer: (_left, right) => right,
     default: () => [],
   }),
-  toolResults: Annotation<Array<{ toolCallId: string; output: Record<string, unknown> }>>({
+  toolResults: Annotation<
+    Array<{ toolCallId: string; output: Record<string, unknown> }>
+  >({
     reducer: (left, right) => [...left, ...right],
     default: () => [],
   }),

@@ -6,7 +6,8 @@ import { config as loadEnv } from 'dotenv';
 loadEnv({ path: path.resolve(process.cwd(), '.env'), quiet: true });
 
 process.env.SKIP_ENV_VALIDATION = 'true';
-process.env.DATABASE_URL ??= 'postgresql://postgres:postgres@localhost:5432/test';
+process.env.DATABASE_URL ??=
+  'postgresql://postgres:postgres@localhost:5432/test';
 process.env.REDIS_URL ??= 'redis://localhost:6379';
 process.env.AUTH_SECRET = 'test-secret-test-secret-test-secret';
 process.env.AUTH_URL = 'http://localhost:3000';

@@ -24,7 +24,8 @@ export function trimConversationHistory(
   const maxPromptTokens = AI_TUTOR_CONSTANTS.MAX_PROMPT_TOKENS;
   const reservedResponseTokens = AI_TUTOR_CONSTANTS.MAX_RESPONSE_TOKENS;
   const systemTokens = estimateTokens(systemPrompt);
-  const availableTokens = maxPromptTokens - systemTokens - reservedResponseTokens;
+  const availableTokens =
+    maxPromptTokens - systemTokens - reservedResponseTokens;
 
   if (availableTokens <= 0 || history.length === 0) {
     return history.slice(-2);

@@ -55,6 +55,8 @@ export function sanitizeMetricLabels(
   return sanitized;
 }
 
-export function listAllowedMetricLabelKeys(metricName: string): readonly string[] {
+export function listAllowedMetricLabelKeys(
+  metricName: string,
+): readonly string[] {
   return ALLOWED_LABEL_KEYS[metricName] ?? [];
 }

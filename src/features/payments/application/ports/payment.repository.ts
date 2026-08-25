@@ -1,5 +1,8 @@
 import type { PaymentEntity } from '@/features/payments/domain';
-import type { PaymentReconcileStatus, PaymentStatus } from '@/generated/prisma/enums';
+import type {
+  PaymentReconcileStatus,
+  PaymentStatus,
+} from '@/generated/prisma/enums';
 
 export type DuePaymentRecord = {
   payment: PaymentEntity;

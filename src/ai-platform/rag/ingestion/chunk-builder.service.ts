@@ -1,6 +1,9 @@
 import { KnowledgeSensitivity } from '@/generated/prisma/enums';
 
-import type { KnowledgeSource, KnowledgeSourceType } from '@/ai-platform/indexing/domain/models/KnowledgeSource';
+import type {
+  KnowledgeSource,
+  KnowledgeSourceType,
+} from '@/ai-platform/indexing/domain/models/KnowledgeSource';
 import type { KnowledgeChunkRecord } from '@/ai-platform/indexing/domain/models/KnowledgeChunk';
 import { classifyContent } from '@/ai-platform/indexing/services/content-classification.service';
 import {

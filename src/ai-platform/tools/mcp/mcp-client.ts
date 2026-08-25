@@ -84,7 +84,9 @@ export class McpClient {
       return (await response.json()) as Record<string, unknown>;
     }
 
-    throw new Error(`MCP stdio transport not available in this runtime: ${serverId}`);
+    throw new Error(
+      `MCP stdio transport not available in this runtime: ${serverId}`,
+    );
   }
 
   async listResources(): Promise<McpResource[]> {
@@ -102,7 +104,11 @@ export class McpClient {
         }
 
         const payload = (await response.json()) as {
-          resources?: Array<{ uri: string; name: string; description?: string }>;
+          resources?: Array<{
+            uri: string;
+            name: string;
+            description?: string;
+          }>;
         };
 
         for (const resource of payload.resources ?? []) {
@@ -131,7 +137,10 @@ export class McpClient {
           continue;
         }
 
-        const payload = (await response.json()) as { contents?: string; text?: string };
+        const payload = (await response.json()) as {
+          contents?: string;
+          text?: string;
+        };
         const content = payload.contents ?? payload.text;
         if (typeof content === 'string') {
           return content;
@@ -145,10 +154,13 @@ export class McpClient {
   }
 
   createHandler(toolId: string) {
-    return async (input: Record<string, unknown>) => this.callTool(toolId, input);
+    return async (input: Record<string, unknown>) =>
+      this.callTool(toolId, input);
   }
 
-  private async discoverFromServer(config: McpServerConfig): Promise<ToolDefinition[]> {
+  private async discoverFromServer(
+    config: McpServerConfig,
+  ): Promise<ToolDefinition[]> {
     if (config.transport === 'http' && config.url) {
       try {
         const response = await fetch(`${config.url}/tools`);
@@ -166,8 +178,9 @@ export class McpClient {
         };
 
         return (payload.tools ?? [])
-          .filter((tool) =>
-            !config.allowedTools || config.allowedTools.includes(tool.name),
+          .filter(
+            (tool) =>
+              !config.allowedTools || config.allowedTools.includes(tool.name),
           )
           .map((tool) => ({
             id: `mcp:${config.id}:${tool.name}`,
@@ -193,7 +206,9 @@ export class McpClient {
   }
 }
 
-export function parseMcpServerConfigs(raw: string | undefined): McpServerConfig[] {
+export function parseMcpServerConfigs(
+  raw: string | undefined,
+): McpServerConfig[] {
   if (!raw?.trim()) {
     return [];
   }

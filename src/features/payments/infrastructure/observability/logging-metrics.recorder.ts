@@ -12,11 +12,7 @@ export class LoggingMetricsRecorder implements MetricsRecorder {
     logger.info({ metric: name, labels }, '[PAYMENT_METRIC_COUNTER]');
   }
 
-  observeHistogram(
-    name: string,
-    valueMs: number,
-    labels?: MetricLabels,
-  ): void {
+  observeHistogram(name: string, valueMs: number, labels?: MetricLabels): void {
     logger.info(
       { metric: name, valueMs, labels },
       '[PAYMENT_METRIC_HISTOGRAM]',

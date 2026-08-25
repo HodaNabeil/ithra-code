@@ -8,8 +8,14 @@ const TOKEN_PRICING: Record<string, { input: number; output: number }> = {
   'gpt-3.5-turbo': { input: 0.5 / 1_000_000, output: 1.5 / 1_000_000 },
   'gpt-4o-mini': { input: 0.15 / 1_000_000, output: 0.6 / 1_000_000 },
   'gpt-4o': { input: 2.5 / 1_000_000, output: 10.0 / 1_000_000 },
-  'claude-3-5-haiku-20241022': { input: 0.8 / 1_000_000, output: 4.0 / 1_000_000 },
-  'claude-3-5-sonnet-20241022': { input: 3.0 / 1_000_000, output: 15.0 / 1_000_000 },
+  'claude-3-5-haiku-20241022': {
+    input: 0.8 / 1_000_000,
+    output: 4.0 / 1_000_000,
+  },
+  'claude-3-5-sonnet-20241022': {
+    input: 3.0 / 1_000_000,
+    output: 15.0 / 1_000_000,
+  },
   'gemini-2.0-flash': { input: 0.1 / 1_000_000, output: 0.4 / 1_000_000 },
   'gemini-1.5-flash': { input: 0.075 / 1_000_000, output: 0.3 / 1_000_000 },
   'text-embedding-3-small': { input: 0.02 / 1_000_000, output: 0 },
@@ -18,8 +24,10 @@ const TOKEN_PRICING: Record<string, { input: number; output: number }> = {
 
 const DEFAULT_PRICING = { input: 1.0 / 1_000_000, output: 2.0 / 1_000_000 };
 
-let envPricingOverride: Record<string, { input: number; output: number }> | null =
-  null;
+let envPricingOverride: Record<
+  string,
+  { input: number; output: number }
+> | null = null;
 let envPricingLoaded = false;
 
 function parseEnvPricingJson(
@@ -83,7 +91,10 @@ export function resetTokenPricingForTests(): void {
   envPricingLoaded = false;
 }
 
-export function getModelPricing(model: string): { input: number; output: number } {
+export function getModelPricing(model: string): {
+  input: number;
+  output: number;
+} {
   const envPricing = loadEnvPricingOverride();
   if (envPricing?.[model]) {
     return envPricing[model];
@@ -119,5 +130,7 @@ export function computeRunCostUsd(input: ComputeRunCostUsdInput): number {
     return llmCost;
   }
 
-  return llmCost + estimateCostUsd(input.embeddingModel, input.embeddingTokens, 0);
+  return (
+    llmCost + estimateCostUsd(input.embeddingModel, input.embeddingTokens, 0)
+  );
 }

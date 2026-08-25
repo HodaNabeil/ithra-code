@@ -16,7 +16,9 @@ export type TutorRequestLogContext = {
   errorCode?: string;
 };
 
-export function logTutorRequestCompleted(context: TutorRequestLogContext): void {
+export function logTutorRequestCompleted(
+  context: TutorRequestLogContext,
+): void {
   logger.info(
     {
       event: 'tutor.request.completed',

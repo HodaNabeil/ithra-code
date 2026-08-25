@@ -17,7 +17,10 @@ export type MessageRateLimitOptions = {
   scope?: string;
 };
 
-async function incrementWindow(key: string, windowSeconds: number): Promise<number> {
+async function incrementWindow(
+  key: string,
+  windowSeconds: number,
+): Promise<number> {
   const count = await redis.incr(key);
 
   if (count === 1) {
@@ -31,7 +34,9 @@ async function incrementWindow(key: string, windowSeconds: number): Promise<numb
  * Per-user message rate limits across minute, hour, and day windows.
  * Redis failures fail closed to prevent unbounded LLM usage.
  */
-export async function assertMessageRateLimit(options: MessageRateLimitOptions): Promise<void> {
+export async function assertMessageRateLimit(
+  options: MessageRateLimitOptions,
+): Promise<void> {
   const scope = options.scope ?? 'messages';
   const prefix = AI_PLATFORM_CONSTANTS.KEY_PREFIX_RATE;
 
@@ -79,7 +84,10 @@ export async function assertMessageRateLimit(options: MessageRateLimitOptions): 
       throw error;
     }
 
-    logger.error({ userId: options.userId, guard: 'rate_limit' }, '[AI_RATE_LIMIT_REDIS_FAILURE]');
+    logger.error(
+      { userId: options.userId, guard: 'rate_limit' },
+      '[AI_RATE_LIMIT_REDIS_FAILURE]',
+    );
     platformMetrics.incrementRedisGuardFailure('rate_limit');
     throw new PlatformError(
       PlatformErrorCodes.PROVIDER_UNAVAILABLE,

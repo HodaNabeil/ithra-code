@@ -1,5 +1,8 @@
 import type { LlmMessage } from '../../domain/ports/llm.port';
-import type { AgentDefinition, AgentRunRequest } from '../../agents/base/agent-definition';
+import type {
+  AgentDefinition,
+  AgentRunRequest,
+} from '../../agents/base/agent-definition';
 import type { AgentGraphState } from '../../graph/compiler/graph-compiler';
 import type { EvaluatorAgentState } from '../../graph/state/evaluator-agent.state';
 import type {
@@ -56,7 +59,9 @@ function resolveLocale(request: AgentRunRequest): 'ar' | 'en' {
   return 'en';
 }
 
-function parseRubricCriteria(request: AgentRunRequest): EvaluatorAgentState['rubricCriteria'] {
+function parseRubricCriteria(
+  request: AgentRunRequest,
+): EvaluatorAgentState['rubricCriteria'] {
   const raw = request.options?.metadata?.rubricCriteria;
   if (!Array.isArray(raw)) {
     return [];
@@ -88,23 +93,29 @@ function isLlmMessage(value: unknown): value is LlmMessage {
   );
 }
 
-function isPersonalizationContext(value: unknown): value is TutorPersonalizationContext {
+function isPersonalizationContext(
+  value: unknown,
+): value is TutorPersonalizationContext {
   if (typeof value !== 'object' || value === null) {
     return false;
   }
   const candidate = value as Record<string, unknown>;
 
-  const stringFieldsOk = (['studentName', 'learningLevel', 'courseTitle'] as const).every(
+  const stringFieldsOk = (
+    ['studentName', 'learningLevel', 'courseTitle'] as const
+  ).every(
     (key) => candidate[key] === undefined || typeof candidate[key] === 'string',
   );
   const progressOk =
-    candidate.progressPercent === undefined || typeof candidate.progressPercent === 'number';
+    candidate.progressPercent === undefined ||
+    typeof candidate.progressPercent === 'number';
   const gapsOk =
     candidate.knowledgeGaps === undefined ||
     (Array.isArray(candidate.knowledgeGaps) &&
       candidate.knowledgeGaps.every((gap) => typeof gap === 'string'));
   const sessionMetaOk =
-    candidate.sessionMetaMode === undefined || typeof candidate.sessionMetaMode === 'boolean';
+    candidate.sessionMetaMode === undefined ||
+    typeof candidate.sessionMetaMode === 'boolean';
 
   return stringFieldsOk && progressOk && gapsOk && sessionMetaOk;
 }
@@ -119,7 +130,10 @@ function parseTutorRunMetadata(
 
   const conversationHistory = raw.conversationHistory;
 
-  if (!Array.isArray(conversationHistory) || !conversationHistory.every(isLlmMessage)) {
+  if (
+    !Array.isArray(conversationHistory) ||
+    !conversationHistory.every(isLlmMessage)
+  ) {
     return null;
   }
 
@@ -138,17 +152,26 @@ function parseTutorRunMetadata(
   };
 }
 
-function resolveSystemPrompt(agent: AgentDefinition, locale: 'ar' | 'en'): string {
+function resolveSystemPrompt(
+  agent: AgentDefinition,
+  locale: 'ar' | 'en',
+): string {
   if (agent.promptNamespace === 'evaluator') {
     return EVALUATOR_SYSTEM_PROMPTS[locale];
   }
   if (agent.promptNamespace === 'tutor') {
     return DEFAULT_SYSTEM_PROMPTS[locale];
   }
-  return resolvePromptSync('tutor/system', locale).content || DEFAULT_SYSTEM_PROMPTS.en;
+  return (
+    resolvePromptSync('tutor/system', locale).content ||
+    DEFAULT_SYSTEM_PROMPTS.en
+  );
 }
 
-function resolveDefaultPromptVersion(agent: AgentDefinition, locale: 'ar' | 'en'): string {
+function resolveDefaultPromptVersion(
+  agent: AgentDefinition,
+  locale: 'ar' | 'en',
+): string {
   if (agent.promptNamespace === 'evaluator') {
     return resolvePromptSync('evaluator/system', locale).version;
   }

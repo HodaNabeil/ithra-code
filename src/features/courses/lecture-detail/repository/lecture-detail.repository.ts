@@ -18,7 +18,9 @@ export interface LectureDetailRepository {
 }
 
 export class PrismaLectureDetailRepository implements LectureDetailRepository {
-  async findLectureById(lectureId: string): Promise<DB_LectureDetailEntity | null> {
+  async findLectureById(
+    lectureId: string,
+  ): Promise<DB_LectureDetailEntity | null> {
     return prisma.lecture.findUnique({
       where: { id: lectureId },
       select: lectureDetailSelect,
@@ -44,7 +46,10 @@ export class PrismaLectureDetailRepository implements LectureDetailRepository {
     };
   }
 
-  async hasUserReviewedCourse(courseId: string, userId: string): Promise<boolean> {
+  async hasUserReviewedCourse(
+    courseId: string,
+    userId: string,
+  ): Promise<boolean> {
     const review = await prisma.review.findUnique({
       where: {
         courseId_userId: { courseId, userId },

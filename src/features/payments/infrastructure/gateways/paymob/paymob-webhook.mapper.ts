@@ -134,11 +134,7 @@ export function mapPaymobWebhookToProcessRequest(input: {
 
   const providerTransactionId = obj.id != null ? String(obj.id) : null;
   if (!providerTransactionId) {
-    throw new WebhookError(
-      400,
-      'معرف معاملة المزود مفقود',
-      'VALIDATION_ERROR',
-    );
+    throw new WebhookError(400, 'معرف معاملة المزود مفقود', 'VALIDATION_ERROR');
   }
 
   const success = asBoolean(obj.success) && !asBoolean(obj.error_occured);

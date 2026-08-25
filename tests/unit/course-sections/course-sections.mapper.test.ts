@@ -8,7 +8,9 @@ import {
 import type { DB_CourseSectionsEntity } from '@/features/courses/course-sections/repository/course-sections.select';
 
 vi.mock('@/lib/bunny-stream', () => ({
-  signBunnyHlsUrl: vi.fn(() => 'https://cdn.example.com/video/playlist.m3u8?token=abc'),
+  signBunnyHlsUrl: vi.fn(
+    () => 'https://cdn.example.com/video/playlist.m3u8?token=abc',
+  ),
 }));
 
 const baseDate = new Date('2026-01-01T00:00:00.000Z');

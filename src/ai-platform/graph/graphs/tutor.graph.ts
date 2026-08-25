@@ -7,7 +7,10 @@ import {
   groundingCheckNode,
   routeAfterGroundingCheck,
 } from '../nodes/grounding-check.node';
-import { integrityCheckNode, routeAfterIntegrityCheck } from '../nodes/integrity-check.node';
+import {
+  integrityCheckNode,
+  routeAfterIntegrityCheck,
+} from '../nodes/integrity-check.node';
 import { loadHistoryNode } from '../nodes/load-history.node';
 import { prepareHistoryNode } from '../nodes/prepare-history.node';
 import { persistTurnNode } from '../nodes/persist-turn.node';
@@ -23,7 +26,11 @@ import { TutorAgentStateAnnotation } from '../state/tutor-agent.state';
 const MAX_TOOL_ITERATIONS = 5;
 
 function routeAfterGenerate(state: {
-  pendingToolCalls?: Array<{ id: string; name: string; arguments: Record<string, unknown> }>;
+  pendingToolCalls?: Array<{
+    id: string;
+    name: string;
+    arguments: Record<string, unknown>;
+  }>;
   toolIterations?: number;
 }): 'tool-call' | 'validate-output' {
   if (
@@ -38,16 +45,40 @@ function routeAfterGenerate(state: {
 
 export function buildTutorGraph() {
   const graph = new StateGraph(TutorAgentStateAnnotation)
-    .addNode('sanitize-input', wrapGraphNode('sanitize-input', sanitizeInputNode))
+    .addNode(
+      'sanitize-input',
+      wrapGraphNode('sanitize-input', sanitizeInputNode),
+    )
     .addNode('load-history', wrapGraphNode('load-history', loadHistoryNode))
-    .addNode('integrity-check', wrapGraphNode('integrity-check', integrityCheckNode))
-    .addNode('retrieve-context', wrapGraphNode('retrieve-context', retrieveContextNode))
-    .addNode('grounding-check', wrapGraphNode('grounding-check', groundingCheckNode))
-    .addNode('prepare-history', wrapGraphNode('prepare-history', prepareHistoryNode))
-    .addNode('generate-response', wrapGraphNode('generate-response', generateResponseNode))
+    .addNode(
+      'integrity-check',
+      wrapGraphNode('integrity-check', integrityCheckNode),
+    )
+    .addNode(
+      'retrieve-context',
+      wrapGraphNode('retrieve-context', retrieveContextNode),
+    )
+    .addNode(
+      'grounding-check',
+      wrapGraphNode('grounding-check', groundingCheckNode),
+    )
+    .addNode(
+      'prepare-history',
+      wrapGraphNode('prepare-history', prepareHistoryNode),
+    )
+    .addNode(
+      'generate-response',
+      wrapGraphNode('generate-response', generateResponseNode),
+    )
     .addNode('tool-call', wrapGraphNode('tool-call', toolCallNode as never))
-    .addNode('validate-output', wrapGraphNode('validate-output', validateOutputNode))
-    .addNode('enrich-response', wrapGraphNode('enrich-response', enrichResponseNode))
+    .addNode(
+      'validate-output',
+      wrapGraphNode('validate-output', validateOutputNode),
+    )
+    .addNode(
+      'enrich-response',
+      wrapGraphNode('enrich-response', enrichResponseNode),
+    )
     .addNode('persist-turn', wrapGraphNode('persist-turn', persistTurnNode))
     .addEdge(START, 'sanitize-input')
     .addEdge('sanitize-input', 'load-history')

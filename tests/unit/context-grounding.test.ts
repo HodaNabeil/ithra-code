@@ -12,7 +12,10 @@ import type { RetrievedChunkState } from '@/ai-platform/graph/state/tutor-agent.
 
 const MIN_SCORE = 0.7;
 
-function makeChunk(score: number, content = 'Angular component basics'): RetrievedChunkState {
+function makeChunk(
+  score: number,
+  content = 'Angular component basics',
+): RetrievedChunkState {
   return {
     id: `chunk-${score}`,
     content,

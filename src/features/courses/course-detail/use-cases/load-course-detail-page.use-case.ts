@@ -9,9 +9,7 @@ import {
 import { mapCourseDetailEntityToPageDTO } from '../mapper/to-page-dto';
 import { mapCourseDetailEntityToPublicDTO } from '../mapper/to-api-dto';
 import { assertCourseVisible } from '../policies/course-visibility.policy';
-import {
-  courseDetailRepository,
-} from '../repository/course-detail.repository';
+import { courseDetailRepository } from '../repository/course-detail.repository';
 import type { DB_CourseDetailEntity } from '../repository/course-detail.select';
 
 const loadCourseDetailEntityCached = cache(
@@ -49,7 +47,11 @@ export async function loadCourseDetailPage(slug: string) {
 
   const entity = await loadCourseDetailEntityCached(slug);
   if (!entity) {
-    throw new CourseDetailError(404, COURSE_NOT_FOUND_MESSAGE, 'COURSE_NOT_FOUND');
+    throw new CourseDetailError(
+      404,
+      COURSE_NOT_FOUND_MESSAGE,
+      'COURSE_NOT_FOUND',
+    );
   }
 
   assertCourseVisible(mapCourseDetailEntityToPublicDTO(entity), user);

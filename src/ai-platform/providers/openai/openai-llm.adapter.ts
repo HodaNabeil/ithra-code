@@ -35,7 +35,9 @@ export class OpenAILlmAdapter implements LlmPort {
     this.requestTimeoutMs = config.requestTimeoutMs;
   }
 
-  async *streamAnswer(options: LlmStreamOptions): AsyncIterableIterator<string> {
+  async *streamAnswer(
+    options: LlmStreamOptions,
+  ): AsyncIterableIterator<string> {
     const { controller, cleanup } = createLinkedAbortController(
       this.requestTimeoutMs,
       options.signal,
@@ -151,7 +153,10 @@ export class OpenAILlmAdapter implements LlmPort {
         return {
           id: call.id,
           name: fn?.name ?? '',
-          arguments: JSON.parse(fn?.arguments ?? '{}') as Record<string, unknown>,
+          arguments: JSON.parse(fn?.arguments ?? '{}') as Record<
+            string,
+            unknown
+          >,
         };
       });
 

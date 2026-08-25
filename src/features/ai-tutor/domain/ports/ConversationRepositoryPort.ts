@@ -70,7 +70,10 @@ export interface ConversationRepositoryPort {
    * @param userId - User ID
    * @returns Existing or newly created conversation
    */
-  getOrCreateConversation(courseId: string, userId: string): Promise<ConversationDTO>;
+  getOrCreateConversation(
+    courseId: string,
+    userId: string,
+  ): Promise<ConversationDTO>;
 
   /**
    * Get existing conversation
@@ -117,7 +120,10 @@ export interface ConversationRepositoryPort {
   /**
    * Find conversation for a course/user pair without creating.
    */
-  findConversation(courseId: string, userId: string): Promise<ConversationDTO | null>;
+  findConversation(
+    courseId: string,
+    userId: string,
+  ): Promise<ConversationDTO | null>;
 
   /**
    * Find thread within a conversation without creating.
@@ -157,10 +163,7 @@ export interface ConversationRepositoryPort {
     },
   ): Promise<void>;
 
-  failTurn(
-    turnId: string,
-    status?: 'failed' | 'cancelled',
-  ): Promise<void>;
+  failTurn(turnId: string, status?: 'failed' | 'cancelled'): Promise<void>;
 
   claimIdempotencyKey(params: {
     userId: string;
@@ -190,7 +193,10 @@ export interface ConversationRepositoryPort {
    * @param message - Message to add
    * @returns Saved message with ID
    */
-  addMessage(threadId: string, message: Omit<MessageDTO, 'id' | 'createdAt' | 'updatedAt'>): Promise<MessageDTO>;
+  addMessage(
+    threadId: string,
+    message: Omit<MessageDTO, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<MessageDTO>;
 
   /**
    * Get message by ID

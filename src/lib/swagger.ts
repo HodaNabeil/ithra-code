@@ -411,7 +411,10 @@ const courseCatalogQuerySchema = z.object({
   search: z
     .string()
     .optional()
-    .openapi({ example: 'node', description: 'Search in title and description' }),
+    .openapi({
+      example: 'node',
+      description: 'Search in title and description',
+    }),
   sort: z
     .string()
     .optional()
@@ -629,7 +632,11 @@ registry.registerPath({
       content: {
         'application/json': {
           schema: CourseSchema,
-          example: { ...courseExample, title: 'Node.js - دورة محدّثة', price: 549 },
+          example: {
+            ...courseExample,
+            title: 'Node.js - دورة محدّثة',
+            price: 549,
+          },
         },
       },
     },
@@ -757,7 +764,9 @@ const courseOverviewExample = {
 const CourseOverviewSchema = registry.register(
   'CourseOverview',
   z.object({
-    totalHours: z.number().openapi({ example: courseOverviewExample.totalHours }),
+    totalHours: z
+      .number()
+      .openapi({ example: courseOverviewExample.totalHours }),
     totalStudents: z
       .number()
       .int()
@@ -774,7 +783,9 @@ const CourseOverviewSchema = registry.register(
       .number()
       .int()
       .openapi({ example: courseOverviewExample.lecturesCount }),
-    skillLevel: z.string().openapi({ example: courseOverviewExample.skillLevel }),
+    skillLevel: z
+      .string()
+      .openapi({ example: courseOverviewExample.skillLevel }),
     description: z
       .string()
       .openapi({ example: courseOverviewExample.description }),
@@ -843,8 +854,13 @@ const lectureProgressExample = {
 const LectureProgressSchema = registry.register(
   'LectureProgress',
   z.object({
-    isCompleted: z.boolean().openapi({ example: lectureProgressExample.isCompleted }),
-    timeSpent: z.number().int().openapi({ example: lectureProgressExample.timeSpent }),
+    isCompleted: z
+      .boolean()
+      .openapi({ example: lectureProgressExample.isCompleted }),
+    timeSpent: z
+      .number()
+      .int()
+      .openapi({ example: lectureProgressExample.timeSpent }),
     lastAccessedAt: z
       .string()
       .nullable()
@@ -961,7 +977,8 @@ const lectureDetailExample = {
   id: 'cllecture2k4m00008l5d6e3k1n',
   sectionId: 'clsection2k4m00008l5d6e3k1n',
   title: 'مقدمة إلى Node.js',
-  description: 'في هذه المحاضرة سنتعرف على Node.js وكيفية استخدامه في بناء التطبيقات',
+  description:
+    'في هذه المحاضرة سنتعرف على Node.js وكيفية استخدامه في بناء التطبيقات',
   type: 'VIDEO',
   content: null,
   videoId: 'clvideo2k4m00008l5d6e3k1n',
@@ -997,7 +1014,10 @@ const LectureDetailSchema = registry.register(
       .string()
       .nullable()
       .openapi({ example: lectureDetailExample.videoHlsUrl }),
-    position: z.number().int().openapi({ example: lectureDetailExample.position }),
+    position: z
+      .number()
+      .int()
+      .openapi({ example: lectureDetailExample.position }),
     isPublished: z
       .boolean()
       .openapi({ example: lectureDetailExample.isPublished }),
@@ -1053,7 +1073,9 @@ const CreateLectureResponseSchema = registry.register(
       .string()
       .openapi({ example: createLectureResponseExample.sectionId }),
     title: z.string().openapi({ example: createLectureResponseExample.title }),
-    type: lectureTypeSchema.openapi({ example: createLectureResponseExample.type }),
+    type: lectureTypeSchema.openapi({
+      example: createLectureResponseExample.type,
+    }),
     position: z
       .number()
       .int()
@@ -1115,7 +1137,9 @@ const SectionWithStatsSchema = registry.register(
     isPublished: z.boolean().openapi({ example: sectionExample.isPublished }),
     createdAt: z.string().openapi({ example: sectionExample.createdAt }),
     updatedAt: z.string().openapi({ example: sectionExample.updatedAt }),
-    lectures: z.array(LectureSchema).openapi({ example: sectionExample.lectures }),
+    lectures: z
+      .array(LectureSchema)
+      .openapi({ example: sectionExample.lectures }),
     statistics: SectionStatisticsSchema.openapi({
       example: sectionExample.statistics,
     }),
@@ -1677,7 +1701,10 @@ registry.registerPath({
       description: 'Lecture updated successfully',
       content: {
         'application/json': {
-          schema: registerApiSuccess('UpdateLectureResponse', LectureDetailSchema),
+          schema: registerApiSuccess(
+            'UpdateLectureResponse',
+            LectureDetailSchema,
+          ),
           example: apiSuccessExample('تم تحديث المحاضرة بنجاح', {
             ...lectureDetailExample,
             title: 'مقدمة إلى Node.js - محدثة',

@@ -63,8 +63,7 @@ export const PaymentMapper = {
       paidAt: payment.paidAt,
       ...(payment.providerMetadata != null
         ? {
-            providerMetadata:
-              payment.providerMetadata as Prisma.InputJsonValue,
+            providerMetadata: payment.providerMetadata as Prisma.InputJsonValue,
           }
         : {}),
     };

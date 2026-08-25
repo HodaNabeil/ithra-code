@@ -8,9 +8,7 @@ import type { PrismaClientLike } from '../prisma.types';
  * Prisma-backed implementation of the CheckoutSession persistence port.
  * Manages the CheckoutSession aggregate only.
  */
-export class PrismaCheckoutSessionRepository
-  implements CheckoutSessionRepository
-{
+export class PrismaCheckoutSessionRepository implements CheckoutSessionRepository {
   constructor(private readonly db: PrismaClientLike = prisma) {}
 
   async save(session: CheckoutSessionEntity): Promise<CheckoutSessionEntity> {

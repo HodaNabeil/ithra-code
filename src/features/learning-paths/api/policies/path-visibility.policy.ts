@@ -1,9 +1,4 @@
-import {
-  CourseStatus,
-  CourseVisibility,
-  Prisma,
-  Role,
-} from '@prisma/client';
+import { CourseStatus, CourseVisibility, Prisma, Role } from '@prisma/client';
 import type { PathViewer } from '../dto/path-catalog.dto';
 
 const PUBLISHED_PATH_WHERE: Prisma.PathWhereInput = {
@@ -17,7 +12,9 @@ export function resolvePublishedOnlyForCatalog(viewer: PathViewer): boolean {
 }
 
 /** Pre-query visibility filter applied before DB fetch. */
-export function buildPathVisibilityWhere(viewer: PathViewer): Prisma.PathWhereInput {
+export function buildPathVisibilityWhere(
+  viewer: PathViewer,
+): Prisma.PathWhereInput {
   if (resolvePublishedOnlyForCatalog(viewer)) {
     return PUBLISHED_PATH_WHERE;
   }

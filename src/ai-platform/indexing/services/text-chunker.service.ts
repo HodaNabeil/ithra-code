@@ -194,10 +194,7 @@ function chunkBySegments(
   return finalizeChunks(chunks);
 }
 
-export function chunkText(
-  text: string,
-  options?: ChunkOptions,
-): TextChunk[] {
+export function chunkText(text: string, options?: ChunkOptions): TextChunk[] {
   const normalized = text.trim();
   if (!normalized) {
     return [];

@@ -1,7 +1,4 @@
-import type {
-  NormalizedTokenUsage,
-  ProviderRawUsage,
-} from './usage-types';
+import type { NormalizedTokenUsage, ProviderRawUsage } from './usage-types';
 import { providerIdFromModel } from './provider-usage-mappers';
 
 /**
@@ -78,7 +75,9 @@ export function resolveTokenUsage(
   providerUsage: ProviderRawUsage | null | undefined,
   fallback: ResolveUsageFallback,
 ): NormalizedTokenUsage {
-  const fromProvider = providerUsage ? normalizeFromProvider(providerUsage) : null;
+  const fromProvider = providerUsage
+    ? normalizeFromProvider(providerUsage)
+    : null;
 
   if (!fromProvider) {
     return estimateUsageFromText(fallback);
@@ -114,12 +113,11 @@ export function mergeNormalizedUsage(
     inputTokens: left.inputTokens + right.inputTokens,
     outputTokens: left.outputTokens + right.outputTokens,
     totalTokens: left.totalTokens + right.totalTokens,
-    tokenUsageEstimated:
-      left.tokenUsageEstimated || right.tokenUsageEstimated,
+    tokenUsageEstimated: left.tokenUsageEstimated || right.tokenUsageEstimated,
     source:
       left.tokenUsageEstimated || right.tokenUsageEstimated
         ? 'tokenizer_estimate'
-        : left.source ?? right.source,
+        : (left.source ?? right.source),
   };
 }
 
@@ -200,8 +198,9 @@ export function readActualProviderFromRunSignals(
     : undefined;
 }
 
-export function toLlmTokenUsage(
-  usage: NormalizedTokenUsage,
-): { input: number; output: number } {
+export function toLlmTokenUsage(usage: NormalizedTokenUsage): {
+  input: number;
+  output: number;
+} {
   return toLegacyTokenCounts(usage);
 }

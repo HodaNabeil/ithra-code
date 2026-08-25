@@ -11,7 +11,8 @@ function main(): void {
 
   assert(
     graph.edges.some(
-      (edge) => edge.source === 'enrich-response' && edge.target === 'persist-turn',
+      (edge) =>
+        edge.source === 'enrich-response' && edge.target === 'persist-turn',
     ),
     'enrich-response must route to persist-turn',
   );
@@ -22,7 +23,9 @@ function main(): void {
     'persist-turn must route to END',
   );
 
-  const validateOutgoing = graph.edges.filter((edge) => edge.source === 'validate-output');
+  const validateOutgoing = graph.edges.filter(
+    (edge) => edge.source === 'validate-output',
+  );
   assert(
     validateOutgoing.some((edge) => edge.target === 'persist-turn'),
     'validate-output must have a branch to persist-turn',

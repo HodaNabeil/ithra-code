@@ -97,36 +97,38 @@ export class PrismaConversationRepository implements ConversationRepositoryPort 
       );
     }
 
-    const [userMessage, assistantMessage] = await prisma.$transaction(async (tx) => {
-      const user = await tx.tutorMessage.create({
-        data: {
-          threadId,
-          role: mapMessageRole('user'),
-          content: params.userContent,
-        },
-      });
+    const [userMessage, assistantMessage] = await prisma.$transaction(
+      async (tx) => {
+        const user = await tx.tutorMessage.create({
+          data: {
+            threadId,
+            role: mapMessageRole('user'),
+            content: params.userContent,
+          },
+        });
 
-      const assistant = await tx.tutorMessage.create({
-        data: {
-          threadId,
-          role: mapMessageRole('assistant'),
-          content: params.assistantContent,
-          retrievedSources: params.retrievedSources,
-        },
-      });
+        const assistant = await tx.tutorMessage.create({
+          data: {
+            threadId,
+            role: mapMessageRole('assistant'),
+            content: params.assistantContent,
+            retrievedSources: params.retrievedSources,
+          },
+        });
 
-      const now = new Date();
-      await tx.tutorThread.update({
-        where: { id: threadId },
-        data: { updatedAt: now },
-      });
-      await tx.tutorConversation.update({
-        where: { id: thread.conversationId },
-        data: { updatedAt: now },
-      });
+        const now = new Date();
+        await tx.tutorThread.update({
+          where: { id: threadId },
+          data: { updatedAt: now },
+        });
+        await tx.tutorConversation.update({
+          where: { id: thread.conversationId },
+          data: { updatedAt: now },
+        });
 
-      return [user, assistant];
-    });
+        return [user, assistant];
+      },
+    );
 
     return {
       userMessage: mapMessage(userMessage),
@@ -160,7 +162,9 @@ export class PrismaConversationRepository implements ConversationRepositoryPort 
     return mapConversation(conversation);
   }
 
-  async getConversation(conversationId: string): Promise<ConversationDTO | null> {
+  async getConversation(
+    conversationId: string,
+  ): Promise<ConversationDTO | null> {
     const conversation = await prisma.tutorConversation.findUnique({
       where: { id: conversationId },
       include: {
@@ -276,7 +280,7 @@ export class PrismaConversationRepository implements ConversationRepositoryPort 
 
     const hasMore = messages.length > limit;
     const page = hasMore ? messages.slice(0, limit) : messages;
-    const nextCursor = hasMore ? page[page.length - 1]?.id ?? null : null;
+    const nextCursor = hasMore ? (page[page.length - 1]?.id ?? null) : null;
     const ordered = [...page].reverse().map(mapMessage);
 
     return {
@@ -411,7 +415,10 @@ export class PrismaConversationRepository implements ConversationRepositoryPort 
     });
 
     if (existing) {
-      if (existing.status === TutorTurnIdempotencyStatus.COMPLETED && existing.turnId) {
+      if (
+        existing.status === TutorTurnIdempotencyStatus.COMPLETED &&
+        existing.turnId
+      ) {
         return {
           kind: 'replay',
           record: {

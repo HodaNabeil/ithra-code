@@ -33,7 +33,9 @@ export function DateRangeFilter({ selectedDays }: DateRangeFilterProps) {
             size="sm"
             variant={isActive ? 'default' : 'outline'}
           >
-            <Link href={`${pathname}?${params.toString()}`}>{option.label}</Link>
+            <Link href={`${pathname}?${params.toString()}`}>
+              {option.label}
+            </Link>
           </Button>
         );
       })}

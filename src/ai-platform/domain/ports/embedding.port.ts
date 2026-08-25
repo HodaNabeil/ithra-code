@@ -20,7 +20,10 @@ export interface BatchEmbeddingResult {
 }
 
 export interface EmbeddingPort {
-  generateEmbedding(text: string, options?: EmbeddingOptions): Promise<EmbeddingResult>;
+  generateEmbedding(
+    text: string,
+    options?: EmbeddingOptions,
+  ): Promise<EmbeddingResult>;
   generateBatchEmbeddings(
     texts: string[],
     options?: EmbeddingOptions,

@@ -71,9 +71,7 @@ export async function checkCheckoutRateLimit(input: {
  * Webhook throughput guard (~120 req/s per IP). Failures are ignored so a
  * Redis outage cannot cause provider retries to pile up indefinitely.
  */
-export async function checkWebhookRateLimit(
-  ip: string | null,
-): Promise<void> {
+export async function checkWebhookRateLimit(ip: string | null): Promise<void> {
   if (!ip) return;
 
   try {

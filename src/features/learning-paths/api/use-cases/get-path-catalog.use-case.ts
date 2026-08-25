@@ -1,4 +1,8 @@
-import type { PathCatalogQuery, PathCatalogResult, PathViewer } from '../dto/path-catalog.dto';
+import type {
+  PathCatalogQuery,
+  PathCatalogResult,
+  PathViewer,
+} from '../dto/path-catalog.dto';
 import {
   buildPathVisibilityWhere,
   filterPathForAudience,

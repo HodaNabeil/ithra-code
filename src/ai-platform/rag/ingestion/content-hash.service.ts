@@ -30,7 +30,9 @@ export async function loadExistingHashes(params: {
     ? await params.hashRepository.findByLectureId(params.lectureId)
     : await params.hashRepository.findByCourseId(params.courseId);
 
-  return new Map(records.map((record) => [record.sourceId, record.contentHash]));
+  return new Map(
+    records.map((record) => [record.sourceId, record.contentHash]),
+  );
 }
 
 export async function persistContentHash(params: {

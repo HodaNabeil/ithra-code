@@ -1,5 +1,8 @@
 import { auth } from '@/lib/auth';
-import type { GetCoursesParams, GetCoursesResult } from '@/types/course/course.types';
+import type {
+  GetCoursesParams,
+  GetCoursesResult,
+} from '@/types/course/course.types';
 import type { CatalogViewer } from '../dto/course-catalog.dto';
 import { getCoursesParamsToCatalogQuery } from '../lib/catalog-query';
 import { mapCatalogResultToGetCoursesResult } from '../mapper/to-list-dto';

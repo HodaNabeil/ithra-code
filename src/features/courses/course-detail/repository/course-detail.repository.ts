@@ -9,13 +9,8 @@ import {
 
 export interface CourseDetailRepository {
   findCourseBySlug(slug: string): Promise<DB_CourseDetailEntity | null>;
-  findCourseByIdOrSlug(
-    idOrSlug: string,
-  ): Promise<DB_CourseDetailEntity | null>;
-  findUserSignals(
-    userId: string,
-    courseId: string,
-  ): Promise<UserCourseSignals>;
+  findCourseByIdOrSlug(idOrSlug: string): Promise<DB_CourseDetailEntity | null>;
+  findUserSignals(userId: string, courseId: string): Promise<UserCourseSignals>;
 }
 
 export class PrismaCourseDetailRepository implements CourseDetailRepository {

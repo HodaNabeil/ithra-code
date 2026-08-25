@@ -67,9 +67,7 @@ export function SectionAccordion({ courseSlug }: SectionAccordionProps) {
             className="border-b border-border/30 last:border-0 overflow-hidden"
             dir="rtl"
           >
-            <AccordionTrigger
-              className="px-4 py-4 hover:bg-muted/20 hover:no-underline transition-colors **:data-[slot=accordion-trigger-icon]:text-sidebar-primary/70"
-            >
+            <AccordionTrigger className="px-4 py-4 hover:bg-muted/20 hover:no-underline transition-colors **:data-[slot=accordion-trigger-icon]:text-sidebar-primary/70">
               <span className="flex flex-col items-start gap-1 text-start">
                 <span className="text-sm font-bold flex items-center gap-1.5">
                   <span className="text-sidebar-primary whitespace-nowrap">

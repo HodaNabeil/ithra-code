@@ -3,7 +3,10 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
 import { Course, Prisma } from '@prisma/client';
-import { CourseDetailError, getCourseDetail } from '@/features/courses/course-detail';
+import {
+  CourseDetailError,
+  getCourseDetail,
+} from '@/features/courses/course-detail';
 import { ArchiveCourseError } from '@/features/courses/errors/archive-course.errors';
 import { archiveCourseUseCase } from '@/features/courses/use-cases/archive-course.use-case';
 

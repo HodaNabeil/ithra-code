@@ -2,7 +2,8 @@ import type { CourseKnowledgeIndexingScope } from '@/features/courses/applicatio
 
 import { AI_PLATFORM_CONSTANTS } from '../shared/constants';
 
-export const COURSE_INDEXING_QUEUE = AI_PLATFORM_CONSTANTS.COURSE_INDEXING_QUEUE;
+export const COURSE_INDEXING_QUEUE =
+  AI_PLATFORM_CONSTANTS.COURSE_INDEXING_QUEUE;
 
 export const COURSE_INDEXING_BOOTSTRAP_LOCK_KEY =
   AI_PLATFORM_CONSTANTS.COURSE_INDEXING_BOOTSTRAP_LOCK_KEY;

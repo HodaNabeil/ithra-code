@@ -26,13 +26,15 @@ describe('LLM provider usage parsing', () => {
 
   it('Anthropic stream reports usage from SSE events', async () => {
     const adapter = new AnthropicLlmAdapter('test-key');
-    const fetchMock = vi.fn().mockResolvedValue(
-      createSseResponse([
-        'data: {"type":"message_start","message":{"usage":{"input_tokens":25,"output_tokens":1}}}\n\n',
-        'data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"Hello"}}\n\n',
-        'data: {"type":"message_delta","usage":{"output_tokens":5}}\n\n',
-      ]),
-    );
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(
+        createSseResponse([
+          'data: {"type":"message_start","message":{"usage":{"input_tokens":25,"output_tokens":1}}}\n\n',
+          'data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"Hello"}}\n\n',
+          'data: {"type":"message_delta","usage":{"output_tokens":5}}\n\n',
+        ]),
+      );
 
     vi.stubGlobal('fetch', fetchMock);
 
@@ -57,11 +59,13 @@ describe('LLM provider usage parsing', () => {
 
   it('Gemini stream reports usageMetadata from SSE events', async () => {
     const adapter = new GeminiLlmAdapter('test-key');
-    const fetchMock = vi.fn().mockResolvedValue(
-      createSseResponse([
-        'data: {"candidates":[{"content":{"parts":[{"text":"Hi"}]}}],"usageMetadata":{"promptTokenCount":9,"candidatesTokenCount":2,"totalTokenCount":11}}\n\n',
-      ]),
-    );
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(
+        createSseResponse([
+          'data: {"candidates":[{"content":{"parts":[{"text":"Hi"}]}}],"usageMetadata":{"promptTokenCount":9,"candidatesTokenCount":2,"totalTokenCount":11}}\n\n',
+        ]),
+      );
 
     vi.stubGlobal('fetch', fetchMock);
 

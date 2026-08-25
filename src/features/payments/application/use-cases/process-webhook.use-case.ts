@@ -1,6 +1,4 @@
-import {
-  createWebhookEventEntity,
-} from '@/features/payments/domain';
+import { createWebhookEventEntity } from '@/features/payments/domain';
 import type { ProcessWebhookRequest } from '../contracts/process-webhook.request';
 import type { ProcessWebhookResponse } from '../contracts/process-webhook.response';
 import { WebhookError } from '../errors/webhook.errors';
@@ -44,11 +42,7 @@ export class ProcessWebhookUseCase {
 
           const order = await repositories.orders.findById(request.orderId);
           if (!order) {
-            throw new WebhookError(
-              404,
-              'الطلب غير موجود',
-              'ORDER_NOT_FOUND',
-            );
+            throw new WebhookError(404, 'الطلب غير موجود', 'ORDER_NOT_FOUND');
           }
 
           if (!order.paymentId) {
@@ -74,8 +68,7 @@ export class ProcessWebhookUseCase {
             repositories,
             {
               orderId: request.orderId,
-              outcome:
-                request.outcome === 'succeeded' ? 'succeeded' : 'failed',
+              outcome: request.outcome === 'succeeded' ? 'succeeded' : 'failed',
               providerTransactionId: request.providerTransactionId,
               providerMetadata: request.payload,
               paymentMethod: request.paymentMethod,

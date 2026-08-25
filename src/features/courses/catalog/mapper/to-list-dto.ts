@@ -1,5 +1,8 @@
 import type { CourseListDTO } from '@/types/course/course.dto';
-import type { CourseCatalogItem, CourseCatalogResult } from '../dto/course-catalog.dto';
+import type {
+  CourseCatalogItem,
+  CourseCatalogResult,
+} from '../dto/course-catalog.dto';
 import type { GetCoursesResult } from '@/types/course/course.types';
 
 /** Strips RBAC-only fields and maps to the shared list/card DTO. */

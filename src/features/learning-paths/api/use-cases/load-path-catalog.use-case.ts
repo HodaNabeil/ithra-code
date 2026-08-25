@@ -1,6 +1,9 @@
 import { auth } from '@/lib/auth';
 import type { PathListDTO } from '@/types/path/path.dto';
-import type { GetPublicPathsParams, GetPublicPathsResult } from '@/types/path/path.types';
+import type {
+  GetPublicPathsParams,
+  GetPublicPathsResult,
+} from '@/types/path/path.types';
 import type { PathCatalogQuery, PathViewer } from '../dto/path-catalog.dto';
 import { PATHS_PAGE_LIMIT } from '../lib/path-catalog-query';
 import { mapCatalogResultToGetPublicPathsResult } from '../mapper/to-list-dto';
@@ -18,7 +21,9 @@ async function resolveViewer(): Promise<PathViewer> {
   }
 }
 
-function toPathCatalogQuery(params: GetPublicPathsParams = {}): PathCatalogQuery {
+function toPathCatalogQuery(
+  params: GetPublicPathsParams = {},
+): PathCatalogQuery {
   return {
     page: params.page ?? 1,
     limit: params.limit ?? PATHS_PAGE_LIMIT,

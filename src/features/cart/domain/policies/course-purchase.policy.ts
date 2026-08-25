@@ -44,9 +44,7 @@ export function assertCoursePurchasable(course: CourseForPurchase): void {
   }
 }
 
-export function assertNotEnrolled(
-  enrollment: EnrollmentRecord | null,
-): void {
+export function assertNotEnrolled(enrollment: EnrollmentRecord | null): void {
   if (!enrollment) return;
 
   if (

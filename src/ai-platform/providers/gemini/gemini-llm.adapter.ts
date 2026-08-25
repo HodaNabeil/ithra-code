@@ -31,7 +31,9 @@ export class GeminiLlmAdapter implements LlmPort {
     this.requestTimeoutMs = config.requestTimeoutMs;
   }
 
-  async *streamAnswer(options: LlmStreamOptions): AsyncIterableIterator<string> {
+  async *streamAnswer(
+    options: LlmStreamOptions,
+  ): AsyncIterableIterator<string> {
     const { controller, cleanup } = createLinkedAbortController(
       this.requestTimeoutMs,
       options.signal,
@@ -53,7 +55,11 @@ export class GeminiLlmAdapter implements LlmPort {
       }
 
       if (!response.body) {
-        throw new LlmError(LlmErrorCodes.UNKNOWN, 'Gemini stream body missing', false);
+        throw new LlmError(
+          LlmErrorCodes.UNKNOWN,
+          'Gemini stream body missing',
+          false,
+        );
       }
 
       const reader = response.body.getReader();
@@ -82,7 +88,9 @@ export class GeminiLlmAdapter implements LlmPort {
 
           try {
             const event = JSON.parse(payload) as {
-              candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+              candidates?: Array<{
+                content?: { parts?: Array<{ text?: string }> };
+              }>;
               usageMetadata?: {
                 promptTokenCount?: number;
                 candidatesTokenCount?: number;
@@ -92,7 +100,10 @@ export class GeminiLlmAdapter implements LlmPort {
 
             const usagePatch = parseGeminiStreamUsageEvent(event);
             if (usagePatch) {
-              accumulatedUsage = mergeProviderRawUsage(accumulatedUsage, usagePatch);
+              accumulatedUsage = mergeProviderRawUsage(
+                accumulatedUsage,
+                usagePatch,
+              );
             }
 
             const text = event.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -192,13 +203,25 @@ export class GeminiLlmAdapter implements LlmPort {
   private async mapHttpError(response: Response): Promise<LlmError> {
     const status = response.status;
     if (status === 429) {
-      return new LlmError(LlmErrorCodes.RATE_LIMITED, 'Gemini rate limited', true);
+      return new LlmError(
+        LlmErrorCodes.RATE_LIMITED,
+        'Gemini rate limited',
+        true,
+      );
     }
     if (status >= 500) {
-      return new LlmError(LlmErrorCodes.SERVICE_UNAVAILABLE, 'Gemini unavailable', true);
+      return new LlmError(
+        LlmErrorCodes.SERVICE_UNAVAILABLE,
+        'Gemini unavailable',
+        true,
+      );
     }
     const body = await response.text();
-    return new LlmError(LlmErrorCodes.UNKNOWN, body || 'Gemini request failed', false);
+    return new LlmError(
+      LlmErrorCodes.UNKNOWN,
+      body || 'Gemini request failed',
+      false,
+    );
   }
 
   private mapError(error: unknown, signal?: AbortSignal): LlmError {
@@ -207,9 +230,17 @@ export class GeminiLlmAdapter implements LlmPort {
     }
     if (error instanceof Error && error.name === 'AbortError') {
       if (signal?.aborted) {
-        return new LlmError(LlmErrorCodes.INVALID_REQUEST, 'Gemini request aborted', false);
+        return new LlmError(
+          LlmErrorCodes.INVALID_REQUEST,
+          'Gemini request aborted',
+          false,
+        );
       }
-      return new LlmError(LlmErrorCodes.TIMEOUT, 'Gemini request timed out', true);
+      return new LlmError(
+        LlmErrorCodes.TIMEOUT,
+        'Gemini request timed out',
+        true,
+      );
     }
     return new LlmError(
       LlmErrorCodes.UNKNOWN,

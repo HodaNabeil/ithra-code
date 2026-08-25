@@ -12,7 +12,10 @@ import { prismaCartRepository } from '../../infrastructure/prisma/repositories/p
 import { prismaCourseRepository } from '../../infrastructure/prisma/repositories/prisma-course.repository';
 import { prismaEnrollmentRepository } from '../../infrastructure/prisma/repositories/prisma-enrollment.repository';
 import { mapCartToDto } from '../../mappers/cart.mapper';
-import type { AddCartItemInputDTO, AddCartItemOutputDTO } from '../dto/add-cart-item.dto';
+import type {
+  AddCartItemInputDTO,
+  AddCartItemOutputDTO,
+} from '../dto/add-cart-item.dto';
 import { recalculateCartTotals } from '../services/cart-totals.service';
 
 export type AddCartItemUseCaseDeps = {

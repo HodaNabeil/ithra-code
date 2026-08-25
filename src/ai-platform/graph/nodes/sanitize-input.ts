@@ -15,7 +15,10 @@ const ZERO_WIDTH_PATTERN = /[\u200B-\u200D\uFEFF\u202A-\u202E\u2066-\u2069]/g;
 export const SANITIZE_INPUT_MAX_CHARS = 5000;
 
 export function sanitizeTutorInput(input: string): string {
-  let sanitized = input.normalize('NFKC').replace(ZERO_WIDTH_PATTERN, '').trim();
+  let sanitized = input
+    .normalize('NFKC')
+    .replace(ZERO_WIDTH_PATTERN, '')
+    .trim();
   sanitized = sanitized.replace(/\s+/g, ' ');
 
   for (const pattern of INJECTION_PATTERNS) {

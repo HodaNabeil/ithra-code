@@ -58,7 +58,10 @@ export async function updateLectureProgress(
     );
   }
 
-  const enrollment = await repository.findEnrollment(input.userId, lecture.courseId);
+  const enrollment = await repository.findEnrollment(
+    input.userId,
+    lecture.courseId,
+  );
 
   if (!enrollment || !isProgressEligibleEnrollment(enrollment)) {
     throw new LectureProgressError(

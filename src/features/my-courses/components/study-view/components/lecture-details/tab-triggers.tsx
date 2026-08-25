@@ -8,7 +8,11 @@ type TabTriggersProps = {
 export function TabTriggers({ aiTutorEnabled = false }: TabTriggersProps) {
   const tabs = [
     { value: 'overview', label: 'نظرة عامة' },
-    { value: 'qna', label: aiTutorEnabled ? 'المدرس الذكي' : 'الأسئلة والأجوبة', soon: !aiTutorEnabled },
+    {
+      value: 'qna',
+      label: aiTutorEnabled ? 'المدرس الذكي' : 'الأسئلة والأجوبة',
+      soon: !aiTutorEnabled,
+    },
     { value: 'notes', label: 'الملاحظات', soon: true },
     { value: 'reviews', label: 'المراجعات', soon: true },
   ];

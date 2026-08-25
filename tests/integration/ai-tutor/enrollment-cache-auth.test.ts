@@ -16,65 +16,72 @@ import {
   type TutorTestFixture,
 } from '../../helpers/integration';
 
-describe.skipIf(!isIntegrationEnabled)('enrollment cache auth integration', () => {
-  let fixture: TutorTestFixture | undefined;
-  let dbAvailable = false;
-  const cache = new InMemorySessionContextCache();
-  const deps = {
-    courseContextRepository: new PrismaCourseContextRepository(),
-    sessionContextCache: cache,
-    studentLearningProfileRepository: new PrismaStudentLearningProfileRepository(),
-  };
+describe.skipIf(!isIntegrationEnabled)(
+  'enrollment cache auth integration',
+  () => {
+    let fixture: TutorTestFixture | undefined;
+    let dbAvailable = false;
+    const cache = new InMemorySessionContextCache();
+    const deps = {
+      courseContextRepository: new PrismaCourseContextRepository(),
+      sessionContextCache: cache,
+      studentLearningProfileRepository:
+        new PrismaStudentLearningProfileRepository(),
+    };
 
-  beforeAll(async () => {
-    dbAvailable = await canRunIntegrationTests();
-  });
-
-  beforeEach(async () => {
-    if (!dbAvailable) {
-      return;
-    }
-
-    fixture = await createTutorTestFixture();
-  });
-
-  afterEach(async () => {
-    await cleanupTutorTestFixture(fixture);
-    fixture = undefined;
-  });
-
-  it('rejects revoked enrollment even when session context is cached', async (ctx) => {
-    if (!dbAvailable || !fixture) {
-      ctx.skip();
-      return;
-    }
-
-    const context = await buildTutorSessionContext(
-      {
-        courseSlug: fixture.courseSlug,
-        userId: fixture.studentId,
-      },
-      deps,
-    );
-
-    await cache.set(`${fixture.studentId}:${fixture.courseSlug}:general`, context);
-
-    await prisma.enrollment.updateMany({
-      where: {
-        studentId: fixture.studentId,
-        courseId: fixture.courseId,
-      },
-      data: { status: EnrollmentStatus.REVOKED },
+    beforeAll(async () => {
+      dbAvailable = await canRunIntegrationTests();
     });
 
-    await expect(
-      buildTutorSessionContext(
+    beforeEach(async () => {
+      if (!dbAvailable) {
+        return;
+      }
+
+      fixture = await createTutorTestFixture();
+    });
+
+    afterEach(async () => {
+      await cleanupTutorTestFixture(fixture);
+      fixture = undefined;
+    });
+
+    it('rejects revoked enrollment even when session context is cached', async (ctx) => {
+      if (!dbAvailable || !fixture) {
+        ctx.skip();
+        return;
+      }
+
+      const context = await buildTutorSessionContext(
         {
           courseSlug: fixture.courseSlug,
           userId: fixture.studentId,
         },
         deps,
-      ),
-    ).rejects.toBeInstanceOf(AskTutorError);
-  });
-});
+      );
+
+      await cache.set(
+        `${fixture.studentId}:${fixture.courseSlug}:general`,
+        context,
+      );
+
+      await prisma.enrollment.updateMany({
+        where: {
+          studentId: fixture.studentId,
+          courseId: fixture.courseId,
+        },
+        data: { status: EnrollmentStatus.REVOKED },
+      });
+
+      await expect(
+        buildTutorSessionContext(
+          {
+            courseSlug: fixture.courseSlug,
+            userId: fixture.studentId,
+          },
+          deps,
+        ),
+      ).rejects.toBeInstanceOf(AskTutorError);
+    });
+  },
+);

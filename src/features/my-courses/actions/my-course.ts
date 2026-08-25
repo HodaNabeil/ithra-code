@@ -6,7 +6,10 @@ import {
   myCourseLecturesSelect,
   type DB_MyCourseLectures,
 } from '@/server/db/my-course.select';
-import { mapMyCourseLecturesToDTO, mapLectureDetailsToDTO } from '@/mappers/my-course.mapper';
+import {
+  mapMyCourseLecturesToDTO,
+  mapLectureDetailsToDTO,
+} from '@/mappers/my-course.mapper';
 import { cache } from '@/lib/cache';
 import { revalidateTag } from 'next/cache';
 

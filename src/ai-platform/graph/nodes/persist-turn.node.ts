@@ -14,7 +14,11 @@ export async function persistTurnNode(
 ): Promise<Partial<TutorAgentState>> {
   const runtime = getGraphRuntimeConfig(config);
 
-  if (!runtime.threadId || !runtime.conversationMemoryPort || !state.finalResponse) {
+  if (
+    !runtime.threadId ||
+    !runtime.conversationMemoryPort ||
+    !state.finalResponse
+  ) {
     return {};
   }
 

@@ -47,7 +47,9 @@ describe('updateLectureProgress use-case', () => {
     vi.mocked(mockRepository.findLectureContext).mockResolvedValue(
       lectureContext,
     );
-    vi.mocked(mockRepository.findEnrollment).mockResolvedValue(activeEnrollment);
+    vi.mocked(mockRepository.findEnrollment).mockResolvedValue(
+      activeEnrollment,
+    );
     vi.mocked(mockRepository.findProgress).mockResolvedValue(null);
     vi.mocked(mockRepository.upsertProgressInTransaction).mockResolvedValue(
       progressRecord,
@@ -66,7 +68,10 @@ describe('updateLectureProgress use-case', () => {
     );
 
     expect(mockRepository.findLectureContext).toHaveBeenCalledWith(lectureId);
-    expect(mockRepository.findEnrollment).toHaveBeenCalledWith(userId, courseId);
+    expect(mockRepository.findEnrollment).toHaveBeenCalledWith(
+      userId,
+      courseId,
+    );
     expect(mockRepository.upsertProgressInTransaction).toHaveBeenCalledWith({
       enrollmentId,
       lectureId,
@@ -269,7 +274,9 @@ describe('updateLectureProgress repository delegation', () => {
     vi.mocked(mockRepository.findLectureContext).mockResolvedValue(
       lectureContext,
     );
-    vi.mocked(mockRepository.findEnrollment).mockResolvedValue(activeEnrollment);
+    vi.mocked(mockRepository.findEnrollment).mockResolvedValue(
+      activeEnrollment,
+    );
     vi.mocked(mockRepository.findProgress).mockResolvedValue(null);
     vi.mocked(mockRepository.upsertProgressInTransaction).mockRejectedValue(
       new LectureProgressError(409, 'تم إكمال هذه المحاضرة مسبقاً'),

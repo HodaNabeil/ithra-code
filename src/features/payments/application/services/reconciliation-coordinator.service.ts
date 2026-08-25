@@ -51,45 +51,44 @@ export type ReconciliationCoordinatorDeps = {
 export class ReconciliationCoordinator {
   constructor(private readonly deps: ReconciliationCoordinatorDeps) {}
 
-  async apply(input: ReconciliationApplyInput): Promise<ReconciliationApplyResult> {
+  async apply(
+    input: ReconciliationApplyInput,
+  ): Promise<ReconciliationApplyResult> {
     const { record, providerStatus, decision } = input;
 
     if (decision.type === 'fulfill_success') {
-      const fulfillResult = await this.deps.unitOfWork.execute(async (repos) => {
-        const result = await this.deps.fulfillOrderService.fulfillWithRepositories(
-          repos,
-          {
-            orderId: record.orderId,
-            outcome: 'succeeded',
-            providerTransactionId: providerStatus.providerTransactionId,
-            providerMetadata: providerStatus.providerMetadata,
-            paymentMethod: providerStatus.paymentMethod,
-            last4: providerStatus.last4,
-            brand: providerStatus.brand,
-            integrationId: providerStatus.integrationId,
-          },
-        );
+      const fulfillResult = await this.deps.unitOfWork.execute(
+        async (repos) => {
+          const result =
+            await this.deps.fulfillOrderService.fulfillWithRepositories(repos, {
+              orderId: record.orderId,
+              outcome: 'succeeded',
+              providerTransactionId: providerStatus.providerTransactionId,
+              providerMetadata: providerStatus.providerMetadata,
+              paymentMethod: providerStatus.paymentMethod,
+              last4: providerStatus.last4,
+              brand: providerStatus.brand,
+              integrationId: providerStatus.integrationId,
+            });
 
-        await repos.payments.recordReconcileAttempt(
-          this.buildAttemptPayload(input, {
-            outcome: providerStatus.outcome,
-            decision: decision.type,
-            detail: providerStatus.detail ?? null,
-            consecutiveNotFoundCount: 0,
-            reconcileStatus: 'IDLE',
-            nextReconcileAt: null,
-            lastProviderOutcome: providerStatus.outcome,
-            lastProviderDetail: providerStatus.detail ?? null,
-          }),
-        );
+          await repos.payments.recordReconcileAttempt(
+            this.buildAttemptPayload(input, {
+              outcome: providerStatus.outcome,
+              decision: decision.type,
+              detail: providerStatus.detail ?? null,
+              consecutiveNotFoundCount: 0,
+              reconcileStatus: 'IDLE',
+              nextReconcileAt: null,
+              lastProviderOutcome: providerStatus.outcome,
+              lastProviderDetail: providerStatus.detail ?? null,
+            }),
+          );
 
-        return result;
-      });
+          return result;
+        },
+      );
 
-      if (
-        fulfillResult.completedEvent &&
-        this.deps.orderCompletedPublisher
-      ) {
+      if (fulfillResult.completedEvent && this.deps.orderCompletedPublisher) {
         try {
           await this.deps.orderCompletedPublisher.publish(
             fulfillResult.completedEvent,

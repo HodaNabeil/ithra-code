@@ -15,7 +15,9 @@ import { prismaUnitOfWork } from '@/features/payments/infrastructure/prisma/pris
 async function listManualReview(): Promise<void> {
   const rows = await prisma.payment.findMany({
     where: { reconcileStatus: 'MANUAL_REVIEW' },
-    include: { order: { select: { id: true, orderNumber: true, status: true } } },
+    include: {
+      order: { select: { id: true, orderNumber: true, status: true } },
+    },
     orderBy: { lastReconciledAt: 'asc' },
     take: 100,
   });
@@ -81,7 +83,9 @@ async function abandon(paymentId: string): Promise<void> {
     },
   });
 
-  console.log(JSON.stringify({ abandoned: paymentId, orderId: payment.order.id }));
+  console.log(
+    JSON.stringify({ abandoned: paymentId, orderId: payment.order.id }),
+  );
 }
 
 async function main(): Promise<void> {

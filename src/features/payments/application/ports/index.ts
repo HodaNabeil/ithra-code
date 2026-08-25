@@ -16,7 +16,4 @@ export type { EnrollmentRepository } from './enrollment.repository';
 export type { CartFulfillmentRepository } from './cart-fulfillment.repository';
 export type { OrderCompletedPublisher } from './order-completed.publisher';
 export type { MetricsRecorder, MetricLabels } from './metrics.recorder';
-export type {
-  TransactionalRepositories,
-  UnitOfWork,
-} from './unit-of-work';
+export type { TransactionalRepositories, UnitOfWork } from './unit-of-work';

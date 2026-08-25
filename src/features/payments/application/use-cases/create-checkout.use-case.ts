@@ -50,8 +50,7 @@ export class CreateCheckoutUseCase {
   private readonly paymentProviderResolver: PaymentProviderResolver;
 
   constructor(private readonly deps: CreateCheckoutUseCaseDeps) {
-    this.checkoutValidator =
-      deps.checkoutValidator ?? new CheckoutValidator();
+    this.checkoutValidator = deps.checkoutValidator ?? new CheckoutValidator();
     this.priceCalculator = deps.priceCalculator ?? new PriceCalculatorService();
     this.checkoutFingerprintService =
       deps.checkoutFingerprintService ?? new CheckoutFingerprintService();
@@ -233,9 +232,7 @@ export class CreateCheckoutUseCase {
     };
   }
 
-  private async loadCart(
-    userId: string,
-  ): Promise<CheckoutCartSnapshot | null> {
+  private async loadCart(userId: string): Promise<CheckoutCartSnapshot | null> {
     const cart = await this.deps.cartRepository.findByUserId(userId);
 
     if (!cart) {

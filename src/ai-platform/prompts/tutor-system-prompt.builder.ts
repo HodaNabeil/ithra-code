@@ -60,7 +60,9 @@ export function sanitizeUntrusted(text: string): string {
 function formatRetrievedChunks(chunks: RetrievedChunkState[]): string {
   return chunks
     .map((chunk, index) => {
-      const title = sanitizeUntrusted(String(chunk.metadata?.title ?? `Source ${index + 1}`));
+      const title = sanitizeUntrusted(
+        String(chunk.metadata?.title ?? `Source ${index + 1}`),
+      );
       const confidence = Math.round(chunk.score * 100);
       const content = sanitizeUntrusted(chunk.content);
       return [
@@ -105,12 +107,17 @@ function formatPersonalization(context: TutorPersonalizationContext): string[] {
  * This is the single place ai-platform assembles the tutor prompt — callers
  * (graph nodes) must not accept a pre-built prompt string from the feature layer.
  */
-export function buildTutorSystemPrompt(input: BuildTutorSystemPromptInput): string {
+export function buildTutorSystemPrompt(
+  input: BuildTutorSystemPromptInput,
+): string {
   const { locale, basePrompt, retrievedChunks, personalization } = input;
   const lines = [basePrompt];
 
   if (isAssessmentAdjacent(retrievedChunks)) {
-    lines.push('', resolvePromptSync('tutor/assessment-boundary', locale).content);
+    lines.push(
+      '',
+      resolvePromptSync('tutor/assessment-boundary', locale).content,
+    );
   }
 
   if (personalization) {

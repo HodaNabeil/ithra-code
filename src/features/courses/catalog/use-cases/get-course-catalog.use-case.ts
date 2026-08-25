@@ -87,11 +87,7 @@ export async function getCourseCatalog(
   repository: CourseCatalogRepository = courseCatalogRepository,
 ): Promise<CourseCatalogResult> {
   const viewer = input.viewer ?? null;
-  const publicResult = await loadPublicCatalog(
-    input.query,
-    viewer,
-    repository,
-  );
+  const publicResult = await loadPublicCatalog(input.query, viewer, repository);
 
   if (!viewer?.id) {
     return {

@@ -61,7 +61,10 @@ export function extractJsonFromText(raw: string): unknown | null {
   return null;
 }
 
-export function repairStructuredOutput(raw: string): { repaired: unknown | null; strategy: string } {
+export function repairStructuredOutput(raw: string): {
+  repaired: unknown | null;
+  strategy: string;
+} {
   const extracted = extractJsonFromText(raw);
   if (extracted !== null) {
     return { repaired: extracted, strategy: 'extract_json' };

@@ -42,9 +42,8 @@ describe('cost-ledger.service', () => {
     });
     mockUpdate.mockResolvedValue({});
 
-    const { completeAgentRun } = await import(
-      '@/ai-platform/observability/cost/cost-ledger.service'
-    );
+    const { completeAgentRun } =
+      await import('@/ai-platform/observability/cost/cost-ledger.service');
 
     await completeAgentRun({
       runId: 'run-1',
@@ -74,9 +73,8 @@ describe('cost-ledger.service', () => {
     });
     mockUpdate.mockResolvedValue({});
 
-    const { completeAgentRun } = await import(
-      '@/ai-platform/observability/cost/cost-ledger.service'
-    );
+    const { completeAgentRun } =
+      await import('@/ai-platform/observability/cost/cost-ledger.service');
 
     await completeAgentRun({
       runId: 'run-2',
@@ -99,9 +97,8 @@ describe('cost-ledger.service', () => {
   it('skips ledger writes when platform is disabled', async () => {
     mockIsEnabled.mockReturnValueOnce(false);
 
-    const { completeAgentRun } = await import(
-      '@/ai-platform/observability/cost/cost-ledger.service'
-    );
+    const { completeAgentRun } =
+      await import('@/ai-platform/observability/cost/cost-ledger.service');
 
     await completeAgentRun({
       runId: 'run-3',

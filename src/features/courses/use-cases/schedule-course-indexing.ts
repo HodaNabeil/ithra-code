@@ -18,7 +18,11 @@ async function scheduleIndexingWithRetry(
   logContext: Record<string, unknown>,
   logTag: string,
 ): Promise<string | undefined> {
-  for (let attempt = 1; attempt <= INDEXING_ENQUEUE_MAX_ATTEMPTS; attempt += 1) {
+  for (
+    let attempt = 1;
+    attempt <= INDEXING_ENQUEUE_MAX_ATTEMPTS;
+    attempt += 1
+  ) {
     try {
       await schedule();
       return undefined;

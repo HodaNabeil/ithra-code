@@ -46,7 +46,11 @@ export function detectKnowledgeGaps(
           lectureTitle: lecture.title,
           sectionTitle: lecture.sectionTitle,
           reason: 'incomplete_assessment',
-          severity: severityForGap('incomplete_assessment', index, lectures.length),
+          severity: severityForGap(
+            'incomplete_assessment',
+            index,
+            lectures.length,
+          ),
         });
       } else if (!priorContentCompleted) {
         gaps.push({

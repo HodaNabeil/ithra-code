@@ -1,4 +1,8 @@
-import type { CourseStatus, LectureType, AttachmentType } from '@/generated/prisma/enums';
+import type {
+  CourseStatus,
+  LectureType,
+  AttachmentType,
+} from '@/generated/prisma/enums';
 
 export type CourseForIndexingDTO = {
   id: string;

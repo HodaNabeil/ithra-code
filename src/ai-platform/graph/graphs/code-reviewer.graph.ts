@@ -9,7 +9,10 @@ import { TutorAgentStateAnnotation } from '../state/tutor-agent.state';
  */
 export function buildCodeReviewerGraph() {
   const graph = new StateGraph(TutorAgentStateAnnotation)
-    .addNode('sanitize-input', wrapGraphNode('sanitize-input', sanitizeInputNode))
+    .addNode(
+      'sanitize-input',
+      wrapGraphNode('sanitize-input', sanitizeInputNode),
+    )
     .addEdge(START, 'sanitize-input')
     .addEdge('sanitize-input', END);
 

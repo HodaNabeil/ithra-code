@@ -87,9 +87,8 @@ describe('lecture-detail.mapper', () => {
   });
 
   it('maps lecture with signed HLS URL for ready video', async () => {
-    const { isBunnyStreamConfigured, signBunnyHlsUrl } = await import(
-      '@/lib/bunny-stream'
-    );
+    const { isBunnyStreamConfigured, signBunnyHlsUrl } =
+      await import('@/lib/bunny-stream');
 
     const dto = mapLectureToDTO(buildLectureEntity());
 

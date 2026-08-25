@@ -10,8 +10,10 @@ export type SlideBreakpointConfig = {
   spacing?: number;
 };
 
-interface HorizontalSliderProps
-  extends Omit<React.ComponentPropsWithoutRef<'div'>, 'children'> {
+interface HorizontalSliderProps extends Omit<
+  React.ComponentPropsWithoutRef<'div'>,
+  'children'
+> {
   children: React.ReactNode;
   perView?: number | 'auto';
   disabledAt?: string;

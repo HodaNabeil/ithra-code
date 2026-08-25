@@ -20,7 +20,13 @@ export type EvaluatorRubricV1 = z.infer<typeof evaluatorRubricV1Schema>;
 export const evaluatorRubricV1JsonSchema = {
   type: 'object',
   additionalProperties: false,
-  required: ['schemaVersion', 'overallGrade', 'scores', 'feedback', 'confidence'],
+  required: [
+    'schemaVersion',
+    'overallGrade',
+    'scores',
+    'feedback',
+    'confidence',
+  ],
   properties: {
     schemaVersion: { type: 'integer', const: 1 },
     overallGrade: {

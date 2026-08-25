@@ -1,10 +1,7 @@
 import type { PrismaClient } from '@/generated/prisma/client';
 import { prisma as appPrisma } from '@/lib/prisma';
 
-import {
-  addSlice,
-  type UsageBreakdowns,
-} from './aggregation.utils';
+import { addSlice, type UsageBreakdowns } from './aggregation.utils';
 
 const prisma = appPrisma as unknown as PrismaClient;
 
@@ -16,7 +13,9 @@ export type DailyAggregationResult = {
 };
 
 function startOfUtcDay(date: Date): Date {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  return new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
+  );
 }
 
 function endOfUtcDay(date: Date): Date {
@@ -33,7 +32,9 @@ function groupKeyToString(key: GroupKey): string {
   return `${key.userId ?? 'global'}:${key.agentId ?? 'all'}`;
 }
 
-export async function aggregateUsageForDate(date: Date): Promise<DailyAggregationResult> {
+export async function aggregateUsageForDate(
+  date: Date,
+): Promise<DailyAggregationResult> {
   const dayStart = startOfUtcDay(date);
   const dayEnd = endOfUtcDay(date);
 
@@ -147,7 +148,9 @@ export async function aggregateUsageForDate(date: Date): Promise<DailyAggregatio
   };
 }
 
-export async function aggregateIncrementalUsage(): Promise<DailyAggregationResult[]> {
+export async function aggregateIncrementalUsage(): Promise<
+  DailyAggregationResult[]
+> {
   const today = new Date();
   const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
   const results = await Promise.all([

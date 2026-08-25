@@ -7,7 +7,10 @@ import {
   markIndexingOutboxSent,
   recordIndexingOutboxEntry,
 } from '../outbox/indexing-outbox.service';
-import { addIndexingJobToQueue, buildIndexingEvent } from '../../infrastructure/queue/course-indexing.queue';
+import {
+  addIndexingJobToQueue,
+  buildIndexingEvent,
+} from '../../infrastructure/queue/course-indexing.queue';
 
 export {
   buildCourseIndexingJobId,
@@ -28,7 +31,8 @@ export class BullmqCourseKnowledgeIndexer implements CourseKnowledgeIndexerPort 
   async scheduleIndexing(
     request: Parameters<CourseKnowledgeIndexerPort['scheduleIndexing']>[0],
   ): Promise<void> {
-    const isEnabled = this.options.isEnabled ?? (() => AIPlatformConfig.isEnabled());
+    const isEnabled =
+      this.options.isEnabled ?? (() => AIPlatformConfig.isEnabled());
 
     if (!isEnabled()) {
       logger.info(

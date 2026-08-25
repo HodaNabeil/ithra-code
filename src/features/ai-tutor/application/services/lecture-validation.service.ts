@@ -1,7 +1,4 @@
-import {
-  AskTutorError,
-  AskTutorErrorCodes,
-} from '../errors/ask-tutor.errors';
+import { AskTutorError, AskTutorErrorCodes } from '../errors/ask-tutor.errors';
 import type { EnrolledCourseWithProgressDTO } from '../../domain/ports/CourseContextRepositoryPort';
 
 export function lectureExistsInCourse(

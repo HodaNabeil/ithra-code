@@ -15,7 +15,12 @@ const FORBIDDEN_ATTRIBUTE_KEYS = new Set([
   'output_text',
 ]);
 
-const FORBIDDEN_ATTRIBUTE_SUFFIXES = ['.prompt', '.response', '.content', '.messages'];
+const FORBIDDEN_ATTRIBUTE_SUFFIXES = [
+  '.prompt',
+  '.response',
+  '.content',
+  '.messages',
+];
 
 const RAW_IDENTIFIER_KEYS: Record<string, string> = {
   'ai.user.id': 'ai.user.id_hash',
@@ -77,7 +82,10 @@ export function sanitizeOtelAttributes(attributes: Attributes): Attributes {
   return sanitized;
 }
 
-export function setSafeSpanAttributes(span: Span, attributes: Attributes): void {
+export function setSafeSpanAttributes(
+  span: Span,
+  attributes: Attributes,
+): void {
   const sanitized = sanitizeOtelAttributes(attributes);
 
   for (const [key, value] of Object.entries(sanitized)) {
@@ -101,7 +109,9 @@ export function buildAgentRunSpanAttributes(params: {
     'ai.user.id': params.userId,
     'ai.correlation.id': params.correlationId,
     'ai.prompt.version':
-      params.promptVersion !== undefined ? String(params.promptVersion) : undefined,
+      params.promptVersion !== undefined
+        ? String(params.promptVersion)
+        : undefined,
     'ai.agent.mode': params.mode,
   });
 }

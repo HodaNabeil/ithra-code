@@ -7,14 +7,7 @@ import {
   MessageInput,
   MessageList,
 } from '@chatscope/chat-ui-kit-react';
-import {
-  Bot,
-  Loader2,
-  RotateCcw,
-  Sparkles,
-  Square,
-  User,
-} from 'lucide-react';
+import { Bot, Loader2, RotateCcw, Sparkles, Square, User } from 'lucide-react';
 import { flushSync } from 'react-dom';
 
 import { Button } from '@/components/ui/button';
@@ -209,9 +202,7 @@ export function AITutorChat({
               value={input}
               onChange={(_innerHtml, textContent) => setInput(textContent)}
               onSend={handleSend}
-              placeholder={
-                isSidebar ? 'اكتب سؤالك...' : 'اكتب سؤالك هنا...'
-              }
+              placeholder={isSidebar ? 'اكتب سؤالك...' : 'اكتب سؤالك هنا...'}
               disabled={isStreaming || isLoadingHistory}
               sendDisabled={
                 isStreaming || isLoadingHistory || input.trim().length === 0
@@ -317,7 +308,9 @@ function LoadingState() {
       <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-muted/40">
         <Loader2 className="size-6 animate-spin text-muted-foreground" />
       </div>
-      <p className="text-sm font-medium text-foreground">جاري تحميل المحادثة...</p>
+      <p className="text-sm font-medium text-foreground">
+        جاري تحميل المحادثة...
+      </p>
       <p className="mt-1 text-xs text-muted-foreground">
         يتم جلب سجل الأسئلة والأجوبة
       </p>
@@ -346,10 +339,7 @@ function EmptyState({
         )}
       >
         <Bot
-          className={cn(
-            'text-sidebar-primary',
-            compact ? 'size-7' : 'size-8',
-          )}
+          className={cn('text-sidebar-primary', compact ? 'size-7' : 'size-8')}
         />
       </div>
       <h4

@@ -8,7 +8,10 @@ import { getGraphRuntimeConfig } from '../runtime-config';
 
 function buildRubricPrompt(state: EvaluatorAgentState): string {
   const criteriaText = state.rubricCriteria
-    .map((criterion) => `- ${criterion.id}: ${criterion.name} (max ${criterion.maxScore})`)
+    .map(
+      (criterion) =>
+        `- ${criterion.id}: ${criterion.name} (max ${criterion.maxScore})`,
+    )
     .join('\n');
 
   const locale = state.locale === 'ar' ? 'ar' : 'en';
@@ -37,7 +40,10 @@ export async function evaluateRubricNode(
     structuredOutput: result.data as EvaluatorAgentState['structuredOutput'],
     structuredOutputStatus: result.status,
     finalResponse: result.rawOutput,
-    validationErrors: result.errors.map((error: { path: string; message: string }) => `${error.path}: ${error.message}`),
+    validationErrors: result.errors.map(
+      (error: { path: string; message: string }) =>
+        `${error.path}: ${error.message}`,
+    ),
     ...toGraphTokenUpdate(result.usage),
   };
 }

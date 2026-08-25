@@ -26,10 +26,7 @@ export async function evaluateSubmissionUseCase(
   });
 
   const evaluation = result.structuredOutput as EvaluatorRubricV1 | undefined;
-  const status =
-    evaluation
-      ? ('valid' as const)
-      : ('rejected' as const);
+  const status = evaluation ? ('valid' as const) : ('rejected' as const);
 
   return {
     runId: result.runId,

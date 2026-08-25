@@ -24,9 +24,8 @@ describe('validateAITutorConfig', () => {
     process.env.AI_TUTOR_ENABLED = 'true';
     process.env.AI_PLATFORM_ENABLED = 'false';
 
-    const { validateAITutorConfig } = await import(
-      '@/features/ai-tutor/infrastructure/config/ai-tutor.config'
-    );
+    const { validateAITutorConfig } =
+      await import('@/features/ai-tutor/infrastructure/config/ai-tutor.config');
 
     expect(() => validateAITutorConfig()).toThrow(
       'AI Tutor requires AI Platform',
@@ -36,12 +35,10 @@ describe('validateAITutorConfig', () => {
   it('throws when platform validation fails for missing OpenAI key', async () => {
     process.env.AI_TUTOR_ENABLED = 'true';
 
-    const { validateAITutorConfig } = await import(
-      '@/features/ai-tutor/infrastructure/config/ai-tutor.config'
-    );
-    const { AIPlatformConfig } = await import(
-      '@/ai-platform/infrastructure/config/ai-platform.config'
-    );
+    const { validateAITutorConfig } =
+      await import('@/features/ai-tutor/infrastructure/config/ai-tutor.config');
+    const { AIPlatformConfig } =
+      await import('@/ai-platform/infrastructure/config/ai-platform.config');
 
     vi.spyOn(AIPlatformConfig, 'isEnabled').mockReturnValue(true);
     vi.spyOn(AIPlatformConfig, 'getLlmApiKey').mockImplementation(() => {

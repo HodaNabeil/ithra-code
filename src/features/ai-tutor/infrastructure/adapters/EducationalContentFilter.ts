@@ -41,7 +41,10 @@ export class EducationalContentFilter implements ContentFilterPort {
     this.filterStats.lastUpdated = new Date();
   }
 
-  async shouldFilter(content: string, options?: FilterOptions): Promise<boolean> {
+  async shouldFilter(
+    content: string,
+    options?: FilterOptions,
+  ): Promise<boolean> {
     const intent = detectAssessmentIntent(content);
     if (intent.isAssessmentSeeking) {
       this.bumpStat('assessment_question');
@@ -57,7 +60,11 @@ export class EducationalContentFilter implements ContentFilterPort {
     const courseId = options?.courseId;
     if (courseId) {
       const rules = this.courseRules.get(courseId);
-      if (rules?.blockedPatterns?.some((pattern) => new RegExp(pattern, 'i').test(content))) {
+      if (
+        rules?.blockedPatterns?.some((pattern) =>
+          new RegExp(pattern, 'i').test(content),
+        )
+      ) {
         this.bumpStat('blocked_pattern');
         return true;
       }

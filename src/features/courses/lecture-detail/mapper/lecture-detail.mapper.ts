@@ -6,12 +6,12 @@ import {
   prismaDateToIso,
   prismaDateToIsoNullable,
 } from '@/features/courses/course-detail/mapper/shared';
-import {
-  isBunnyStreamConfigured,
-  signBunnyHlsUrl,
-} from '@/lib/bunny-stream';
+import { isBunnyStreamConfigured, signBunnyHlsUrl } from '@/lib/bunny-stream';
 
-import type { GetLectureResponse, LectureDetailDTO } from '../dto/lecture-detail.dto';
+import type {
+  GetLectureResponse,
+  LectureDetailDTO,
+} from '../dto/lecture-detail.dto';
 import { LectureDetailError } from '../errors/lecture-detail.errors';
 import type { DB_LectureDetailCourseEntity } from '../repository/lecture-detail.select';
 import type { DB_LectureDetailEntity } from '../repository/lecture-detail.select';

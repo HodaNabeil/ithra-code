@@ -6,10 +6,10 @@ in this repository.
 ## Project Overview
 
 Next.js (App Router) full-stack app for **IthraCode** — an Arabic-first (RTL) online learning
-platform for programming & web development courses. Built on **Next.js 16** + **React 19**,
-**Prisma ORM 7** with PostgreSQL, **NextAuth v5** for auth, **Stripe** and **Paymob** for payments,
-**Mux** for video, **BullMQ + Redis** for background jobs, and an internal **AI Platform**
-(LangGraph-based) powering the AI Tutor feature. Package manager is **pnpm**.
+platform for programming & web development courses. Built on **Next.js 16** + **React 19**, **Prisma
+ORM 7** with PostgreSQL, **NextAuth v5** for auth, **Stripe** and **Paymob** for payments, **Mux**
+for video, **BullMQ + Redis** for background jobs, and an internal **AI Platform** (LangGraph-based)
+powering the AI Tutor feature. Package manager is **pnpm**.
 
 ## Forbidden Actions
 
@@ -19,8 +19,7 @@ These are hard restrictions. Never perform any of the following, even if asked:
   `yarn add`, or any variant in the terminal.
 - **`node_modules/`**: Do NOT read, search, list, or open any file inside `node_modules/` for any
   reason (including checking a dependency's source or types). If you need to know a package's API,
-  rely on its documentation/types you already know, or ask the user — never inspect
-  `node_modules/`.
+  rely on its documentation/types you already know, or ask the user — never inspect `node_modules/`.
 - **Read locked/generated dirs**: Do NOT read files inside `.next/`, `dist/`, or `build/`. Do NOT
   read `pnpm-lock.yaml` or `tsconfig.tsbuildinfo`.
 - **Prisma client**: Do NOT hand-edit files under `src/generated/prisma` — it is generated via
@@ -57,8 +56,8 @@ pnpm worker:reconcile-consumer    # Payment reconciliation queue consumer
 
 ### Feature-Based / Hexagonal-Lite Structure
 
-Each module under `src/features/{feature}/` generally follows a layered structure (not every
-feature has every layer — simpler features may only have `actions/`, `components/`, `lib/`):
+Each module under `src/features/{feature}/` generally follows a layered structure (not every feature
+has every layer — simpler features may only have `actions/`, `components/`, `lib/`):
 
 ```
 features/{feature}/
@@ -84,33 +83,32 @@ features/{feature}/
 
 More mature features (**payments**, **ai-tutor**) fully implement the domain → application →
 infrastructure split with ports/adapters. Newer or simpler features (**cart**, **courses**,
-**learning-paths**) mix in lighter patterns (services, repositories, policies) as needed — match
-the existing pattern of the feature you're editing rather than forcing a rewrite.
+**learning-paths**) mix in lighter patterns (services, repositories, policies) as needed — match the
+existing pattern of the feature you're editing rather than forcing a rewrite.
 
 ### Entry Points: Server Actions + Route Handlers
 
-- **Server Actions** (`src/features/{feature}/actions/*.ts`, marked `'use server'`) are the
-  primary way pages and client components call into business logic.
+- **Server Actions** (`src/features/{feature}/actions/*.ts`, marked `'use server'`) are the primary
+  way pages and client components call into business logic.
 - **API route handlers** (`src/app/api/**/route.ts`) are used for webhooks (Stripe, Paymob),
   external integrations, health checks, and admin endpoints.
 - Both should stay thin: validate input (Zod), call a use-case/service, map errors, return.
 
 ### AI Platform (`src/ai-platform/`)
 
-Internal, shared AI module. **Features must only import from `@/ai-platform`** (its public
-barrel), never reach into its internals directly. It provides:
+Internal, shared AI module. **Features must only import from `@/ai-platform`** (its public barrel),
+never reach into its internals directly. It provides:
 
 - `ai.chat()` / `ai.chatStream()` — provider-agnostic LLM runtime with cost ledger and guards.
-- `streamAgent()` — LangGraph-based agent runtime (sanitize → retrieve → generate → validate),
-  used by the AI Tutor feature (`src/features/ai-tutor/`).
+- `streamAgent()` — LangGraph-based agent runtime (sanitize → retrieve → generate → validate), used
+  by the AI Tutor feature (`src/features/ai-tutor/`).
 - RAG pipeline: embeddings, `PostgresVectorSearchAdapter`, ingestion/indexing pipeline, BullMQ
   outbox/queue for course knowledge indexing.
-- Observability: cost ledger, Langfuse prompt management, LangSmith tracing, OpenTelemetry
-  metrics.
+- Observability: cost ledger, Langfuse prompt management, LangSmith tracing, OpenTelemetry metrics.
 
-Gated behind `AI_PLATFORM_ENABLED` and `AI_TUTOR_ENABLED` env
-flags. See `src/ai-platform/README.md` and `docs/ai-platform/` / `docs/ai-tutor/` for the full
-design docs (blueprint, folder structure, agents, RAG, security, evaluation, ADRs).
+Gated behind `AI_PLATFORM_ENABLED` and `AI_TUTOR_ENABLED` env flags. See `src/ai-platform/README.md`
+and `docs/ai-platform/` / `docs/ai-tutor/` for the full design docs (blueprint, folder structure,
+agents, RAG, security, evaluation, ADRs).
 
 ### Authorization: Role-Based Access Control
 
@@ -143,10 +141,9 @@ Paymob HTTP calls, and pluggable metrics recorders / email senders behind ports.
 
 ### Background Jobs (BullMQ + Redis)
 
-Workers live in `src/server/workers/` and are started as separate processes (`pnpm worker:*`):
-order fulfillment, course knowledge indexing, AI cost aggregation, and payment reconciliation
-(scheduler + consumer). Producers/publishers live inside each feature's
-`infrastructure/queue/` folder.
+Workers live in `src/server/workers/` and are started as separate processes (`pnpm worker:*`): order
+fulfillment, course knowledge indexing, AI cost aggregation, and payment reconciliation (scheduler +
+consumer). Producers/publishers live inside each feature's `infrastructure/queue/` folder.
 
 ### TypeScript Path Aliases
 
@@ -178,6 +175,6 @@ schemas), `types/`, `constants/`.
   via `@t3-oss/env-nextjs` (fails fast on missing/invalid vars unless `SKIP_ENV_VALIDATION=true`).
 - `PAYMOB_*` vars are optional — the Paymob gateway only registers when configured; Stripe is the
   default provider.
-- `AI_PLATFORM_ENABLED` and `AI_TUTOR_ENABLED` gate the AI
-  features; leave `false` unless working on AI Tutor / AI Platform.
+- `AI_PLATFORM_ENABLED` and `AI_TUTOR_ENABLED` gate the AI features; leave `false` unless working on
+  AI Tutor / AI Platform.
 - Default dev port: 3000.

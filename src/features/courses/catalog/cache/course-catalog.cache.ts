@@ -37,7 +37,10 @@ export function resolveCacheScope(viewer: CatalogViewer): CatalogCacheScope {
   return 'public';
 }
 
-function buildCacheKey(scope: CatalogCacheScope, query: CourseCatalogQuery): string {
+function buildCacheKey(
+  scope: CatalogCacheScope,
+  query: CourseCatalogQuery,
+): string {
   return `${CACHE_PREFIX}:${scope}:${buildQueryHash(query)}`;
 }
 

@@ -17,7 +17,10 @@ export async function GET() {
     return NextResponse.json({ data });
   } catch (error) {
     if (error instanceof CartServiceError) {
-      return NextResponse.json({ error: error.message }, { status: error.status });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status },
+      );
     }
     console.error('[CART_GET_ERROR]', error);
     return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
@@ -35,7 +38,10 @@ export async function DELETE() {
     return NextResponse.json({ data });
   } catch (error) {
     if (error instanceof CartServiceError) {
-      return NextResponse.json({ error: error.message }, { status: error.status });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status },
+      );
     }
     console.error('[CART_CLEAR_ERROR]', error);
     return NextResponse.json({ error: 'Internal Error' }, { status: 500 });

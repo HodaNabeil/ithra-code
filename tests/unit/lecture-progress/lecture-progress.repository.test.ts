@@ -43,7 +43,8 @@ describe('PrismaLectureProgressRepository.upsertProgressInTransaction', () => {
       id: 'claaaaaaaaaaaaaaaaaaaaaa4',
       enrollmentId,
       lectureId,
-      isCompleted: args.create?.isCompleted ?? args.update?.isCompleted ?? false,
+      isCompleted:
+        args.create?.isCompleted ?? args.update?.isCompleted ?? false,
       completedAt: args.create?.completedAt ?? args.update?.completedAt ?? null,
       lastAccessedAt:
         args.create?.lastAccessedAt ?? args.update?.lastAccessedAt ?? baseDate,

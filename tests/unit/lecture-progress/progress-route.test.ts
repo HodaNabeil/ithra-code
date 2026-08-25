@@ -11,7 +11,9 @@ vi.mock('@/lib/auth', () => ({
 
 vi.mock('@/features/courses/lecture-progress', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@/features/courses/lecture-progress')>();
+    await importOriginal<
+      typeof import('@/features/courses/lecture-progress')
+    >();
   return {
     ...actual,
     updateLectureProgress: (...args: unknown[]) =>

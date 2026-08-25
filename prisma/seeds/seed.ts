@@ -16,7 +16,7 @@ dotenv.config();
 
 const connectionString = process.env.DATABASE_URL!.replace(
   /([?&]sslmode=)(require|prefer|verify-ca)\b/gi,
-  '$1verify-full'
+  '$1verify-full',
 );
 
 // Use PrismaClient with PostgreSQL adapter (same as PrismaService)
@@ -1431,14 +1431,127 @@ async function main() {
     `✅ Added 3 courses to student's cart (Total: ${cartSubtotal} EGP)`,
   );
 
+  // 9. Create Testimonials  
+  console.log('💬 Creating testimonials...');
+
+  await prisma.testimonial.deleteMany();
+  
+  await prisma.testimonial.createMany({
+    data: [
+      {
+        name: 'أحمد محمد',
+        avatarUrl: 'https://i.pravatar.cc/150?img=12',
+        content: 'منصة رائعة ساعدتني كثيراً في تعلم البرمجة. المحتوى ممتاز والشرح واضح جداً. أنصح بها بشدة!',
+        rating: 5,
+        isActive: true,
+      },
+      {
+        name: 'سارة علي',
+        avatarUrl: 'https://i.pravatar.cc/150?img=45',
+        content: 'تجربة تعليمية مميزة! استفدت كثيراً من دورة React وأصبحت قادرة على بناء تطبيقات احترافية.',
+        rating: 5,
+        isActive: true,
+      },
+      {
+        name: 'خالد عبدالله',
+        avatarUrl: 'https://i.pravatar.cc/150?img=33',
+        content: 'أفضل منصة تعليمية عربية للبرمجة. الدورات شاملة والمدربون محترفون جداً.',
+        rating: 5,
+        isActive: true,
+      },
+      {
+        name: 'فاطمة حسن',
+        avatarUrl: 'https://i.pravatar.cc/150?img=47',
+        content: 'بدأت من الصفر وأصبحت الآن قادرة على بناء مواقع كاملة. شكراً IthraCode على هذه الفرصة الرائعة!',
+        rating: 5,
+        isActive: true,
+      },
+      {
+        name: 'محمود إبراهيم',
+        avatarUrl: 'https://i.pravatar.cc/150?img=68',
+        content: 'دورة Node.js كانت شاملة جداً وعملية. تعلمت كيف أبني APIs احترافية وأنشرها على السحابة.',
+        rating: 5,
+        isActive: true,
+      },
+      {
+        name: 'نور الدين',
+        avatarUrl: null,
+        content: 'المنصة سهلة الاستخدام والدعم الفني ممتاز. حصلت على إجابات لكل أسئلتي بسرعة.',
+        rating: 4,
+        isActive: true,
+      },
+      {
+        name: 'ريم أحمد',
+        avatarUrl: 'https://i.pravatar.cc/150?img=20',
+        content: 'استثمار رائع! قيمة الدورات أعلى بكثير من السعر. المحتوى غني والمشاريع العملية مفيدة جداً.',
+        rating: 5,
+        isActive: true,
+      },
+      {
+        name: 'عمر خالد',
+        avatarUrl: 'https://i.pravatar.cc/150?img=51',
+        content: 'تعلمت TypeScript بطريقة سلسة ومنظمة. الشرح مبسط والأمثلة واقعية.',
+        rating: 5,
+        isActive: true,
+      },
+      {
+        name: 'منى سعيد',
+        avatarUrl: null,
+        content: 'دورة Docker كانت ممتازة! الآن أستطيع نشر تطبيقاتي بثقة وكفاءة.',
+        rating: 4,
+        isActive: true,
+      },
+      {
+        name: 'يوسف محمد',
+        avatarUrl: 'https://i.pravatar.cc/150?img=60',
+        content: 'منصة احترافية بكل المقاييس. الشهادات معتمدة وساعدتني في الحصول على وظيفة أحلامي!',
+        rating: 5,
+        isActive: true,
+      },
+    ],
+  });
+  console.log('✅ Created 10 testimonials');
+
+  // 10. Create Reviews (will be combined with testimonials)
+  console.log('⭐ Creating reviews for courses...');
+
+  await prisma.review.createMany({
+    data: [
+      {
+        courseId: nodeJsCourse.id,
+        userId: studentUser.id,
+        rating: 5,
+        comment: 'دورة Node.js رائعة! تعلمت كيف أبني APIs احترافية من البداية للنهاية. المشاريع العملية كانت مفيدة جداً.',
+      },
+      {
+        courseId: reactCourse.id,
+        userId: studentUser.id,
+        rating: 5,
+        comment: 'أفضل دورة React بالعربي! الشرح واضح والمشاريع واقعية. أصبحت قادراً على بناء تطبيقات React معقدة.',
+      },
+      {
+        courseId: htmlCssCourse.id,
+        userId: studentUser.id,
+        rating: 4,
+        comment: 'دورة ممتازة للمبتدئين. تعلمت أساسيات HTML و CSS بطريقة سلسة ومنظمة.',
+      },
+      {
+        courseId: jsFundamentalsCourse.id,
+        userId: studentUser.id,
+        rating: 5,
+        comment: 'JavaScript أصبحت لغتي المفضلة بعد هذه الدورة! الشرح رائع والتمارين مفيدة.',
+      },
+    ],
+  });
+  console.log('✅ Created 4 reviews');
+
+
   console.log('\n✨ Database seeding completed successfully!\n');
   console.log('📋 Summary:');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log(`👤 Users created: 3`);
   console.log(`   - Admin: admin@ithracode.com / Admin@123`);
-  console.log(
-    `   - Instructor: instructor@ithracode.com / Instructor@123`,
-  );
+  console.log(`   - Instructor: instructor@ithracode.com / Instructor@123`);
   console.log(`   - Student: student@ithracode.com / Student@123`);
   console.log(`\n🛤️  Paths created: 2`);
   console.log(`📚 Courses created: 2`);
@@ -1446,7 +1559,10 @@ async function main() {
   console.log(`🎥 Lectures created: 10`);
   console.log(`📎 Attachments created: 23`);
   console.log(`📝 Enrollments created: 1`);
-  console.log(`📊 Progress records created: 3`);
+  console.log(`📊 Progress records created: 1`);
+  console.log(`🛒 Cart items created: 3`);
+  console.log(`💬 Testimonials created: 10`);
+  console.log(`⭐ Reviews created: 4 (rating >= 4 will show as testimonials)`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
   // Summary
@@ -1455,9 +1571,7 @@ async function main() {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('👤 Users created: 3');
   console.log('   - Admin: admin@ithracode.com / Admin@123');
-  console.log(
-    '   - Instructor: instructor@ithracode.com / Instructor@123',
-  );
+  console.log('   - Instructor: instructor@ithracode.com / Instructor@123');
   console.log('   - Student: student@ithracode.com / Student@123');
   console.log('');
   console.log('🛤️  Paths created: 2');
@@ -1466,7 +1580,10 @@ async function main() {
   console.log('🎥 Lectures created: 10 (for first 2 courses)');
   console.log('📎 Attachments created: 23 (for first 2 courses)');
   console.log('📝 Enrollments created: 1');
-  console.log('📊 Progress records created: 3');
+  console.log('📊 Progress records created: 1');
+  console.log('🛒 Cart items created: 3');
+  console.log('💬 Testimonials created: 10');
+  console.log('⭐ Reviews created: 4 (rating >= 4 will show as testimonials)');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 }
 

@@ -11,7 +11,7 @@ const globalForPrisma = globalThis as unknown as {
 // to prevent the pg-connection-string warning without altering behavior.
 const connectionString = env.DATABASE_URL.replace(
   /([?&]sslmode=)(require|prefer|verify-ca)\b/gi,
-  '$1verify-full'
+  '$1verify-full',
 );
 
 // Create a connection pool for PostgreSQL

@@ -17,7 +17,10 @@ export class RedisConversationMemoryAdapter implements ConversationMemoryPort {
     return `${AI_PLATFORM_CONSTANTS.KEY_PREFIX_CONVERSATION}${threadId}`;
   }
 
-  async getHistory(threadId: string, limit = AI_PLATFORM_CONSTANTS.CONVERSATION_MEMORY_TURN_LIMIT): Promise<LlmMessage[]> {
+  async getHistory(
+    threadId: string,
+    limit = AI_PLATFORM_CONSTANTS.CONVERSATION_MEMORY_TURN_LIMIT,
+  ): Promise<LlmMessage[]> {
     try {
       const redis = await getRedisClient();
       const raw = await redis.get(this.key(threadId));
@@ -68,4 +71,5 @@ export class RedisConversationMemoryAdapter implements ConversationMemoryPort {
   }
 }
 
-export const redisConversationMemoryAdapter = new RedisConversationMemoryAdapter();
+export const redisConversationMemoryAdapter =
+  new RedisConversationMemoryAdapter();

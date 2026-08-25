@@ -71,22 +71,13 @@ export async function getLecture(
     status: course.status,
   };
 
-  assertLecturePublishedContent(
-    courseIdentity,
-    lecture,
-    lectureId,
-    viewer,
-  );
+  assertLecturePublishedContent(courseIdentity, lecture, lectureId, viewer);
 
   const enrollment = await repository.findEnrollment(viewer.id, course.id);
 
   assertLecturePaidAccess(courseIdentity, lecture, viewer, enrollment);
 
-  const hasPurchased = computeHasPurchased(
-    courseIdentity,
-    viewer,
-    enrollment,
-  );
+  const hasPurchased = computeHasPurchased(courseIdentity, viewer, enrollment);
   const hasRated = await repository.hasUserReviewedCourse(course.id, viewer.id);
 
   return mapGetLectureResponse({

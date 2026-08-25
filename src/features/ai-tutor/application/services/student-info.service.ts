@@ -119,7 +119,10 @@ export function resolveStudentDisplayName(student: {
   firstName: string | null;
   lastName: string | null;
 }): string | undefined {
-  const fromParts = [student.firstName, student.lastName].filter(Boolean).join(' ').trim();
+  const fromParts = [student.firstName, student.lastName]
+    .filter(Boolean)
+    .join(' ')
+    .trim();
   if (fromParts) {
     return fromParts;
   }
@@ -180,7 +183,9 @@ export function buildStudentInfo(params: {
   lastName: string | null;
   progress: StudentProgressInfo;
 }): StudentInfo {
-  const progressTier = deriveStudentProgressTier(params.progress.completionPercentage);
+  const progressTier = deriveStudentProgressTier(
+    params.progress.completionPercentage,
+  );
 
   return {
     displayName: resolveStudentDisplayName(params),
@@ -195,7 +200,8 @@ export function buildLevelAdaptiveInstructions(
   const courseLevel = sessionContext.course.level;
   const courseLevelLabel = formatCourseLevelLabel(courseLevel);
   const progressTier = sessionContext.student.progressTier;
-  const { completionPercentage, knowledgeGaps } = sessionContext.studentProgress;
+  const { completionPercentage, knowledgeGaps } =
+    sessionContext.studentProgress;
   const studentName = sessionContext.student.displayName;
 
   const lines = [
@@ -205,7 +211,8 @@ export function buildLevelAdaptiveInstructions(
     `- نسبة إكمال الدورة: ${completionPercentage}%`,
     '',
     '### إرشادات مستوى الدورة',
-    ...(COURSE_LEVEL_GUIDANCE[courseLevel] ?? COURSE_LEVEL_GUIDANCE.ALL_LEVELS!),
+    ...(COURSE_LEVEL_GUIDANCE[courseLevel] ??
+      COURSE_LEVEL_GUIDANCE.ALL_LEVELS!),
     '',
     '### إرشادات حسب تقدم الطالب',
     ...STUDENT_PROGRESS_GUIDANCE[progressTier],
@@ -229,7 +236,9 @@ export function buildLevelAdaptiveInstructions(
   );
 
   if (studentName) {
-    lines.push(`- خاطب الطالب باسمه (${studentName}) عند المناسب لجعل التجربة شخصية.`);
+    lines.push(
+      `- خاطب الطالب باسمه (${studentName}) عند المناسب لجعل التجربة شخصية.`,
+    );
   }
 
   return lines.join('\n');
@@ -246,7 +255,9 @@ export function detectSessionMetaIntent(question: string): SessionMetaIntent {
     return { isSessionMeta: false, confidence: 0 };
   }
 
-  const matches = SESSION_META_PATTERNS.filter((pattern) => pattern.test(trimmed)).length;
+  const matches = SESSION_META_PATTERNS.filter((pattern) =>
+    pattern.test(trimmed),
+  ).length;
   if (matches === 0) {
     return { isSessionMeta: false, confidence: 0 };
   }

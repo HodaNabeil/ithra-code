@@ -9,7 +9,8 @@ const HTML_ENTITY_MAP: Record<string, string> = {
   '&#39;': "'",
 };
 
-const UNSUPPORTED_CHAR_PATTERN = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
+const UNSUPPORTED_CHAR_PATTERN =
+  /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
 
 function decodeHtmlEntities(text: string): string {
   return text.replace(/&(?:nbsp|amp|lt|gt|quot|#39);/gi, (entity) => {

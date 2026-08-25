@@ -19,7 +19,9 @@ export interface StudentLearningProfileRepositoryPort {
     courseId: string;
   }): Promise<StudentLearningProfileRecordDTO | null>;
 
-  upsert(profile: StudentLearningProfileRecordDTO): Promise<StudentLearningProfileRecordDTO>;
+  upsert(
+    profile: StudentLearningProfileRecordDTO,
+  ): Promise<StudentLearningProfileRecordDTO>;
 
   deleteByUserAndCourse(params: {
     userId: string;

@@ -89,8 +89,7 @@ export class OpenAIEmbeddingAdapter implements EmbeddingPort {
             embedding: item.embedding,
             dimensions: item.embedding.length,
             model,
-            tokensUsed:
-              sanitizedTexts.length === 1 ? totalTokens : undefined,
+            tokensUsed: sanitizedTexts.length === 1 ? totalTokens : undefined,
           }));
 
         return {
@@ -128,7 +127,11 @@ export class OpenAIEmbeddingAdapter implements EmbeddingPort {
     }
 
     if (error instanceof Error) {
-      return new EmbeddingError(EmbeddingErrorCodes.UNKNOWN, error.message, false);
+      return new EmbeddingError(
+        EmbeddingErrorCodes.UNKNOWN,
+        error.message,
+        false,
+      );
     }
 
     return new EmbeddingError(

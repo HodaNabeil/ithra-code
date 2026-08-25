@@ -24,7 +24,9 @@ export function ModelBreakdownTable({ rows }: ModelBreakdownTableProps) {
     <Card className="py-5">
       <CardHeader className="px-5 sm:px-6">
         <CardTitle>تفصيل النماذج</CardTitle>
-        <CardDescription>التكلفة، التوكنات، الأخطاء، وزمن الاستجابة لكل نموذج</CardDescription>
+        <CardDescription>
+          التكلفة، التوكنات، الأخطاء، وزمن الاستجابة لكل نموذج
+        </CardDescription>
       </CardHeader>
       <CardContent className="overflow-x-auto px-3 pb-2 sm:px-5">
         <table className="w-full min-w-180 text-sm">
@@ -36,19 +38,27 @@ export function ModelBreakdownTable({ rows }: ModelBreakdownTableProps) {
               <th className="px-5 py-3.5 text-start font-medium">التوكنات</th>
               <th className="px-5 py-3.5 text-start font-medium">التكلفة</th>
               <th className="px-5 py-3.5 text-start font-medium">معدل الخطأ</th>
-              <th className="px-5 py-3.5 text-start font-medium">زمن الاستجابة</th>
+              <th className="px-5 py-3.5 text-start font-medium">
+                زمن الاستجابة
+              </th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-5 py-10 text-center text-muted-foreground">
+                <td
+                  colSpan={7}
+                  className="px-5 py-10 text-center text-muted-foreground"
+                >
                   لا توجد بيانات للنماذج في هذه الفترة.
                 </td>
               </tr>
             ) : (
               rows.map((row) => (
-                <tr key={`${row.provider}:${row.model}`} className="border-b border-border/60">
+                <tr
+                  key={`${row.provider}:${row.model}`}
+                  className="border-b border-border/60"
+                >
                   <td className="px-5 py-3.5">{row.provider}</td>
                   <td className="px-5 py-3.5 font-medium">{row.model}</td>
                   <td className="px-5 py-3.5">{formatCount(row.totalRuns)}</td>
@@ -56,8 +66,12 @@ export function ModelBreakdownTable({ rows }: ModelBreakdownTableProps) {
                     {formatCount(row.totalInputTokens + row.totalOutputTokens)}
                   </td>
                   <td className="px-5 py-3.5">{formatUsd(row.totalCostUsd)}</td>
-                  <td className="px-5 py-3.5">{formatPercent(row.errorRate)}</td>
-                  <td className="px-5 py-3.5">{formatLatency(row.avgLatencyMs)}</td>
+                  <td className="px-5 py-3.5">
+                    {formatPercent(row.errorRate)}
+                  </td>
+                  <td className="px-5 py-3.5">
+                    {formatLatency(row.avgLatencyMs)}
+                  </td>
                 </tr>
               ))
             )}
@@ -86,7 +100,9 @@ type RecentRunsTableProps = {
   }>;
 };
 
-function statusBadgeVariant(status: string): 'default' | 'destructive' | 'secondary' {
+function statusBadgeVariant(
+  status: string,
+): 'default' | 'destructive' | 'secondary' {
   if (status === 'failed') {
     return 'destructive';
   }
@@ -116,7 +132,9 @@ export function RecentRunsTable({ runs }: RecentRunsTableProps) {
     <Card className="py-5">
       <CardHeader className="px-5 sm:px-6">
         <CardTitle>أحدث الطلبات</CardTitle>
-        <CardDescription>آخر 20 تشغيلاً مع حالة التقدير والتكلفة</CardDescription>
+        <CardDescription>
+          آخر 20 تشغيلاً مع حالة التقدير والتكلفة
+        </CardDescription>
       </CardHeader>
       <CardContent className="overflow-x-auto px-3 pb-2 sm:px-5">
         <table className="w-full min-w-240 text-sm">
@@ -127,7 +145,9 @@ export function RecentRunsTable({ runs }: RecentRunsTableProps) {
               <th className="px-5 py-3.5 text-start font-medium">النموذج</th>
               <th className="px-5 py-3.5 text-start font-medium">التوكنات</th>
               <th className="px-5 py-3.5 text-start font-medium">التكلفة</th>
-              <th className="px-5 py-3.5 text-start font-medium">زمن الاستجابة</th>
+              <th className="px-5 py-3.5 text-start font-medium">
+                زمن الاستجابة
+              </th>
               <th className="px-5 py-3.5 text-start font-medium">الحالة</th>
               <th className="px-5 py-3.5 text-start font-medium">التقدير</th>
             </tr>
@@ -135,7 +155,10 @@ export function RecentRunsTable({ runs }: RecentRunsTableProps) {
           <tbody>
             {runs.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-5 py-10 text-center text-muted-foreground">
+                <td
+                  colSpan={8}
+                  className="px-5 py-10 text-center text-muted-foreground"
+                >
                   لا توجد طلبات في هذه الفترة.
                 </td>
               </tr>
@@ -155,17 +178,23 @@ export function RecentRunsTable({ runs }: RecentRunsTableProps) {
                     <td className="px-5 py-3.5">{run.agentId}</td>
                     <td className="px-5 py-3.5">
                       <div className="font-medium">{billingModel}</div>
-                      <div className="text-xs text-muted-foreground">{billingProvider}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {billingProvider}
+                      </div>
                     </td>
                     <td className="px-5 py-3.5">
-                      {formatCount((run.inputTokens ?? 0) + (run.outputTokens ?? 0))}
+                      {formatCount(
+                        (run.inputTokens ?? 0) + (run.outputTokens ?? 0),
+                      )}
                     </td>
                     <td className="px-5 py-3.5">
                       {run.estimatedCostUsd === null
                         ? '—'
                         : formatUsd(run.estimatedCostUsd)}
                     </td>
-                    <td className="px-5 py-3.5">{formatLatency(run.latencyMs)}</td>
+                    <td className="px-5 py-3.5">
+                      {formatLatency(run.latencyMs)}
+                    </td>
                     <td className="px-5 py-3.5">
                       <Badge variant={statusBadgeVariant(run.status)}>
                         {statusLabel(run.status)}

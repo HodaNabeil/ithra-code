@@ -19,7 +19,9 @@ export const pdfExtractor: TextExtractorPort = {
   },
 
   async extract(source: KnowledgeSource): Promise<ExtractionResult> {
-    const attachmentId = String(source.metadata?.attachmentId ?? source.sourceId);
+    const attachmentId = String(
+      source.metadata?.attachmentId ?? source.sourceId,
+    );
     const result = await extractAttachmentText({
       id: attachmentId,
       name: source.title,
@@ -63,9 +65,10 @@ export const textAttachmentExtractor: TextExtractorPort = {
   },
 
   async extract(source: KnowledgeSource): Promise<ExtractionResult> {
-    const attachmentType =
-      source.attachmentType ?? AttachmentType.TEXT;
-    const attachmentId = String(source.metadata?.attachmentId ?? source.sourceId);
+    const attachmentType = source.attachmentType ?? AttachmentType.TEXT;
+    const attachmentId = String(
+      source.metadata?.attachmentId ?? source.sourceId,
+    );
 
     const result = await extractAttachmentText({
       id: attachmentId,

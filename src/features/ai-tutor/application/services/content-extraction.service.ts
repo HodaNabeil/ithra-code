@@ -38,9 +38,7 @@ export type ExtractionStats = {
   skipReasons: Record<string, number>;
 };
 
-function mapSourceKind(
-  sourceType: string,
-): ExtractedSource['sourceKind'] {
+function mapSourceKind(sourceType: string): ExtractedSource['sourceKind'] {
   if (sourceType === 'course_overview') {
     return 'course';
   }
@@ -86,12 +84,17 @@ export async function loadCourseForIndexing(
   courseSlug: string,
   deps: ContentExtractionDeps,
 ): Promise<CourseForIndexingDTO> {
-  const course = await deps.courseContentRepository.findPublishedCourseForIndexing(
-    courseSlug,
-  );
+  const course =
+    await deps.courseContentRepository.findPublishedCourseForIndexing(
+      courseSlug,
+    );
 
   if (!course) {
-    throw new IndexingError(404, 'الدورة غير موجودة', IndexingErrorCodes.COURSE_NOT_FOUND);
+    throw new IndexingError(
+      404,
+      'الدورة غير موجودة',
+      IndexingErrorCodes.COURSE_NOT_FOUND,
+    );
   }
 
   if (course.status !== CourseStatus.PUBLISHED) {
@@ -121,7 +124,8 @@ async function extractSourcesFromCollection(
     const extractor = extractorRegistry.resolve(source);
     if (!extractor) {
       stats.attachmentsSkipped += 1;
-      stats.skipReasons.no_extractor = (stats.skipReasons.no_extractor ?? 0) + 1;
+      stats.skipReasons.no_extractor =
+        (stats.skipReasons.no_extractor ?? 0) + 1;
       continue;
     }
 
@@ -178,7 +182,9 @@ export async function extractLectureSources(
   return extractSourcesFromCollection(sources);
 }
 
-export function buildChunkRecords(sources: ExtractedSource[]): KnowledgeChunkRecord[] {
+export function buildChunkRecords(
+  sources: ExtractedSource[],
+): KnowledgeChunkRecord[] {
   const records: KnowledgeChunkRecord[] = [];
 
   for (const source of sources) {
@@ -186,7 +192,8 @@ export function buildChunkRecords(sources: ExtractedSource[]): KnowledgeChunkRec
       courseId: source.courseId,
       sectionId: source.sectionId,
       lessonId: source.lectureId,
-      sourceType: (source.metadata?.sourceType as string) ?? 'lesson_description',
+      sourceType:
+        (source.metadata?.sourceType as string) ?? 'lesson_description',
       sourceId: source.sourceId,
       title: source.title,
       language: String(source.metadata?.language ?? 'ar'),

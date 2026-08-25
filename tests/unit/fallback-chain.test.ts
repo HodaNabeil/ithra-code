@@ -27,8 +27,12 @@ function createMockAdapter(model: string, shouldFail = false): LlmPort {
 describe('FallbackLlmAdapter', () => {
   it('reports served model via onModelServed when fallback succeeds', async () => {
     resetProviderRegistryForTests();
-    registerLlmProvider('openai', createMockAdapter('primary', true), ['primary']);
-    registerLlmProvider('anthropic', createMockAdapter('fallback'), ['fallback']);
+    registerLlmProvider('openai', createMockAdapter('primary', true), [
+      'primary',
+    ]);
+    registerLlmProvider('anthropic', createMockAdapter('fallback'), [
+      'fallback',
+    ]);
 
     const adapter = new FallbackLlmAdapter({
       primaryModel: 'primary',

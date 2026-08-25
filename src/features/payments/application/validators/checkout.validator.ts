@@ -3,9 +3,7 @@ import {
   CourseVisibility,
   type Currency,
 } from '@/generated/prisma/enums';
-import {
-  isCouponValid,
-} from '@/features/cart/mappers/cart.mapper';
+import { isCouponValid } from '@/features/cart/mappers/cart.mapper';
 import type { DB_CartCoupon } from '@/features/cart/infrastructure/prisma/cart.select';
 import { isSupportedPaymentProvider } from '@/features/payments/domain';
 import { CheckoutError } from '../errors/checkout.errors';

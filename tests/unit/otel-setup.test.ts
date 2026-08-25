@@ -106,9 +106,8 @@ describe('otel-setup', () => {
   });
 
   it('initOtel is a no-op when OTEL is disabled', async () => {
-    const { initOtel: init } = await import(
-      '@/ai-platform/observability/opentelemetry/otel-setup'
-    );
+    const { initOtel: init } =
+      await import('@/ai-platform/observability/opentelemetry/otel-setup');
 
     expect(() => init()).not.toThrow();
     expect(isOtelActive()).toBe(false);
@@ -119,9 +118,8 @@ describe('otel-setup', () => {
     delete process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
     vi.resetModules();
 
-    const { initOtel: init } = await import(
-      '@/ai-platform/observability/opentelemetry/otel-setup'
-    );
+    const { initOtel: init } =
+      await import('@/ai-platform/observability/opentelemetry/otel-setup');
 
     expect(() => init()).not.toThrow();
     await resetOtelForTests();

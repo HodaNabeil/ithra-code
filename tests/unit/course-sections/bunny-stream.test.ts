@@ -10,10 +10,7 @@ vi.mock('@/config/env', () => ({
   env: mockEnv,
 }));
 
-import {
-  isBunnyStreamConfigured,
-  signBunnyHlsUrl,
-} from '@/lib/bunny-stream';
+import { isBunnyStreamConfigured, signBunnyHlsUrl } from '@/lib/bunny-stream';
 
 describe('bunny-stream', () => {
   beforeEach(() => {

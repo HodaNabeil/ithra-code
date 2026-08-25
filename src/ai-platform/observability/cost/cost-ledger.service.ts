@@ -59,7 +59,9 @@ export async function startAgentRun(input: StartAgentRunInput): Promise<void> {
   }
 }
 
-export async function completeAgentRun(input: CompleteAgentRunInput): Promise<void> {
+export async function completeAgentRun(
+  input: CompleteAgentRunInput,
+): Promise<void> {
   if (!AIPlatformConfig.isEnabled()) {
     return;
   }
@@ -148,7 +150,9 @@ export type CostSummary = {
   totalCostUsd: number;
 };
 
-export async function getCostSummary(filters: CostFilters = {}): Promise<CostSummary> {
+export async function getCostSummary(
+  filters: CostFilters = {},
+): Promise<CostSummary> {
   const runs = await prisma.aiAgentRun.findMany({
     where: {
       status: 'completed',

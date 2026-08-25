@@ -131,8 +131,8 @@ export default function PaymentSuccessContent() {
 
         {timedOut && !confirmed && (
           <p className="text-sm text-muted-foreground leading-relaxed">
-            التأكيد يستغرق وقتاً أطول من المعتاد. ستصلك الدورات تلقائياً عند اكتمال
-            المعالجة — يمكنك متابعة التعلّم من صفحة دوراتي.
+            التأكيد يستغرق وقتاً أطول من المعتاد. ستصلك الدورات تلقائياً عند
+            اكتمال المعالجة — يمكنك متابعة التعلّم من صفحة دوراتي.
           </p>
         )}
 

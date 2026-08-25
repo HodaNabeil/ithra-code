@@ -62,7 +62,9 @@ export function computeHeuristicMetrics(dataset: EvalDataset): RagasResult {
 
     // Answer relevancy: overlap between expected topics and the question.
     const answerRelevancy =
-      topicTokens.size > 0 ? Math.min(1, overlapRatio(topicTokens, inputTokens) + 0.5) : 0.5;
+      topicTokens.size > 0
+        ? Math.min(1, overlapRatio(topicTokens, inputTokens) + 0.5)
+        : 0.5;
 
     // Context precision: fraction of context tokens relevant to the question.
     const contextPrecision =
@@ -90,8 +92,12 @@ export function computeHeuristicMetrics(dataset: EvalDataset): RagasResult {
 
   const metrics = {
     faithfulness: average(perSample.map((s) => s.metrics.faithfulness ?? 0)),
-    answerRelevancy: average(perSample.map((s) => s.metrics.answerRelevancy ?? 0)),
-    contextPrecision: average(perSample.map((s) => s.metrics.contextPrecision ?? 0)),
+    answerRelevancy: average(
+      perSample.map((s) => s.metrics.answerRelevancy ?? 0),
+    ),
+    contextPrecision: average(
+      perSample.map((s) => s.metrics.contextPrecision ?? 0),
+    ),
     contextRecall: average(perSample.map((s) => s.metrics.contextRecall ?? 0)),
   };
 
@@ -133,9 +139,13 @@ async function runPythonRagas(
 
   return new Promise((resolve) => {
     const pythonExecutable = resolvePythonExecutable();
-    const child = spawn(pythonExecutable, [scriptPath, datasetPath, outputPath], {
-      stdio: 'inherit',
-    });
+    const child = spawn(
+      pythonExecutable,
+      [scriptPath, datasetPath, outputPath],
+      {
+        stdio: 'inherit',
+      },
+    );
 
     child.on('error', (error) => {
       console.warn(
@@ -156,7 +166,9 @@ async function runPythonRagas(
       }
 
       try {
-        const parsed = JSON.parse(readFileSync(outputPath, 'utf-8')) as RagasResult;
+        const parsed = JSON.parse(
+          readFileSync(outputPath, 'utf-8'),
+        ) as RagasResult;
         if (parsed.usedFallback) {
           console.warn(
             '[ragas] eval/ragas_eval.py reported it could not import the `ragas` package ' +

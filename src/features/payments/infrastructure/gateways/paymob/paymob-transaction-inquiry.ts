@@ -74,7 +74,10 @@ export function mapPaymobTransactionToProviderStatus(
   transaction: PaymobTransactionLike | null,
 ): ProviderPaymentStatus {
   if (!transaction) {
-    return { outcome: 'not_found', detail: 'No transaction in provider payload' };
+    return {
+      outcome: 'not_found',
+      detail: 'No transaction in provider payload',
+    };
   }
 
   if (asBoolean(transaction.is_voided) || asBoolean(transaction.is_refunded)) {

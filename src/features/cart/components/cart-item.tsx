@@ -136,11 +136,7 @@ export function CartItem({ item, isGuestCart = false }: CartItemProps) {
           onClick={handleRemove}
           disabled={isPending}
         >
-          {isPending ? (
-            <Loader2 className="size-3.5 animate-spin" />
-          ) : (
-            'إزالة'
-          )}
+          {isPending ? <Loader2 className="size-3.5 animate-spin" /> : 'إزالة'}
         </button>
       </div>
     </div>

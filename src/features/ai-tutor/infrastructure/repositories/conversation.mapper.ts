@@ -3,10 +3,7 @@ import type {
   TutorThread as PrismaTutorThread,
   TutorConversation as PrismaTutorConversation,
 } from '@/generated/prisma/client';
-import {
-  TutorMessageRole,
-  TutorMessageStatus,
-} from '@/generated/prisma/enums';
+import { TutorMessageRole, TutorMessageStatus } from '@/generated/prisma/enums';
 
 import type {
   ConversationDTO,
@@ -44,8 +41,7 @@ function parseRetrievedSources(value: unknown): MessageSourceDTO[] | undefined {
       return {
         id: String(source.id ?? ''),
         title: String(source.title ?? 'مصدر من الدورة'),
-        source:
-          typeof source.source === 'string' ? source.source : undefined,
+        source: typeof source.source === 'string' ? source.source : undefined,
         relevanceScore: Number(source.relevanceScore ?? 0),
         contentType:
           typeof source.contentType === 'string'
@@ -110,7 +106,9 @@ export function mapThread(thread: ThreadWithMessages): ThreadDTO {
   };
 }
 
-export function mapConversation(conversation: ConversationWithThreads): ConversationDTO {
+export function mapConversation(
+  conversation: ConversationWithThreads,
+): ConversationDTO {
   return {
     id: conversation.id,
     courseId: conversation.courseId,

@@ -29,12 +29,18 @@ async function loadPublicCourse(
   idOrSlug: string,
   repository: CourseDetailRepository,
 ): Promise<CourseDetailPublicDTO> {
-  const cached = isCuid(idOrSlug) ? null : await courseDetailCache.get(idOrSlug);
+  const cached = isCuid(idOrSlug)
+    ? null
+    : await courseDetailCache.get(idOrSlug);
   if (cached) return cached;
 
   const entity = await repository.findCourseByIdOrSlug(idOrSlug);
   if (!entity) {
-    throw new CourseDetailError(404, COURSE_NOT_FOUND_MESSAGE, 'COURSE_NOT_FOUND');
+    throw new CourseDetailError(
+      404,
+      COURSE_NOT_FOUND_MESSAGE,
+      'COURSE_NOT_FOUND',
+    );
   }
 
   const publicDto = mapCourseDetailEntityToPublicDTO(entity);

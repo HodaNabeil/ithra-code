@@ -74,7 +74,8 @@ function mapPlatformSourcesToMessageSources(
       source: contentType,
       relevanceScore: source.score,
       contentType,
-      lectureId: typeof metadata.lectureId === 'string' ? metadata.lectureId : undefined,
+      lectureId:
+        typeof metadata.lectureId === 'string' ? metadata.lectureId : undefined,
     };
   });
 }
@@ -150,14 +151,19 @@ async function* streamTutorViaPlatformRuntime(input: {
   outcome: AskTutorRequestOutcome;
   idempotencyKey?: string;
   signal?: AbortSignal;
-}): AsyncGenerator<TutorSseEvent, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
+}): AsyncGenerator<
+  TutorSseEvent,
+  AskTutorResultDTO & { outcome: AskTutorRequestOutcome }
+> {
   const { outcome, conversationRepository, turn } = input;
   const sessionMetaIntent = detectSessionMetaIntent(input.question);
   const personalization = buildPersonalizationContext(
     input.sessionContext,
     sessionMetaIntent,
   );
-  const responseProcessor = new TutorResponseProcessorAdapter(input.contentFilter);
+  const responseProcessor = new TutorResponseProcessorAdapter(
+    input.contentFilter,
+  );
 
   let sources: MessageSourceDTO[] = [];
   let validatedOutput: string | undefined;
@@ -308,11 +314,7 @@ async function* streamTutorViaPlatformRuntime(input: {
     }
 
     if (error instanceof Error) {
-      throw new AskTutorError(
-        502,
-        error.message,
-        AskTutorErrorCodes.LLM_ERROR,
-      );
+      throw new AskTutorError(502, error.message, AskTutorErrorCodes.LLM_ERROR);
     }
 
     throw error;
@@ -326,7 +328,10 @@ export async function* askTutorUseCase(
     idempotencyKey?: string;
   },
   deps: AskTutorUseCaseDeps,
-): AsyncGenerator<TutorSseEvent, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
+): AsyncGenerator<
+  TutorSseEvent,
+  AskTutorResultDTO & { outcome: AskTutorRequestOutcome }
+> {
   const { conversationRepository, contentFilter } = deps;
 
   const outcome: AskTutorRequestOutcome = {
@@ -449,7 +454,10 @@ export async function* askTutorUseCase(
       })
       .catch((error) => {
         if (process.env.NODE_ENV === 'development') {
-          console.warn('[AI_TUTOR_PROFILE] Failed to update learning profile', error);
+          console.warn(
+            '[AI_TUTOR_PROFILE] Failed to update learning profile',
+            error,
+          );
         }
       });
 

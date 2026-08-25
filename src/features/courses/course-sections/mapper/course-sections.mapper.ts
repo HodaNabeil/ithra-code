@@ -1,5 +1,8 @@
 import { signBunnyHlsUrl } from '@/lib/bunny-stream';
-import { prismaDateToIso, prismaDateToIsoNullable } from '@/features/courses/course-detail/mapper/shared';
+import {
+  prismaDateToIso,
+  prismaDateToIsoNullable,
+} from '@/features/courses/course-detail/mapper/shared';
 import type {
   AttachmentDTO,
   CourseSectionsProgressRecord,

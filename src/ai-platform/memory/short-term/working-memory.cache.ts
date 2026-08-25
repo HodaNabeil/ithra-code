@@ -10,7 +10,8 @@ const KEY_PREFIX = 'ai:working:';
  * results already computed earlier in the same run instead of re-embedding
  * or re-searching for an identical query.
  */
-export const WORKING_MEMORY_TTL_SECONDS = (AI_PLATFORM_CONSTANTS.SESSION_CACHE_TTL_MS / 1000) * 6;
+export const WORKING_MEMORY_TTL_SECONDS =
+  (AI_PLATFORM_CONSTANTS.SESSION_CACHE_TTL_MS / 1000) * 6;
 
 async function getRedisClient() {
   const { redis } = await import('@/lib/redis');
@@ -64,7 +65,10 @@ export async function getWorkingMemory(
   }
 }
 
-export async function invalidateWorkingMemory(runId: string, scope: string): Promise<void> {
+export async function invalidateWorkingMemory(
+  runId: string,
+  scope: string,
+): Promise<void> {
   if (process.env.NODE_ENV === 'test') {
     return;
   }

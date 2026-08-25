@@ -38,10 +38,10 @@ export async function handleDeleteTutorMessageRequest(
     return apiError('غير مصرح لك بحذف هذه الرسالة', 403);
   }
 
-  const accessibleCourseIds = await getCourseContextRepository().getAccessibleCourseIds(
-    session.user.id,
-    [conversation.courseId],
-  );
+  const accessibleCourseIds =
+    await getCourseContextRepository().getAccessibleCourseIds(session.user.id, [
+      conversation.courseId,
+    ]);
   if (!isCourseAccessible(conversation.courseId, accessibleCourseIds)) {
     return apiError('غير مصرح لك بحذف هذه الرسالة', 403);
   }

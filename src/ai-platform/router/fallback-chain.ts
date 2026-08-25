@@ -1,4 +1,9 @@
-import type { LlmPort, LlmCompleteOptions, LlmCompleteResult, LlmStreamOptions } from '../domain/ports/llm.port';
+import type {
+  LlmPort,
+  LlmCompleteOptions,
+  LlmCompleteResult,
+  LlmStreamOptions,
+} from '../domain/ports/llm.port';
 import { getLlmForModel } from '../providers/registry/provider-registry';
 
 export interface FallbackChainConfig {
@@ -22,7 +27,9 @@ export function resolveModelChain(
 export class FallbackLlmAdapter implements LlmPort {
   constructor(private readonly chain: FallbackChainConfig) {}
 
-  async *streamAnswer(options: LlmStreamOptions): AsyncIterableIterator<string> {
+  async *streamAnswer(
+    options: LlmStreamOptions,
+  ): AsyncIterableIterator<string> {
     const models = resolveModelChain(this.chain, options.model);
     let lastError: unknown;
 

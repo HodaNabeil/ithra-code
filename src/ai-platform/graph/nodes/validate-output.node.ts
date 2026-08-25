@@ -55,7 +55,9 @@ export async function validateOutputNode(
           signals.filterTriggered = true;
         } else if (processed.disposition === 'rejected') {
           errors.push('content_filter');
-          response = buildGuidedLearningResponse(state.sanitizedInput || state.input);
+          response = buildGuidedLearningResponse(
+            state.sanitizedInput || state.input,
+          );
           signals.filterTriggered = true;
         }
 
@@ -66,7 +68,9 @@ export async function validateOutputNode(
         const integrity = validateEducationalResponse(response);
         if (!integrity.isValid) {
           errors.push('assessment_leak');
-          response = buildGuidedLearningResponse(state.sanitizedInput || state.input);
+          response = buildGuidedLearningResponse(
+            state.sanitizedInput || state.input,
+          );
           signals.filterTriggered = true;
         }
       }
@@ -75,7 +79,9 @@ export async function validateOutputNode(
       const integrity = validateEducationalResponse(response);
       if (!integrity.isValid) {
         errors.push('assessment_leak');
-        response = buildGuidedLearningResponse(state.sanitizedInput || state.input);
+        response = buildGuidedLearningResponse(
+          state.sanitizedInput || state.input,
+        );
         signals.filterTriggered = true;
       }
     }
