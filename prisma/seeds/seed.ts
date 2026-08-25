@@ -54,6 +54,8 @@ async function main() {
   await prisma.order.deleteMany();
   await prisma.coupon.deleteMany();
   await prisma.review.deleteMany();
+  await prisma.faq.deleteMany();
+  await prisma.testimonial.deleteMany();
   await prisma.videoCollection.deleteMany();
   await prisma.course.deleteMany();
   await prisma.track.deleteMany();
@@ -1434,8 +1436,6 @@ async function main() {
   // 9. Create Testimonials  
   console.log('💬 Creating testimonials...');
 
-  await prisma.testimonial.deleteMany();
-  
   await prisma.testimonial.createMany({
     data: [
       {
@@ -1512,6 +1512,57 @@ async function main() {
   });
   console.log('✅ Created 10 testimonials');
 
+  // 9b. Create FAQs
+  console.log('❓ Creating FAQs...');
+
+  await prisma.faq.createMany({
+    data: [
+      {
+        question: 'هل المنصة مناسبة للمبتدئين؟',
+        answer:
+          'نعم، تم تصميم المنصة خصيصاً للمبتدئين والمطورين المتوسطين. نبدأ من الأساسيات ونتقدم تدريجياً حتى تصل إلى مستوى احترافي.',
+        sortOrder: 1,
+        isActive: true,
+      },
+      {
+        question: 'كيف يمكنني الاستفادة من التجارب الواقعية؟',
+        answer:
+          'نقوم بتقديم أمثلة ومشاريع مستوحاة من تجارب حقيقية في الشركات لتطبيق المهارات عملياً، مع شرح خطوات التنفيذ والأخطاء الشائعة.',
+        sortOrder: 2,
+        isActive: true,
+      },
+      {
+        question: 'هل يمكنني الحصول على شهادة؟',
+        answer:
+          'نعم، ستحصل على شهادة إتمام لكل دورة تكملها بنجاح بعد إنهاء جميع المحاضرات والمشاريع المطلوبة.',
+        sortOrder: 3,
+        isActive: true,
+      },
+      {
+        question: 'هل يمكنني الوصول إلى المحتوى بعد الشراء؟',
+        answer:
+          'نعم، بمجرد شراء الدورة يمكنك الوصول إلى جميع المحاضرات والمواد بشكل دائم دون قيود زمنية.',
+        sortOrder: 4,
+        isActive: true,
+      },
+      {
+        question: 'ما هي طرق الدفع المتاحة؟',
+        answer:
+          'نوفر عدة طرق دفع آمنة تشمل البطاقات الائتمانية والمحافظ الإلكترونية المحلية، مع دعم العملات المتاحة في منطقتك.',
+        sortOrder: 5,
+        isActive: true,
+      },
+      {
+        question: 'هل يوجد دعم فني أو مساعدة؟',
+        answer:
+          'نعم، يمكنك التواصل مع فريق الدعم أو استخدام المساعد الذكي داخل المنصة للحصول على إجابات سريعة حول المحتوى التعليمي.',
+        sortOrder: 6,
+        isActive: true,
+      },
+    ],
+  });
+  console.log('✅ Created 6 FAQs');
+
   // 10. Create Reviews (will be combined with testimonials)
   console.log('⭐ Creating reviews for courses...');
 
@@ -1562,6 +1613,7 @@ async function main() {
   console.log(`📊 Progress records created: 1`);
   console.log(`🛒 Cart items created: 3`);
   console.log(`💬 Testimonials created: 10`);
+  console.log(`❓ FAQs created: 6`);
   console.log(`⭐ Reviews created: 4 (rating >= 4 will show as testimonials)`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
@@ -1583,6 +1635,7 @@ async function main() {
   console.log('📊 Progress records created: 1');
   console.log('🛒 Cart items created: 3');
   console.log('💬 Testimonials created: 10');
+  console.log('❓ FAQs created: 6');
   console.log('⭐ Reviews created: 4 (rating >= 4 will show as testimonials)');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 }

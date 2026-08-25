@@ -1,4 +1,13 @@
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import SectionHeading from './section-heading';
+import { TestimonialQuoteIcon } from './testimonial-quote-icon';
 
 interface Testimonial {
   id: string;
@@ -25,67 +34,49 @@ export default function TestimonialSection({
   }
 
   return (
-    <section className="py-12 md:py-16 lg:py-20 bg-muted/50">
+    <section className="py-12 md:py-16 lg:py-20">
       <div className="container element-center flex-col">
         <SectionHeading
           subTitle="آراء الطلاب"
           title="ماذا يقول طلابنا عن IthraCode"
         />
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 w-full">
           {items.map((testimonial) => {
             const avatarSrc = testimonial.avatarUrl || testimonial.avatar;
-            const displayRole =
-              testimonial.role ||
-              (testimonial.source === 'review' ? 'طالب' : 'عميل');
 
             return (
-              <div
-                key={testimonial.id}
-                className="bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-shadow"
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  {avatarSrc ? (
-                    <img
-                      src={avatarSrc}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-primary font-semibold">
-                        {testimonial.name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-                  <div>
-                    <h4 className="font-semibold text-foreground">
+              <Card key={testimonial.id} className="h-full">
+                <CardHeader className="flex items-start justify-start">
+                  <TestimonialQuoteIcon
+                    gradientId={`testimonial-quote-${testimonial.id}`}
+                    className="size-9"
+                  />
+                </CardHeader>
+
+                <CardContent className="flex-1">
+                  <blockquote className="leading-relaxed text-muted-foreground">
+                    {testimonial.content}
+                  </blockquote>
+                </CardContent>
+
+                <CardFooter className="gap-3 px-4 pb-4">
+                  <Avatar className="size-11">
+                    {avatarSrc ? (
+                      <AvatarImage src={avatarSrc} alt={testimonial.name} />
+                    ) : null}
+                    <AvatarFallback className="bg-primary/10 font-semibold text-primary">
+                      {testimonial.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="min-w-0 text-right">
+                    <CardTitle className="truncate font-semibold">
                       {testimonial.name}
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      {displayRole}
-                    </p>
+                    </CardTitle>
                   </div>
-                </div>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  {testimonial.content}
-                </p>
-                {testimonial.rating && (
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <span
-                        key={i}
-                        className={`text-lg ${
-                          i < testimonial.rating!
-                            ? 'text-yellow-400'
-                            : 'text-gray-300'
-                        }`}
-                      >
-                        ★
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
+                </CardFooter>
+              </Card>
             );
           })}
         </div>

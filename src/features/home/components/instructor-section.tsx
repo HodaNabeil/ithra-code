@@ -17,12 +17,12 @@ export default function InstructorSection() {
             {/* Image block */}
             <div className="md:w-1/2 shrink-0">
               <Image
-                src="/img/home/why-ithracode-career.webp"
+                src="/img/hoda.jpg"
                 alt="هدى نبيل أبو هاشم - مطورة الواجهات الأمامية"
                 width={800}
-                height={450}
+                height={1000}
                 sizes={INSTRUCTOR_IMAGE_SIZES}
-                className="w-full h-full object-cover max-h-[450px]"
+                className="w-full h-full object-cover object-top max-h-112.5"
               />
             </div>
 
@@ -36,17 +36,10 @@ export default function InstructorSection() {
               </p>
               <ExpandableContent className="mt-4" initialHeight={150}>
                 <p className="text-muted-foreground text-base leading-relaxed">
-                  هدى نبيل أبو هاشم مطورة واجهات أمامية متخصصة مع خبرة واسعة في
-                  بناء تطبيقات الويب الحديثة والمتجاوبة. تتمتع بخبرة عملية في
-                  تقنيات React.js وNext.js وTypeScript، وتعمل حاليًا على تطوير
-                  منصات التعلم الإلكتروني المتقدمة. خلال مسيرتها المهنية، عملت
-                  على مشاريع متنوعة تشمل منصات التجارة الإلكترونية ولوحات
-                  الإدارة وتطبيقات العقارات، مما منحها فهمًا عميقًا لاحتياجات
-                  المستخدمين وأفضل الممارسات في التطوير. تخرجت من جامعة القاهرة
-                  بدرجة البكالوريوس في علوم الحاسوب وتحمل شغفًا كبيرًا لتعليم
-                  البرمجة ونقل الخبرات العملية للأجيال الجديدة من المطورين. تركز
-                  في تدريسها على التطبيق العملي والمشاريع الواقعية التي تحاكي
-                  بيئة العمل الحقيقية في الشركات.
+                  هدى نبيل مطورة واجهات أمامية متخصصة مع خبرة واسعة في بناء
+                  تطبيقات الويب الحديثة والمتجاوبة. تتمتع بخبرة عملية في تقنيات
+                  React.js وNext.js وTypeScript، وتعمل حاليًا على تطوير منصات
+                  التعلم الإلكتروني المتقدمة.
                 </p>
               </ExpandableContent>
 

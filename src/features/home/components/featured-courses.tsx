@@ -1,85 +1,64 @@
 import Link from 'next/link';
-import { PUBLIC_ROUTES } from '@/constants/routes';
+import type { CourseListDTO } from '@/types/course/course.dto';
 import SectionHeading from './section-heading';
+import { PUBLIC_ROUTES } from '@/constants/routes';
+import { HomeCourseCard } from './home-course-card';
 
-interface Course {
-  id: string;
-  title: string;
-  description?: string;
-  price?: number;
-  slug: string;
-  thumbnailUrl?: string;
-  instructor?: {
-    name: string;
-  };
-}
 
 interface FeaturedCoursesProps {
-  courses: Course[];
+  courses: CourseListDTO[];
 }
 
-export default function FeaturedCourses({ courses }: FeaturedCoursesProps) {
-  if (!courses || courses.length === 0) {
-    return null;
-  }
-
+export function FeaturedCourses({ courses }: FeaturedCoursesProps) {
   return (
-    <section className="py-12 md:py-16 lg:py-20">
-      <div className="container element-center flex-col">
-        <SectionHeading subTitle="الدورات" title="دورات مميزة من IthraCode" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 w-full">
-          {courses.map((course) => (
-            <div
-              key={course.id}
-              className="border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-shadow"
+    <section className="pb-16 md:pb-20 lg:pb-24">
+      <div className="container">
+        <SectionHeading
+          subTitle="بعض الدورات"
+          title="ارفع مستوى مهاراتك في البرمجة"
+        />
+        <p className="mt-6 mx-auto text-center max-w-[50ch] text-lg lg:leading-8 text-muted-foreground">
+          سواء كنت تريد الانتقال إلى مهنة في مجال التكنولوجيا أو التقدم في
+          وظيفتك الحالية، فإن دوراتي تمنحك المعرفة والخبرة التي تحتاجها لتحقيق
+          النجاح.
+        </p>
+
+        <div className="mt-20">
+          {courses.length > 0 ? (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto max-w-[calc(350px*3)]">
+              {courses.map((course) => (
+                <li
+                  key={course.id}
+                  className="[&:nth-child(3n)_.course-hover-card]:lg:right-auto [&:nth-child(3n)_.course-hover-card]:lg:left-[calc(100%+0.8rem)] [&:nth-child(3n)_.course-hover-card]:lg:slide-in-from-left-2"
+                >
+                  <HomeCourseCard course={course} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-lg text-muted-foreground text-center">
+              لا يوجد دورات متاحة
+            </p>
+          )}
+
+          <div className="mt-14 text-center">
+            <Link
+              href={PUBLIC_ROUTES.COURSES}
+              className="inline-flex items-center justify-center text-primary-foreground w-fit mx-auto transition-all duration-200 bg-primary hover:bg-primary/90 rounded-3xl px-6 h-10"
             >
-              {course.thumbnailUrl && (
-                <div className="aspect-video bg-muted">
-                  <img
-                    src={course.thumbnailUrl}
-                    alt={course.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              <div className="p-6">
-                <h3 className="font-semibold text-lg mb-2 line-clamp-2">
-                  {course.title}
-                </h3>
-                {course.description && (
-                  <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                    {course.description}
-                  </p>
-                )}
-                {course.instructor && (
-                  <p className="text-sm text-brand mb-4">
-                    المدرب: {course.instructor.name}
-                  </p>
-                )}
-                <div className="flex items-center justify-between">
-                  {course.price && (
-                    <span className="font-bold text-lg">
-                      {course.price} جنيه
-                    </span>
-                  )}
-                  <Link
-                    href={`${PUBLIC_ROUTES.COURSES}/${course.slug}`}
-                    className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    عرض الدورة
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-8">
-          <Link
-            href={PUBLIC_ROUTES.COURSES}
-            className="inline-flex items-center gap-2 text-primary hover:text-primary/80"
-          >
-            عرض جميع الدورات
-          </Link>
+              عرض جميع الدورات
+            </Link>
+            <p className="my-6 text-base text-muted-foreground">
+              لست متأكدا من أين تبدأ؟ تحقق من{' '}
+              <Link
+                href={PUBLIC_ROUTES.LEARNING_PATHS}
+                className="font-semibold border-b border-primary text-accent-foreground hover:border-transparent duration-200 transition-all"
+              >
+                مسارات التعلم
+              </Link>{' '}
+              لدينا
+            </p>
+          </div>
         </div>
       </div>
     </section>

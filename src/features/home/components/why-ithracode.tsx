@@ -1,15 +1,12 @@
 import SectionHeading from './section-heading';
 import Image from 'next/image';
+import { ClockIcon, CodeIcon, VideoIcon } from '@radix-ui/react-icons';
 import { WHY_IMAGE_SIZES } from '@/features/home/constants/image-sizes';
 
 const WhyIthraCode = () => {
   const cards = [
     {
-      icon: (
-        <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm">
-          ⏱
-        </div>
-      ),
+      icon: <ClockIcon width={24} height={24} />,
       title: 'تعلم بسرعة وبإتقان',
       subTitle: 'لا يوجد تشتت وتكرار للمواضيع',
       desc: 'نركز على تقديم محتوى واضح وموجز وخالي من التعقيدات غير الضرورية. لا يوجد تشويش أو تكرار، فقط الأساسيات والمهارات العملية التي تحتاجها للنجاح في عالم البرمجة.',
@@ -19,11 +16,7 @@ const WhyIthraCode = () => {
       sizes: WHY_IMAGE_SIZES[0],
     },
     {
-      icon: (
-        <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm">
-          ▶️
-        </div>
-      ),
+      icon: <VideoIcon width={24} height={24} />,
       title: 'محاضرات خطوة بخطوة',
       subTitle: 'تعلم سهل ومتدرج للمبتدئين',
       desc: 'نتفهم أن تعلم البرمجة قد يكون تحديًا للمبتدئين. لذلك نقوم بتنظيم دوراتنا بعناية إلى خطوات بسيطة ومتدرجة تساعدك على بناء مهاراتك بثقة، خطوة واحدة في كل مرة.',
@@ -33,11 +26,7 @@ const WhyIthraCode = () => {
       sizes: WHY_IMAGE_SIZES[1],
     },
     {
-      icon: (
-        <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm">
-          💼
-        </div>
-      ),
+      icon: <CodeIcon width={24} height={24} />,
       title: 'التعلم من الواقع',
       subTitle: 'تطبيقات وخبرات حقيقية من الشركات',
       desc: 'نؤمن بأن أفضل طريقة للتعلم هي من خلال التجارب الواقعية. دوراتنا تعتمد على خبرات عملية من الشركات الحقيقية، مما يساعدك على فهم كيفية تطبيق المهارات في بيئة العمل الفعلية.',
@@ -47,11 +36,7 @@ const WhyIthraCode = () => {
       sizes: WHY_IMAGE_SIZES[2],
     },
     {
-      icon: (
-        <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm">
-          🚀
-        </div>
-      ),
+      icon: <CodeIcon width={24} height={24} />,
       title: 'الاستعداد لسوق العمل',
       subTitle: 'من المبتدئ إلى المطور المحترف',
       desc: 'تم تصميم دوراتنا لتأهيلك لدخول سوق العمل بثقة. سواء كنت مبتدئًا أم تريد تطوير مهاراتك، ستتعلم المفاهيم والأدوات التي تحتاجها للحصول على فرص وظيفية ممتازة.',

@@ -1,46 +1,58 @@
-import { InstructorSection } from '@/features/home';
-import { FaqsSection } from '@/features/home';
-import { TestimonialSection } from '@/features/home';
-import { WhyIthraCode } from '@/features/home';
-import { HeroSection } from '@/features/home';
-import { getTestimonialsAction } from '@/features/testimonials/actions/testimonials.actions';
-import { getFaqsAction } from '@/features/faqs';
+import {
+  FaqsSection,
+  FeaturedCourses,
+  HeroSection,
+  InstructorSection,
+  TestimonialSection,
+  WhyIthraCode,
+} from '@/features/home';
+import {
+  getFeaturedCoursesForHome,
+  getHomeFaqs,
+  getHomeTestimonials,
+} from '@/features/home/services/server/home-page.data';
+import { ErrorRetry } from '@/components/shared';
 
 export default async function Home() {
-  // Mock promo course data
-  const promoCourse = {
-    id: '1',
-    title: 'دورة تطوير الويب الشاملة',
-    slug: 'web-development-course',
-    price: 299,
-    instructor: {
-      name: 'هدى نبيل',
-    },
-  };
+  const [coursesResponse, testimonialsResponse, faqsResponse] =
+    await Promise.all([
+      getFeaturedCoursesForHome(),
+      getHomeTestimonials(),
+      getHomeFaqs(),
+    ]);
 
-  // Fetch real testimonials from API
-  const testimonialsResult = await getTestimonialsAction({ limit: 6 });
-  const testimonials = testimonialsResult.success
-    ? testimonialsResult.items
+  const courses = coursesResponse.success
+    ? (coursesResponse.data.courses ?? [])
     : [];
-
-  // Fetch real FAQs from API
-  const faqsResult = await getFaqsAction({ limit: 6 });
-  const faqs = faqsResult.success ? faqsResult.items : [];
+  const testimonialItems = testimonialsResponse.success
+    ? (testimonialsResponse.data.items ?? [])
+    : [];
+  const faqs = faqsResponse.success ? (faqsResponse.data.items ?? []) : [];
+  const faqsErrorMessage = faqsResponse.success
+    ? undefined
+    : faqsResponse.error;
 
   return (
     <main>
-      <HeroSection promoCourse={promoCourse} />
+      <HeroSection promoCourse={courses[0]} />
       <WhyIthraCode />
       <InstructorSection />
 
+      {coursesResponse.success ? (
+        <FeaturedCourses courses={courses} />
+      ) : (
+        <ErrorRetry />
+      )}
+
       <TestimonialSection
-        items={testimonials}
-        hasError={!testimonialsResult.success}
+        items={testimonialItems}
+        hasError={!testimonialsResponse.success}
       />
-      <FaqsSection 
-        faqs={faqs} 
-        hasError={!faqsResult.success} 
+
+      <FaqsSection
+        faqs={faqs}
+        hasError={!faqsResponse.success}
+        errorMessage={faqsErrorMessage}
       />
     </main>
   );
