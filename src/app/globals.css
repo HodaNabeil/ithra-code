@@ -326,7 +326,7 @@
   --sidebar-accent-foreground: hsl(240 5.9% 10%);
   --sidebar-border: hsl(220 13% 91%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
-  --fade-background: var(--background);
+  --fade-background: var(--body-background);
   --chart-primary-fill: hsl(224 100% 98%);
   --chart-primary-stroke: hsl(224 100% 51%);
   --chart-success-fill: hsl(140 100% 98%);

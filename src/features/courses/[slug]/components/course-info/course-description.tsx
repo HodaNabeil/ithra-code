@@ -1,3 +1,4 @@
+import { FormattedTextContent } from '@/components/shared/expandable-content';
 import { Course } from '@/types/course/course.types';
 
 interface CourseDescriptionProps {
@@ -11,9 +12,7 @@ export function CourseDescription({ description }: CourseDescriptionProps) {
         الوصف
       </h3>
 
-      <div className="text-muted-foreground text-sm leading-relaxed text-right whitespace-pre-line">
-        {description}
-      </div>
+      <FormattedTextContent content={description} className="text-sm" />
     </div>
   );
 }

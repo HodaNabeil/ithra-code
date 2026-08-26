@@ -35,6 +35,7 @@ export function mapPathDetailToDTO(path: DB_PathDetailItem): PathDetailDTO {
     title: track.title,
     slug: track.slug,
     summary: track.shortDescription,
+    description: track.description,
     thumbnailUrl: track.thumbnailUrl,
     category: track.category as unknown as PathCategoryDTO,
     icon: track.icon,

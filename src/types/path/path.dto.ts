@@ -41,6 +41,7 @@ export type TrackDetailDTO = {
   title: string;
   slug: string;
   summary: string;
+  description: string;
   thumbnailUrl: string | null;
   category: PathCategoryDTO;
   icon: string | null;

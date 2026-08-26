@@ -2,10 +2,8 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Script from 'next/script';
 
-import { LearningPathHeader } from '@/features/learning-paths/[slug]/components/learning-path-header';
+import { PathHero } from '@/features/learning-paths/[slug]/components/path-hero';
 import { PathTracks } from '@/features/learning-paths/[slug]/components/path-tracks';
-import { PathDownload } from '@/features/learning-paths/[slug]/components/path-download';
-import PathSections from '@/features/learning-paths/[slug]/components/path-Sections';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import { loadPathDetailBySlug } from '@/features/learning-paths/lib/learning-path-detail-data';
 import { buildLearningPathDetailJsonLd } from '@/features/learning-paths/lib/learning-path-detail-jsonld';
@@ -42,27 +40,17 @@ export default async function LearningPathDetailPage({
   const jsonLd = buildLearningPathDetailJsonLd(result.path);
 
   return (
-    <>
+    <main>
       <Script
         id="path-detail-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <PathHero path={result.path} />
 
-      <main className="min-h-screen">
-        <div className="py-16 container">
-          <LearningPathHeader data={result.path} />
-
-          <div className="max-w-prose mt-10">
-            <PathSections sections={result.path.sections} />
-
-            <PathTracks tracks={result.path.tracks} />
-            <div className="mt-12 border-t pt-8">
-              <PathDownload slug={result.path.slug} />
-            </div>
-          </div>
-        </div>
-      </main>
-    </>
+      {result.path.tracks && result.path.tracks.length > 0 && (
+        <PathTracks tracks={result.path.tracks} />
+      )}
+    </main>
   );
 }

@@ -12,7 +12,7 @@ export default function InstructorSection() {
           subTitle="تعلّم مباشرة مع هدى نبيل"
           title="تعرّف على مدربتك"
         />
-        <div className="max-w-5xl mx-auto mt-12 w-full overflow-hidden rounded-xl border border-border bg-black shadow-sm flex flex-col md:flex-row md:items-stretch">
+        <div className="max-w-5xl mx-auto mt-12 w-full overflow-hidden rounded-xl border border-border bg-card [--fade-background:var(--card)] shadow-sm flex flex-col md:flex-row md:items-stretch">
           {/* Image block */}
           <div className="relative w-full aspect-4/5 sm:aspect-3/4 md:aspect-auto md:w-1/2 md:min-h-112.5 shrink-0">
             <Image
