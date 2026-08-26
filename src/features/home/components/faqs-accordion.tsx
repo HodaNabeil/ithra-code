@@ -25,7 +25,7 @@ export function FaqsAccordion({ faqs }: FaqsAccordionProps) {
           <summary
             className={cn(
               'flex cursor-pointer list-none items-center justify-between gap-4 py-4',
-              'font-semibold text-sm md:text-base hover:no-underline',
+              'text-xl font-bold hover:no-underline',
               '[&::-webkit-details-marker]:hidden',
             )}
           >
@@ -35,7 +35,7 @@ export function FaqsAccordion({ faqs }: FaqsAccordionProps) {
               className="h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180"
             />
           </summary>
-          <p className="text-muted-foreground text-base leading-relaxed pb-4 text-start">
+          <p className="text-muted-foreground text-lg leading-relaxed pb-4 text-start">
             {faq.answer}
           </p>
         </details>

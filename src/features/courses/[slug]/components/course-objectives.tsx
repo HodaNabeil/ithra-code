@@ -8,7 +8,7 @@ interface CourseObjectivesProps {
 
 export function CourseObjectives({ objectives }: CourseObjectivesProps) {
   return (
-    <div className="flex flex-col gap-4 p-6 bg-content-surface border border-primary/20 rounded-xl">
+    <div className="flex flex-col gap-4 p-6 border border-primary/20 rounded-xl">
       <h4 className="font-bold text-lg text-right mb-2">ما ستتعلمه</h4>
 
       <ExpandableContent initialHeight={200}>

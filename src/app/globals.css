@@ -233,6 +233,7 @@
   --gray-lightest: #e6e6e6;
   --gray-darker: #222;
   --gray-dark: #333;
+  --gray-sidebar: #262626;
   --background-canvas: light-dark(var(--gray-lightest), var(--gray-darker));
   --body-background: light-dark(var(--gray-lightest), var(--gray-darker));
   --content-surface: light-dark(var(--background), var(--gray-dark));
@@ -536,7 +537,7 @@
   --gray-800: var(--tw-gray-800);
   --gray-900: var(--tw-gray-900);
   --gray-950: var(--tw-gray-950);
-  --sidebar-background: var(--background-canvas);
+  --sidebar-background: var(--gray-sidebar);
   --sidebar-foreground: hsl(240 4.8% 95.9%);
   --sidebar-primary: hsl(224.3 76.3% 48%);
   --sidebar-primary-foreground: hsl(0 0% 100%);
