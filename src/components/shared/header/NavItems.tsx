@@ -56,7 +56,7 @@ export function NavItems() {
           key={link.href}
           href={link.href}
           className={cn(
-            'text-sm font-medium transition-colors hover:text-primary',
+            'site-header-nav-link text-lg font-bold hover:text-white',
             pathname === link.href ? 'text-primary' : 'text-muted-foreground',
           )}
         >

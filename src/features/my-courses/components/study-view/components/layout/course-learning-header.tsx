@@ -20,7 +20,7 @@ export function CourseLearningHeader({
       <div className="container flex h-14 items-center justify-between gap-4 sm:h-16">
         {/* Right Section: Logo and Course Title */}
         <div className="flex items-center gap-4">
-          <Logo className="h-8 w-auto sm:h-9" />
+          <Logo className="h-10 w-auto sm:h-11" />
           <h1 className="text-sm text-primary font-bold truncate max-w-[400px]">
             {courseTitle}
           </h1>

@@ -9,8 +9,8 @@ import { ThemeToggle } from './ThemeToggle';
 
 export function Header({ session }: { session: Session | null }) {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/8 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="site-header sticky top-0 z-50 w-full">
+      <div className="container flex h-20 items-center justify-between">
         <Logo />
 
         <div className="flex items-center gap-4">

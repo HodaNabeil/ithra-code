@@ -3,6 +3,7 @@ import './globals.css';
 import { cn } from '../lib/utils';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
+import { NavigationTopLoader } from '@/providers/NavigationTopLoader';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { Header } from '@/components/shared/header/Header';
 import { HeaderWrapper } from '@/components/shared/header/HeaderWrapper';
@@ -41,6 +42,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <NavigationTopLoader />
           <QueryProvider>
             <AuthProvider session={session}>
               <HeaderWrapper>
