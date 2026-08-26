@@ -11,7 +11,9 @@ const AddToCartButton = dynamic(
       default: mod.AddToCartButton,
     })),
   {
-    loading: () => <Skeleton className="h-12 w-full rounded-3xl" />,
+    loading: () => (
+      <Skeleton className="h-12 w-full rounded-[3px_9px_3px_6px]" />
+    ),
   },
 );
 
@@ -38,11 +40,7 @@ export function HomeHoverCard({ objectives, course }: HomeHoverCardProps) {
       </div>
 
       <div className="mt-2">
-        <AddToCartButton
-          course={course}
-          className="w-full rounded-3xl"
-          size="xl"
-        />
+        <AddToCartButton course={course} className="w-full" size="xl" />
       </div>
     </div>
   );

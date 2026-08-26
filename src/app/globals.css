@@ -220,7 +220,7 @@
   --success: hsl(142 76% 36%);
   --success-foreground: hsl(210 20% 98%);
   --star-color: #c4710d;
-  --brand: rgb(0 153 255);
+  --brand: var(--fm-orange-2);
   --border: var(--gray-alpha-150);
   --input: hsl(220 13% 91%);
   --ring: hsl(224 71.4% 4.1%);
