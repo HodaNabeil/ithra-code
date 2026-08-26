@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth';
 import type { PathDetailDTO } from '@/types/path/path.dto';
-import type { PathViewer } from '../dto/path-catalog.dto';
+import type { PathViewer } from '../dto/path-list.dto';
 import { PathDetailError } from '../errors/path.errors';
 import { mapPathDetailItemToDTO } from '../mapper/to-list-dto';
 import { getPathDetail } from './get-path-detail.use-case';

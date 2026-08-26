@@ -1,4 +1,4 @@
-export { mapCourseListToDTO } from '@/features/courses/course-list';
+export { mapCourseListToDTO } from '@/features/courses/listing';
 
 export {
   mapCourseDetailEntityToPageDTO as mapCourseDetailToDTO,

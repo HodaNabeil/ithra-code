@@ -167,6 +167,176 @@ async function main() {
   });
   console.log(`✅ Path created: ${backendPath.title}`);
 
+  const mobilePath = await prisma.path.create({
+    data: {
+      title: 'مسار تطوير تطبيقات الموبايل',
+      slug: 'mobile-app-development',
+      tagline: 'ابن تطبيقات iOS و Android احترافية من فكرة واحدة',
+      shortDescription:
+        'تعلم React Native و Flutter و Swift لبناء تطبيقات سريعة وجذابة على iOS و Android',
+      description:
+        'مسار شامل لتطوير تطبيقات الهاتف المحمول يغطي React Native و Flutter وتطوير iOS الأصلي. ستتعلم بناء واجهات متجاوبة، إدارة الحالة، ربط APIs، النشر على App Store و Google Play، وأفضل ممارسات الأداء والأمان.',
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800',
+      category: 'MOBILE',
+      icon: '📱',
+      ...publishedCatalogFields,
+      sortOrder: 3,
+      metaTitle: 'مسار تطوير تطبيقات الموبايل - IthraCode',
+      metaDescription:
+        'تعلم بناء تطبيقات iOS و Android باستخدام React Native و Flutter',
+    },
+  });
+  console.log(`✅ Path created: ${mobilePath.title}`);
+
+  const dataSciencePath = await prisma.path.create({
+    data: {
+      title: 'مسار علم البيانات والذكاء الاصطناعي',
+      slug: 'data-science-ai',
+      tagline: 'حوّل البيانات إلى قرارات ذكية وتطبيقات AI',
+      shortDescription:
+        'من تحليل البيانات إلى تعلم الآلة والشبكات العصبية — مسار عملي بالكامل',
+      description:
+        'مسار متكامل يأخذك من أساسيات Python وتحليل البيانات إلى تعلم الآلة والتعلم العميق ومعالجة اللغة الطبيعية. ستعمل على مشاريع واقعية باستخدام Pandas و Scikit-learn و TensorFlow مع التركيز على تطبيقات عملية في السوق العربي.',
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800',
+      category: 'OTHER',
+      icon: '🤖',
+      ...publishedCatalogFields,
+      sortOrder: 4,
+      metaTitle: 'مسار علم البيانات والذكاء الاصطناعي - IthraCode',
+      metaDescription:
+        'تعلم Python وتحليل البيانات وتعلم الآلة والذكاء الاصطناعي',
+    },
+  });
+  console.log(`✅ Path created: ${dataSciencePath.title}`);
+
+  const cybersecurityPath = await prisma.path.create({
+    data: {
+      title: 'مسار الأمن السيبراني',
+      slug: 'cybersecurity',
+      tagline: 'احمِ الأنظمة والتطبيقات من التهديدات الرقمية',
+      shortDescription:
+        'تعلم أمن الشبكات والاختراق الأخلاقي وأمان التطبيقات من الصفر',
+      description:
+        'مسار متخصص في الأمن السيبراني يغطي أساسيات الشبكات، اختبار الاختراق الأخلاقي، أمان تطبيقات الويب، التشفير، والاستجابة للحوادث. مصمم لمن يريدون بناء مهنة في أمن المعلومات أو تأمين مشاريعهم البرمجية.',
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800',
+      category: 'OTHER',
+      icon: '🔒',
+      ...publishedCatalogFields,
+      sortOrder: 5,
+      metaTitle: 'مسار الأمن السيبراني - IthraCode',
+      metaDescription: 'تعلم الأمن السيبراني والاختراق الأخلاقي وأمان التطبيقات',
+    },
+  });
+  console.log(`✅ Path created: ${cybersecurityPath.title}`);
+
+  const uiUxPath = await prisma.path.create({
+    data: {
+      title: 'مسار تصميم واجهات وتجربة المستخدم',
+      slug: 'ui-ux-design',
+      tagline: 'صمّم تجارب رقمية جميلة وسهلة الاستخدام',
+      shortDescription:
+        'من مبادئ التصميم إلى Figma والنماذج الأولية — مسار للمصممين والمطورين',
+      description:
+        'مسار يركز على UI/UX Design من الأساسيات: نظرية الألوان والطباعة، تصميم الواجهات بـ Figma، أبحاث المستخدم، رسم User Flows و Wireframes، بناء Design Systems، والتعاون مع فرق التطوير. مناسب للمصممين المبتدئين والمطورين الذين يريدون تحسين مهاراتهم البصرية.',
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800',
+      category: 'OTHER',
+      icon: '🎨',
+      ...publishedCatalogFields,
+      sortOrder: 6,
+      metaTitle: 'مسار تصميم UI/UX - IthraCode',
+      metaDescription: 'تعلم تصميم واجهات المستخدم وتجربة المستخدم مع Figma',
+    },
+  });
+  console.log(`✅ Path created: ${uiUxPath.title}`);
+
+  const gameDevPath = await prisma.path.create({
+    data: {
+      title: 'مسار تطوير الألعاب',
+      slug: 'game-development',
+      tagline: 'حوّل أفكارك إلى ألعاب تفاعلية ممتعة',
+      shortDescription:
+        'تعلم Unity و C# وتصميم الألعاب ثنائية وثلاثية الأبعاد',
+      description:
+        'مسار عملي لتطوير الألعاب يغطي أساسيات Unity و C#، فيزياء الألعاب، الرسوم المتحركة، تصميم المستويات، أنظمة النقاط والتقدم، ونشر الألعاب على المنصات المختلفة. مشاريع تطبيقية من لعبة 2D بسيطة إلى مشروع 3D كامل.',
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800',
+      category: 'OTHER',
+      icon: '🎮',
+      ...publishedCatalogFields,
+      sortOrder: 7,
+      metaTitle: 'مسار تطوير الألعاب - IthraCode',
+      metaDescription: 'تعلم تطوير الألعاب باستخدام Unity و C#',
+    },
+  });
+  console.log(`✅ Path created: ${gameDevPath.title}`);
+
+  const cloudDevOpsPath = await prisma.path.create({
+    data: {
+      title: 'مسار السحابة و DevOps',
+      slug: 'cloud-devops',
+      tagline: 'انشر وأدر تطبيقاتك على السحابة بكفاءة واحترافية',
+      shortDescription:
+        'Docker و AWS و CI/CD و Kubernetes — كل ما تحتاجه لعمليات التطوير الحديثة',
+      description:
+        'مسار متخصص في البنية التحتية السحابية و DevOps. يغطي Docker و Containerization، خدمات AWS الأساسية، بناء خطوط CI/CD، Kubernetes للتوسع، المراقبة والتسجيل، وأتمتة النشر. مثالي للمطورين الذين يريدون إتقان النشر والإدارة السحابية.',
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800',
+      category: 'OTHER',
+      icon: '☁️',
+      ...publishedCatalogFields,
+      sortOrder: 8,
+      metaTitle: 'مسار السحابة و DevOps - IthraCode',
+      metaDescription: 'تعلم Docker و AWS و CI/CD و Kubernetes',
+    },
+  });
+  console.log(`✅ Path created: ${cloudDevOpsPath.title}`);
+
+  const pythonPath = await prisma.path.create({
+    data: {
+      title: 'مسار Python الشامل',
+      slug: 'python-programming',
+      tagline: 'لغة البرمجة الأكثر تنوعاً — من السكربتات إلى الويب والأتمتة',
+      shortDescription:
+        'أتقن Python لبناء تطبيقات ويب وأتمتة وتحليل بيانات',
+      description:
+        'مسار شامل لتعلم Python من الصفر: الأساسيات والبرمجة الكائنية، التعامل مع الملفات و APIs، بناء تطبيقات ويب بـ Flask/Django، الأتمتة والسكربتات، وأساسيات تحليل البيانات. مناسب للمبتدئين المطلقين ولمن يريدون توسيع مهاراتهم.',
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800',
+      category: 'OTHER',
+      icon: '🐍',
+      ...publishedCatalogFields,
+      sortOrder: 9,
+      metaTitle: 'مسار Python الشامل - IthraCode',
+      metaDescription: 'تعلم Python من الصفر للاحتراف',
+    },
+  });
+  console.log(`✅ Path created: ${pythonPath.title}`);
+
+  const fullStackAdvancedPath = await prisma.path.create({
+    data: {
+      title: 'مسار Full Stack المتقدم',
+      slug: 'advanced-full-stack',
+      tagline: 'ابن أنظمة ويب معقدة بمعماريات احترافية',
+      shortDescription:
+        'Next.js و GraphQL و Microservices و TypeScript — للمطورين الجاهزين للخطوة التالية',
+      description:
+        'مسار متقدم للمطورين الذين أتقنوا الأساسيات ويريدون بناء تطبيقات إنتاجية بمعماريات حديثة. يغطي Next.js App Router، GraphQL، TypeScript المتقدم، أنماط Microservices، تحسين الأداء، والاختبارات الشاملة.',
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800',
+      category: 'WEB',
+      icon: '🚀',
+      ...publishedCatalogFields,
+      sortOrder: 10,
+      metaTitle: 'مسار Full Stack المتقدم - IthraCode',
+      metaDescription: 'تعلم Next.js و GraphQL ومعماريات الويب المتقدمة',
+    },
+  });
+  console.log(`✅ Path created: ${fullStackAdvancedPath.title}`);
+
   // 3. Create Tracks
   console.log('🛤️ Creating tracks...');
 
@@ -348,6 +518,663 @@ async function main() {
   });
   console.log(`✅ Track created: ${testingTrack.title}`);
 
+  // Backend Path Tracks
+  const nodeJsBackendTrack = await prisma.track.create({
+    data: {
+      pathId: backendPath.id,
+      title: 'مسار Node.js و Express',
+      slug: 'nodejs-express-backend',
+      shortDescription: 'بناء خوادم سريعة و APIs مرنة باستخدام Node.js',
+      description: `تعلم Node.js من الأساسيات إلى بناء RESTful APIs احترافية مع Express.js.
+      
+## المحتوى:
+- Event Loop وآلية عمل Node.js
+- npm وإدارة الحزم
+- Express.js و Middleware
+- Routing و Request Handling
+- Error Handling و Validation
+- File Upload و Static Assets`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1619410283995-43d9134e7656?w=800',
+      category: 'WEB',
+      icon: '🟢',
+      ...publishedCatalogFields,
+      sortOrder: 1,
+      metaTitle: 'مسار Node.js و Express - IthraCode',
+      metaDescription: 'تعلم Node.js وبناء APIs مع Express',
+    },
+  });
+  console.log(`✅ Track created: ${nodeJsBackendTrack.title}`);
+
+  const nestJsTrack = await prisma.track.create({
+    data: {
+      pathId: backendPath.id,
+      title: 'مسار NestJS للمشاريع الكبيرة',
+      slug: 'nestjs-enterprise',
+      shortDescription: 'إطار عمل TypeScript لبناء تطبيقات خلفية قابلة للتوسع',
+      description: `إتقان NestJS لبناء تطبيقات مؤسسية منظمة وقابلة للصيانة.
+      
+## ما ستتعلمه:
+- Modules و Controllers و Providers
+- Dependency Injection
+- Guards و Interceptors و Pipes
+- TypeORM و Prisma Integration
+- Microservices مع NestJS
+- Testing و Documentation`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800',
+      category: 'WEB',
+      icon: '🐱',
+      ...publishedCatalogFields,
+      sortOrder: 2,
+      metaTitle: 'مسار NestJS - IthraCode',
+      metaDescription: 'تعلم NestJS لبناء تطبيقات خلفية مؤسسية',
+    },
+  });
+  console.log(`✅ Track created: ${nestJsTrack.title}`);
+
+  const apiDesignTrack = await prisma.track.create({
+    data: {
+      pathId: backendPath.id,
+      title: 'مسار تصميم وبناء APIs',
+      slug: 'api-design-backend',
+      shortDescription: 'REST و GraphQL وأفضل ممارسات تصميم الواجهات البرمجية',
+      description: `تعلم تصميم APIs احترافية آمنة وقابلة للتوسع.
+      
+## المحتوى:
+- مبادئ RESTful API Design
+- Versioning و Pagination
+- Authentication (JWT, OAuth 2.0)
+- Rate Limiting و Caching
+- GraphQL Schema Design
+- API Documentation مع Swagger/OpenAPI`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800',
+      category: 'WEB',
+      icon: '🔌',
+      ...publishedCatalogFields,
+      sortOrder: 3,
+      metaTitle: 'مسار تصميم APIs - IthraCode',
+      metaDescription: 'تعلم تصميم REST و GraphQL APIs احترافية',
+    },
+  });
+  console.log(`✅ Track created: ${apiDesignTrack.title}`);
+
+  // Mobile Path Tracks
+  const reactNativeTrack = await prisma.track.create({
+    data: {
+      pathId: mobilePath.id,
+      title: 'مسار React Native',
+      slug: 'react-native-mobile',
+      shortDescription: 'ابن تطبيقات iOS و Android بلغة JavaScript واحدة',
+      description: `تعلم React Native لبناء تطبيقات موبايل أصلية بكود مشترك.
+      
+## المحتوى:
+- إعداد بيئة React Native و Expo
+- Components و Styling
+- Navigation مع React Navigation
+- State Management
+- Native Modules و APIs
+- النشر على App Store و Google Play`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800',
+      category: 'MOBILE',
+      icon: '⚛️',
+      ...publishedCatalogFields,
+      sortOrder: 1,
+      metaTitle: 'مسار React Native - IthraCode',
+      metaDescription: 'تعلم بناء تطبيقات موبايل بـ React Native',
+    },
+  });
+  console.log(`✅ Track created: ${reactNativeTrack.title}`);
+
+  const flutterTrack = await prisma.track.create({
+    data: {
+      pathId: mobilePath.id,
+      title: 'مسار Flutter و Dart',
+      slug: 'flutter-dart-mobile',
+      shortDescription: 'تطبيقات جميلة وسريعة بإطار Google المتعدد المنصات',
+      description: `إتقان Flutter و Dart لبناء واجهات موبايل عالية الأداء.
+      
+## ما ستتعلمه:
+- أساسيات Dart
+- Widgets و Layout
+- State Management (Provider, Riverpod, Bloc)
+- Firebase Integration
+- Animations و Custom UI
+- Build و Release`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800',
+      category: 'MOBILE',
+      icon: '💙',
+      ...publishedCatalogFields,
+      sortOrder: 2,
+      metaTitle: 'مسار Flutter - IthraCode',
+      metaDescription: 'تعلم Flutter لبناء تطبيقات موبايل',
+    },
+  });
+  console.log(`✅ Track created: ${flutterTrack.title}`);
+
+  const iosTrack = await prisma.track.create({
+    data: {
+      pathId: mobilePath.id,
+      title: 'مسار تطوير iOS بـ Swift',
+      slug: 'ios-swift-development',
+      shortDescription: 'تطبيقات iPhone و iPad أصلية بأداء عالٍ',
+      description: `تعلم Swift و SwiftUI لبناء تطبيقات iOS احترافية.
+      
+## المحتوى:
+- Swift Language Fundamentals
+- SwiftUI و UIKit
+- Core Data و Persistence
+- Networking و APIs
+- App Store Guidelines
+- TestFlight و النشر`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800',
+      category: 'MOBILE',
+      icon: '🍎',
+      ...publishedCatalogFields,
+      sortOrder: 3,
+      metaTitle: 'مسار iOS Swift - IthraCode',
+      metaDescription: 'تعلم تطوير تطبيقات iOS بـ Swift',
+    },
+  });
+  console.log(`✅ Track created: ${iosTrack.title}`);
+
+  // Data Science Path Tracks
+  const pythonDataTrack = await prisma.track.create({
+    data: {
+      pathId: dataSciencePath.id,
+      title: 'مسار Python لتحليل البيانات',
+      slug: 'python-data-analysis',
+      shortDescription: 'Pandas و NumPy و Matplotlib — أدوات تحليل البيانات الأساسية',
+      description: `تعلم تحليل البيانات واستخراج الرؤى باستخدام Python.
+      
+## المحتوى:
+- Pandas للتعامل مع البيانات
+- NumPy للحسابات العددية
+- Matplotlib و Seaborn للتصور
+- تنظيف البيانات ومعالجتها
+- Statistical Analysis
+- Jupyter Notebooks`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800',
+      category: 'OTHER',
+      icon: '📊',
+      ...publishedCatalogFields,
+      sortOrder: 1,
+      metaTitle: 'مسار Python لتحليل البيانات - IthraCode',
+      metaDescription: 'تعلم تحليل البيانات بـ Python',
+    },
+  });
+  console.log(`✅ Track created: ${pythonDataTrack.title}`);
+
+  const machineLearningTrack = await prisma.track.create({
+    data: {
+      pathId: dataSciencePath.id,
+      title: 'مسار تعلم الآلة',
+      slug: 'machine-learning',
+      shortDescription: 'خوارزميات ML من الانحدار إلى التصنيف والتجميع',
+      description: `بناء نماذج تعلم آلي تتنبأ وتصنف وتكتشف الأنماط.
+      
+## ما ستتعلمه:
+- Supervised و Unsupervised Learning
+- Regression و Classification
+- Decision Trees و Random Forest
+- Scikit-learn Pipeline
+- Model Evaluation و Cross-Validation
+- Feature Engineering`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800',
+      category: 'OTHER',
+      icon: '🧠',
+      ...publishedCatalogFields,
+      sortOrder: 2,
+      metaTitle: 'مسار تعلم الآلة - IthraCode',
+      metaDescription: 'تعلم Machine Learning من الصفر',
+    },
+  });
+  console.log(`✅ Track created: ${machineLearningTrack.title}`);
+
+  const deepLearningTrack = await prisma.track.create({
+    data: {
+      pathId: dataSciencePath.id,
+      title: 'مسار التعلم العميق',
+      slug: 'deep-learning',
+      shortDescription: 'شبكات عصبية و TensorFlow و PyTorch للذكاء الاصطناعي',
+      description: `تعمق في Deep Learning وبناء نماذج ذكاء اصطناعي متقدمة.
+      
+## المحتوى:
+- Neural Networks Fundamentals
+- CNNs للصور
+- RNNs و LSTMs للنصوص
+- TensorFlow و Keras
+- Transfer Learning
+- نشر نماذج ML`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800',
+      category: 'OTHER',
+      icon: '🔬',
+      ...publishedCatalogFields,
+      sortOrder: 3,
+      metaTitle: 'مسار التعلم العميق - IthraCode',
+      metaDescription: 'تعلم Deep Learning و TensorFlow',
+    },
+  });
+  console.log(`✅ Track created: ${deepLearningTrack.title}`);
+
+  // Cybersecurity Path Tracks
+  const networkSecurityTrack = await prisma.track.create({
+    data: {
+      pathId: cybersecurityPath.id,
+      title: 'مسار أمن الشبكات',
+      slug: 'network-security',
+      shortDescription: 'فهم الشبكات وحمايتها من الهجمات والثغرات',
+      description: `تعلم أساسيات الشبكات وأمنها من منظور دفاعي وهجومي.
+      
+## المحتوى:
+- TCP/IP و OSI Model
+- Firewalls و IDS/IPS
+- VPN و Tunneling
+- Network Scanning
+- Packet Analysis
+- Wireless Security`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800',
+      category: 'OTHER',
+      icon: '🌐',
+      ...publishedCatalogFields,
+      sortOrder: 1,
+      metaTitle: 'مسار أمن الشبكات - IthraCode',
+      metaDescription: 'تعلم أمن الشبكات وحمايتها',
+    },
+  });
+  console.log(`✅ Track created: ${networkSecurityTrack.title}`);
+
+  const ethicalHackingTrack = await prisma.track.create({
+    data: {
+      pathId: cybersecurityPath.id,
+      title: 'مسار الاختراق الأخلاقي',
+      slug: 'ethical-hacking',
+      shortDescription: 'اختبر الأنظمة بشكل قانوني واكتشف الثغرات قبل المهاجمين',
+      description: `تعلم منهجية الاختراق الأخلاقي وأدوات Penetration Testing.
+      
+## ما ستتعلمه:
+- Reconnaissance و Footprinting
+- Vulnerability Assessment
+- Exploitation Techniques
+- Kali Linux Tools
+- Report Writing
+- Bug Bounty Basics`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800',
+      category: 'OTHER',
+      icon: '🕵️',
+      ...publishedCatalogFields,
+      sortOrder: 2,
+      metaTitle: 'مسار الاختراق الأخلاقي - IthraCode',
+      metaDescription: 'تعلم Ethical Hacking و Penetration Testing',
+    },
+  });
+  console.log(`✅ Track created: ${ethicalHackingTrack.title}`);
+
+  const appSecurityTrack = await prisma.track.create({
+    data: {
+      pathId: cybersecurityPath.id,
+      title: 'مسار أمان تطبيقات الويب',
+      slug: 'web-application-security',
+      shortDescription: 'OWASP Top 10 و حماية APIs والتطبيقات',
+      description: `احمِ تطبيقاتك من أشهر هجمات الويب والثغرات الأمنية.
+      
+## المحتوى:
+- OWASP Top 10 (SQL Injection, XSS, CSRF)
+- Authentication Vulnerabilities
+- API Security
+- Secure Coding Practices
+- Security Headers و HTTPS
+- Security Auditing`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800',
+      category: 'OTHER',
+      icon: '🛡️',
+      ...publishedCatalogFields,
+      sortOrder: 3,
+      metaTitle: 'مسار أمان تطبيقات الويب - IthraCode',
+      metaDescription: 'تعلم أمان تطبيقات الويب و OWASP',
+    },
+  });
+  console.log(`✅ Track created: ${appSecurityTrack.title}`);
+
+  // UI/UX Path Tracks
+  const designFundamentalsTrack = await prisma.track.create({
+    data: {
+      pathId: uiUxPath.id,
+      title: 'مسار أساسيات التصميم',
+      slug: 'design-fundamentals',
+      shortDescription: 'الألوان والطباعة والتكوين — لغة التصميم البصري',
+      description: `بناء أساس قوي في مبادئ التصميم البصري.
+      
+## المحتوى:
+- Color Theory و Psychology
+- Typography و Hierarchy
+- Layout و Grid Systems
+- Visual Balance و Contrast
+- Design Principles
+- Mood Boards`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800',
+      category: 'OTHER',
+      icon: '✏️',
+      ...publishedCatalogFields,
+      sortOrder: 1,
+      metaTitle: 'مسار أساسيات التصميم - IthraCode',
+      metaDescription: 'تعلم مبادئ التصميم البصري',
+    },
+  });
+  console.log(`✅ Track created: ${designFundamentalsTrack.title}`);
+
+  const figmaTrack = await prisma.track.create({
+    data: {
+      pathId: uiUxPath.id,
+      title: 'مسار Figma الاحترافي',
+      slug: 'figma-mastery',
+      shortDescription: 'صمّم واجهات تفاعلية ونماذج أولية بأداة التصميم الأشهر',
+      description: `إتقان Figma من الصفر إلى المشاريع الاحترافية.
+      
+## ما ستتعلمه:
+- Figma Interface و Tools
+- Components و Variants
+- Auto Layout و Responsive Design
+- Prototyping و Interactions
+- Design Systems
+- Developer Handoff`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=800',
+      category: 'OTHER',
+      icon: '🖌️',
+      ...publishedCatalogFields,
+      sortOrder: 2,
+      metaTitle: 'مسار Figma - IthraCode',
+      metaDescription: 'تعلم التصميم بـ Figma',
+    },
+  });
+  console.log(`✅ Track created: ${figmaTrack.title}`);
+
+  const uxResearchTrack = await prisma.track.create({
+    data: {
+      pathId: uiUxPath.id,
+      title: 'مسار أبحاث تجربة المستخدم',
+      slug: 'ux-research',
+      shortDescription: 'افهم مستخدميك وصمّم حلولاً تلبي احتياجاتهم الحقيقية',
+      description: `تعلم منهجيات UX Research لاتخاذ قرارات تصميم مبنية على البيانات.
+      
+## المحتوى:
+- User Interviews و Surveys
+- Personas و User Journeys
+- Usability Testing
+- A/B Testing
+- Information Architecture
+- Accessibility (a11y)`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800',
+      category: 'OTHER',
+      icon: '🔍',
+      ...publishedCatalogFields,
+      sortOrder: 3,
+      metaTitle: 'مسار أبحاث UX - IthraCode',
+      metaDescription: 'تعلم UX Research و Usability Testing',
+    },
+  });
+  console.log(`✅ Track created: ${uxResearchTrack.title}`);
+
+  // Game Dev Path Tracks
+  const unityBasicsTrack = await prisma.track.create({
+    data: {
+      pathId: gameDevPath.id,
+      title: 'مسار أساسيات Unity',
+      slug: 'unity-basics',
+      shortDescription: 'محرك الألعاب الأشهر — من المشهد الأول إلى اللعب',
+      description: `تعلم Unity و C# لبناء ألعابك الأولى.
+      
+## المحتوى:
+- Unity Editor و Interface
+- GameObjects و Components
+- C# Scripting Basics
+- Physics و Collisions
+- Input System
+- Scenes و Prefabs`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800',
+      category: 'OTHER',
+      icon: '🎯',
+      ...publishedCatalogFields,
+      sortOrder: 1,
+      metaTitle: 'مسار أساسيات Unity - IthraCode',
+      metaDescription: 'تعلم Unity و C# لتطوير الألعاب',
+    },
+  });
+  console.log(`✅ Track created: ${unityBasicsTrack.title}`);
+
+  const gameDesignTrack = await prisma.track.create({
+    data: {
+      pathId: gameDevPath.id,
+      title: 'مسار تصميم الألعاب',
+      slug: 'game-design',
+      shortDescription: 'ميكانيكيات اللعب والقصة والتوازن — فن صناعة الألعاب',
+      description: `تعلم مبادئ Game Design لصناعة ألعاب ممتعة ومتوازنة.
+      
+## ما ستتعلمه:
+- Core Game Loop
+- Level Design
+- Game Economy
+- Narrative Design
+- Player Psychology
+- Playtesting و Iteration`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1538481199705-c710c4e96566?w=800',
+      category: 'OTHER',
+      icon: '🎲',
+      ...publishedCatalogFields,
+      sortOrder: 2,
+      metaTitle: 'مسار تصميم الألعاب - IthraCode',
+      metaDescription: 'تعلم Game Design و Level Design',
+    },
+  });
+  console.log(`✅ Track created: ${gameDesignTrack.title}`);
+
+  // Cloud DevOps Path Tracks
+  const dockerTrack = await prisma.track.create({
+    data: {
+      pathId: cloudDevOpsPath.id,
+      title: 'مسار Docker و Containers',
+      slug: 'docker-containers',
+      shortDescription: 'حاويات Docker و Docker Compose لبيئات تطوير موحدة',
+      description: `إتقان Docker لتعبئة ونشر التطبيقات بسهولة.
+      
+## المحتوى:
+- Containers vs VMs
+- Dockerfile Best Practices
+- Docker Compose
+- Docker Networking
+- Volume Management
+- Multi-stage Builds`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1605745341112-85968b19335b?w=800',
+      category: 'OTHER',
+      icon: '🐳',
+      ...publishedCatalogFields,
+      sortOrder: 1,
+      metaTitle: 'مسار Docker - IthraCode',
+      metaDescription: 'تعلم Docker و Containerization',
+    },
+  });
+  console.log(`✅ Track created: ${dockerTrack.title}`);
+
+  const awsCloudTrack = await prisma.track.create({
+    data: {
+      pathId: cloudDevOpsPath.id,
+      title: 'مسار AWS السحابي',
+      slug: 'aws-cloud',
+      shortDescription: 'خدمات Amazon Web Services الأساسية للمطورين',
+      description: `تعلم نشر وإدارة التطبيقات على AWS.
+      
+## ما ستتعلمه:
+- EC2 و VPC
+- S3 و CloudFront
+- RDS و DynamoDB
+- Lambda Serverless
+- IAM و Security
+- Cost Management`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800',
+      category: 'OTHER',
+      icon: '☁️',
+      ...publishedCatalogFields,
+      sortOrder: 2,
+      metaTitle: 'مسار AWS - IthraCode',
+      metaDescription: 'تعلم AWS للمطورين',
+    },
+  });
+  console.log(`✅ Track created: ${awsCloudTrack.title}`);
+
+  const cicdTrack = await prisma.track.create({
+    data: {
+      pathId: cloudDevOpsPath.id,
+      title: 'مسار CI/CD والأتمتة',
+      slug: 'cicd-automation',
+      shortDescription: 'GitHub Actions وخطوط النشر التلقائي',
+      description: `أتمت بناء واختبار ونشر تطبيقاتك.
+      
+## المحتوى:
+- CI/CD Concepts
+- GitHub Actions Workflows
+- Automated Testing in Pipeline
+- Deployment Strategies
+- Environment Management
+- Monitoring Integration`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800',
+      category: 'OTHER',
+      icon: '⚡',
+      ...publishedCatalogFields,
+      sortOrder: 3,
+      metaTitle: 'مسار CI/CD - IthraCode',
+      metaDescription: 'تعلم CI/CD و GitHub Actions',
+    },
+  });
+  console.log(`✅ Track created: ${cicdTrack.title}`);
+
+  // Python Path Tracks
+  const pythonBasicsTrack = await prisma.track.create({
+    data: {
+      pathId: pythonPath.id,
+      title: 'مسار أساسيات Python',
+      slug: 'python-basics',
+      shortDescription: 'أول خطواتك في عالم البرمجة بلغة Python',
+      description: `تعلم Python من الصفر — مثالي للمبتدئين المطلقين.
+      
+## المحتوى:
+- Variables و Data Types
+- Control Flow
+- Functions و Modules
+- OOP Basics
+- File Handling
+- Error Handling`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800',
+      category: 'OTHER',
+      icon: '🐍',
+      ...publishedCatalogFields,
+      sortOrder: 1,
+      metaTitle: 'مسار أساسيات Python - IthraCode',
+      metaDescription: 'تعلم Python من الصفر',
+    },
+  });
+  console.log(`✅ Track created: ${pythonBasicsTrack.title}`);
+
+  const pythonWebTrack = await prisma.track.create({
+    data: {
+      pathId: pythonPath.id,
+      title: 'مسار Python لتطوير الويب',
+      slug: 'python-web-development',
+      shortDescription: 'Flask و Django لبناء تطبيقات ويب بـ Python',
+      description: `ابن تطبيقات ويب كاملة باستخدام Python.
+      
+## ما ستتعلمه:
+- Flask REST APIs
+- Django MVC Pattern
+- ORM و Database Integration
+- Templates و Forms
+- Authentication
+- Deployment`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800',
+      category: 'OTHER',
+      icon: '🌍',
+      ...publishedCatalogFields,
+      sortOrder: 2,
+      metaTitle: 'مسار Python Web - IthraCode',
+      metaDescription: 'تعلم Flask و Django',
+    },
+  });
+  console.log(`✅ Track created: ${pythonWebTrack.title}`);
+
+  // Advanced Full Stack Path Tracks
+  const nextJsAdvancedTrack = await prisma.track.create({
+    data: {
+      pathId: fullStackAdvancedPath.id,
+      title: 'مسار Next.js المتقدم',
+      slug: 'nextjs-advanced',
+      shortDescription: 'App Router و Server Components و Server Actions',
+      description: `إتقان Next.js 14+ لبناء تطبيقات إنتاجية.
+      
+## المحتوى:
+- App Router Architecture
+- Server vs Client Components
+- Server Actions
+- Streaming و Suspense
+- Caching Strategies
+- Vercel Deployment`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800',
+      category: 'WEB',
+      icon: '▲',
+      ...publishedCatalogFields,
+      sortOrder: 1,
+      metaTitle: 'مسار Next.js المتقدم - IthraCode',
+      metaDescription: 'تعلم Next.js App Router المتقدم',
+    },
+  });
+  console.log(`✅ Track created: ${nextJsAdvancedTrack.title}`);
+
+  const graphqlAdvancedTrack = await prisma.track.create({
+    data: {
+      pathId: fullStackAdvancedPath.id,
+      title: 'مسار GraphQL المتقدم',
+      slug: 'graphql-advanced',
+      shortDescription: 'Schema Design و Apollo و Real-time Subscriptions',
+      description: `بناء APIs حديثة ومرنة مع GraphQL.
+      
+## ما ستتعلمه:
+- Advanced Schema Design
+- Resolvers و DataLoader
+- Apollo Server/Client
+- Subscriptions
+- Federation
+- Performance Optimization`,
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800',
+      category: 'WEB',
+      icon: '◈',
+      ...publishedCatalogFields,
+      sortOrder: 2,
+      metaTitle: 'مسار GraphQL المتقدم - IthraCode',
+      metaDescription: 'تعلم GraphQL المتقدم',
+    },
+  });
+  console.log(`✅ Track created: ${graphqlAdvancedTrack.title}`);
+
   // 4. Create Courses
   console.log('📚 Creating courses...');
 
@@ -479,6 +1306,7 @@ async function main() {
     data: {
       instructorId: instructorUser.id,
       pathId: backendPath.id,
+      trackId: nodeJsBackendTrack.id,
       title: 'دورة Node.js الشاملة - من الصفر إلى الاحتراف',
       description: `دورة شاملة لتعلم Node.js من البداية حتى الاحتراف. ستتعلم كيفية بناء تطبيقات خلفية قوية وآمنة باستخدام Node.js و Express و NestJS.
 
@@ -529,7 +1357,6 @@ async function main() {
       metaDescription: 'دورة شاملة لتعلم Node.js وبناء تطبيقات خلفية احترافية',
       certificateEnabled: true,
       maxStudents: 1000,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${nodeJsCourse.title}`);
@@ -597,7 +1424,8 @@ async function main() {
   const pythonCourse = await prisma.course.create({
     data: {
       instructorId: instructorUser.id,
-      pathId: webDevPath.id,
+      pathId: pythonPath.id,
+      trackId: pythonBasicsTrack.id,
       title: 'Python للمبتدئين - من الصفر إلى الاحتراف',
       description: `دورة شاملة لتعلم لغة Python من الصفر مع تطبيقات عملية.
 ## محتوى الدورة:
@@ -630,7 +1458,6 @@ async function main() {
       ],
       tags: ['python', 'programming', 'backend', 'beginners'],
       certificateEnabled: true,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${pythonCourse.title}`);
@@ -640,6 +1467,7 @@ async function main() {
     data: {
       instructorId: instructorUser.id,
       pathId: webDevPath.id,
+      trackId: databaseTrack.id,
       title: 'MongoDB - قواعد البيانات NoSQL الحديثة',
       description: `تعلم MongoDB وقواعد بيانات NoSQL من الصفر.
 ## ما ستتعلمه:
@@ -671,7 +1499,6 @@ async function main() {
       ],
       tags: ['mongodb', 'database', 'nosql', 'backend'],
       certificateEnabled: true,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${mongoDbCourse.title}`);
@@ -681,6 +1508,7 @@ async function main() {
     data: {
       instructorId: instructorUser.id,
       pathId: webDevPath.id,
+      trackId: jsFrameworksTrack.id,
       title: 'Vue.js 3 - إطار العمل التقدمي',
       description: `تعلم Vue.js 3 وابن تطبيقات ويب تفاعلية.
 ## المحتوى:
@@ -708,7 +1536,6 @@ async function main() {
       ],
       tags: ['vue', 'javascript', 'frontend', 'spa'],
       certificateEnabled: true,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${vueCourse.title}`);
@@ -717,7 +1544,8 @@ async function main() {
   const dockerCourse = await prisma.course.create({
     data: {
       instructorId: instructorUser.id,
-      pathId: webDevPath.id,
+      pathId: cloudDevOpsPath.id,
+      trackId: dockerTrack.id,
       title: 'Docker و DevOps للمطورين',
       description: `تعلم Docker و DevOps وأتمتة نشر التطبيقات.
 ## محتوى الدورة:
@@ -746,7 +1574,6 @@ async function main() {
       ],
       tags: ['docker', 'devops', 'kubernetes', 'ci-cd'],
       certificateEnabled: true,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${dockerCourse.title}`);
@@ -792,7 +1619,8 @@ async function main() {
   const nextJsCourse = await prisma.course.create({
     data: {
       instructorId: instructorUser.id,
-      pathId: webDevPath.id,
+      pathId: fullStackAdvancedPath.id,
+      trackId: nextJsAdvancedTrack.id,
       title: 'Next.js 14 - React Framework للإنتاج',
       description: `ابن تطبيقات React احترافية مع Next.js 14.
 ## محتوى الدورة:
@@ -822,7 +1650,6 @@ async function main() {
       ],
       tags: ['nextjs', 'react', 'ssr', 'seo', 'fullstack'],
       certificateEnabled: true,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${nextJsCourse.title}`);
@@ -831,7 +1658,8 @@ async function main() {
   const graphqlCourse = await prisma.course.create({
     data: {
       instructorId: instructorUser.id,
-      pathId: webDevPath.id,
+      pathId: fullStackAdvancedPath.id,
+      trackId: graphqlAdvancedTrack.id,
       title: 'GraphQL - مستقبل APIs',
       description: `تعلم GraphQL وابن APIs حديثة وفعالة.
 ## المحتوى:
@@ -860,7 +1688,6 @@ async function main() {
       ],
       tags: ['graphql', 'api', 'apollo', 'backend'],
       certificateEnabled: true,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${graphqlCourse.title}`);
@@ -870,6 +1697,7 @@ async function main() {
     data: {
       instructorId: instructorUser.id,
       pathId: webDevPath.id,
+      trackId: jsFrameworksTrack.id,
       title: 'Angular - الإطار الشامل من Google',
       description: `تعلم Angular وابن تطبيقات مؤسسية قوية.
 ## ما ستتعلمه:
@@ -898,7 +1726,6 @@ async function main() {
       ],
       tags: ['angular', 'typescript', 'frontend', 'spa'],
       certificateEnabled: true,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${angularCourse.title}`);
@@ -908,6 +1735,7 @@ async function main() {
     data: {
       instructorId: instructorUser.id,
       pathId: webDevPath.id,
+      trackId: databaseTrack.id,
       title: 'PostgreSQL - قاعدة البيانات العلائقية المتقدمة',
       description: `إتقان PostgreSQL للتطبيقات الاحترافية.
 ## محتوى الدورة:
@@ -936,7 +1764,6 @@ async function main() {
       ],
       tags: ['postgresql', 'sql', 'database', 'backend'],
       certificateEnabled: true,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${postgresCourse.title}`);
@@ -983,7 +1810,8 @@ async function main() {
   const awsCourse = await prisma.course.create({
     data: {
       instructorId: instructorUser.id,
-      pathId: webDevPath.id,
+      pathId: cloudDevOpsPath.id,
+      trackId: awsCloudTrack.id,
       title: 'AWS للمطورين - السحابة من Amazon',
       description: `تعلم AWS وانشر تطبيقاتك على السحابة.
 ## محتوى الدورة:
@@ -1013,7 +1841,6 @@ async function main() {
       ],
       tags: ['aws', 'cloud', 'devops', 'serverless'],
       certificateEnabled: true,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${awsCourse.title}`);
@@ -1023,6 +1850,7 @@ async function main() {
     data: {
       instructorId: instructorUser.id,
       pathId: webDevPath.id,
+      trackId: testingTrack.id,
       title: 'اختبار التطبيقات - Unit, Integration, E2E',
       description: `تعلم كتابة اختبارات احترافية لتطبيقاتك.
 ## المحتوى:
@@ -1051,7 +1879,6 @@ async function main() {
       ],
       tags: ['testing', 'jest', 'cypress', 'tdd', 'quality'],
       certificateEnabled: true,
-      trackId: null,
     },
   });
   console.log(`✅ Course created: ${testingCourse.title}`);
@@ -1604,7 +2431,8 @@ async function main() {
   console.log(`   - Admin: admin@ithracode.com / Admin@123`);
   console.log(`   - Instructor: instructor@ithracode.com / Instructor@123`);
   console.log(`   - Student: student@ithracode.com / Student@123`);
-  console.log(`\n🛤️  Paths created: 2`);
+  console.log(`\n🛤️  Paths created: 10`);
+  console.log(`🛤️  Tracks created: 30`);
   console.log(`📚 Courses created: 2`);
   console.log(`📑 Sections created: 5`);
   console.log(`🎥 Lectures created: 10`);
@@ -1626,7 +2454,8 @@ async function main() {
   console.log('   - Instructor: instructor@ithracode.com / Instructor@123');
   console.log('   - Student: student@ithracode.com / Student@123');
   console.log('');
-  console.log('🛤️  Paths created: 2');
+  console.log('🛤️  Paths created: 10');
+  console.log('🛤️  Tracks created: 30');
   console.log('📚 Courses created: 14');
   console.log('📑 Sections created: 5 (for first 2 courses)');
   console.log('🎥 Lectures created: 10 (for first 2 courses)');

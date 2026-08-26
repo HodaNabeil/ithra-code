@@ -1,9 +1,9 @@
 import type { PathCategoryDTO } from '@/types/path/path.dto';
 import type {
-  PathCatalogItem,
-  PathCatalogTrackItem,
+  PathListItem,
+  PathListTrackItem,
   PathViewer,
-} from '../dto/path-catalog.dto';
+} from '../dto/path-list.dto';
 import type {
   PathDetailItem,
   PathDetailSectionItem,
@@ -13,13 +13,13 @@ import {
   filterCourseForAudience,
   filterTrackForAudience,
 } from '../policies/path-visibility.policy';
-import type { DB_PathCatalogItem } from '../repository/path-catalog.select';
+import type { DB_PathListItem } from '../repository/path-list.select';
 import type { DB_PathDetailEntity } from '../repository/path-detail.select';
 
 function mapTrackSummary(
-  track: DB_PathCatalogItem['tracks'][number],
+  track: DB_PathListItem['tracks'][number],
   viewer: PathViewer,
-): PathCatalogTrackItem | null {
+): PathListTrackItem | null {
   if (!filterTrackForAudience(track, viewer)) {
     return null;
   }
@@ -30,10 +30,10 @@ function mapTrackSummary(
   };
 }
 
-export function mapPathCatalogItemToDTO(
-  path: DB_PathCatalogItem,
+export function mapPathListItemToDTO(
+  path: DB_PathListItem,
   viewer: PathViewer,
-): PathCatalogItem {
+): PathListItem {
   return {
     id: path.id,
     title: path.title,
@@ -48,7 +48,7 @@ export function mapPathCatalogItemToDTO(
     updatedAt: path.updatedAt.toISOString(),
     tracks: path.tracks
       .map((track) => mapTrackSummary(track, viewer))
-      .filter((track): track is PathCatalogTrackItem => track !== null),
+      .filter((track): track is PathListTrackItem => track !== null),
   };
 }
 

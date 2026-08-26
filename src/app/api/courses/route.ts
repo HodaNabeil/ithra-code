@@ -1,19 +1,18 @@
+import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
 import {
-  CourseCreationError,
-  createCourseUseCase,
-} from '@/features/courses/course-creation';
-import { getCourseCatalog } from '@/features/courses/catalog/use-cases/get-course-catalog.use-case';
-import { parseCourseCatalogSearchParams } from '@/features/courses/catalog/lib/catalog-api-query';
+  listCourses,
+  parseCourseSearchParams,
+} from '@/features/courses/listing';
 
-export async function GET(req: Request) {
+export async function GET(req: Request): Promise<NextResponse> {
   try {
     const session = await auth();
     const { searchParams } = new URL(req.url);
 
-    const data = await getCourseCatalog({
-      query: parseCourseCatalogSearchParams({
+    const data = await listCourses({
+      query: parseCourseSearchParams({
         page: searchParams.get('page') ?? undefined,
         limit: searchParams.get('limit') ?? undefined,
         search: searchParams.get('search') ?? undefined,
@@ -30,33 +29,7 @@ export async function GET(req: Request) {
 
     return apiSuccess(data, 'Courses fetched successfully');
   } catch (error) {
-    console.error('[COURSE_CATALOG_ERROR]', error);
-    return apiError('Internal Error', 500);
-  }
-}
-
-export async function POST(req: Request) {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    return apiError('Unauthorized', 401);
-  }
-
-  try {
-    const body = await req.json();
-    const course = await createCourseUseCase({
-      input: body,
-      userId: session.user.id,
-      userRole: session.user.role,
-    });
-
-    return apiSuccess({ course }, 'Course draft created', 201);
-  } catch (error) {
-    if (error instanceof CourseCreationError) {
-      return apiError(error.message, error.status);
-    }
-
-    console.error('[COURSE_CREATE_ERROR]', error);
+    console.error('[COURSE_LIST_ERROR]', error);
     return apiError('Internal Error', 500);
   }
 }

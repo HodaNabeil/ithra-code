@@ -1,20 +1,19 @@
-import { Suspense } from 'react';
 import { Metadata } from 'next';
-import Script from 'next/script';
 
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import {
-  PathsHero,
-  PathsContainer,
-  PathsListSkeleton,
+  LearningPathsContainer,
+  LearningPathsHero,
+  LearningPathsListingJsonLd,
 } from '@/features/learning-paths/components';
-import { buildLearningPathsItemListJsonLd } from '@/features/learning-paths/lib/learning-paths-item-list-jsonld';
-import { loadLearningPathsListing } from '@/features/learning-paths/lib/learning-paths-listing-data';
+import { getPaths } from '@/features/learning-paths/api';
 import { buildLearningPathsListingMetadata } from '@/features/learning-paths/lib/learning-paths-listing-metadata';
 import {
+  learningPathsPageQueryToGetPathsParams,
   parseLearningPathsPageSearchParams,
   type LearningPathsPageSearchParamsInput,
 } from '@/features/learning-paths/lib/learning-paths-page-query';
+import type { PathListDTO } from '@/types/path/path.dto';
 
 interface LearningPathsPageProps {
   searchParams: Promise<LearningPathsPageSearchParamsInput>;
@@ -28,38 +27,43 @@ export async function generateMetadata({
   return buildLearningPathsListingMetadata(query);
 }
 
-export default async function LearningPaths({
+export default async function LearningPathsPage({
   searchParams,
 }: LearningPathsPageProps) {
   const raw = await searchParams;
   const query = parseLearningPathsPageSearchParams(raw);
-  const listing = await loadLearningPathsListing(query);
 
-  const paths = listing.ok ? listing.paths : [];
-  const itemListSchema = buildLearningPathsItemListJsonLd(paths);
+  let paths: PathListDTO[] = [];
+  let pagination: { currentPage: number; totalPages: number } | undefined;
+  let hasError = false;
 
-  const suspenseKey = `${query.search}-${query.page}-${query.sort}-${query.category ?? ''}`;
+  try {
+    const pathsResponse = await getPaths(
+      learningPathsPageQueryToGetPathsParams(query),
+    );
+    paths = pathsResponse.paths;
+    pagination = {
+      currentPage: pathsResponse.currentPage,
+      totalPages: pathsResponse.totalPages,
+    };
+  } catch {
+    hasError = true;
+  }
 
   return (
     <>
-      <Script
-        id="paths-list-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      <LearningPathsListingJsonLd
+        params={learningPathsPageQueryToGetPathsParams(query)}
       />
+
       <main className="py-14 space-y-8">
-        <PathsHero />
-        <Suspense
-          key={suspenseKey}
-          fallback={
-            <div className="container">
-              <PathsListSkeleton />
-            </div>
-          }
-        >
-          {listing.ok && <PathsContainer paths={listing.paths} />}
-        </Suspense>
-        {!listing.ok && <ErrorRetry />}
+        <LearningPathsHero />
+
+        {!hasError && pagination && (
+          <LearningPathsContainer paths={paths} />
+        )}
+
+        {hasError && <ErrorRetry />}
       </main>
     </>
   );

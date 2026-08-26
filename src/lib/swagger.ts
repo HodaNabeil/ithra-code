@@ -399,7 +399,7 @@ const PaginationMetaSchema = registry.register(
 
 // ─── Query schemas ────────────────────────────────────────────────────────────
 
-const courseCatalogQuerySchema = z.object({
+const courseListQuerySchema = z.object({
   page: z
     .string()
     .optional()
@@ -436,7 +436,7 @@ const courseCatalogQuerySchema = z.object({
     .openapi({ example: 'true', description: 'Featured courses only' }),
 });
 
-const pathCatalogQuerySchema = z.object({
+const pathListQuerySchema = z.object({
   page: z.string().optional().openapi({ example: '1' }),
   limit: z.string().optional().openapi({ example: '12' }),
   search: z.string().optional().openapi({ example: 'web' }),
@@ -465,14 +465,14 @@ registry.registerPath({
   path: '/courses',
   tags: ['Courses'],
   summary: 'List published courses',
-  request: { query: courseCatalogQuerySchema },
+  request: { query: courseListQuerySchema },
   responses: {
     200: {
-      description: 'Course catalog',
+      description: 'Course list',
       content: {
         'application/json': {
           schema: registerApiSuccess(
-            'CourseCatalogResponse',
+            'CourseListResponse',
             z.object({
               items: z.array(CourseSchema),
               meta: PaginationMetaSchema,
@@ -1207,14 +1207,14 @@ registry.registerPath({
   path: '/paths',
   tags: ['Paths'],
   summary: 'List learning paths',
-  request: { query: pathCatalogQuerySchema },
+  request: { query: pathListQuerySchema },
   responses: {
     200: {
-      description: 'Path catalog',
+      description: 'Path list',
       content: {
         'application/json': {
           schema: registerApiSuccess(
-            'PathCatalogResponse',
+            'PathListResponse',
             z.object({
               items: z.array(PathSchema),
               meta: PaginationMetaSchema,
@@ -1902,7 +1902,7 @@ export function getOpenApiDocument(): ReturnType<
     },
     servers: [{ url: '/api', description: 'API base path' }],
     tags: [
-      { name: 'Courses', description: 'Course catalog and management' },
+      { name: 'Courses', description: 'Course listing and management' },
       { name: 'Paths', description: 'Learning paths' },
       { name: 'Lectures', description: 'Course lecture management' },
       { name: 'Cart', description: 'Shopping cart' },

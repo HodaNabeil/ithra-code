@@ -1,4 +1,4 @@
-import type { PathViewer } from '../dto/path-catalog.dto';
+import type { PathViewer } from '../dto/path-list.dto';
 import type { PathDetailResult } from '../dto/path-detail.dto';
 import { PATH_NOT_FOUND_MESSAGE, PathDetailError } from '../errors/path.errors';
 import { mapPathDetailEntityToDTO } from '../mapper/to-path-dto';

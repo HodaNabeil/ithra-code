@@ -1,12 +1,12 @@
 import { CourseStatus, CourseVisibility, Prisma, Role } from '@prisma/client';
-import type { PathViewer } from '../dto/path-catalog.dto';
+import type { PathViewer } from '../dto/path-list.dto';
 
 const PUBLISHED_PATH_WHERE: Prisma.PathWhereInput = {
   isPublished: true,
 };
 
-/** Whether catalog queries should restrict to published paths only. */
-export function resolvePublishedOnlyForCatalog(viewer: PathViewer): boolean {
+/** Whether listing queries should restrict to published paths only. */
+export function resolvePublishedOnlyForListing(viewer: PathViewer): boolean {
   if (!viewer?.id) return true;
   return viewer.role !== Role.ADMIN;
 }
@@ -15,7 +15,7 @@ export function resolvePublishedOnlyForCatalog(viewer: PathViewer): boolean {
 export function buildPathVisibilityWhere(
   viewer: PathViewer,
 ): Prisma.PathWhereInput {
-  if (resolvePublishedOnlyForCatalog(viewer)) {
+  if (resolvePublishedOnlyForListing(viewer)) {
     return PUBLISHED_PATH_WHERE;
   }
   return {};

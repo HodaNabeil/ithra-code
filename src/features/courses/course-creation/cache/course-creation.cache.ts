@@ -1,8 +1,8 @@
 import { redis } from '@/lib/redis';
 
-const CATALOG_CACHE_PREFIX = 'course:list:v1';
+const COURSE_LIST_CACHE_PREFIX = 'course:list:v1';
 
-/** Scans and deletes all course catalog cache keys after creation. */
+/** Scans and deletes all course list cache keys after creation. */
 export async function invalidateCourseListCache(): Promise<void> {
   try {
     let cursor = '0';
@@ -11,7 +11,7 @@ export async function invalidateCourseListCache(): Promise<void> {
       const [nextCursor, keys] = await redis.scan(
         cursor,
         'MATCH',
-        `${CATALOG_CACHE_PREFIX}:*`,
+        `${COURSE_LIST_CACHE_PREFIX}:*`,
         'COUNT',
         100,
       );

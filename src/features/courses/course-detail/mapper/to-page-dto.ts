@@ -8,7 +8,7 @@ import type {
   ReviewDTO,
   SectionDTO,
 } from '@/types/course/course.dto';
-import { mapCourseListToDTO } from '@/features/courses/course-list/mapper/to-list-dto';
+import { mapCourseListToDTO } from '@/features/courses/listing/mapper/to-course-list-dto';
 import type { DB_CourseDetailEntity } from '../repository/course-detail.select';
 import { prismaDateToIso } from './shared';
 
