@@ -13,7 +13,7 @@ export function FaqsAccordion({ faqs }: FaqsAccordionProps) {
   return (
     <div
       dir={DIRECTIONS.RTL}
-      className="w-full border rounded-lg overflow-hidden"
+      className="w-full rounded-lg overflow-hidden border border-border bg-panel"
     >
       {faqs.map((faq, index) => (
         <details

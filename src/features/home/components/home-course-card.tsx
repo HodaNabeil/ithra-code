@@ -24,7 +24,7 @@ export function HomeCourseCard({ course }: HomeCourseCardProps) {
     >
       <Link
         href={`${PUBLIC_ROUTES.COURSES}/${course.slug}`}
-        className="rounded-lg border border-border hover:border-primary/50 duration-200 transition-all h-full flex flex-col"
+        className="rounded-lg border border-border bg-card hover:border-primary/50 duration-200 transition-all h-full flex flex-col"
       >
         <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">
           <Image
@@ -60,11 +60,6 @@ export function HomeCourseCard({ course }: HomeCourseCardProps) {
                 </Badge>
               </>
             )}
-
-            {/* Total Hours */}
-            <Badge variant="outline" className="text-xs font-normal">
-              إجمالي الساعات {course.hours}
-            </Badge>
 
             {/* Lectures */}
             {course.lecturesCount > 0 && (

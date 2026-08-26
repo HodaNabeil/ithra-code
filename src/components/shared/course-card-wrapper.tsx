@@ -41,7 +41,7 @@ export function CourseCardWrapper({
 
       {/* Hover Card */}
       <div
-        className={`course-hover-card absolute z-50 w-80 p-6 bg-background border border-primary/20 rounded-xl shadow-xl
+        className={`course-hover-card absolute z-50 w-80 p-6 bg-card border border-border/60 rounded-xl shadow-2xl
           transition-all duration-300
           bottom-[calc(100%+0.8rem)] left-1/2 -translate-x-1/2
           lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 lg:left-auto lg:translate-x-0 lg:right-[calc(100%+0.8rem)]

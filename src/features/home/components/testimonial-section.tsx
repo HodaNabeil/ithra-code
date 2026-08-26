@@ -37,16 +37,16 @@ export default function TestimonialSection({
     <section className="py-12 md:py-16 lg:py-20">
       <div className="container element-center flex-col">
         <SectionHeading
-          subTitle="آراء الطلاب"
-          title="ماذا يقول طلابنا عن IthraCode"
-        />
+          subTitle="التوصيات"
+          title="ما يقوله طلابي"
+        ></SectionHeading>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 w-full">
           {items.map((testimonial) => {
             const avatarSrc = testimonial.avatarUrl || testimonial.avatar;
 
             return (
-              <Card key={testimonial.id} className="h-full">
+              <Card key={testimonial.id} className="testimonial-card h-full">
                 <CardHeader className="flex items-start justify-start">
                   <TestimonialQuoteIcon
                     gradientId={`testimonial-quote-${testimonial.id}`}

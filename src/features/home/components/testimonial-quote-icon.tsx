@@ -15,7 +15,7 @@ export function TestimonialQuoteIcon({
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`block shrink-0 ${className}`}
     >
       <defs>
         <linearGradient id={gradientId} x1="0%" y1="100%" x2="100%" y2="0%">

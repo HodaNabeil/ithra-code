@@ -28,10 +28,10 @@ export default function HeroSection({ promoCourse }: HeroSectionProps) {
               تعلم البرمجة ببساطة وفعالية
             </h1>
             <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty max-w-prose mx-auto md:mx-0 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-              احترف البرمجة مع{' '}
-              <span className="font-sf-pro text-brand">IthraCode</span> من خلال
-              تجارب وخبرات واقعية من الشركات. منصة تعليمية مصممة للمبتدئين
-              والمطورين المتوسطين للحصول على فرص وظيفية ودخل ممتاز.
+              أتقن البرمجة مع{' '}
+              <span className="text-brand">IthraCode</span> عبر خبرات وتجارب
+              واقعية من الشركات. منصة تعليمية تؤهّلك لسوق العمل بفرص وظيفية
+              ودخل متميز.
             </p>
             <div className="mt-8 sm:mt-10 flex items-center justify-center md:justify-start gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
               <Link

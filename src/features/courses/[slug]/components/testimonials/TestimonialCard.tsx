@@ -17,7 +17,7 @@ interface TestimonialCardProps {
 
 export function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <div className="bg-muted/30 border border-border/40 rounded-2xl p-8 h-full flex flex-col justify-between">
+    <div className="testimonial-card border border-border/40 rounded-2xl p-8 h-full flex flex-col justify-between">
       <div className="flex flex-col">
         <p className="text-muted-foreground text-base leading-relaxed mb-8">
           {testimonial.text}

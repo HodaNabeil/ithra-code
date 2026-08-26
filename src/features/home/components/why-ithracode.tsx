@@ -2,6 +2,7 @@ import SectionHeading from './section-heading';
 import Image from 'next/image';
 import { ClockIcon, CodeIcon, VideoIcon } from '@radix-ui/react-icons';
 import { WHY_IMAGE_SIZES } from '@/features/home/constants/image-sizes';
+import { TestimonialQuoteIcon } from './testimonial-quote-icon';
 
 const WhyIthraCode = () => {
   const cards = [
@@ -50,7 +51,16 @@ const WhyIthraCode = () => {
   return (
     <section className="pt-12 md:pt-16 lg:pt-20">
       <div className="container element-center flex-col">
-        <SectionHeading subTitle="الميزات" title="لماذا IthraCode" />
+        <SectionHeading
+          subTitle="الميزات"
+          title="لماذا Ithra Code"
+          icon={
+            <TestimonialQuoteIcon
+              gradientId="why-ithracode-quote"
+              className="size-11 sm:size-12 md:size-14"
+            />
+          }
+        />
         <ul className="w-full">
           {cards.map((card, index) => (
             <li

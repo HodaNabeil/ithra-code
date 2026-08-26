@@ -38,7 +38,11 @@ export function HomeHoverCard({ objectives, course }: HomeHoverCardProps) {
       </div>
 
       <div className="mt-2">
-        <AddToCartButton course={course} className="w-full" size="xl" />
+        <AddToCartButton
+          course={course}
+          className="w-full rounded-3xl"
+          size="xl"
+        />
       </div>
     </div>
   );
