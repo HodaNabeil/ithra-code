@@ -24,9 +24,9 @@ export function HomeCourseCard({ course }: HomeCourseCardProps) {
     >
       <Link
         href={`${PUBLIC_ROUTES.COURSES}/${course.slug}`}
-        className="rounded-lg border border-border bg-card hover:border-primary/50 duration-200 transition-all h-full flex flex-col"
+        className="rounded-xl border border-border bg-card hover:border-primary/50 duration-200 transition-all h-full flex flex-col overflow-hidden"
       >
-        <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">
+        <div className="relative w-full aspect-video overflow-hidden">
           <Image
             src={course.thumbnailUrl}
             alt={course.title}

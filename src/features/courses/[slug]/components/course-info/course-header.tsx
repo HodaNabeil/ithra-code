@@ -36,7 +36,7 @@ export default function CourseHeader({
   return (
     <div
       className={cn(
-        'hidden fixed top-0 h-[69px] lg:flex left-0 right-0 z-50 bg-sidebar-background border-b border-sidebar-border shadow-md transition-all duration-300 transform',
+        'hidden fixed top-0 h-20.25 lg:flex left-0 right-0 z-50 bg-sidebar-background border-b border-sidebar-border shadow-md transition-all duration-300 transform',
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0',
       )}
     >

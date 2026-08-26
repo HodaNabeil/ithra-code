@@ -10,7 +10,7 @@ export function NavigationTopLoader() {
       showSpinner={false}
       crawl
       crawlSpeed={200}
-      speed={250}
+      speed={160}
       easing="ease"
       zIndex={9999}
     />

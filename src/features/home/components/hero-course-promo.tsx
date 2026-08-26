@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import { PUBLIC_ROUTES } from '@/constants/routes';
 
 interface Course {
@@ -18,7 +19,7 @@ interface HeroCoursePromoProps {
 
 export function HeroCoursePromo({ course }: HeroCoursePromoProps) {
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-lg">
+    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg hover:border-primary/50 transition-all duration-200">
       {course.thumbnailUrl && (
         <div className="aspect-video bg-muted">
           <img
@@ -40,12 +41,11 @@ export function HeroCoursePromo({ course }: HeroCoursePromoProps) {
             {course.price} جنيه
           </div>
         )}
-        <Link
-          href={`${PUBLIC_ROUTES.COURSES}/${course.slug}`}
-          className="w-full bg-primary text-primary-foreground rounded-lg px-4 py-2 hover:bg-primary/90 transition-colors inline-block text-center"
-        >
-          ابدأ التعلم
-        </Link>
+        <Button asChild className="w-full">
+          <Link href={`${PUBLIC_ROUTES.COURSES}/${course.slug}`}>
+            ابدأ التعلم
+          </Link>
+        </Button>
       </div>
     </div>
   );
