@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle2, TriangleAlertIcon } from 'lucide-react';
-import { useCallback, useMemo, useState, useSyncExternalStore } from 'react';
+import { useCallback, useMemo, useState, useSyncExternalStore, type FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 
 import FormField from '@/components/shared/form-fields';
@@ -90,31 +90,28 @@ export default function ContactForm({ userDefaults }: ContactFormProps) {
 
   const onSubmit = useCallback(
     async (data: ContactInput) => {
-      try {
-        setError('');
-        setSuccess('');
+      setError('');
+      setSuccess('');
 
-        if (turnstileEnabled && !turnstileToken) {
-          setError(MESSAGES.securityRequired);
-          return;
-        }
-
-        const result = await contactAction({
-          ...data,
-          turnstileToken: turnstileToken ?? undefined,
-        });
-
-        if (result.success) {
-          setSuccess(result.message || MESSAGES.success);
-          form.reset(defaultValues);
-          resetTurnstile();
-          return;
-        }
-
-        setError(result.message || MESSAGES.validationFailed);
-      } catch {
-        setError(MESSAGES.genericError);
+      if (turnstileEnabled && !turnstileToken) {
+        setError(MESSAGES.securityRequired);
+        return;
       }
+
+      const result = await contactAction({
+        ...data,
+        turnstileToken: turnstileToken ?? undefined,
+      });
+
+      if (result.success) {
+        setSuccess(result.message || MESSAGES.success);
+        form.reset(defaultValues);
+        resetTurnstile();
+        return;
+      }
+
+      setError(result.message || MESSAGES.validationFailed);
+      resetTurnstile();
     },
     [
       defaultValues,
@@ -125,10 +122,22 @@ export default function ContactForm({ userDefaults }: ContactFormProps) {
     ],
   );
 
+  const handleFormSubmit = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      void form
+        .handleSubmit(onSubmit)(event)
+        .catch(() => {
+          setError(MESSAGES.genericError);
+          resetTurnstile();
+        });
+    },
+    [form, onSubmit, resetTurnstile],
+  );
+
   const { isSubmitting, errors } = form.formState;
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+    <form onSubmit={handleFormSubmit} noValidate>
       <FieldSet>
         <FieldGroup>
           {getFormFields().map((field) => (
@@ -164,7 +173,7 @@ export default function ContactForm({ userDefaults }: ContactFormProps) {
             <div className="flex min-h-32.5 w-full items-center justify-center">
               {isClient ? (
                 <ContactTurnstile
-                  key={turnstileResetKey}
+                  resetSignal={turnstileResetKey}
                   onTokenChange={setTurnstileToken}
                 />
               ) : null}

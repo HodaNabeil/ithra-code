@@ -20,6 +20,8 @@ type TurnstileApi = {
     },
   ) => string;
   remove: (widgetId: string) => void;
+  reset: (widgetId: string) => void;
+  ready: (callback: () => void) => void;
 };
 
 declare global {
@@ -31,11 +33,13 @@ declare global {
 type ContactTurnstileProps = {
   onTokenChange: (token: string | null) => void;
   onReadyChange?: (ready: boolean) => void;
+  resetSignal?: number;
 };
 
 export default function ContactTurnstile({
   onTokenChange,
   onReadyChange,
+  resetSignal = 0,
 }: ContactTurnstileProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
@@ -78,6 +82,28 @@ export default function ContactTurnstile({
     });
   }, []);
 
+  const mountWidget = useCallback(() => {
+    if (!window.turnstile) {
+      return;
+    }
+
+    window.turnstile.ready(renderWidget);
+  }, [renderWidget]);
+
+  useEffect(() => {
+    mountWidget();
+  }, [mountWidget]);
+
+  useEffect(() => {
+    if (resetSignal === 0 || !widgetIdRef.current || !window.turnstile) {
+      return;
+    }
+
+    window.turnstile.reset(widgetIdRef.current);
+    onTokenChangeRef.current(null);
+    onReadyChangeRef.current?.(false);
+  }, [resetSignal]);
+
   useEffect(() => {
     return () => {
       if (widgetIdRef.current && window.turnstile) {
@@ -96,7 +122,7 @@ export default function ContactTurnstile({
       <Script
         src={TURNSTILE_SCRIPT_SRC}
         strategy="afterInteractive"
-        onLoad={renderWidget}
+        onLoad={mountWidget}
       />
       <div
         ref={containerRef}
