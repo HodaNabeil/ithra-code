@@ -177,6 +177,12 @@ const useFormFields = ({ slug }: IFormFieldsVariables) => {
 
   const contactFields = (): IFormField[] => [
     {
+      name: 'name',
+      label: 'الاسم',
+      type: InputTypes.TEXT,
+      placeholder: 'ادخل اسمك',
+    },
+    {
       name: 'email',
       label: 'البريد الإلكتروني',
       type: InputTypes.EMAIL,

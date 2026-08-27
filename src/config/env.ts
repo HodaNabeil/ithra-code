@@ -203,6 +203,24 @@ export const env = createEnv({
       .optional()
       .describe('From address for payment confirmation emails'),
 
+    CONTACT_NOTIFICATION_EMAIL: z
+      .string()
+      .email()
+      .optional()
+      .describe('Admin inbox address for contact form notifications'),
+
+    TURNSTILE_SECRET_KEY: z
+      .string()
+      .optional()
+      .describe('Cloudflare Turnstile secret key for server-side verification'),
+
+    TURNSTILE_USE_PRODUCTION_KEYS: z
+      .enum(['true', 'false'])
+      .default('false')
+      .describe(
+        'In development, use production Turnstile keys instead of Cloudflare test keys on localhost',
+      ),
+
     PAYMENT_ANALYTICS_ENABLED: z
       .enum(['true', 'false'])
       .default('false')
@@ -484,6 +502,10 @@ export const env = createEnv({
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z
       .string()
       .describe('Stripe Publishable Key'),
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: z
+      .string()
+      .optional()
+      .describe('Cloudflare Turnstile site key for contact form'),
   },
 
   runtimeEnv: {
@@ -535,6 +557,9 @@ export const env = createEnv({
     PAYMOB_TIMEOUT_MS: process.env.PAYMOB_TIMEOUT_MS,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     PAYMENT_EMAIL_FROM: process.env.PAYMENT_EMAIL_FROM,
+    CONTACT_NOTIFICATION_EMAIL: process.env.CONTACT_NOTIFICATION_EMAIL,
+    TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
+    TURNSTILE_USE_PRODUCTION_KEYS: process.env.TURNSTILE_USE_PRODUCTION_KEYS,
     PAYMENT_ANALYTICS_ENABLED: process.env.PAYMENT_ANALYTICS_ENABLED,
     REDIS_URL: process.env.REDIS_URL,
     MUX_TOKEN_ID: process.env.MUX_TOKEN_ID,
@@ -547,6 +572,7 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
     AI_PLATFORM_ENABLED: process.env.AI_PLATFORM_ENABLED,
     AI_PLATFORM_LLM_MODEL: process.env.AI_PLATFORM_LLM_MODEL,
     AI_PLATFORM_EMBEDDING_MODEL: process.env.AI_PLATFORM_EMBEDDING_MODEL,

@@ -1545,3 +1545,25 @@ model AiToolInvocation {
   @@index([toolId, createdAt])
   @@map("ai_tool_invocations")
 }
+
+enum ContactMessageStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+
+  @@map("contact_message_status")
+}
+
+model ContactMessage {
+  id        String               @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  status    ContactMessageStatus @default(NEW)
+  createdAt DateTime             @default(now()) @map("created_at")
+  updatedAt DateTime             @updatedAt @map("updated_at")
+
+  @@index([status, createdAt])
+  @@map("contact_messages")
+}
