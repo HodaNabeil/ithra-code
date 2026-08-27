@@ -62,7 +62,6 @@ export default function ContactForm({ userDefaults }: ContactFormProps) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [turnstileReady, setTurnstileReady] = useState(!turnstileEnabled);
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
 
   const { getFormFields } = useFormFields({ slug: APP_ROUTES.CONTACT });
@@ -86,9 +85,8 @@ export default function ContactForm({ userDefaults }: ContactFormProps) {
 
   const resetTurnstile = useCallback(() => {
     setTurnstileToken(null);
-    setTurnstileReady(!turnstileEnabled);
     setTurnstileResetKey((current) => current + 1);
-  }, [turnstileEnabled]);
+  }, []);
 
   const onSubmit = useCallback(
     async (data: ContactInput) => {
@@ -127,9 +125,7 @@ export default function ContactForm({ userDefaults }: ContactFormProps) {
     ],
   );
 
-  const { isSubmitting, isValid, errors } = form.formState;
-  const canSubmit =
-    isClient && isValid && turnstileReady && !isSubmitting;
+  const { isSubmitting, errors } = form.formState;
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
@@ -170,7 +166,6 @@ export default function ContactForm({ userDefaults }: ContactFormProps) {
                 <ContactTurnstile
                   key={turnstileResetKey}
                   onTokenChange={setTurnstileToken}
-                  onReadyChange={setTurnstileReady}
                 />
               ) : null}
             </div>
@@ -201,7 +196,7 @@ export default function ContactForm({ userDefaults }: ContactFormProps) {
             type="submit"
             variant="default"
             className="w-full"
-            disabled={!canSubmit}
+            disabled={isSubmitting}
             aria-busy={isSubmitting || undefined}
           >
             {isSubmitting ? <Spinner /> : 'إرسال'}
