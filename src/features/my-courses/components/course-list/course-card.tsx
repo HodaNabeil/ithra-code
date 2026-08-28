@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { STUDENT_ROUTES } from '@/constants/routes';
 import type { StudentCourseItem } from '@/types/course/course.types';
-import { CourseProgress } from './CourseProgress';
+import { CourseProgress } from './course-progress';
 
 interface CourseCardProps {
   course: StudentCourseItem;

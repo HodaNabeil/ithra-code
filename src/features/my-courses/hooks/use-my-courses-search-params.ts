@@ -18,8 +18,13 @@ export function useMyCoursesSearchParams() {
     return () => window.removeEventListener('popstate', handlePopstate);
   }, []);
 
-  return useMemo(
-    () => readMyCoursesSearchParams(),
-    [searchParams, popstateVersion],
-  );
+  return useMemo(() => {
+    // SSR + initial hydration must use Next's search params so server/client match.
+    // After replaceState (popstate), read from window — useSearchParams won't update.
+    if (popstateVersion > 0) {
+      return readMyCoursesSearchParams();
+    }
+
+    return new URLSearchParams(searchParams.toString());
+  }, [searchParams, popstateVersion]);
 }

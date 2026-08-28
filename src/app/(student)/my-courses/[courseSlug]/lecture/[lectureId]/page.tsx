@@ -7,7 +7,7 @@ import {
   getLectureDetails,
   getLectureNavigation,
 } from '@/features/my-courses/actions/my-course';
-import { LectureView } from '@/features/my-courses/components/study-view/components/lecture-details';
+import { LectureView } from '@/features/my-courses/components/study-view/lecture-details';
 import { AITutorConfig } from '@/features/ai-tutor';
 import { MY_COURSES_TAGS } from '@/lib/query-keys';
 

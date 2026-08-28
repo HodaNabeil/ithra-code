@@ -10,7 +10,7 @@ import {
   sortStudentCourses,
 } from '../../services/client/course-logic';
 import { CourseListToolbar } from './course-list-toolbar';
-import CourseList from './CourseList';
+import CourseList from './course-list';
 
 interface CourseListManagerProps {
   initialCourses: StudentCourseItem[];

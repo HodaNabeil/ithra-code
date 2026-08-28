@@ -5,8 +5,8 @@ import { BookOpen, SearchX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { CoursesPagination } from '@/components/shared/courses-pagination';
-import { CourseCardStudent } from './CourseCard';
-import { StudentCoursesResetFilters } from './student-courses-reset-filters';
+import { CourseCardStudent } from './course-card';
+import { StudentCoursesResetFilters } from '../courses-filters/student-courses-reset-filters';
 import { EMPTY_STATES } from '@/constants/my-courses';
 import { StudentCourseItem } from '@/types/course/course.types';
 

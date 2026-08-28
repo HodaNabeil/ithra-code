@@ -12,7 +12,7 @@ import {
   replaceMyCoursesUrl,
 } from '@/features/my-courses/lib/my-courses-url';
 import type { StudentCourseItem } from '@/types/course/course.types';
-import CourseListManager from '../CourseListManager';
+import CourseListManager from '../course-list/course-list-manager';
 import { CertificatesPlaceholder } from './certificates-placeholder';
 import { ContinueLearningCard } from './continue-learning-card';
 import {

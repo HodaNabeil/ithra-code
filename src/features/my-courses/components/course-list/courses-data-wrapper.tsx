@@ -1,6 +1,6 @@
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import { getStudentCourses } from '../../services/course.service';
-import { MyCoursesDashboard } from './dashboard/my-courses-dashboard';
+import { MyCoursesDashboard } from '../dashboard/my-courses-dashboard';
 
 export default async function CoursesDataWrapper({
   userId,

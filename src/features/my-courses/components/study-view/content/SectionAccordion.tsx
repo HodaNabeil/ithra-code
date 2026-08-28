@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/accordion';
 import { LectureItem } from './LectureItem';
 
-import { useCourseSections } from '@/features/my-courses/hooks/useMyCoursesQueries';
+import { useCourseSections } from '@/features/my-courses/hooks/use-my-courses-queries';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import { SectionAccordionSkeleton } from './SectionAccordionSkeleton';
 import { MyCourseLectureDTO } from '@/types/my-courses/my-courses.dto';

@@ -1,5 +1,5 @@
 import { useParams, useRouter } from 'next/navigation';
-import { useToggleLectureCompletion } from '@/features/my-courses/hooks/useMyCoursesMutations';
+import { useToggleLectureCompletion } from '@/features/my-courses/hooks/use-my-courses-mutations';
 
 /**
  * Custom hook to handle lecture item logic.

@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
-import CoursesDataWrapper from '@/features/my-courses/components/my-courses/CoursesDataWrapper';
+import CoursesDataWrapper from '@/features/my-courses/components/course-list/courses-data-wrapper';
 import { AUTH_ENDPOINTS } from '@/constants/auth';
 import { APP_ROUTES } from '@/constants/enums';
 

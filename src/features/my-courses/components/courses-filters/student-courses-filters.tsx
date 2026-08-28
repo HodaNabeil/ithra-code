@@ -8,7 +8,7 @@ import {
   Instructor,
   StudentFilters,
 } from '@/types/course/course.types';
-import MobileCoursesFilters from './mobile-search/mobile-courses-filters';
+import MobileCoursesFilters from './mobile-courses-filters';
 
 interface StudentCoursesFiltersProps {
   categories?: Array<{ value: string; label: string }>;
