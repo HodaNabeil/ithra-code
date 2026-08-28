@@ -1,72 +1,63 @@
 'use client';
 
-import React from 'react';
-import { CardContent } from '@/components/ui/card';
-import { Play } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { APP_ROUTES } from '@/constants/enums';
+import { PlayCircle } from 'lucide-react';
+import { Link } from '@/components/shared/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { STUDENT_ROUTES } from '@/constants/routes';
+import type { StudentCourseItem } from '@/types/course/course.types';
 import { CourseProgress } from './CourseProgress';
 
 interface CourseCardProps {
-  id: string;
-  title: string;
-  slug: string;
-  progress: number;
-  instructor: string;
-  thumbnail?: string | null;
-  rating?: number;
-  lastLectureId?: string;
+  course: StudentCourseItem;
 }
 
-export const CourseCardStudent = ({
-  title,
-  slug,
-  progress,
-  instructor,
-  thumbnail,
-  lastLectureId,
-}: CourseCardProps) => {
-  const watchUrl = lastLectureId
-    ? `${APP_ROUTES.MY_COURSES}/${slug}/lecture/${lastLectureId}`
-    : `${APP_ROUTES.MY_COURSES}/${slug}`;
+export const CourseCardStudent = ({ course }: CourseCardProps) => {
+  const learnHref = course.lastLectureId
+    ? STUDENT_ROUTES.LEARN.replace(':courseSlug', course.slug).replace(
+        ':lectureId',
+        course.lastLectureId,
+      )
+    : STUDENT_ROUTES.COURSE_DETAILS.replace(':courseSlug', course.slug);
+
+  const progress = course.progressPercentage || 0;
 
   return (
-    <li>
+    <Card className="flex h-full flex-col gap-5 overflow-hidden transition-all duration-300 hover:border-primary/30 hover:shadow-md">
       <Link
-        href={watchUrl}
-        className="group block h-full overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5"
+        href={learnHref}
+        className="flex min-h-0 flex-1 flex-col gap-5"
       >
-        <div className="relative aspect-16/10 overflow-hidden">
+        <div className="relative aspect-video w-full overflow-hidden">
           <Image
-            src={thumbnail || '/placeholder-course.jpg'}
-            alt={title}
+            src={course.thumbnailUrl || '/placeholder-course.jpg'}
+            alt={course.title}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <div className="w-10 h-10 bg-secondary/90 rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
-              <Play className="w-4 h-4 text-foreground fill-foreground ml-1" />
-            </div>
-          </div>
         </div>
 
-        <CardContent className="p-4">
-          {/* Course Info */}
-          <div className="mb-2">
-            <h3 className="font-bold text-primary line-clamp-2 leading-snug text-lg truncate">
-              {title}
+        <CardContent className="flex flex-1 flex-col gap-2">
+          <div className="mb-6">
+            <h3 className="line-clamp-2 truncate text-lg font-bold leading-tight">
+              {course.title}
             </h3>
-            <p className="text-sm text-muted-foreground font-medium truncate">
-              {instructor}
-            </p>
           </div>
 
-          {/* Progress Section */}
           <CourseProgress progress={progress} />
         </CardContent>
       </Link>
-    </li>
+
+      <CardFooter className="w-full p-4 pt-0">
+        <Button asChild className="w-full">
+          <Link href={learnHref}>
+            {progress > 0 ? 'استئناف' : 'ابدأ الدورة'}
+            <PlayCircle className="size-4" />
+          </Link>
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };

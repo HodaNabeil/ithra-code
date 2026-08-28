@@ -1,3 +1,4 @@
+import { PROGRESS_FILTERS } from '@/constants/my-courses';
 import { StudentCourseItem, StudentFilters } from '@/types/course/course.types';
 
 export const filterStudentCourses = (
@@ -8,12 +9,8 @@ export const filterStudentCourses = (
   const query = searchQuery.toLowerCase().trim();
 
   return courses.filter((course) => {
-    const instructorName =
-      `${course.instructor?.firstName || ''} ${course.instructor?.lastName || ''}`.toLowerCase();
     const matchesSearch =
-      !query ||
-      course.title.toLowerCase().includes(query) ||
-      instructorName.includes(query);
+      !query || course.title.toLowerCase().includes(query);
 
     const matchesCategory =
       filters.category === 'all' || course.trackId === filters.category;
@@ -25,11 +22,11 @@ export const filterStudentCourses = (
     let matchesProgress = true;
     const progress = course.progressPercentage || 0;
 
-    if (filters.progress === 'completed') {
+    if (filters.progress === PROGRESS_FILTERS.COMPLETED) {
       matchesProgress = progress === 100;
-    } else if (filters.progress === 'in-progress') {
+    } else if (filters.progress === PROGRESS_FILTERS.IN_PROGRESS) {
       matchesProgress = progress > 0 && progress < 100;
-    } else if (filters.progress === 'not-started') {
+    } else if (filters.progress === PROGRESS_FILTERS.NOT_STARTED) {
       matchesProgress = progress === 0;
     }
 

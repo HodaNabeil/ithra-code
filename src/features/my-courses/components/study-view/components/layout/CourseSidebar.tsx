@@ -1,6 +1,6 @@
 'use client';
 
-import { Tabs, TabsContent } from '@/components/shared/Tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SectionAccordion } from '../content/SectionAccordion';
 import { CourseSidebarHeader } from './course-sidebar-header';
@@ -23,7 +23,6 @@ export const CourseSidebar = ({
     <Tabs
       defaultValue="content"
       className="flex flex-col h-full bg-sidebar border-l border-border/50"
-      dir="rtl"
     >
       <CourseSidebarHeader
         onClose={onClose}

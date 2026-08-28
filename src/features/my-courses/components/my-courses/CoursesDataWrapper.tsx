@@ -1,15 +1,15 @@
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import { getStudentCourses } from '../../services/course.service';
-import CourseListManager from './CourseListManager';
-import { CoursesPagination } from '@/components/shared/CoursesPagination';
-import StudentHero from './StudentHero';
+import { MyCoursesDashboard } from './dashboard/my-courses-dashboard';
 
 export default async function CoursesDataWrapper({
   userId,
   page = 1,
+  initialTab,
 }: {
   userId: string;
   page: number;
+  initialTab?: string;
 }) {
   let dataMyCourses;
   try {
@@ -27,18 +27,12 @@ export default async function CoursesDataWrapper({
   }
 
   return (
-    <>
-      <StudentHero />
-      <CourseListManager
-        initialCourses={dataMyCourses.courses}
-        tracks={dataMyCourses.tracks}
-        instructors={dataMyCourses.instructors}
-      />
-
-      <CoursesPagination
-        currentPage={dataMyCourses.currentPage as number}
-        totalPages={dataMyCourses.totalPages as number}
-      />
-    </>
+    <MyCoursesDashboard
+      courses={dataMyCourses.courses}
+      totalEnrollments={dataMyCourses.total}
+      currentPage={dataMyCourses.currentPage as number}
+      totalPages={dataMyCourses.totalPages as number}
+      initialTab={initialTab}
+    />
   );
 }

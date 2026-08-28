@@ -1,9 +1,5 @@
-import React from 'react';
-
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
-import { FullPageSkeleton } from '@/features/my-courses/components/CoursesListSkeleton';
 
 import CoursesDataWrapper from '@/features/my-courses/components/my-courses/CoursesDataWrapper';
 import { AUTH_ENDPOINTS } from '@/constants/auth';
@@ -12,17 +8,20 @@ import { APP_ROUTES } from '@/constants/enums';
 export default async function StudentCoursesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; tab?: string }>;
 }) {
-  const { page } = await searchParams;
+  const { page, tab } = await searchParams;
   const session = await auth();
   const userId = session?.user?.id;
   if (!userId) {
     redirect(`${AUTH_ENDPOINTS.LOGIN}?callbackUrl=${APP_ROUTES.MY_COURSES}`);
   }
+
   return (
-    <Suspense fallback={<FullPageSkeleton />}>
-      <CoursesDataWrapper userId={userId} page={Number(page) || 1} />
-    </Suspense>
+    <CoursesDataWrapper
+      userId={userId}
+      page={Number(page) || 1}
+      initialTab={tab}
+    />
   );
 }

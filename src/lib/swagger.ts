@@ -14,6 +14,7 @@ import { courseIdSchema } from '@/validation/cart';
 import { cartApiResponseSchema } from '@/features/cart/dto/cart.dto';
 import { addCartItemBodySchema } from '@/features/cart/presentation/validators/add-cart-item.validator';
 import { createCourseSchema } from '@/features/courses/course-creation/dto/create-course.dto';
+import { registerEnrollmentsOpenApi } from '@/features/enrollments/api/register-enrollments-openapi';
 
 const registry = new OpenAPIRegistry();
 
@@ -408,13 +409,10 @@ const courseListQuerySchema = z.object({
     .string()
     .optional()
     .openapi({ example: '12', description: 'Items per page' }),
-  search: z
-    .string()
-    .optional()
-    .openapi({
-      example: 'node',
-      description: 'Search in title and description',
-    }),
+  search: z.string().optional().openapi({
+    example: 'node',
+    description: 'Search in title and description',
+  }),
   sort: z
     .string()
     .optional()
@@ -1886,6 +1884,16 @@ registry.registerPath({
   },
 });
 
+registerEnrollmentsOpenApi(registry, {
+  registerApiSuccess,
+  apiSuccessExample,
+  ApiErrorSchema,
+  apiErrorExample,
+  authenticated,
+  courseExample,
+  courseId: EX.courseId,
+});
+
 // ─── Document generator ─────────────────────────────────────────────────────────
 
 export function getOpenApiDocument(): ReturnType<
@@ -1907,6 +1915,7 @@ export function getOpenApiDocument(): ReturnType<
       { name: 'Lectures', description: 'Course lecture management' },
       { name: 'Cart', description: 'Shopping cart' },
       { name: 'Orders', description: 'Order management' },
+      { name: 'Enrollments', description: 'Student course enrollments' },
     ],
   });
 }

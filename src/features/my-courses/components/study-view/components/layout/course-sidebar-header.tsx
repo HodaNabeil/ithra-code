@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { TabsList, TabsTrigger } from '@/components/shared/Tabs';
+import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Sparkles, X, Maximize2, Minimize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -19,10 +19,7 @@ export const CourseSidebarHeader: React.FC<CourseSidebarHeaderProps> = ({
 }) => {
   return (
     <div className="relative z-10 flex min-w-0 shrink-0 items-center justify-between border-b border-border/50 bg-sidebar/50 px-2 pt-2">
-      <TabsList
-        variant="line"
-        className="h-11 min-w-0 flex-1 gap-0.5 bg-transparent"
-      >
+      <TabsList className="h-11 min-w-0 flex-1 gap-0.5 border-0 bg-transparent">
         <TabsTrigger
           value="content"
           className={cn(

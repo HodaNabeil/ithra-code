@@ -1,5 +1,5 @@
 import React from 'react';
-import { TabsContent } from '@/components/shared/Tabs';
+import { TabsContent } from '@/components/ui/tabs';
 import { OverviewPanel } from './panels/overview-panel';
 import { QnAPanel } from './panels/qna-panel';
 import { NotesPanel } from './panels/notes-panel';

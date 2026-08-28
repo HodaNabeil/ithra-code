@@ -2,7 +2,7 @@ import React from 'react';
 export * from './LectureView';
 import { TabTriggers } from './tab-triggers';
 import { TabPanels } from './tab-panels';
-import { Tabs } from '@/components/shared/Tabs';
+import { Tabs } from '@/components/ui/tabs';
 
 interface LectureContentTabsProps {
   description?: string;
@@ -23,7 +23,7 @@ export function LectureContentTabs({
   lectureTitle,
 }: LectureContentTabsProps) {
   return (
-    <Tabs className="w-full px-4 border-b border-border/40" dir="rtl">
+    <Tabs className="w-full px-4 border-b border-border/40">
       <TabTriggers aiTutorEnabled={aiTutorEnabled} />
       <TabPanels
         description={description || ''}

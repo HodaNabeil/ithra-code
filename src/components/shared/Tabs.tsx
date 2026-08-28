@@ -67,8 +67,8 @@ function TabsTrigger({
         'group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-transparent dark:group-data-[variant=line]/tabs-list:data-active:border-transparent dark:group-data-[variant=line]/tabs-list:data-active:bg-transparent',
         'data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input dark:data-active:text-foreground',
         'after:pointer-events-none after:absolute after:transition-all after:duration-300 after:origin-center group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-4px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=horizontal]/tabs:after:scale-x-0 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 group-data-[orientation=vertical]/tabs:after:scale-y-0',
-        'group-data-[variant=line]/tabs-list:after:bg-primary/20 group-data-[variant=line]/tabs-list:hover:after:scale-100',
-        'group-data-[variant=line]/tabs-list:data-[state=active]:after:bg-primary group-data-[variant=line]/tabs-list:data-[state=active]:after:scale-100',
+        'group-data-[variant=line]/tabs-list:after:bg-foreground/20 group-data-[variant=line]/tabs-list:hover:after:scale-100',
+        'group-data-[variant=line]/tabs-list:data-[state=active]:after:bg-foreground group-data-[variant=line]/tabs-list:data-[state=active]:after:scale-100',
         className,
       )}
       {...props}

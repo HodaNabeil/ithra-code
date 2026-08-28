@@ -329,6 +329,7 @@
   --fade-background: var(--body-background);
   --chart-primary-fill: hsl(224 100% 98%);
   --chart-primary-stroke: hsl(224 100% 51%);
+  --progress-indicator: var(--chart-primary-stroke);
   --chart-success-fill: hsl(140 100% 98%);
   --chart-success-stroke: hsl(140 100% 40%);
   --chart-error-fill: hsl(1 100% 98%);
@@ -550,6 +551,7 @@
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
   --chart-primary-fill: hsl(224 100% 10%);
   --chart-primary-stroke: hsl(224 100% 55%);
+  --progress-indicator: var(--chart-primary-stroke);
   --chart-success-fill: hsl(140 100% 10%);
   --chart-success-stroke: hsl(140 100% 45%);
   --chart-error-fill: hsl(1 100% 10%);

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Tabs, TabsContent } from '@/components/shared/Tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AITutorChat } from '@/features/ai-tutor/presentation/components/AITutorChat';
 import { useCourseLearningLayoutStore } from '@/features/my-courses/stores/use-course-learning-layout-store';
@@ -32,7 +32,6 @@ export const CourseSidebarContent: React.FC<CourseSidebarContentProps> = ({
       value={activeTab}
       onValueChange={setActiveTab}
       className="flex h-full flex-col gap-0 bg-sidebar border-l border-border/50"
-      dir="rtl"
     >
       <CourseSidebarHeader
         onClose={onClose}

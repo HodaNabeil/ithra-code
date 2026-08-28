@@ -10,7 +10,16 @@ export const SEARCH_PARAMS_KEYS = {
   STATUS: 'progress_filter',
   SEARCH: 'search',
   INSTRUCTOR: 'instructor_filter',
+  TAB: 'tab',
 } as const;
+
+export const DASHBOARD_TABS = [
+  'overview',
+  'enrollments',
+  'certificates',
+] as const;
+
+export type DashboardTab = (typeof DASHBOARD_TABS)[number];
 
 export const DEFAULT_VALUES = {
   INSTRUCTOR_NAME: 'محاضر',
