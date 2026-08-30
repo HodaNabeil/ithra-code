@@ -108,11 +108,32 @@ export type StudentFilters = {
   instructor: string;
 };
 
+export type StudentSortOption =
+  | 'recent_access'
+  | 'recent_enroll'
+  | 'title_asc'
+  | 'title_desc';
+
+export interface GetMyCoursesParams {
+  page?: number;
+  search?: string;
+  sort?: StudentSortOption;
+  progressFilter?: string;
+}
+
+/** Paginated response returned by fetchEnrollments to the page. */
+export interface GetMyCoursesResult {
+  enrollments: EnrollmentItem[];
+  allEnrollments: EnrollmentItem[];
+  total: number;
+  totalPages: number;
+  currentPage: number;
+}
+
 /**
- * A single enrolled course as returned by getStudentCourses.
- * Extends the raw Prisma course with computed progress fields.
+ * A student's enrollment with course progress, mapped from EnrollmentListItemDTO.
  */
-export type StudentCourseItem = {
+export type EnrollmentItem = {
   id: string;
   title: string;
   slug: string;

@@ -1,6 +1,7 @@
 import { z } from '@/lib/zod-openapi';
 
 import {
+  ENROLLMENT_LIST_PROGRESS_STATE,
   ENROLLMENT_LIST_SORT_BY,
   ENROLLMENT_LIST_SORT_ORDER,
   ENROLLMENT_LIST_STATUS,
@@ -18,6 +19,7 @@ export type EnrollmentListQueryInput = {
   sortBy?: string;
   sortOrder?: string;
   status?: string;
+  progressState?: string;
 };
 
 function parsePositiveInt(
@@ -64,6 +66,11 @@ export const enrollmentListQueryOpenApiSchema = z.object({
     description:
       'Filter by enrollment status. Defaults to ACTIVE and COMPLETED. DROPPED and REVOKED are never returned.',
   }),
+  progressState: z.enum(ENROLLMENT_LIST_PROGRESS_STATE).optional().openapi({
+    example: 'in_progress',
+    description:
+      'Filter by lecture completion progress: completed (100%), in_progress (1-99%), not_started (0%).',
+  }),
 });
 
 export function parseEnrollmentListQuery(
@@ -82,10 +89,7 @@ export function parseEnrollmentListQuery(
   }
 
   const sortBy = input.sortBy?.trim() || 'enrolledAt';
-  if (
-    sortBy !== ENROLLMENT_LIST_SORT_BY[0] &&
-    sortBy !== ENROLLMENT_LIST_SORT_BY[1]
-  ) {
+  if (!ENROLLMENT_LIST_SORT_BY.includes(sortBy as (typeof ENROLLMENT_LIST_SORT_BY)[number])) {
     throw new EnrollmentValidationError('قيمة الترتيب غير صالحة');
   }
 
@@ -111,12 +115,26 @@ export function parseEnrollmentListQuery(
 
   const search = input.search?.trim() || undefined;
 
+  const progressStateRaw = input.progressState?.trim();
+  let progressState: EnrollmentListQuery['progressState'];
+  if (progressStateRaw) {
+    if (
+      !ENROLLMENT_LIST_PROGRESS_STATE.includes(
+        progressStateRaw as (typeof ENROLLMENT_LIST_PROGRESS_STATE)[number],
+      )
+    ) {
+      throw new EnrollmentValidationError('حالة التقدم غير صالحة');
+    }
+    progressState = progressStateRaw as EnrollmentListQuery['progressState'];
+  }
+
   return {
     page,
     limit,
     search,
-    sortBy,
+    sortBy: sortBy as EnrollmentListQuery['sortBy'],
     sortOrder,
     status,
+    progressState,
   };
 }

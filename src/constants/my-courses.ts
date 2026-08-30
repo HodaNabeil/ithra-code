@@ -6,10 +6,8 @@ export const PROGRESS_FILTERS = {
 } as const;
 
 export const SEARCH_PARAMS_KEYS = {
-  TRACK: 'category_filter',
   STATUS: 'progress_filter',
   SEARCH: 'search',
-  INSTRUCTOR: 'instructor_filter',
   TAB: 'tab',
 } as const;
 
@@ -20,10 +18,6 @@ export const DASHBOARD_TABS = [
 ] as const;
 
 export type DashboardTab = (typeof DASHBOARD_TABS)[number];
-
-export const DEFAULT_VALUES = {
-  INSTRUCTOR_NAME: 'محاضر',
-} as const;
 
 export const MY_COURSES_ROUTES = {
   COURSES: '/courses',

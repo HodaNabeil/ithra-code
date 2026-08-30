@@ -1,5 +1,5 @@
 import React from 'react';
-import { MyCourseLectureDTO } from '@/types/my-courses/my-courses.dto';
+import { MyCourseLectureDTO } from '@/features/my-courses/dto/my-courses.dto';
 
 function getSectionLectureSummary(lectures: MyCourseLectureDTO[]): {
   durationLabel: string;

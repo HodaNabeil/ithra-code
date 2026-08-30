@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleLectureCompletion } from '../actions/my-course';
 import { MY_COURSES_TAGS } from '@/lib/query-keys';
-import type { MyCourseLecturesDTO } from '@/types/my-courses/my-courses.dto';
+import type { MyCourseLecturesDTO } from '@/features/my-courses/dto/my-courses.dto';
 
 export function useToggleLectureCompletion(courseSlug: string) {
   const queryClient = useQueryClient();

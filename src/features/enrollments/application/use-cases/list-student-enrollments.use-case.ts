@@ -8,6 +8,7 @@ import type {
   ListStudentEnrollmentsInput,
 } from '../dto/enrollment-list.dto';
 import {
+  filterEnrollmentsByProgressState,
   filterEnrollmentsByTitle,
   paginateItems,
   sortEnrollmentRows,
@@ -99,7 +100,14 @@ export class ListStudentEnrollmentsUseCase {
       ];
     });
 
-    const filtered = filterEnrollmentsByTitle(assembled, input.query.search);
+    const filteredByProgress = filterEnrollmentsByProgressState(
+      assembled,
+      input.query.progressState,
+    );
+    const filtered = filterEnrollmentsByTitle(
+      filteredByProgress,
+      input.query.search,
+    );
     const sorted = sortEnrollmentRows(filtered, input.query);
     const page = paginateItems(sorted, input.query.page, input.query.limit);
 

@@ -6,7 +6,7 @@ import {
   getAsideWidthClass,
   getSidebarInnerWidthClass,
   useCourseLearningLayoutStore,
-} from '@/features/my-courses/stores/use-course-learning-layout-store';
+} from '@/features/my-courses/[courseSlug]/stores/use-course-learning-layout-store';
 
 import { CourseSidebarContent } from './course-sidebar-content';
 

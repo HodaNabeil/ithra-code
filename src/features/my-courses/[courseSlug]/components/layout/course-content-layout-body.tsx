@@ -5,7 +5,7 @@ import React, { useEffect, useLayoutEffect } from 'react';
 import { CourseMainContainer } from './course-main-container';
 import { CourseSidebarWrapper } from './course-sidebar-wrapper';
 import { cn } from '@/lib/utils';
-import { useCourseLearningLayoutStore } from '@/features/my-courses/stores/use-course-learning-layout-store';
+import { useCourseLearningLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-learning-layout-store';
 
 interface CourseContentLayoutBodyProps {
   courseSlug: string;

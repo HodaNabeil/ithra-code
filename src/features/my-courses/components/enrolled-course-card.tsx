@@ -6,33 +6,32 @@ import { Link } from '@/components/shared/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { STUDENT_ROUTES } from '@/constants/routes';
-import type { StudentCourseItem } from '@/types/course/course.types';
+import type { EnrollmentItem } from '@/types/course/course.types';
 import { CourseProgress } from './course-progress';
 
-interface CourseCardProps {
-  course: StudentCourseItem;
+interface EnrolledCourseCardProps {
+  enrollment: EnrollmentItem;
 }
 
-export const CourseCardStudent = ({ course }: CourseCardProps) => {
-  const learnHref = course.lastLectureId
-    ? STUDENT_ROUTES.LEARN.replace(':courseSlug', course.slug).replace(
+export const EnrolledCourseCard = ({
+  enrollment,
+}: EnrolledCourseCardProps) => {
+  const learnHref = enrollment.lastLectureId
+    ? STUDENT_ROUTES.LEARN.replace(':courseSlug', enrollment.slug).replace(
         ':lectureId',
-        course.lastLectureId,
+        enrollment.lastLectureId,
       )
-    : STUDENT_ROUTES.COURSE_DETAILS.replace(':courseSlug', course.slug);
+    : STUDENT_ROUTES.COURSE_DETAILS.replace(':courseSlug', enrollment.slug);
 
-  const progress = course.progressPercentage || 0;
+  const progress = enrollment.progressPercentage || 0;
 
   return (
     <Card className="flex h-full flex-col gap-5 overflow-hidden transition-all duration-300 hover:border-primary/30 hover:shadow-md">
-      <Link
-        href={learnHref}
-        className="flex min-h-0 flex-1 flex-col gap-5"
-      >
+      <Link href={learnHref} className="flex min-h-0 flex-1 flex-col gap-5">
         <div className="relative aspect-video w-full overflow-hidden">
           <Image
-            src={course.thumbnailUrl || '/placeholder-course.jpg'}
-            alt={course.title}
+            src={enrollment.thumbnailUrl || '/placeholder-course.jpg'}
+            alt={enrollment.title}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -42,7 +41,7 @@ export const CourseCardStudent = ({ course }: CourseCardProps) => {
         <CardContent className="flex flex-1 flex-col gap-2">
           <div className="mb-6">
             <h3 className="line-clamp-2 truncate text-lg font-bold leading-tight">
-              {course.title}
+              {enrollment.title}
             </h3>
           </div>
 

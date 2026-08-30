@@ -3,6 +3,7 @@ export const ZERO_ENROLLMENT_PROGRESS = {
   completedLectures: 0,
   totalTimeSpent: 0,
   completionPercentage: 0,
+  lastAccessedAt: null,
 } as const;
 
 export function computeCompletionPercentage(

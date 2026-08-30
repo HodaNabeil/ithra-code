@@ -3,7 +3,6 @@ import {
   getCourseSections,
   getLectureDetails,
   getLectureNavigation,
-  getStudentCourses,
 } from '../actions/my-course';
 import { MY_COURSES_TAGS } from '@/lib/query-keys';
 
@@ -28,12 +27,5 @@ export function useLectureNavigation(lectureId: string, courseSlug: string) {
     queryKey: MY_COURSES_TAGS.navigation(lectureId, courseSlug),
     queryFn: () => getLectureNavigation(lectureId, courseSlug),
     enabled: !!lectureId && !!courseSlug,
-  });
-}
-
-export function useStudentCourses() {
-  return useQuery({
-    queryKey: MY_COURSES_TAGS.studentCourses(),
-    queryFn: () => getStudentCourses(),
   });
 }

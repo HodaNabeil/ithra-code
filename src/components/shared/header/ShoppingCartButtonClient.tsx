@@ -46,15 +46,16 @@ export function ShoppingCartButtonClient({
   const count = isAuthed ? itemCount : guestCartHydrated ? guestIds.length : 0;
 
   return (
-    <Link href={APP_ROUTES.CART} className="relative" aria-label="السلة">
-      <ShoppingCart />
+    <Link
+      href={APP_ROUTES.CART}
+      className="relative inline-flex text-primary"
+      aria-label="السلة"
+    >
+      <ShoppingCart className="size-6" />
       {count > 0 && (
-        <p
-          className="absolute top-[-10px] right-[-10px] bg-primary text-primary-foreground
-       rounded-full min-w-4 h-4 px-0.5 flex items-center justify-center text-[10px]"
-        >
+        <span className="absolute -top-1.5 -end-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-0.5 text-[10px] font-medium text-primary-foreground">
           {count > 99 ? '99+' : count}
-        </p>
+        </span>
       )}
     </Link>
   );

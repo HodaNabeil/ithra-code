@@ -5,10 +5,10 @@ import {
   useLectureDetails,
   useLectureNavigation,
 } from '@/features/my-courses/hooks/use-my-courses-queries';
-import { useCourseLearningLayoutStore } from '@/features/my-courses/stores/use-course-learning-layout-store';
+import { useCourseLearningLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-learning-layout-store';
 import { LectureVideoSection } from './LectureVideoSection';
 import { LectureContentTabs } from './index';
-import { DEFAULT_MUX_PLAYBACK_ID } from '@/features/my-courses/constants/video';
+import { DEFAULT_MUX_PLAYBACK_ID } from '@/features/my-courses/lib/video';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface LectureViewProps {

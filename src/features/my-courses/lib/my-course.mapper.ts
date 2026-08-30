@@ -1,10 +1,10 @@
 // mappers/my-course.mapper.ts
 
-import type { DB_MyCourseLectures } from '@/server/db/my-course.select';
+import type { DB_MyCourseLectures } from '@/features/my-courses/repositories/my-course.select';
 import type {
   MyCourseLectureDetailsDTO,
   MyCourseLecturesDTO,
-} from '@/types/my-courses/my-courses.dto';
+} from '@/features/my-courses/dto/my-courses.dto';
 
 /**
  * Maps a raw Prisma course row (my course lectures select)

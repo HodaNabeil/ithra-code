@@ -1,29 +1,26 @@
-'use client';
-
 import Link from 'next/link';
 import { BookOpen, SearchX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { CoursesPagination } from '@/components/shared/courses-pagination';
-import { CourseCardStudent } from './course-card';
-import { StudentCoursesResetFilters } from '../courses-filters/student-courses-reset-filters';
+import type { PaginationInfo } from '@/features/courses/components/courses-list';
+import { EnrolledCourseCard } from './enrolled-course-card';
+import { MyCoursesResetFilters } from './my-courses-reset-filters';
 import { EMPTY_STATES } from '@/constants/my-courses';
-import { StudentCourseItem } from '@/types/course/course.types';
+import type { EnrollmentItem } from '@/types/course/course.types';
 
-interface CourseListProps {
-  courses: StudentCourseItem[];
-  filteredCourses: StudentCourseItem[];
-  currentPage?: number;
-  totalPages?: number;
+interface MyCoursesListProps {
+  enrollments: EnrollmentItem[];
+  pagination?: PaginationInfo;
+  totalEnrollments: number;
 }
 
-export default function CourseList({
-  courses,
-  filteredCourses,
-  currentPage = 1,
-  totalPages = 1,
-}: CourseListProps) {
-  if (courses.length === 0) {
+export function MyCoursesList({
+  enrollments,
+  pagination,
+  totalEnrollments,
+}: MyCoursesListProps) {
+  if (totalEnrollments === 0) {
     return (
       <div
         className={cn(
@@ -50,7 +47,7 @@ export default function CourseList({
     );
   }
 
-  if (filteredCourses.length === 0) {
+  if (enrollments.length === 0) {
     return (
       <div
         className={cn(
@@ -72,7 +69,7 @@ export default function CourseList({
         <p className={cn('mb-6 text-lg text-muted-foreground')}>
           {EMPTY_STATES.NO_SEARCH_RESULTS.description}
         </p>
-        <StudentCoursesResetFilters />
+        <MyCoursesResetFilters />
       </div>
     );
   }
@@ -88,12 +85,15 @@ export default function CourseList({
           'gap-6',
         )}
       >
-        {filteredCourses.map((course) => (
-          <CourseCardStudent key={course.id} course={course} />
+        {enrollments.map((enrollment) => (
+          <EnrolledCourseCard key={enrollment.id} enrollment={enrollment} />
         ))}
       </div>
 
-      <CoursesPagination currentPage={currentPage} totalPages={totalPages} />
+      <CoursesPagination
+        currentPage={pagination?.currentPage || 1}
+        totalPages={pagination?.totalPages || 1}
+      />
     </>
   );
 }

@@ -258,6 +258,7 @@ describe('ListStudentEnrollmentsUseCase', () => {
             completedLectures: 5,
             totalTimeSpent: 3600,
             completionPercentage: 41.67,
+            lastAccessedAt: null,
           },
         ],
       ]),
@@ -270,6 +271,7 @@ describe('ListStudentEnrollmentsUseCase', () => {
       completedLectures: 5,
       totalTimeSpent: 3600,
       completionPercentage: 41.67,
+      lastAccessedAt: null,
     });
   });
 
@@ -288,6 +290,7 @@ describe('ListStudentEnrollmentsUseCase', () => {
       completedLectures: 0,
       totalTimeSpent: 0,
       completionPercentage: 0,
+      lastAccessedAt: null,
     });
   });
 
@@ -496,5 +499,205 @@ describe('ListStudentEnrollmentsUseCase', () => {
       statuses: [EnrollmentStatus.COMPLETED],
       take: MAX_ENROLLMENTS_PER_STUDENT,
     });
+  });
+
+  it('filters by progressState completed using completion percentage', async () => {
+    vi.mocked(enrollmentRepository.findByStudentId).mockResolvedValue([
+      createEnrollment({ id: 'enr-1', courseId: 'course-1' }),
+      createEnrollment({ id: 'enr-2', courseId: 'course-2' }),
+      createEnrollment({ id: 'enr-3', courseId: 'course-3' }),
+    ]);
+    vi.mocked(courseRepository.findByIds).mockResolvedValue([
+      createCourse({ id: 'course-1', title: 'Done' }),
+      createCourse({ id: 'course-2', title: 'Half' }),
+      createCourse({ id: 'course-3', title: 'Fresh' }),
+    ]);
+    vi.mocked(progressRepository.findStatsByEnrollmentIds).mockResolvedValue(
+      new Map([
+        [
+          'enr-1',
+          {
+            totalLectures: 10,
+            completedLectures: 10,
+            totalTimeSpent: 100,
+            completionPercentage: 100,
+            lastAccessedAt: null,
+          },
+        ],
+        [
+          'enr-2',
+          {
+            totalLectures: 10,
+            completedLectures: 5,
+            totalTimeSpent: 50,
+            completionPercentage: 50,
+            lastAccessedAt: null,
+          },
+        ],
+        [
+          'enr-3',
+          {
+            totalLectures: 10,
+            completedLectures: 0,
+            totalTimeSpent: 0,
+            completionPercentage: 0,
+            lastAccessedAt: null,
+          },
+        ],
+      ]),
+    );
+
+    const result = await useCase.execute({
+      studentId,
+      query: { ...defaultQuery, progressState: 'completed' },
+    });
+
+    expect(result.courses).toHaveLength(1);
+    expect(result.courses[0]?.course.title).toBe('Done');
+    expect(result.pagination.totalItems).toBe(1);
+  });
+
+  it('filters by progressState in_progress', async () => {
+    vi.mocked(enrollmentRepository.findByStudentId).mockResolvedValue([
+      createEnrollment({ id: 'enr-1', courseId: 'course-1' }),
+      createEnrollment({ id: 'enr-2', courseId: 'course-2' }),
+    ]);
+    vi.mocked(courseRepository.findByIds).mockResolvedValue([
+      createCourse({ id: 'course-1', title: 'Half' }),
+      createCourse({ id: 'course-2', title: 'Fresh' }),
+    ]);
+    vi.mocked(progressRepository.findStatsByEnrollmentIds).mockResolvedValue(
+      new Map([
+        [
+          'enr-1',
+          {
+            totalLectures: 10,
+            completedLectures: 5,
+            totalTimeSpent: 50,
+            completionPercentage: 50,
+            lastAccessedAt: null,
+          },
+        ],
+        [
+          'enr-2',
+          {
+            totalLectures: 10,
+            completedLectures: 0,
+            totalTimeSpent: 0,
+            completionPercentage: 0,
+            lastAccessedAt: null,
+          },
+        ],
+      ]),
+    );
+
+    const result = await useCase.execute({
+      studentId,
+      query: { ...defaultQuery, progressState: 'in_progress' },
+    });
+
+    expect(result.courses).toHaveLength(1);
+    expect(result.courses[0]?.course.title).toBe('Half');
+  });
+
+  it('filters by progressState not_started', async () => {
+    vi.mocked(enrollmentRepository.findByStudentId).mockResolvedValue([
+      createEnrollment({ id: 'enr-1', courseId: 'course-1' }),
+      createEnrollment({ id: 'enr-2', courseId: 'course-2' }),
+    ]);
+    vi.mocked(courseRepository.findByIds).mockResolvedValue([
+      createCourse({ id: 'course-1', title: 'Half' }),
+      createCourse({ id: 'course-2', title: 'Fresh' }),
+    ]);
+    vi.mocked(progressRepository.findStatsByEnrollmentIds).mockResolvedValue(
+      new Map([
+        [
+          'enr-1',
+          {
+            totalLectures: 10,
+            completedLectures: 5,
+            totalTimeSpent: 50,
+            completionPercentage: 50,
+            lastAccessedAt: null,
+          },
+        ],
+        [
+          'enr-2',
+          {
+            totalLectures: 10,
+            completedLectures: 0,
+            totalTimeSpent: 0,
+            completionPercentage: 0,
+            lastAccessedAt: null,
+          },
+        ],
+      ]),
+    );
+
+    const result = await useCase.execute({
+      studentId,
+      query: { ...defaultQuery, progressState: 'not_started' },
+    });
+
+    expect(result.courses).toHaveLength(1);
+    expect(result.courses[0]?.course.title).toBe('Fresh');
+  });
+
+  it('sorts by lastAccessedAt descending with nulls last', async () => {
+    vi.mocked(enrollmentRepository.findByStudentId).mockResolvedValue([
+      createEnrollment({ id: 'enr-1', courseId: 'course-1' }),
+      createEnrollment({ id: 'enr-2', courseId: 'course-2' }),
+      createEnrollment({ id: 'enr-3', courseId: 'course-3' }),
+    ]);
+    vi.mocked(courseRepository.findByIds).mockResolvedValue([
+      createCourse({ id: 'course-1', title: 'Old Access' }),
+      createCourse({ id: 'course-2', title: 'Recent Access' }),
+      createCourse({ id: 'course-3', title: 'Never Accessed' }),
+    ]);
+    vi.mocked(progressRepository.findStatsByEnrollmentIds).mockResolvedValue(
+      new Map([
+        [
+          'enr-1',
+          {
+            totalLectures: 10,
+            completedLectures: 1,
+            totalTimeSpent: 10,
+            completionPercentage: 10,
+            lastAccessedAt: '2026-01-01T00:00:00.000Z',
+          },
+        ],
+        [
+          'enr-2',
+          {
+            totalLectures: 10,
+            completedLectures: 2,
+            totalTimeSpent: 20,
+            completionPercentage: 20,
+            lastAccessedAt: '2026-03-01T00:00:00.000Z',
+          },
+        ],
+        [
+          'enr-3',
+          {
+            totalLectures: 10,
+            completedLectures: 0,
+            totalTimeSpent: 0,
+            completionPercentage: 0,
+            lastAccessedAt: null,
+          },
+        ],
+      ]),
+    );
+
+    const result = await useCase.execute({
+      studentId,
+      query: { ...defaultQuery, sortBy: 'lastAccessedAt', sortOrder: 'desc' },
+    });
+
+    expect(result.courses.map((row) => row.course.title)).toEqual([
+      'Recent Access',
+      'Old Access',
+      'Never Accessed',
+    ]);
   });
 });

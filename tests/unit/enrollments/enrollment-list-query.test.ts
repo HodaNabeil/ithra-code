@@ -12,6 +12,7 @@ describe('parseEnrollmentListQuery', () => {
       sortBy: 'enrolledAt',
       sortOrder: 'desc',
       status: undefined,
+      progressState: undefined,
     });
   });
 
@@ -65,6 +66,31 @@ describe('parseEnrollmentListQuery', () => {
       sortBy: 'title',
       sortOrder: 'asc',
       status: 'ACTIVE',
+      progressState: undefined,
     });
+  });
+
+  it('accepts progressState and sortBy=lastAccessedAt', () => {
+    expect(
+      parseEnrollmentListQuery({
+        progressState: 'in_progress',
+        sortBy: 'lastAccessedAt',
+        sortOrder: 'desc',
+      }),
+    ).toEqual({
+      page: 1,
+      limit: 10,
+      search: undefined,
+      sortBy: 'lastAccessedAt',
+      sortOrder: 'desc',
+      status: undefined,
+      progressState: 'in_progress',
+    });
+  });
+
+  it('rejects an invalid progressState', () => {
+    expect(() =>
+      parseEnrollmentListQuery({ progressState: 'half_done' }),
+    ).toThrow(EnrollmentValidationError);
   });
 });

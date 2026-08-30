@@ -5,11 +5,11 @@ import { prisma } from '@/lib/prisma';
 import {
   myCourseLecturesSelect,
   type DB_MyCourseLectures,
-} from '@/server/db/my-course.select';
+} from '@/features/my-courses/repositories/my-course.select';
 import {
   mapMyCourseLecturesToDTO,
   mapLectureDetailsToDTO,
-} from '@/mappers/my-course.mapper';
+} from '@/features/my-courses/lib/my-course.mapper';
 import { cache } from '@/lib/cache';
 import { revalidateTag } from 'next/cache';
 
@@ -258,95 +258,6 @@ export async function getLectureNavigation(
     ['lecture-navigation', lectureId, courseSlug, userId],
     {
       tags: [`lecture-${lectureId}`, `user-${userId}`],
-      revalidate: 3600,
-    },
-  )();
-}
-
-export async function getStudentCourses() {
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  if (!userId) {
-    throw new Error('Unauthorized');
-  }
-
-  return cache(
-    async () => {
-      try {
-        const studentCourses = await prisma.enrollment.findMany({
-          where: {
-            studentId: userId,
-          },
-          include: {
-            course: {
-              select: {
-                id: true,
-                title: true,
-                slug: true,
-                thumbnailUrl: true,
-                instructor: {
-                  select: {
-                    firstName: true,
-                    lastName: true,
-                  },
-                },
-                sections: {
-                  select: {
-                    lectures: {
-                      select: {
-                        id: true,
-                        progress: {
-                          where: {
-                            enrollment: {
-                              studentId: userId,
-                            },
-                          },
-                          select: {
-                            isCompleted: true,
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        });
-
-        return studentCourses.map((enrollment) => {
-          const allLectures = enrollment.course.sections.flatMap(
-            (s) => s.lectures,
-          );
-          const totalLectures = allLectures.length;
-          const completedLectures = allLectures.filter(
-            (l) => l.progress?.[0]?.isCompleted,
-          ).length;
-          const progress =
-            totalLectures > 0
-              ? Math.round((completedLectures / totalLectures) * 100)
-              : 0;
-
-          return {
-            id: enrollment.course.id,
-            title: enrollment.course.title,
-            slug: enrollment.course.slug,
-            thumbnail: enrollment.course.thumbnailUrl,
-            instructor: enrollment.course.instructor.firstName,
-            progress,
-            totalLectures,
-            completedLectures,
-          };
-        });
-      } catch (error) {
-        console.error(error);
-        throw new Error('Failed to fetch courses');
-      }
-    },
-    ['student-courses', userId],
-    {
-      tags: ['my-courses', `user-${userId}`],
       revalidate: 3600,
     },
   )();

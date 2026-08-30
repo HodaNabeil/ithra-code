@@ -12,7 +12,7 @@ import { LectureItem } from './LectureItem';
 import { useCourseSections } from '@/features/my-courses/hooks/use-my-courses-queries';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import { SectionAccordionSkeleton } from './SectionAccordionSkeleton';
-import { MyCourseLectureDTO } from '@/types/my-courses/my-courses.dto';
+import { MyCourseLectureDTO } from '@/features/my-courses/dto/my-courses.dto';
 
 function getSectionLectureSummary(lectures: MyCourseLectureDTO[]): {
   durationLabel: string;

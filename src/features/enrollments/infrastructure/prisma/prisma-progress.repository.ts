@@ -27,6 +27,7 @@ export class PrismaEnrollmentProgressRepository implements EnrollmentProgressRep
           enrollmentId: true,
           isCompleted: true,
           timeSpent: true,
+          lastAccessedAt: true,
         },
       }),
       prisma.lecture.findMany({
@@ -51,19 +52,32 @@ export class PrismaEnrollmentProgressRepository implements EnrollmentProgressRep
 
     const progressByEnrollmentId = new Map<
       string,
-      { completedLectures: number; totalTimeSpent: number }
+      {
+        completedLectures: number;
+        totalTimeSpent: number;
+        lastAccessedAt: Date | null;
+      }
     >();
 
     for (const row of progressRows) {
       const current = progressByEnrollmentId.get(row.enrollmentId) ?? {
         completedLectures: 0,
         totalTimeSpent: 0,
+        lastAccessedAt: null,
       };
 
       if (row.isCompleted) {
         current.completedLectures += 1;
       }
       current.totalTimeSpent += row.timeSpent;
+
+      if (
+        !current.lastAccessedAt ||
+        row.lastAccessedAt > current.lastAccessedAt
+      ) {
+        current.lastAccessedAt = row.lastAccessedAt;
+      }
+
       progressByEnrollmentId.set(row.enrollmentId, current);
     }
 
@@ -82,6 +96,7 @@ export class PrismaEnrollmentProgressRepository implements EnrollmentProgressRep
           completedLectures,
           totalLectures,
         ),
+        lastAccessedAt: totals?.lastAccessedAt?.toISOString() ?? null,
       });
     }
 

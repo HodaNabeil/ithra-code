@@ -3,7 +3,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCourseLearningLayoutStore } from '@/features/my-courses/stores/use-course-learning-layout-store';
+import { useCourseLearningLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-learning-layout-store';
 
 interface CourseMainContainerProps {
   children: React.ReactNode;

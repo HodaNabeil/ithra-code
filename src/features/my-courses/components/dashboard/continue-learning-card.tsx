@@ -7,24 +7,26 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { APP_ROUTES } from '@/constants/enums';
-import type { StudentCourseItem } from '@/types/course/course.types';
+import type { EnrollmentItem } from '@/types/course/course.types';
 
 type ContinueLearningCardProps = {
-  course: StudentCourseItem;
+  enrollment: EnrollmentItem;
 };
 
-export function ContinueLearningCard({ course }: ContinueLearningCardProps) {
-  const watchUrl = course.lastLectureId
-    ? `${APP_ROUTES.MY_COURSES}/${course.slug}/lecture/${course.lastLectureId}`
-    : `${APP_ROUTES.MY_COURSES}/${course.slug}`;
+export function ContinueLearningCard({
+  enrollment,
+}: ContinueLearningCardProps) {
+  const watchUrl = enrollment.lastLectureId
+    ? `${APP_ROUTES.MY_COURSES}/${enrollment.slug}/lecture/${enrollment.lastLectureId}`
+    : `${APP_ROUTES.MY_COURSES}/${enrollment.slug}`;
 
   return (
     <Card className="flex flex-col gap-4 rounded-xl border border-border bg-content-surface p-4 shadow-sm ring-0 sm:flex-row sm:items-center sm:gap-6 sm:p-5">
       <div className="flex min-w-0 flex-1 items-center gap-4">
         <div className="relative size-[72px] shrink-0 overflow-hidden rounded-lg bg-muted">
           <Image
-            src={course.thumbnailUrl || '/placeholder-course.jpg'}
-            alt={course.title}
+            src={enrollment.thumbnailUrl || '/placeholder-course.jpg'}
+            alt={enrollment.title}
             fill
             sizes="72px"
             className="object-cover"
@@ -34,7 +36,7 @@ export function ContinueLearningCard({ course }: ContinueLearningCardProps) {
 
         <div className="min-w-0 flex-1 space-y-1">
           <h3 className="truncate text-base font-bold text-foreground sm:text-lg">
-            {course.title}
+            {enrollment.title}
           </h3>
           <p className="flex items-center gap-2 text-sm font-medium text-progress-indicator">
             <span
@@ -49,11 +51,11 @@ export function ContinueLearningCard({ course }: ContinueLearningCardProps) {
       <div className="flex items-center gap-4 sm:gap-6">
         <div className="flex min-w-0 flex-1 items-center gap-3 sm:w-44 sm:flex-none lg:w-52">
           <Progress
-            value={course.progressPercentage}
+            value={enrollment.progressPercentage}
             className="h-2 flex-1 bg-muted"
           />
           <span className="w-10 shrink-0 text-end text-sm font-semibold tabular-nums text-muted-foreground">
-            {course.progressPercentage}%
+            {enrollment.progressPercentage}%
           </span>
         </div>
 
