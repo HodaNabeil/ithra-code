@@ -9,7 +9,7 @@ import {
   ENROLLMENTS_FETCHED_MESSAGE,
   EnrollmentError,
   listStudentEnrollments,
-  parseEnrollmentListQuery,
+  parseEnrollmentListQueryFromSearchParams,
 } from '@/features/enrollments';
 import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
@@ -32,14 +32,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     }
 
     const { searchParams } = new URL(req.url);
-    const query = parseEnrollmentListQuery({
-      page: searchParams.get('page') ?? undefined,
-      limit: searchParams.get('limit') ?? undefined,
-      search: searchParams.get('search') ?? undefined,
-      sortBy: searchParams.get('sortBy') ?? undefined,
-      sortOrder: searchParams.get('sortOrder') ?? undefined,
-      status: searchParams.get('status') ?? undefined,
-    });
+    const query = parseEnrollmentListQueryFromSearchParams(searchParams);
 
     const data = await listStudentEnrollments({
       studentId: session.user.id,

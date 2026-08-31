@@ -11,20 +11,11 @@ export const DEFAULT_ENROLLMENT_STATUSES = [
   EnrollmentStatus.COMPLETED,
 ] as const;
 
-export const ENROLLMENT_LIST_SORT_BY = [
-  'enrolledAt',
-  'title',
-  'lastAccessedAt',
-] as const;
+export const ENROLLMENT_LIST_SORT_BY = ['enrolledAt', 'title'] as const;
 export const ENROLLMENT_LIST_SORT_ORDER = ['asc', 'desc'] as const;
 export const ENROLLMENT_LIST_STATUS = [
   EnrollmentStatus.ACTIVE,
   EnrollmentStatus.COMPLETED,
-] as const;
-export const ENROLLMENT_LIST_PROGRESS_STATE = [
-  'completed',
-  'in_progress',
-  'not_started',
 ] as const;
 
 export type EnrollmentListSortBy = (typeof ENROLLMENT_LIST_SORT_BY)[number];
@@ -32,5 +23,3 @@ export type EnrollmentListSortOrder =
   (typeof ENROLLMENT_LIST_SORT_ORDER)[number];
 export type EnrollmentListStatusFilter =
   (typeof ENROLLMENT_LIST_STATUS)[number];
-export type EnrollmentListProgressState =
-  (typeof ENROLLMENT_LIST_PROGRESS_STATE)[number];

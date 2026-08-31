@@ -1,6 +1,6 @@
 import { CoursesSearch } from '@/features/courses/components/courses-search';
-import { MyCoursesFilters } from '../my-courses-filters';
-import { MyCoursesList } from '../my-courses-list';
+import { MyCoursesFilters } from './my-courses-filters';
+import { MyCoursesList } from './my-courses-list';
 import type { PaginationInfo } from '@/features/courses/components/courses-list';
 import type { EnrollmentItem } from '@/types/course/course.types';
 

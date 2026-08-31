@@ -1,12 +1,4 @@
-export const PROGRESS_FILTERS = {
-  ALL: 'all',
-  COMPLETED: 'completed',
-  IN_PROGRESS: 'in_progress',
-  NOT_STARTED: 'not_started',
-} as const;
-
 export const SEARCH_PARAMS_KEYS = {
-  STATUS: 'progress_filter',
   SEARCH: 'search',
   TAB: 'tab',
 } as const;

@@ -4,8 +4,10 @@ import { redirect } from 'next/navigation';
 import { AUTH_ENDPOINTS } from '@/constants/auth';
 import { APP_ROUTES } from '@/constants/enums';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
-import { MyCoursesDashboard } from '@/features/my-courses/components/dashboard/my-courses-dashboard';
-import { MyCoursesContainer } from '@/features/my-courses/components/my-courses-page/my-courses-container';
+import {
+  MyCoursesContainer,
+  MyCoursesDashboard,
+} from '@/features/my-courses/components';
 import { fetchEnrollments } from '@/features/my-courses/services/my-courses.service';
 import type { EnrollmentItem } from '@/types/course/course.types';
 import type { StudentSortOption } from '@/types/course/course.types';
@@ -17,7 +19,6 @@ interface MyCoursesPageProps {
     tab?: string;
     search?: string;
     sort?: string;
-    progress_filter?: string;
   }>;
 }
 
@@ -29,7 +30,6 @@ export default async function MyCoursesPage({
   const tab = resolvedSearchParams.tab || undefined;
   const search = resolvedSearchParams.search || undefined;
   const sort = (resolvedSearchParams.sort as StudentSortOption) || undefined;
-  const progressFilter = resolvedSearchParams.progress_filter || undefined;
 
   const session = await auth();
   if (!session?.user?.id) {
@@ -47,7 +47,6 @@ export default async function MyCoursesPage({
       page,
       search,
       sort,
-      progressFilter,
     });
     enrollments = result.enrollments;
     allEnrollments = result.allEnrollments;

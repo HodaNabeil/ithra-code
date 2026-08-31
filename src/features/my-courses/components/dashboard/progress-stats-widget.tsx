@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { BookOpen, Clock, FileText, Wrench } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import Select from '@/components/shared/select';
-import type { ProgressStats } from './dashboard-utils';
+import type { ProgressStats } from '@/features/my-courses/lib/dashboard-stats';
 
 const PERIOD_OPTIONS = [
   { label: '٣٠ يوماً', value: '30d' },

@@ -32,6 +32,7 @@ export type {
 
 export {
   parseEnrollmentListQuery,
+  parseEnrollmentListQueryFromSearchParams,
   enrollmentListQueryOpenApiSchema,
 } from './api/validation/enrollment-list-query';
 export type { EnrollmentListQueryInput } from './api/validation/enrollment-list-query';

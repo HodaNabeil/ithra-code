@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import { PROGRESS_FILTERS } from '@/constants/my-courses';
 import {
   buildEnrollmentsApiSearchParams,
   getEnrollmentsApiQuery,
@@ -14,7 +13,6 @@ describe('my-courses enrollments API query mapping', () => {
         page: 2,
         search: 'React',
         sort: 'title_asc',
-        progressFilter: PROGRESS_FILTERS.COMPLETED,
       }),
     ).toEqual({
       page: 2,
@@ -22,7 +20,6 @@ describe('my-courses enrollments API query mapping', () => {
       search: 'React',
       sortBy: 'title',
       sortOrder: 'asc',
-      progressState: 'completed',
     });
   });
 
@@ -32,36 +29,24 @@ describe('my-courses enrollments API query mapping', () => {
         page: 1,
         search: 'JavaScript',
         sort: 'recent_enroll',
-        progressFilter: PROGRESS_FILTERS.IN_PROGRESS,
       }),
-    ).toBe(
-      'page=1&limit=9&sortBy=enrolledAt&sortOrder=desc&search=JavaScript&progressState=in_progress',
-    );
+    ).toBe('page=1&limit=9&sortBy=enrolledAt&sortOrder=desc&search=JavaScript');
   });
 
-  it('maps recent_access to lastAccessedAt desc', () => {
+  it('defaults to enrolledAt desc when sort is omitted', () => {
     expect(
       buildEnrollmentsApiSearchParams({
         page: 1,
-        sort: 'recent_access',
       }),
-    ).toBe('page=1&limit=9&sortBy=lastAccessedAt&sortOrder=desc');
+    ).toBe('page=1&limit=9&sortBy=enrolledAt&sortOrder=desc');
   });
 
-  it('omits progressState when progress filter is all', () => {
+  it('maps title_desc sort', () => {
     expect(
       buildEnrollmentsApiSearchParams({
         page: 1,
         sort: 'title_desc',
       }),
     ).toBe('page=1&limit=9&sortBy=title&sortOrder=desc');
-  });
-
-  it('maps not_started to progressState=not_started', () => {
-    expect(
-      getEnrollmentsApiQuery({
-        progressFilter: PROGRESS_FILTERS.NOT_STARTED,
-      }).progressState,
-    ).toBe('not_started');
   });
 });

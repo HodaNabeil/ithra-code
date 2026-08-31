@@ -1,7 +1,6 @@
 import { z } from '@/lib/zod-openapi';
 
 import {
-  ENROLLMENT_LIST_PROGRESS_STATE,
   ENROLLMENT_LIST_SORT_BY,
   ENROLLMENT_LIST_SORT_ORDER,
   ENROLLMENT_LIST_STATUS,
@@ -37,6 +36,12 @@ function parsePositiveInt(
   return Number(raw);
 }
 
+function rejectProgressStateParam(progressState: string | undefined): void {
+  if (progressState !== undefined && progressState.trim() !== '') {
+    throw new EnrollmentValidationError('حالة التقدم غير صالحة');
+  }
+}
+
 export const enrollmentListQueryOpenApiSchema = z.object({
   page: z.string().optional().openapi({
     example: '1',
@@ -66,16 +71,13 @@ export const enrollmentListQueryOpenApiSchema = z.object({
     description:
       'Filter by enrollment status. Defaults to ACTIVE and COMPLETED. DROPPED and REVOKED are never returned.',
   }),
-  progressState: z.enum(ENROLLMENT_LIST_PROGRESS_STATE).optional().openapi({
-    example: 'in_progress',
-    description:
-      'Filter by lecture completion progress: completed (100%), in_progress (1-99%), not_started (0%).',
-  }),
 });
 
 export function parseEnrollmentListQuery(
   input: EnrollmentListQueryInput,
 ): EnrollmentListQuery {
+  rejectProgressStateParam(input.progressState);
+
   const page = parsePositiveInt(input.page, ENROLLMENTS_DEFAULT_PAGE);
   if (page === null || page < 1) {
     throw new EnrollmentValidationError(
@@ -115,19 +117,6 @@ export function parseEnrollmentListQuery(
 
   const search = input.search?.trim() || undefined;
 
-  const progressStateRaw = input.progressState?.trim();
-  let progressState: EnrollmentListQuery['progressState'];
-  if (progressStateRaw) {
-    if (
-      !ENROLLMENT_LIST_PROGRESS_STATE.includes(
-        progressStateRaw as (typeof ENROLLMENT_LIST_PROGRESS_STATE)[number],
-      )
-    ) {
-      throw new EnrollmentValidationError('حالة التقدم غير صالحة');
-    }
-    progressState = progressStateRaw as EnrollmentListQuery['progressState'];
-  }
-
   return {
     page,
     limit,
@@ -135,6 +124,19 @@ export function parseEnrollmentListQuery(
     sortBy: sortBy as EnrollmentListQuery['sortBy'],
     sortOrder,
     status,
-    progressState,
   };
+}
+
+export function parseEnrollmentListQueryFromSearchParams(
+  searchParams: URLSearchParams,
+): EnrollmentListQuery {
+  return parseEnrollmentListQuery({
+    page: searchParams.get('page') ?? undefined,
+    limit: searchParams.get('limit') ?? undefined,
+    search: searchParams.get('search') ?? undefined,
+    sortBy: searchParams.get('sortBy') ?? undefined,
+    sortOrder: searchParams.get('sortOrder') ?? undefined,
+    status: searchParams.get('status') ?? undefined,
+    progressState: searchParams.get('progressState') ?? undefined,
+  });
 }

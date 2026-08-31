@@ -1,5 +1,3 @@
-import { PROGRESS_FILTERS } from '@/constants/my-courses';
-import type { EnrollmentListProgressState } from '@/features/enrollments/application/constants';
 import { ENROLLMENTS_MAX_LIMIT } from '@/features/enrollments';
 import type {
   GetMyCoursesParams,
@@ -12,9 +10,8 @@ export type EnrollmentsApiQuery = {
   page: number;
   limit: number;
   search?: string;
-  sortBy: 'enrolledAt' | 'title' | 'lastAccessedAt';
+  sortBy: 'enrolledAt' | 'title';
   sortOrder: 'asc' | 'desc';
-  progressState?: EnrollmentListProgressState;
 };
 
 function mapStudentSortToApi(sort?: StudentSortOption): {
@@ -27,25 +24,8 @@ function mapStudentSortToApi(sort?: StudentSortOption): {
     case 'title_desc':
       return { sortBy: 'title', sortOrder: 'desc' };
     case 'recent_enroll':
+    default:
       return { sortBy: 'enrolledAt', sortOrder: 'desc' };
-    case 'recent_access':
-    default:
-      return { sortBy: 'lastAccessedAt', sortOrder: 'desc' };
-  }
-}
-
-function mapProgressFilterToProgressState(
-  progressFilter?: string,
-): EnrollmentListProgressState | undefined {
-  switch (progressFilter) {
-    case PROGRESS_FILTERS.COMPLETED:
-      return 'completed';
-    case PROGRESS_FILTERS.IN_PROGRESS:
-      return 'in_progress';
-    case PROGRESS_FILTERS.NOT_STARTED:
-      return 'not_started';
-    default:
-      return undefined;
   }
 }
 
@@ -60,7 +40,6 @@ export function getEnrollmentsApiQuery(
     search: params.search || undefined,
     sortBy,
     sortOrder,
-    progressState: mapProgressFilterToProgressState(params.progressFilter),
   };
 }
 
@@ -77,10 +56,6 @@ export function buildEnrollmentsApiSearchParams(
 
   if (query.search) {
     searchParams.set('search', query.search);
-  }
-
-  if (query.progressState) {
-    searchParams.set('progressState', query.progressState);
   }
 
   return searchParams.toString();

@@ -29,15 +29,6 @@ export type CategoryOption = string;
 
 export const CATEGORY_OPTIONS = [{ label: 'الفئات', value: 'all' }];
 
-export type ProgressOption = 'completed' | 'in_progress' | 'not_started';
-
-export const PROGRESS_OPTIONS = [
-  { label: 'التقدم', value: 'all' },
-  { label: 'قيد التنفيذ', value: 'in_progress' },
-  { label: 'لم يتم البدء', value: 'not_started' },
-  { label: 'مكتمل', value: 'completed' },
-];
-
 export type Instructor = {
   id: string;
   name: string;
@@ -109,7 +100,6 @@ export type StudentFilters = {
 };
 
 export type StudentSortOption =
-  | 'recent_access'
   | 'recent_enroll'
   | 'title_asc'
   | 'title_desc';
@@ -118,7 +108,6 @@ export interface GetMyCoursesParams {
   page?: number;
   search?: string;
   sort?: StudentSortOption;
-  progressFilter?: string;
 }
 
 /** Paginated response returned by fetchEnrollments to the page. */

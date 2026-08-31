@@ -14,7 +14,7 @@ import { ContinueLearningCard } from './continue-learning-card';
 import {
   deriveProgressStats,
   pickContinueLearningEnrollment,
-} from './dashboard-utils';
+} from '@/features/my-courses/lib/dashboard-stats';
 import { ProgressStatsWidget } from './progress-stats-widget';
 import { StudentDashboardTabs } from './student-dashboard-tabs';
 

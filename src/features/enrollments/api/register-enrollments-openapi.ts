@@ -136,6 +136,7 @@ export function registerEnrollmentsOpenApi(
       '**Authorization:** requires `enrollment:read`. `403` when missing.',
       '',
       '**Status filter:** defaults to `ACTIVE` + `COMPLETED`. `DROPPED` and `REVOKED` are never returned.',
+      '**Rejected query params:** `progressState`, `sortBy=lastAccessedAt`, `status=DROPPED`, `status=REVOKED`, `page < 1`, `limit < 1`, `limit > 100`.',
       '**Student scope:** `session.user.id` is always used. `userId` query param is ignored.',
       '',
       '**Example:**',

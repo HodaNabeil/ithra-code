@@ -1,4 +1,3 @@
-import type { EnrollmentListProgressState } from '../constants';
 import type { EnrollmentProgressDTO } from '../dto/enrollment-list.dto';
 import type { EnrollmentListQuery } from '../dto/enrollment-list.dto';
 import type { EnrollmentRecord } from '../../domain/enrollment.entity';
@@ -21,39 +20,6 @@ export function filterEnrollmentsByTitle<T extends SortableEnrollmentRow>(
   return rows.filter((row) => row.course.title.toLowerCase().includes(query));
 }
 
-export function filterEnrollmentsByProgressState<T extends SortableEnrollmentRow>(
-  rows: T[],
-  progressState: EnrollmentListProgressState | undefined,
-): T[] {
-  if (!progressState) {
-    return rows;
-  }
-
-  return rows.filter((row) => {
-    const percentage = row.progress.completionPercentage;
-
-    switch (progressState) {
-      case 'completed':
-        return percentage === 100;
-      case 'in_progress':
-        return percentage > 0 && percentage < 100;
-      case 'not_started':
-        return percentage === 0;
-      default:
-        return true;
-    }
-  });
-}
-
-function parseLastAccessedAt(value: string | null): number {
-  if (!value) {
-    return 0;
-  }
-
-  const timestamp = new Date(value).getTime();
-  return Number.isNaN(timestamp) ? 0 : timestamp;
-}
-
 export function sortEnrollmentRows<T extends SortableEnrollmentRow>(
   rows: T[],
   query: Pick<EnrollmentListQuery, 'sortBy' | 'sortOrder'>,
@@ -68,23 +34,6 @@ export function sortEnrollmentRows<T extends SortableEnrollmentRow>(
           sensitivity: 'base',
         }) * direction
       );
-    }
-
-    if (query.sortBy === 'lastAccessedAt') {
-      const leftTime = parseLastAccessedAt(left.progress.lastAccessedAt);
-      const rightTime = parseLastAccessedAt(right.progress.lastAccessedAt);
-
-      if (leftTime === 0 && rightTime === 0) {
-        return 0;
-      }
-      if (leftTime === 0) {
-        return 1;
-      }
-      if (rightTime === 0) {
-        return -1;
-      }
-
-      return (leftTime - rightTime) * direction;
     }
 
     return (

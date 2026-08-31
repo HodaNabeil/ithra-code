@@ -117,4 +117,58 @@ describe('GET /api/enrollments', () => {
       },
     });
   });
+
+  it('returns 400 for sortBy=lastAccessedAt', async () => {
+    mockAuth.mockResolvedValue({
+      ...createTestAuthSession('student-1', 'STUDENT'),
+      expires: '2099-01-01T00:00:00.000Z',
+    });
+
+    const response = await GET(createRequest('sortBy=lastAccessedAt'));
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.success).toBe(false);
+    expect(mockListStudentEnrollments).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 for status=DROPPED', async () => {
+    mockAuth.mockResolvedValue({
+      ...createTestAuthSession('student-1', 'STUDENT'),
+      expires: '2099-01-01T00:00:00.000Z',
+    });
+
+    const response = await GET(createRequest('status=DROPPED'));
+
+    expect(response.status).toBe(400);
+    expect(mockListStudentEnrollments).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 for progressState=completed', async () => {
+    mockAuth.mockResolvedValue({
+      ...createTestAuthSession('student-1', 'STUDENT'),
+      expires: '2099-01-01T00:00:00.000Z',
+    });
+
+    const response = await GET(createRequest('progressState=completed&page=1&limit=10'));
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.success).toBe(false);
+    expect(mockListStudentEnrollments).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 for an invalid progressState', async () => {
+    mockAuth.mockResolvedValue({
+      ...createTestAuthSession('student-1', 'STUDENT'),
+      expires: '2099-01-01T00:00:00.000Z',
+    });
+
+    const response = await GET(createRequest('progressState=half_done'));
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.success).toBe(false);
+    expect(mockListStudentEnrollments).not.toHaveBeenCalled();
+  });
 });

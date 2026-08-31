@@ -2,7 +2,6 @@ import type { CourseDetailPublicDTO } from '@/features/courses/course-detail/dto
 import type { OrderItemStatus } from '@prisma/client';
 
 import type {
-  EnrollmentListProgressState,
   EnrollmentListSortBy,
   EnrollmentListSortOrder,
   EnrollmentListStatusFilter,
@@ -61,7 +60,6 @@ export type EnrollmentListQuery = {
   sortBy: EnrollmentListSortBy;
   sortOrder: EnrollmentListSortOrder;
   status?: EnrollmentListStatusFilter;
-  progressState?: EnrollmentListProgressState;
 };
 
 export type EnrollmentListResult = {
