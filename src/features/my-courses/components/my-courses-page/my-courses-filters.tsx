@@ -83,7 +83,7 @@ export function MyCoursesFilters() {
           variant="ghost"
           size="sm"
           onClick={clearFilters}
-          className="h-10 lg:h-11.5 px-4 rounded-[100px] text-muted-foreground hover:text-foreground flex items-center gap-2"
+          className="h-10 lg:h-11.5 px-4 rounded-[100px] border border-brand text-muted-foreground hover:text-foreground flex items-center gap-2"
           disabled={isPending}
         >
           <X size={16} />
