@@ -66,9 +66,58 @@ export const config: NextAuthConfig = {
 
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { role: true },
+          select: {
+            role: true,
+            image: true,
+            name: true,
+            firstName: true,
+            lastName: true,
+          },
         });
         token.role = dbUser?.role ?? Role.STUDENT;
+
+        const resolvedName =
+          user.name ||
+          dbUser?.name ||
+          [dbUser?.firstName, dbUser?.lastName].filter(Boolean).join(' ') ||
+          null;
+
+        if (user.image) {
+          token.picture = user.image;
+        } else if (dbUser?.image) {
+          token.picture = dbUser.image;
+        }
+
+        if (resolvedName) {
+          token.name = resolvedName;
+        }
+      } else if (
+        token.id &&
+        (!token.picture || !token.name)
+      ) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: {
+            image: true,
+            name: true,
+            firstName: true,
+            lastName: true,
+          },
+        });
+
+        if (dbUser?.image && !token.picture) {
+          token.picture = dbUser.image;
+        }
+
+        if (!token.name) {
+          const resolvedName =
+            dbUser?.name ||
+            [dbUser?.firstName, dbUser?.lastName].filter(Boolean).join(' ');
+
+          if (resolvedName) {
+            token.name = resolvedName;
+          }
+        }
       }
 
       return token;

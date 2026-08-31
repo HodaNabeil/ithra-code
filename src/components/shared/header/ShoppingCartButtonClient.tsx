@@ -8,18 +8,24 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
+import { useIsClient } from '@/hooks/use-is-client';
 import { AUTH_SESSION_STATUS, isAuthenticatedStatus } from '@/constants/states';
 
 interface ShoppingCartButtonClientProps {
   initialCount: number;
+  isAuthenticated: boolean;
 }
 
 export function ShoppingCartButtonClient({
   initialCount,
+  isAuthenticated,
 }: ShoppingCartButtonClientProps) {
   const router = useRouter();
   const { status } = useSession();
-  const isAuthed = isAuthenticatedStatus(status);
+  const isClient = useIsClient();
+  const isAuthed = isClient
+    ? isAuthenticatedStatus(status)
+    : isAuthenticated;
   const prevStatusRef = useRef(status);
 
   const itemCount = useCartStore((state) => state.itemCount);
@@ -43,7 +49,13 @@ export function ShoppingCartButtonClient({
     prevStatusRef.current = status;
   }, [status, router]);
 
-  const count = isAuthed ? itemCount : guestCartHydrated ? guestIds.length : 0;
+  const count = isAuthed
+    ? isClient
+      ? itemCount
+      : initialCount
+    : guestCartHydrated
+      ? guestIds.length
+      : 0;
 
   return (
     <Link

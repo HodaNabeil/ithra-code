@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 import { APP_LINK_ROLES, APP_ROUTES, APP_USER_ROLES } from '@/constants/enums';
 import { Link } from '../link';
+import type { Session } from 'next-auth';
 
 const NAV_LINKS: { label: string; href: string; role: string }[] = [
   {
@@ -35,9 +36,10 @@ const NAV_LINKS: { label: string; href: string; role: string }[] = [
   },
 ];
 
-export function NavItems() {
+export function NavItems({ session: serverSession }: { session: Session | null }) {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: clientSession } = useSession();
+  const session = clientSession ?? serverSession;
   const userRole = session?.user?.role;
 
   const filteredLinks = NAV_LINKS.filter((link) => {

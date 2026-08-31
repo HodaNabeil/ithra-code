@@ -16,7 +16,7 @@ export function Header({ session }: { session: Session | null }) {
         <div className="flex items-center gap-4">
           {/* Desktop Navigation - Hidden on mobile */}
           <div className="hidden lg:flex flex-1 justify-center px-4">
-            <NavItems />
+            <NavItems session={session} />
           </div>
 
           {/* User Navigation - Hidden on mobile */}
@@ -31,7 +31,7 @@ export function Header({ session }: { session: Session | null }) {
 
           {/* Mobile Menu - Only visible on mobile */}
           <div className="block lg:hidden">
-            <MobileMenu />
+            <MobileMenu session={session} />
           </div>
         </div>
       </div>
