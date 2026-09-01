@@ -64,6 +64,13 @@ const lectureIdParams = z.object({
   }),
 });
 
+const sectionIdParams = z.object({
+  sectionId: z.string().cuid().openapi({
+    example: 'clsection2k4m00008l5d6e3k1n',
+    description: 'Section UUID (CUID)',
+  }),
+});
+
 const courseExample = {
   id: EX.courseId,
   instructorId: EX.instructorId,
@@ -153,7 +160,15 @@ const courseStatusSchema = z.enum([
 const courseVisibilitySchema = z.enum(['PUBLIC', 'PRIVATE', 'UNLISTED']);
 const roleSchema = z.enum(['STUDENT', 'INSTRUCTOR', 'ADMIN']);
 const pathCategorySchema = z.enum(['WEB', 'MOBILE', 'OTHER']);
-const lectureTypeSchema = z.enum(['VIDEO', 'TEXT', 'QUIZ', 'ASSIGNMENT']);
+const lectureTypeSchema = z.enum([
+  'VIDEO',
+  'TEXT',
+  'AUDIO',
+  'QUIZ',
+  'ASSIGNMENT',
+  'LIVE_SESSION',
+  'ATTACHMENT',
+]);
 
 // ─── Response wrappers ────────────────────────────────────────────────────────
 
@@ -195,37 +210,17 @@ registry.register('CreateCourseRequest', createCourseSchema);
 
 // Lecture request schemas
 const createLectureSchema = z.object({
-  sectionId: z.string().cuid().openapi({
-    example: 'clsection2k4m00008l5d6e3k1n',
-    description: 'Section UUID (CUID)',
-  }),
   title: z.string().min(1).openapi({
     example: 'مقدمة إلى Node.js',
     description: 'Lecture title',
   }),
-  description: z.string().optional().openapi({
+  description: z.string().nullable().optional().openapi({
     example: 'في هذه المحاضرة سنتعرف على Node.js وكيفية استخدامه',
-    description: 'Lecture description',
+    description: 'Lecture description (optional, defaults to null)',
   }),
-  type: z.enum(['VIDEO', 'TEXT', 'QUIZ', 'ASSIGNMENT']).openapi({
+  type: lectureTypeSchema.openapi({
     example: 'VIDEO',
     description: 'Lecture type',
-  }),
-  content: z.string().optional().openapi({
-    example: 'محتوى المحاضرة النصي',
-    description: 'Text content for TEXT type lectures',
-  }),
-  position: z.number().int().optional().openapi({
-    example: 1,
-    description: 'Display position within section',
-  }),
-  isPublished: z.boolean().optional().openapi({
-    example: true,
-    description: 'Whether lecture is published',
-  }),
-  isFree: z.boolean().optional().openapi({
-    example: false,
-    description: 'Whether lecture is free to preview',
   }),
 });
 
@@ -1054,33 +1049,61 @@ const LectureWithCourseSchema = registry.register(
   }),
 );
 
-const createLectureResponseExample = {
+const createLectureItemExample = {
   id: 'cllecture2k4m00008l5d6e3k1n',
   sectionId: 'clsection2k4m00008l5d6e3k1n',
   title: 'مقدمة إلى Node.js',
+  description: null,
   type: 'VIDEO',
-  position: 1,
+  content: null,
+  videoId: null,
+  position: 0,
   isPublished: false,
+  isFree: false,
+};
+
+const CreateLectureItemSchema = registry.register(
+  'CreateLectureItem',
+  z.object({
+    id: z.string().openapi({ example: createLectureItemExample.id }),
+    sectionId: z
+      .string()
+      .openapi({ example: createLectureItemExample.sectionId }),
+    title: z.string().openapi({ example: createLectureItemExample.title }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ example: createLectureItemExample.description }),
+    type: lectureTypeSchema.openapi({
+      example: createLectureItemExample.type,
+    }),
+    content: z
+      .string()
+      .nullable()
+      .openapi({ example: createLectureItemExample.content }),
+    videoId: z
+      .string()
+      .nullable()
+      .openapi({ example: createLectureItemExample.videoId }),
+    position: z
+      .number()
+      .int()
+      .openapi({ example: createLectureItemExample.position }),
+    isPublished: z
+      .boolean()
+      .openapi({ example: createLectureItemExample.isPublished }),
+    isFree: z.boolean().openapi({ example: createLectureItemExample.isFree }),
+  }),
+);
+
+const createLectureResponseExample = {
+  lecture: createLectureItemExample,
 };
 
 const CreateLectureResponseSchema = registry.register(
   'CreateLectureResponse',
   z.object({
-    id: z.string().openapi({ example: createLectureResponseExample.id }),
-    sectionId: z
-      .string()
-      .openapi({ example: createLectureResponseExample.sectionId }),
-    title: z.string().openapi({ example: createLectureResponseExample.title }),
-    type: lectureTypeSchema.openapi({
-      example: createLectureResponseExample.type,
-    }),
-    position: z
-      .number()
-      .int()
-      .openapi({ example: createLectureResponseExample.position }),
-    isPublished: z
-      .boolean()
-      .openapi({ example: createLectureResponseExample.isPublished }),
+    lecture: CreateLectureItemSchema,
   }),
 );
 
@@ -1578,25 +1601,22 @@ registry.registerPath({
 
 registry.registerPath({
   method: 'post',
-  path: '/lectures',
+  path: '/sections/{sectionId}/lectures',
   tags: ['Lectures'],
   summary: 'Create a new lecture',
   description:
-    'Creates a new lecture within a course section. Requires instructor or admin role. The lecture is created as unpublished by default.',
+    'Creates a new lecture within an existing course section. Requires `lecture:create` permission (instructor or admin). Instructors may only create lectures in their own courses; admins may create in any course. Position, publication status, and content fields are set server-side.',
   security: authenticated,
   request: {
+    params: sectionIdParams,
     body: {
       content: {
         'application/json': {
           schema: createLectureSchema,
           example: {
-            sectionId: 'clsection2k4m00008l5d6e3k1n',
             title: 'مقدمة إلى Node.js',
             description: 'في هذه المحاضرة سنتعرف على Node.js',
             type: 'VIDEO',
-            position: 1,
-            isPublished: false,
-            isFree: false,
           },
         },
       },
@@ -1613,7 +1633,7 @@ registry.registerPath({
             CreateLectureResponseSchema,
           ),
           example: apiSuccessExample(
-            'تم إنشاء المحاضرة بنجاح',
+            'Lecture created successfully',
             createLectureResponseExample,
           ),
         },
@@ -1650,11 +1670,11 @@ registry.registerPath({
       },
     },
     404: {
-      description: 'Section not found',
+      description: 'Section or course not found',
       content: {
         'application/json': {
           schema: ApiErrorSchema,
-          example: { success: false, message: 'القسم غير موجود' },
+          example: { success: false, message: 'Section not found' },
         },
       },
     },

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { CourseAuthorizationError } from '@/features/courses/errors/course-authorization.errors';
 import { PublishCourseError } from '@/features/courses/errors/publish-course.errors';
 import { publishCourseUseCase } from '@/features/courses/use-cases/publish-course.use-case';
 import { defaultPublishCourseUseCaseDeps } from '@/features/courses/wiring/publish-course.wiring';
@@ -29,7 +30,10 @@ export async function POST(
 
     return apiSuccess(result, 'Course published successfully');
   } catch (error) {
-    if (error instanceof PublishCourseError) {
+    if (
+      error instanceof PublishCourseError ||
+      error instanceof CourseAuthorizationError
+    ) {
       return apiError(error.message, error.status);
     }
 

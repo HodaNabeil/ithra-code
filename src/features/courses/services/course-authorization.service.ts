@@ -1,5 +1,9 @@
 import { Role } from '@prisma/client';
 import { ArchiveCourseError } from '../errors/archive-course.errors';
+import {
+  COURSE_OWNERSHIP_FORBIDDEN_MESSAGE,
+  CourseAuthorizationError,
+} from '../errors/course-authorization.errors';
 import type { AuthenticatedUser } from '../types/authenticated-user.types';
 
 const ARCHIVE_ALLOWED_ROLES = new Set<string>([Role.ADMIN, Role.INSTRUCTOR]);
@@ -15,7 +19,7 @@ export function assertCanArchiveCourse(user: AuthenticatedUser): void {
   }
 }
 
-/** Throws 403 if an instructor tries to archive a course they do not own. */
+/** Throws 403 if an instructor tries to manage a course they do not own. */
 export function assertCourseOwnership(
   user: AuthenticatedUser,
   instructorId: string,
@@ -24,9 +28,9 @@ export function assertCourseOwnership(
 
   if (user.role === Role.INSTRUCTOR && user.id === instructorId) return;
 
-  throw new ArchiveCourseError(
+  throw new CourseAuthorizationError(
     403,
-    'You can only archive your own courses',
+    COURSE_OWNERSHIP_FORBIDDEN_MESSAGE,
     'OWNERSHIP_FORBIDDEN',
   );
 }

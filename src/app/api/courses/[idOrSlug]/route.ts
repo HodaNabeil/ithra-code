@@ -8,6 +8,7 @@ import {
   getCourseDetail,
 } from '@/features/courses/course-detail';
 import { ArchiveCourseError } from '@/features/courses/errors/archive-course.errors';
+import { CourseAuthorizationError } from '@/features/courses/errors/course-authorization.errors';
 import { archiveCourseUseCase } from '@/features/courses/use-cases/archive-course.use-case';
 
 export async function GET(
@@ -75,7 +76,10 @@ export async function DELETE(
 
     return apiSuccess(result, 'Course archived successfully');
   } catch (error) {
-    if (error instanceof ArchiveCourseError) {
+    if (
+      error instanceof ArchiveCourseError ||
+      error instanceof CourseAuthorizationError
+    ) {
       return apiError(error.message, error.status);
     }
 
