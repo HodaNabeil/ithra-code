@@ -400,7 +400,7 @@ ithra-code/
 │   ├── config/env.ts       # Centralized env validation
 │   └── lib/                # Auth, Prisma, Redis, Stripe, logging
 ├── tests/
-│   ├── unit/               # Platform + tutor unit tests
+│   ├── unit/               # Focused unit tests (tutor config, protocol, validation)
 │   └── integration/ai-tutor/
 ├── docs/
 │   ├── ai-platform/        # Platform blueprint, runtime, observability ADRs
@@ -523,10 +523,10 @@ See `.env.example` for the full variable list. Observability template:
 | Item                  | Detail                                                                           |
 | --------------------- | -------------------------------------------------------------------------------- |
 | **Framework**         | Vitest (`vitest.config.ts`)                                                      |
-| **Unit tests**        | `tests/unit/` — observability, guards, tutor protocol, pricing, fallback chain   |
-| **Integration tests** | `tests/integration/ai-tutor/` — require `VITEST_INTEGRATION=true` and a database |
+| **Unit tests**        | `tests/unit/` — tutor config, SSE protocol, lecture validation, enrollment cache, analytics |
+| **Integration tests** | `tests/integration/` — AI Tutor and contact API; require `VITEST_INTEGRATION=true` and a database |
 | **Setup**             | `tests/setup/env.ts`                                                             |
-| **Current status**    | 86 passed, 6 skipped (integration) when running `pnpm test`                      |
+| **Current status**    | 15 passed, 6 skipped (integration) when running `pnpm test`                      |
 
 Integration tests cover smoke, enrollment/auth cache, idempotency, pagination, lecture validation,
 and GDPR delete flows.
@@ -561,7 +561,7 @@ Startup validation runs for platform and tutor config when respective flags are 
 - Admin AI analytics API and dashboard
 - Optional OTEL/LangSmith instrumentation with failure isolation
 - Payment webhooks, fulfillment workers, and reconciliation tooling
-- Vitest coverage for core platform and tutor behaviors
+- Vitest unit and integration tests for tutor, contact, and analytics flows
 
 ### Hardening / limitations
 
