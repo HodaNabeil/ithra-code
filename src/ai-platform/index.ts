@@ -3,7 +3,12 @@
  * Features must import only from `@/ai-platform`.
  */
 
-import { chat, chatStream, runAgent, streamAgent } from './application/use-cases/chat.use-case';
+import {
+  chat,
+  chatStream,
+  runAgent,
+  streamAgent,
+} from './application/use-cases/chat.use-case';
 import { routeSupervisorRequest } from './application/use-cases/supervisor.use-case';
 import { AIPlatformConfig } from './infrastructure/config/ai-platform.config';
 
@@ -15,8 +20,14 @@ export const ai = {
 
 export { runAgent, streamAgent, routeSupervisorRequest };
 export { getCostSummary } from './observability/cost/cost-ledger.service';
-export type { CostFilters, CostSummary } from './observability/cost/cost-ledger.service';
-export { getCachedEmbedding, setCachedEmbedding } from './embeddings/cache/embedding-cache';
+export type {
+  CostFilters,
+  CostSummary,
+} from './observability/cost/cost-ledger.service';
+export {
+  getCachedEmbedding,
+  setCachedEmbedding,
+} from './embeddings/cache/embedding-cache';
 export { embedRecords } from './embeddings/pipeline';
 export {
   bullmqCourseKnowledgeIndexer,
@@ -36,7 +47,10 @@ export {
   COURSE_INDEXING_QUEUE,
   type CourseIndexingRequestedEvent,
 } from './indexing/constants';
-export { AIPlatformConfig, validateAIPlatformConfig } from './infrastructure/config/ai-platform.config';
+export {
+  AIPlatformConfig,
+  validateAIPlatformConfig,
+} from './infrastructure/config/ai-platform.config';
 export {
   assertMessageRateLimit,
   acquireConcurrencySlot,
@@ -62,7 +76,10 @@ export {
   supervisorAgentDefinition,
   detectSupervisorRoute,
 } from './agents/evaluator/evaluator-agent.definition';
-export { getAgentDefinition, listAgents } from './agents/definitions/agent-registry';
+export {
+  getAgentDefinition,
+  listAgents,
+} from './agents/definitions/agent-registry';
 export { compileAgentGraph } from './graph/compiler/graph-compiler';
 export { getMemoryStorePort } from './infrastructure/di/ai-platform.container';
 export {
@@ -77,9 +94,7 @@ export type {
   CourseContentRepositoryPort,
   CourseForIndexingDTO,
 } from './indexing/domain/ports/CourseContentRepositoryPort';
-export type {
-  KnowledgeChunkRepositoryPort,
-} from './indexing/domain/ports/KnowledgeChunkRepositoryPort';
+export type { KnowledgeChunkRepositoryPort } from './indexing/domain/ports/KnowledgeChunkRepositoryPort';
 export type {
   KnowledgeSourceHashRepositoryPort,
   KnowledgeSourceHashRecord,

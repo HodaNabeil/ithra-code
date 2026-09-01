@@ -34,7 +34,9 @@ export async function bootstrapUnindexedCourseIndexing(
   );
 
   if (!lockAcquired) {
-    logger.info('[COURSE_INDEXING_BOOTSTRAP_SKIPPED] Another worker holds bootstrap lock');
+    logger.info(
+      '[COURSE_INDEXING_BOOTSTRAP_SKIPPED] Another worker holds bootstrap lock',
+    );
     return 0;
   }
 
@@ -53,7 +55,9 @@ export async function bootstrapUnindexedCourseIndexing(
     });
 
     if (unindexedCourses.length === 0) {
-      logger.info('[COURSE_INDEXING_BOOTSTRAP] No unindexed published courses found');
+      logger.info(
+        '[COURSE_INDEXING_BOOTSTRAP] No unindexed published courses found',
+      );
       return 0;
     }
 

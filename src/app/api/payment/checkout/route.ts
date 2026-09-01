@@ -3,7 +3,10 @@ import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import { resolveCorrelationId } from '@/lib/observability/correlation-id';
-import { mergePaymentTrace, runWithPaymentTrace } from '@/lib/observability/payment-trace';
+import {
+  mergePaymentTrace,
+  runWithPaymentTrace,
+} from '@/lib/observability/payment-trace';
 import { paymentLogger } from '@/lib/observability/payment-logger';
 import { loggingMetricsRecorder } from '@/features/payments/infrastructure/observability/logging-metrics.recorder';
 import type { PaymentProvider } from '@/features/payments/domain';

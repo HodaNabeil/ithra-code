@@ -20,7 +20,11 @@ export interface ValidationResult {
 }
 
 export interface ValidationViolation {
-  type: 'assessment_leak' | 'inappropriate_content' | 'off_topic' | 'too_direct';
+  type:
+    | 'assessment_leak'
+    | 'inappropriate_content'
+    | 'off_topic'
+    | 'too_direct';
   severity: 'low' | 'medium' | 'high';
   description: string;
   location?: {
@@ -77,7 +81,10 @@ export interface ContentFilterPort {
    * );
    * console.log(classification.type); // 'learning_material'
    */
-  classifyContent(content: string, options?: FilterOptions): Promise<ContentClassification>;
+  classifyContent(
+    content: string,
+    options?: FilterOptions,
+  ): Promise<ContentClassification>;
 
   /**
    * Transform direct answers into guided learning
@@ -115,9 +122,9 @@ export interface ContentFilterPort {
    * @example
    * const validation = await filter.validateResponse(
    *   'The correct answer is option C',
-   *   { 
+   *   {
    *     question: 'What is the output of this code?',
-   *     retrievedSources: [...] 
+   *     retrievedSources: [...]
    *   }
    * );
    * if (!validation.isValid) {

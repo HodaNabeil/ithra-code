@@ -23,9 +23,7 @@ export function PricingBreakdown({
   className,
 }: PricingBreakdownProps) {
   const formatLine = (amount: number) =>
-    amount === 0
-      ? formatCurrency(0, currency)
-      : formatPrice(amount, currency);
+    amount === 0 ? formatCurrency(0, currency) : formatPrice(amount, currency);
 
   return (
     <dl

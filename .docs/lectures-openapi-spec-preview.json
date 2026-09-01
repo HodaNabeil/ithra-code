@@ -1,0 +1,397 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Ithrcode API - Lectures Section",
+    "version": "1.0",
+    "description": "Preview of the Lectures API documentation added to Swagger"
+  },
+  "tags": [
+    {
+      "name": "Lectures",
+      "description": "Course lecture management"
+    }
+  ],
+  "paths": {
+    "/api/lectures/{lectureId}": {
+      "get": {
+        "tags": ["Lectures"],
+        "summary": "Get lecture details",
+        "description": "Retrieves detailed information about a specific lecture including video HLS URL (if applicable), course context, purchase status, and rating status. Requires authentication and appropriate permissions (enrollment or instructor ownership).",
+        "operationId": "getLecture",
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lectureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "cuid",
+              "example": "cllecture2k4m00008l5d6e3k1n"
+            },
+            "description": "Lecture UUID (CUID)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lecture details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetLectureResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "تم جلب المحاضرة بنجاح",
+                  "data": {
+                    "lecture": {
+                      "id": "cllecture2k4m00008l5d6e3k1n",
+                      "sectionId": "clsection2k4m00008l5d6e3k1n",
+                      "title": "مقدمة إلى Node.js",
+                      "description": "في هذه المحاضرة سنتعرف على Node.js وكيفية استخدامه في بناء التطبيقات",
+                      "type": "VIDEO",
+                      "content": null,
+                      "videoId": "clvideo2k4m00008l5d6e3k1n",
+                      "videoHlsUrl": "https://vz-xxxxx.b-cdn.net/a1b2c3d4-e5f6-7890-abcd-ef1234567890/playlist.m3u8?token=abc&expires=1234567890",
+                      "position": 1,
+                      "isPublished": true,
+                      "isFree": false,
+                      "createdAt": "2026-01-01T10:00:00.000Z",
+                      "updatedAt": "2026-01-01T10:00:00.000Z"
+                    },
+                    "course": {
+                      "id": "clg2v3z5f000008l5d6e3k1n",
+                      "title": "Node.js - دورة شاملة لتعلم تطوير الخلفية",
+                      "slug": "nodejs-complete-guide",
+                      "instructorId": "clinstr2k4m00008l5d6e3k1n",
+                      "status": "PUBLISHED"
+                    },
+                    "hasPurchased": true,
+                    "hasRated": false
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - user not logged in"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          },
+          "404": {
+            "description": "Lecture not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Lectures"],
+        "summary": "Update a lecture",
+        "description": "Updates an existing lecture. Requires instructor ownership or admin role. Only provided fields will be updated.",
+        "operationId": "updateLecture",
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lectureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "cuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLectureRequest"
+              },
+              "example": {
+                "title": "مقدمة إلى Node.js - محدثة",
+                "description": "وصف محدث للمحاضرة",
+                "isPublished": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lecture updated successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Lecture not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Lectures"],
+        "summary": "Delete a lecture",
+        "description": "Deletes a lecture from the course. Requires instructor ownership or admin role. This action is permanent and cannot be undone.",
+        "operationId": "deleteLecture",
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lectureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "cuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lecture deleted successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "تم حذف المحاضرة بنجاح",
+                  "data": {
+                    "id": "cllecture2k4m00008l5d6e3k1n",
+                    "title": "مقدمة إلى Node.js"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Lecture not found"
+          }
+        }
+      }
+    },
+    "/api/lectures": {
+      "post": {
+        "tags": ["Lectures"],
+        "summary": "Create a new lecture",
+        "description": "Creates a new lecture within a course section. Requires instructor or admin role. The lecture is created as unpublished by default.",
+        "operationId": "createLecture",
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLectureRequest"
+              },
+              "example": {
+                "sectionId": "clsection2k4m00008l5d6e3k1n",
+                "title": "مقدمة إلى Node.js",
+                "description": "في هذه المحاضرة سنتعرف على Node.js",
+                "type": "VIDEO",
+                "position": 1,
+                "isPublished": false,
+                "isFree": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Lecture created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "تم إنشاء المحاضرة بنجاح",
+                  "data": {
+                    "id": "cllecture2k4m00008l5d6e3k1n",
+                    "sectionId": "clsection2k4m00008l5d6e3k1n",
+                    "title": "مقدمة إلى Node.js",
+                    "type": "VIDEO",
+                    "position": 1,
+                    "isPublished": false
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Section not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LectureType": {
+        "type": "string",
+        "enum": ["VIDEO", "TEXT", "QUIZ", "ASSIGNMENT"],
+        "description": "Type of lecture content"
+      },
+      "CreateLectureRequest": {
+        "type": "object",
+        "required": ["sectionId", "title", "type"],
+        "properties": {
+          "sectionId": {
+            "type": "string",
+            "format": "cuid",
+            "description": "Section UUID (CUID)"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Lecture title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Lecture description"
+          },
+          "type": {
+            "$ref": "#/components/schemas/LectureType"
+          },
+          "content": {
+            "type": "string",
+            "description": "Text content for TEXT type lectures"
+          },
+          "position": {
+            "type": "integer",
+            "description": "Display position within section"
+          },
+          "isPublished": {
+            "type": "boolean",
+            "description": "Whether lecture is published"
+          },
+          "isFree": {
+            "type": "boolean",
+            "description": "Whether lecture is free to preview"
+          }
+        }
+      },
+      "UpdateLectureRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/LectureType"
+          },
+          "content": {
+            "type": "string"
+          },
+          "position": {
+            "type": "integer"
+          },
+          "isPublished": {
+            "type": "boolean"
+          },
+          "isFree": {
+            "type": "boolean"
+          }
+        }
+      },
+      "LectureDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sectionId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/LectureType"
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "videoId": {
+            "type": "string",
+            "nullable": true
+          },
+          "videoHlsUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "HLS streaming URL for video lectures"
+          },
+          "position": {
+            "type": "integer"
+          },
+          "isPublished": {
+            "type": "boolean"
+          },
+          "isFree": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "sessionAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "authjs.session-token",
+        "description": "NextAuth session cookie (set after OAuth or credentials login)"
+      }
+    }
+  }
+}

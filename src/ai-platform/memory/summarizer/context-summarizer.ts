@@ -132,7 +132,9 @@ export async function summarizeConversationIfNeeded(
     };
   }
 
-  const olderText = older.map((message) => `${message.role}: ${message.content}`).join('\n');
+  const olderText = older
+    .map((message) => `${message.role}: ${message.content}`)
+    .join('\n');
   const summaryPrompt = SUMMARY_PROMPT[input.locale];
 
   const { summary, usage: llmUsage } = await withSpan(

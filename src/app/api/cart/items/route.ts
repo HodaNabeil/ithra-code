@@ -193,7 +193,7 @@ export async function POST(req: Request) {
     return apiSuccess(transformedCart, 'تمت إضافة الدورة إلى السلة بنجاح');
   } catch (error: unknown) {
     // 5. Critical Security & Edge Case Fixes
-    
+
     // Handle Prisma's Unique Constraint violation (P2002) cleanly
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
@@ -206,11 +206,26 @@ export async function POST(req: Request) {
     // Map business logic errors to friendly Arabic responses
     const errorMap: Record<string, { message: string; status: number }> = {
       COURSE_NOT_FOUND: { message: 'الدورة التدريبية غير موجودة', status: 404 },
-      COURSE_NOT_PUBLISHED: { message: 'هذه الدورة غير متاحة للشراء حالياً', status: 400 },
-      FREE_COURSE_DIRECT_ENROLLMENT: { message: 'هذه الدورة مجانية، يمكنك التسجيل فيها مباشرة', status: 400 },
-      ALREADY_ENROLLED: { message: 'أنت مشترك بالفعل في هذه الدورة', status: 400 },
-      ALREADY_IN_CART: { message: 'هذه الدورة موجودة بالفعل في سلتك', status: 400 },
-      CURRENCY_MISMATCH: { message: 'لا يمكن إضافة دورات بعملات مختلفة إلى نفس السلة', status: 400 },
+      COURSE_NOT_PUBLISHED: {
+        message: 'هذه الدورة غير متاحة للشراء حالياً',
+        status: 400,
+      },
+      FREE_COURSE_DIRECT_ENROLLMENT: {
+        message: 'هذه الدورة مجانية، يمكنك التسجيل فيها مباشرة',
+        status: 400,
+      },
+      ALREADY_ENROLLED: {
+        message: 'أنت مشترك بالفعل في هذه الدورة',
+        status: 400,
+      },
+      ALREADY_IN_CART: {
+        message: 'هذه الدورة موجودة بالفعل في سلتك',
+        status: 400,
+      },
+      CURRENCY_MISMATCH: {
+        message: 'لا يمكن إضافة دورات بعملات مختلفة إلى نفس السلة',
+        status: 400,
+      },
     };
 
     const businessError = errorMap[errorMessage];

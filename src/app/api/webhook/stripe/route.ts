@@ -140,10 +140,7 @@ export async function POST(req: Request) {
         },
       );
 
-      logger.info(
-        { paymentIntentId: intent.id },
-        'Payment marked as failed',
-      );
+      logger.info({ paymentIntentId: intent.id }, 'Payment marked as failed');
     } catch (_err) {
       logger.error(
         { err: _err, paymentIntentId: intent.id },

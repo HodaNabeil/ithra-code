@@ -58,14 +58,19 @@ function createMessageId(): string {
   return crypto.randomUUID();
 }
 
-function formatHistoryMessage(message: ThreadMessagesResponse['data']['messages'][number]): ChatMessage {
+function formatHistoryMessage(
+  message: ThreadMessagesResponse['data']['messages'][number],
+): ChatMessage {
   const status = message.status ?? 'completed';
   let content = message.content;
 
   if (message.role === 'assistant') {
     if (status === 'pending' && !content.trim()) {
       content = 'جاري توليد الرد...';
-    } else if ((status === 'failed' || status === 'cancelled') && !content.trim()) {
+    } else if (
+      (status === 'failed' || status === 'cancelled') &&
+      !content.trim()
+    ) {
       content = 'تعذر إكمال الرد';
     }
   }
@@ -78,6 +83,53 @@ function formatHistoryMessage(message: ThreadMessagesResponse['data']['messages'
     turnId: message.turnId,
     sources: message.sources,
   };
+}
+
+function sanitizeHistoryMessages(
+  messages: ThreadMessagesResponse['data']['messages'],
+): ThreadMessagesResponse['data']['messages'] {
+  const withoutFailedPlaceholders = messages.filter((message) => {
+    if (message.role !== 'assistant') {
+      return true;
+    }
+
+    const status = message.status ?? 'completed';
+    return !(
+      (status === 'failed' || status === 'cancelled') &&
+      !message.content.trim()
+    );
+  });
+
+  const deduped: ThreadMessagesResponse['data']['messages'] = [];
+
+  for (let index = 0; index < withoutFailedPlaceholders.length; index += 1) {
+    const message = withoutFailedPlaceholders[index];
+    if (!message) {
+      continue;
+    }
+
+    if (message.role === 'user') {
+      const hasLaterDuplicate = withoutFailedPlaceholders
+        .slice(index + 1)
+        .some(
+          (laterMessage) =>
+            laterMessage.role === 'user' &&
+            laterMessage.content.trim() === message.content.trim(),
+        );
+
+      if (hasLaterDuplicate) {
+        const nextMessage = withoutFailedPlaceholders[index + 1];
+        if (nextMessage?.role === 'assistant') {
+          index += 1;
+        }
+        continue;
+      }
+    }
+
+    deduped.push(message);
+  }
+
+  return deduped;
 }
 
 function buildThreadQuery(options: UseAITutorChatOptions): string {
@@ -220,6 +272,7 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const streamingAssistantIdRef = useRef<string | null>(null);
 
   const isStreaming = streamState === 'streaming';
 
@@ -251,9 +304,16 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
         }
 
         const payload = (await response.json()) as ThreadMessagesResponse;
-        setMessages(payload.data.messages.map(formatHistoryMessage));
+        setMessages(
+          sanitizeHistoryMessages(payload.data.messages).map(
+            formatHistoryMessage,
+          ),
+        );
       } catch (requestError) {
-        if (requestError instanceof DOMException && requestError.name === 'AbortError') {
+        if (
+          requestError instanceof DOMException &&
+          requestError.name === 'AbortError'
+        ) {
           return;
         }
 
@@ -277,18 +337,35 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
     };
   }, [options.courseSlug, options.lectureId, options.lectureTitle]);
 
-  const appendToken = useCallback((assistantMessageId: string, token: string) => {
-    setMessages((current) =>
-      current.map((message) =>
-        message.id === assistantMessageId
-          ? { ...message, content: message.content + token }
-          : message,
-      ),
-    );
-  }, []);
+  const appendToken = useCallback(
+    (_assistantMessageId: string, token: string) => {
+      const targetId = streamingAssistantIdRef.current;
+      if (!targetId) {
+        return;
+      }
+
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === targetId
+            ? {
+                ...message,
+                content: message.content + token,
+                status: 'pending',
+              }
+            : message,
+        ),
+      );
+    },
+    [],
+  );
 
   const applyMeta = useCallback(
     (assistantMessageId: string, meta: StreamMeta) => {
+      if (meta.assistantMessageId) {
+        streamingAssistantIdRef.current = meta.assistantMessageId;
+        setStreamingMessageId(meta.assistantMessageId);
+      }
+
       setMessages((current) => {
         const assistantIndex = current.findIndex(
           (message) => message.id === assistantMessageId,
@@ -324,22 +401,52 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
     [],
   );
 
-  const replaceContent = useCallback((assistantMessageId: string, text: string) => {
+  const replaceContent = useCallback(
+    (_assistantMessageId: string, text: string) => {
+      const targetId = streamingAssistantIdRef.current;
+      if (!targetId) {
+        return;
+      }
+
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === targetId
+            ? { ...message, content: text, status: 'pending' }
+            : message,
+        ),
+      );
+    },
+    [],
+  );
+
+  const markStreamingComplete = useCallback(() => {
+    const targetId = streamingAssistantIdRef.current;
+    if (!targetId) {
+      return;
+    }
+
     setMessages((current) =>
       current.map((message) =>
-        message.id === assistantMessageId ? { ...message, content: text } : message,
+        message.id === targetId ? { ...message, status: 'completed' } : message,
       ),
     );
+    streamingAssistantIdRef.current = null;
   }, []);
 
   const runQuestion = useCallback(
-    async (question: string, requestOptions: { includeUserMessage: boolean }) => {
+    async (
+      question: string,
+      requestOptions: { includeUserMessage: boolean },
+    ) => {
       const assistantMessageId = createMessageId();
       const assistantMessage: ChatMessage = {
         id: assistantMessageId,
         role: 'assistant',
         content: '',
+        status: 'pending',
       };
+
+      streamingAssistantIdRef.current = assistantMessageId;
 
       if (requestOptions.includeUserMessage) {
         const userMessage: ChatMessage = {
@@ -370,12 +477,16 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
           onToken: appendToken,
           onReplace: replaceContent,
           onComplete: () => {
+            markStreamingComplete();
             setStreamState('idle');
             setStreamingMessageId(null);
           },
         });
       } catch (requestError) {
-        if (requestError instanceof DOMException && requestError.name === 'AbortError') {
+        if (
+          requestError instanceof DOMException &&
+          requestError.name === 'AbortError'
+        ) {
           setStreamState('idle');
           setStreamingMessageId(null);
           return;
@@ -391,7 +502,8 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
         setMessages((current) =>
           current.filter(
             (message) =>
-              message.id !== assistantMessageId || message.content.trim().length > 0,
+              message.id !== assistantMessageId ||
+              message.content.trim().length > 0,
           ),
         );
       } finally {
@@ -399,7 +511,7 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
         setStreamingMessageId(null);
       }
     },
-    [appendToken, applyMeta, options, replaceContent],
+    [appendToken, applyMeta, markStreamingComplete, options, replaceContent],
   );
 
   const sendMessage = useCallback(async () => {
@@ -413,13 +525,17 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
   }, [input, isLoadingHistory, isStreaming, runQuestion]);
 
   const retry = useCallback(async () => {
-    const lastUserMessage = [...messages].reverse().find((message) => message.role === 'user');
+    const lastUserMessage = [...messages]
+      .reverse()
+      .find((message) => message.role === 'user');
     if (!lastUserMessage || isStreaming || isLoadingHistory) {
       return;
     }
 
     setMessages((current) => {
-      const lastUserIndex = current.findIndex((message) => message.id === lastUserMessage.id);
+      const lastUserIndex = current.findIndex(
+        (message) => message.id === lastUserMessage.id,
+      );
       return current.slice(0, lastUserIndex + 1);
     });
 
@@ -428,6 +544,7 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
 
   const cancel = useCallback(() => {
     abortControllerRef.current?.abort();
+    streamingAssistantIdRef.current = null;
     setStreamState('idle');
     setStreamingMessageId(null);
   }, []);

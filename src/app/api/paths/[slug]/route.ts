@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
-import {
-  getPathDetail,
-  PathDetailError,
-} from '@/features/learning-paths/api';
+import { getPathDetail, PathDetailError } from '@/features/learning-paths/api';
 
 export async function GET(
   _req: Request,

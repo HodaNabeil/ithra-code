@@ -1,4 +1,8 @@
-import type { CourseLevel, CourseStatus, CourseVisibility } from '@prisma/client';
+import type {
+  CourseLevel,
+  CourseStatus,
+  CourseVisibility,
+} from '@prisma/client';
 
 export const courseOverviewIdentitySelect = {
   id: true,

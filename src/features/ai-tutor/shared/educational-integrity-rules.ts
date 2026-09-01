@@ -15,20 +15,72 @@ export type ResponseIntegrityResult = {
   }>;
 };
 
-const ASSESSMENT_QUESTION_PATTERNS: Array<{ pattern: RegExp; weight: number; reason: string }> = [
-  { pattern: /\b(what|which)\s+is\s+the\s+(correct\s+)?answer\b/i, weight: 0.9, reason: 'asks_for_answer' },
-  { pattern: /\bgive\s+me\s+the\s+(answer|solution)\b/i, weight: 0.95, reason: 'asks_for_answer' },
-  { pattern: /\b(tell|show)\s+me\s+the\s+(answer|solution|correct)\b/i, weight: 0.9, reason: 'asks_for_answer' },
-  { pattern: /\bquiz\s+question\s*\d+\b/i, weight: 0.85, reason: 'quiz_reference' },
-  { pattern: /\bquestion\s*\d+\s*(answer|solution)?\b/i, weight: 0.7, reason: 'question_number' },
-  { pattern: /\b(assignment|homework|exam)\s+(solution|answer|key)\b/i, weight: 0.95, reason: 'assignment_solution' },
-  { pattern: /\bsolve\s+(the\s+)?(assignment|homework|quiz|exam)\b/i, weight: 0.9, reason: 'solve_assessment' },
+const ASSESSMENT_QUESTION_PATTERNS: Array<{
+  pattern: RegExp;
+  weight: number;
+  reason: string;
+}> = [
+  {
+    pattern: /\b(what|which)\s+is\s+the\s+(correct\s+)?answer\b/i,
+    weight: 0.9,
+    reason: 'asks_for_answer',
+  },
+  {
+    pattern: /\bgive\s+me\s+the\s+(answer|solution)\b/i,
+    weight: 0.95,
+    reason: 'asks_for_answer',
+  },
+  {
+    pattern: /\b(tell|show)\s+me\s+the\s+(answer|solution|correct)\b/i,
+    weight: 0.9,
+    reason: 'asks_for_answer',
+  },
+  {
+    pattern: /\bquiz\s+question\s*\d+\b/i,
+    weight: 0.85,
+    reason: 'quiz_reference',
+  },
+  {
+    pattern: /\bquestion\s*\d+\s*(answer|solution)?\b/i,
+    weight: 0.7,
+    reason: 'question_number',
+  },
+  {
+    pattern: /\b(assignment|homework|exam)\s+(solution|answer|key)\b/i,
+    weight: 0.95,
+    reason: 'assignment_solution',
+  },
+  {
+    pattern: /\bsolve\s+(the\s+)?(assignment|homework|quiz|exam)\b/i,
+    weight: 0.9,
+    reason: 'solve_assessment',
+  },
   { pattern: /\bcorrect\s+option\b/i, weight: 0.85, reason: 'asks_for_option' },
-  { pattern: /\bwhich\s+option\s+is\s+correct\b/i, weight: 0.9, reason: 'asks_for_option' },
-  { pattern: /ما\s*(هي|هو)?\s*الإجابة\s*(الصحيحة)?/, weight: 0.9, reason: 'asks_for_answer_ar' },
-  { pattern: /أعطني\s*(الإجابة|الحل)/, weight: 0.95, reason: 'asks_for_answer_ar' },
-  { pattern: /حل\s*(الواجب|الاختبار|الامتحان|التمرين)/, weight: 0.9, reason: 'solve_assessment_ar' },
-  { pattern: /إجابة\s*السؤال\s*\d+/, weight: 0.85, reason: 'question_number_ar' },
+  {
+    pattern: /\bwhich\s+option\s+is\s+correct\b/i,
+    weight: 0.9,
+    reason: 'asks_for_option',
+  },
+  {
+    pattern: /ما\s*(هي|هو)?\s*الإجابة\s*(الصحيحة)?/,
+    weight: 0.9,
+    reason: 'asks_for_answer_ar',
+  },
+  {
+    pattern: /أعطني\s*(الإجابة|الحل)/,
+    weight: 0.95,
+    reason: 'asks_for_answer_ar',
+  },
+  {
+    pattern: /حل\s*(الواجب|الاختبار|الامتحان|التمرين)/,
+    weight: 0.9,
+    reason: 'solve_assessment_ar',
+  },
+  {
+    pattern: /إجابة\s*السؤال\s*\d+/,
+    weight: 0.85,
+    reason: 'question_number_ar',
+  },
   { pattern: /مفتاح\s*الإجابة/, weight: 0.95, reason: 'answer_key_ar' },
   { pattern: /الخيار\s*الصحيح/, weight: 0.85, reason: 'asks_for_option_ar' },
 ];
@@ -169,9 +221,7 @@ export function transformAnswerToGuidance(
   return `${base}\n\nمجال التركيز للمراجعة: ${topic}`;
 }
 
-export function buildAssessmentFallbackSuggestions(
-  question: string,
-): string[] {
+export function buildAssessmentFallbackSuggestions(question: string): string[] {
   if (isLikelyEnglish(question)) {
     return [
       buildGuidedLearningResponse(question),

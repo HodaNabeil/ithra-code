@@ -16,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import type { Session } from 'next-auth';
 
 const NAV_LINKS = [
   {
@@ -45,9 +46,10 @@ const NAV_LINKS = [
   },
 ];
 
-export function MobileMenu() {
+export function MobileMenu({ session: serverSession }: { session: Session | null }) {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: clientSession } = useSession();
+  const session = clientSession ?? serverSession;
   const userRole = session?.user?.role;
   const [isOpen, setIsOpen] = useState(false);
 

@@ -38,7 +38,11 @@ import {
 
 type AssertContext = Record<string, unknown>;
 
-function assert(condition: unknown, message: string, ctx?: AssertContext): asserts condition {
+function assert(
+  condition: unknown,
+  message: string,
+  ctx?: AssertContext,
+): asserts condition {
   if (!condition) {
     const suffix = ctx ? ` ${JSON.stringify(ctx)}` : '';
     throw new Error(`ASSERT: ${message}${suffix}`);
@@ -182,9 +186,13 @@ async function assertPostCheckoutState(orderId: string): Promise<{
     where: { orderId },
   });
 
-  assert(order.status === OrderStatus.PENDING, 'Order should be PENDING after checkout', {
-    status: order.status,
-  });
+  assert(
+    order.status === OrderStatus.PENDING,
+    'Order should be PENDING after checkout',
+    {
+      status: order.status,
+    },
+  );
   assert(order.payment, 'Order must have a payment after checkout');
   assert(
     order.payment.status === PaymentStatus.PROCESSING,
@@ -217,7 +225,10 @@ async function assertPostCheckoutState(orderId: string): Promise<{
       orderTotal: order.totalCents,
     },
   );
-  assert(session.providerSessionId, 'CheckoutSession must store providerSessionId');
+  assert(
+    session.providerSessionId,
+    'CheckoutSession must store providerSessionId',
+  );
 
   return {
     courseIds: order.items.map((i) => i.courseId),
@@ -297,11 +308,9 @@ async function runFailedPaymentScenario(
     where: { id: orderId },
   });
 
-  assert(
-    payment.status === PaymentStatus.FAILED,
-    'Payment must be FAILED',
-    { status: payment.status },
-  );
+  assert(payment.status === PaymentStatus.FAILED, 'Payment must be FAILED', {
+    status: payment.status,
+  });
   assert(
     order.status === OrderStatus.PENDING,
     'Order must stay PENDING on payment failure',
@@ -320,7 +329,9 @@ async function runFailedPaymentScenario(
     'WebhookEvent must be stored once for failed payment',
   );
 
-  console.log('  OK — payment FAILED, order PENDING, cart intact, no enrollment');
+  console.log(
+    '  OK — payment FAILED, order PENDING, cart intact, no enrollment',
+  );
 }
 
 async function runSuccessAndDuplicateScenarios(
@@ -338,7 +349,10 @@ async function runSuccessAndDuplicateScenarios(
     cancelUrl: 'http://localhost:3000/cart',
   });
 
-  assert(checkout.redirectUrl.includes('order='), 'Fake redirect should include order id');
+  assert(
+    checkout.redirectUrl.includes('order='),
+    'Fake redirect should include order id',
+  );
   const orderId = checkout.checkoutSession.orderId;
   const mid = await assertPostCheckoutState(orderId);
 
@@ -385,7 +399,8 @@ async function runSuccessAndDuplicateScenarios(
     'WebhookEvent must be stored exactly once',
   );
   assert(
-    (await countActiveEnrollments(studentId, mid.courseIds)) === mid.courseIds.length,
+    (await countActiveEnrollments(studentId, mid.courseIds)) ===
+      mid.courseIds.length,
     'ACTIVE enrollment required for every purchased course',
   );
   assert(
@@ -393,7 +408,9 @@ async function runSuccessAndDuplicateScenarios(
     'Cart must be empty after successful fulfillment',
   );
 
-  console.log('  OK — order COMPLETED, payment SUCCEEDED, enrolled, cart cleared');
+  console.log(
+    '  OK — order COMPLETED, payment SUCCEEDED, enrolled, cart cleared',
+  );
 
   console.log('\n[3/3] Duplicate webhook scenario');
   const enrollmentsBefore = await countActiveEnrollments(
@@ -410,11 +427,14 @@ async function runSuccessAndDuplicateScenarios(
     'Duplicate must not create another WebhookEvent',
   );
   assert(
-    (await countActiveEnrollments(studentId, mid.courseIds)) === enrollmentsBefore,
+    (await countActiveEnrollments(studentId, mid.courseIds)) ===
+      enrollmentsBefore,
     'Duplicate must not create another enrollment',
   );
 
-  console.log('  OK — duplicate=true, single WebhookEvent, no extra enrollment');
+  console.log(
+    '  OK — duplicate=true, single WebhookEvent, no extra enrollment',
+  );
 }
 
 async function runReconcileScenario(
@@ -422,7 +442,9 @@ async function runReconcileScenario(
   studentId: string,
   course: { courseId: string; price: number; currency: 'EGP' | 'USD' },
 ): Promise<void> {
-  console.log('\n[4/4] Reconciliation scenario (stuck PROCESSING → provider succeeded)');
+  console.log(
+    '\n[4/4] Reconciliation scenario (stuck PROCESSING → provider succeeded)',
+  );
   FakePaymentGateway.clearReconcileOutcomes();
   await ensureCartWithCourse(studentId, course);
 
@@ -452,21 +474,33 @@ async function runReconcileScenario(
 
   const summary = await createReconcilePaymentsUseCase().execute();
 
-  assert(summary.scanned >= 1, 'Reconcile should scan at least one stale payment', summary);
-  assert(summary.fulfilled >= 1, 'Reconcile should fulfill succeeded payment', summary);
+  assert(
+    summary.scanned >= 1,
+    'Reconcile should scan at least one stale payment',
+    summary,
+  );
+  assert(
+    summary.fulfilled >= 1,
+    'Reconcile should fulfill succeeded payment',
+    summary,
+  );
 
   const order = await prisma.order.findUniqueOrThrow({
     where: { id: orderId },
     include: { payment: true },
   });
 
-  assert(order.status === OrderStatus.COMPLETED, 'Order must be COMPLETED after reconcile');
+  assert(
+    order.status === OrderStatus.COMPLETED,
+    'Order must be COMPLETED after reconcile',
+  );
   assert(
     order.payment?.status === PaymentStatus.SUCCEEDED,
     'Payment must be SUCCEEDED after reconcile',
   );
   assert(
-    (await countActiveEnrollments(studentId, mid.courseIds)) === mid.courseIds.length,
+    (await countActiveEnrollments(studentId, mid.courseIds)) ===
+      mid.courseIds.length,
     'Reconcile must enroll purchased courses',
   );
   assert(

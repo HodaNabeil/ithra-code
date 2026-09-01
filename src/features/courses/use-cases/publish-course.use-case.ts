@@ -47,7 +47,11 @@ export async function publishCourseUseCase(
 
   const existing = await deps.courseRepository.findByIdOrSlug(idOrSlug);
   if (!existing) {
-    throw new PublishCourseError(404, COURSE_NOT_FOUND_MESSAGE, 'COURSE_NOT_FOUND');
+    throw new PublishCourseError(
+      404,
+      COURSE_NOT_FOUND_MESSAGE,
+      'COURSE_NOT_FOUND',
+    );
   }
 
   assertCourseOwnership(user, existing.instructorId);
@@ -87,12 +91,20 @@ export async function publishLectureUseCase(
 
   const lecture = await deps.lectureRepository.findById(lectureId);
   if (!lecture) {
-    throw new PublishCourseError(404, LECTURE_NOT_FOUND_MESSAGE, 'LECTURE_NOT_FOUND');
+    throw new PublishCourseError(
+      404,
+      LECTURE_NOT_FOUND_MESSAGE,
+      'LECTURE_NOT_FOUND',
+    );
   }
 
   const course = await deps.courseRepository.findByIdOrSlug(courseIdOrSlug);
   if (!course || course.id !== lecture.course.id) {
-    throw new PublishCourseError(404, LECTURE_NOT_FOUND_MESSAGE, 'LECTURE_NOT_FOUND');
+    throw new PublishCourseError(
+      404,
+      LECTURE_NOT_FOUND_MESSAGE,
+      'LECTURE_NOT_FOUND',
+    );
   }
 
   assertCourseOwnership(user, lecture.course.instructorId);

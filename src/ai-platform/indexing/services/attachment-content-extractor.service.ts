@@ -141,7 +141,10 @@ export async function extractAttachmentText(
     };
   }
 
-  if (input.type === AttachmentType.PDF || input.mimeType === 'application/pdf') {
+  if (
+    input.type === AttachmentType.PDF ||
+    input.mimeType === 'application/pdf'
+  ) {
     try {
       const pdfText = await extractPdfText(input.url);
       if (pdfText) {

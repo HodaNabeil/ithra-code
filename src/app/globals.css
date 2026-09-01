@@ -5,14 +5,21 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-noto-kufi: var(--font-noto-kufi);
-  --font-sf-pro: var(--font-sf-pro);
+  --font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+    monospace;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-background-alt: var(--background-alt);
+  --color-background-canvas: var(--background-canvas);
+  --color-body-background: var(--body-background);
+  --color-content-surface: var(--content-surface);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -213,7 +220,7 @@
   --success: hsl(142 76% 36%);
   --success-foreground: hsl(210 20% 98%);
   --star-color: #c4710d;
-  --brand: rgb(0 153 255);
+  --brand: var(--fm-orange-2);
   --border: var(--gray-alpha-150);
   --input: hsl(220 13% 91%);
   --ring: hsl(224 71.4% 4.1%);
@@ -223,6 +230,14 @@
   --h-screen-dvh: var(--h-screen-dvh-unsafe, 100vh);
   --background-alt: hsl(0 0% 99%);
   --background: hsl(0 0% 100%);
+  --gray-lightest: #e6e6e6;
+  --gray-darker: #222;
+  --gray-dark: #333;
+  --gray-sidebar: #262626;
+  --background-canvas: light-dark(var(--gray-lightest), var(--gray-darker));
+  --body-background: light-dark(var(--gray-lightest), var(--gray-darker));
+  --content-surface: light-dark(var(--background), var(--gray-dark));
+  --testimonial-surface: var(--background);
   --foreground: hsl(240 3% 6%);
   --tw-gray-50: hsl(0 0% 98%);
   --tw-gray-100: hsl(240 4.8% 95.9%);
@@ -303,7 +318,7 @@
   --collection-purple-100: hsl(281 19% 88%);
   --collection-purple-500: hsl(285 11% 73%);
   --collection-purple-900: hsl(285 30% 14%);
-  --sidebar-background: hsl(0 0% 98%);
+  --sidebar-background: var(--background-canvas);
   --sidebar-foreground: hsl(240 5.3% 26.1%);
   --sidebar-primary: hsl(240 5.9% 10%);
   --sidebar-primary-foreground: hsl(0 0% 98%);
@@ -311,9 +326,10 @@
   --sidebar-accent-foreground: hsl(240 5.9% 10%);
   --sidebar-border: hsl(220 13% 91%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
-  --fade-background: var(--background);
+  --fade-background: var(--body-background);
   --chart-primary-fill: hsl(224 100% 98%);
   --chart-primary-stroke: hsl(224 100% 51%);
+  --progress-indicator: var(--chart-primary-stroke);
   --chart-success-fill: hsl(140 100% 98%);
   --chart-success-stroke: hsl(140 100% 40%);
   --chart-error-fill: hsl(1 100% 98%);
@@ -368,7 +384,7 @@
   --blur-2xl: 40px;
   --default-transition-duration: 0.15s;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --default-font-family: var(--font-noto-kufi);
+  --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
   --default-mono-font-feature-settings: var(--font-mono--font-feature-settings);
   --default-mono-font-variation-settings: var(
@@ -471,10 +487,13 @@
   --grayscale-indicator: #8d8d8d;
   --grayscale-track: #8d8d8d;
   --sidebar: hsl(0 0% 98%);
+  --fm-red-1: #c02d28;
+  --fm-orange-2: #e6682d;
+  --header-background: #ffffff;
 }
 
 .dark {
-  --card: var(--background);
+  --card: rgba(62, 62, 62, 0.96);
   --card-foreground: var(--foreground);
   --popover: var(--tw-gray-800);
   --popover-foreground: var(--foreground);
@@ -483,7 +502,7 @@
   --secondary: var(--gray-alpha-100);
   --secondary-foreground: hsl(210 20% 98%);
   --muted: hsl(215 27.9% 16.9%);
-  --muted-foreground: hsl(217.9 10.6% 64.9%);
+  --muted-foreground: #ccc;
   --accent: hsl(215 27.9% 16.9%);
   --accent-foreground: hsl(210 20% 98%);
   --destructive: hsl(2 70 42);
@@ -494,6 +513,10 @@
   --input: hsl(215 27.9% 16.9%);
   --ring: hsl(216 12.2% 83.9%);
   --background: hsl(240 3% 6%);
+  --background-canvas: var(--gray-darker);
+  --body-background: var(--gray-darker);
+  --content-surface: var(--gray-dark);
+  --testimonial-surface: linear-gradient(90deg, #1f1f1f 0.04%, #101010);
   --foreground: hsl(0 0% 100%);
   --gray-alpha-50: var(--lighten-50);
   --gray-alpha-100: var(--lighten-100);
@@ -518,7 +541,7 @@
   --gray-800: var(--tw-gray-800);
   --gray-900: var(--tw-gray-900);
   --gray-950: var(--tw-gray-950);
-  --sidebar-background: hsl(240 5.9% 10%);
+  --sidebar-background: var(--gray-sidebar);
   --sidebar-foreground: hsl(240 4.8% 95.9%);
   --sidebar-primary: hsl(224.3 76.3% 48%);
   --sidebar-primary-foreground: hsl(0 0% 100%);
@@ -528,6 +551,7 @@
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
   --chart-primary-fill: hsl(224 100% 10%);
   --chart-primary-stroke: hsl(224 100% 55%);
+  --progress-indicator: var(--chart-primary-stroke);
   --chart-success-fill: hsl(140 100% 10%);
   --chart-success-stroke: hsl(140 100% 45%);
   --chart-error-fill: hsl(1 100% 10%);
@@ -593,10 +617,53 @@
   --grayscale-indicator: color(display-p3 0.553 0.553 0.553);
   --grayscale-track: color(display-p3 0.553 0.553 0.553);
   --sidebar: hsl(240 5.9% 10%);
+  --header-background: #37140f;
+}
+
+.site-header {
+  background-color: var(--header-background);
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-image-source: linear-gradient(
+    to right,
+    var(--fm-red-1),
+    var(--fm-orange-2)
+  );
+  border-image-slice: 1;
+}
+
+#nprogress .bar {
+  background: linear-gradient(
+    to right,
+    var(--fm-red-1),
+    var(--fm-orange-2)
+  ) !important;
+}
+
+#nprogress .peg {
+  box-shadow:
+    0 0 10px var(--fm-orange-2),
+    0 0 5px var(--fm-red-1) !important;
+}
+
+.site-header-nav-link {
+  padding: 4px;
+  border-radius: 3px 9px 3px 6px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.site-header-nav-link:hover {
+  background: #763229;
 }
 
 @utility container {
   @apply mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.testimonial-card {
+  background: var(--testimonial-surface) !important;
 }
 
 /* ============================================
@@ -901,8 +968,10 @@
     @apply border-border outline-ring/50;
   }
 
+  html,
   body {
-    @apply text-foreground bg-background;
+    @apply text-foreground;
+    background: var(--body-background);
   }
 
   /* Base heading styles with consistent responsive scaling */

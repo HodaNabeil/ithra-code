@@ -22,8 +22,15 @@ export interface VectorSearchOptions {
 }
 
 export interface VectorSearchPort {
-  search(embedding: number[], options?: VectorSearchOptions): Promise<SearchResult[]>;
-  index(id: string, embedding: number[], metadata: Record<string, unknown>): Promise<string>;
+  search(
+    embedding: number[],
+    options?: VectorSearchOptions,
+  ): Promise<SearchResult[]>;
+  index(
+    id: string,
+    embedding: number[],
+    metadata: Record<string, unknown>,
+  ): Promise<string>;
   indexBatch(
     items: Array<{
       id: string;

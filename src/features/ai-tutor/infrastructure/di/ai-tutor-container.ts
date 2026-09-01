@@ -1,4 +1,7 @@
-import { AITutorConfig, validateAITutorConfig } from '../config/ai-tutor.config';
+import {
+  AITutorConfig,
+  validateAITutorConfig,
+} from '../config/ai-tutor.config';
 import {
   getCourseIndexingDeps,
   getCourseContentRepository,
@@ -26,9 +29,7 @@ import {
   getTutorThreadMessagesUseCase,
   type GetTutorThreadMessagesUseCaseDeps,
 } from '../../application/use-cases/get-tutor-thread-messages.use-case';
-import {
-  indexCourseUseCase,
-} from '../../application/use-cases/index-course.use-case';
+import { indexCourseUseCase } from '../../application/use-cases/index-course.use-case';
 import type { CourseContextServiceDeps } from '../../application/services/course-context.service';
 import { redisSessionContextCache } from '../cache/redis-session-context.cache';
 

@@ -34,5 +34,4 @@ export const MY_COURSES_TAGS = {
     [...MY_COURSES_TAGS.all, 'lecture', lectureId, { courseSlug }] as const,
   navigation: (lectureId: string, courseSlug: string) =>
     [...MY_COURSES_TAGS.all, 'navigation', lectureId, { courseSlug }] as const,
-  studentCourses: () => [...MY_COURSES_TAGS.all, 'student-enrolled'] as const,
 };

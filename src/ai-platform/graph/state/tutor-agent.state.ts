@@ -1,6 +1,7 @@
 import { Annotation } from '@langchain/langgraph';
 
 import type { LlmMessage } from '../../domain/ports/llm.port';
+import type { RetrievalStrategy } from '../../rag/retrieval/types';
 import {
   agentExecutionChannels,
   type AgentExecutionState,
@@ -39,8 +40,14 @@ export interface TutorAgentState extends AgentExecutionState {
   retrievedChunks: RetrievedChunkState[];
   sanitizedInput: string;
   assessmentBlocked: boolean;
+  groundingBlocked: boolean;
+  retrievalStrategy?: RetrievalStrategy;
   outputValid: boolean;
-  pendingToolCalls: Array<{ id: string; name: string; arguments: Record<string, unknown> }>;
+  pendingToolCalls: Array<{
+    id: string;
+    name: string;
+    arguments: Record<string, unknown>;
+  }>;
   toolResults: Array<{ toolCallId: string; output: Record<string, unknown> }>;
   toolIterations: number;
 }
@@ -68,6 +75,14 @@ export const TutorAgentStateAnnotation = Annotation.Root({
     reducer: (_left, right) => right,
     default: () => false,
   }),
+  groundingBlocked: Annotation<boolean>({
+    reducer: (_left, right) => right,
+    default: () => false,
+  }),
+  retrievalStrategy: Annotation<RetrievalStrategy | undefined>({
+    reducer: (_left, right) => right,
+    default: () => undefined,
+  }),
   finalResponse: Annotation<string>,
   outputValid: Annotation<boolean>,
   ...agentExecutionChannels,
@@ -77,7 +92,9 @@ export const TutorAgentStateAnnotation = Annotation.Root({
     reducer: (_left, right) => right,
     default: () => [],
   }),
-  toolResults: Annotation<Array<{ toolCallId: string; output: Record<string, unknown> }>>({
+  toolResults: Annotation<
+    Array<{ toolCallId: string; output: Record<string, unknown> }>
+  >({
     reducer: (left, right) => [...left, ...right],
     default: () => [],
   }),

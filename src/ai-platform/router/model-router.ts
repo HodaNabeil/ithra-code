@@ -30,7 +30,10 @@ export function resolveModelForPolicy(
   };
 }
 
-export function getFallbackChainForTask(task: string, primaryModel: string): string[] {
+export function getFallbackChainForTask(
+  task: string,
+  primaryModel: string,
+): string[] {
   const defaults = TASK_FALLBACKS[task] ?? TASK_FALLBACKS.education ?? [];
   return defaults.filter((model) => model !== primaryModel);
 }

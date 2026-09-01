@@ -13,5 +13,5 @@ export default async function ShopingCartButton() {
     });
   }
 
-  return <ShoppingCartButtonClient initialCount={initialCount} />;
+  return <ShoppingCartButtonClient initialCount={initialCount} isAuthenticated={!!session?.user?.id} />;
 }

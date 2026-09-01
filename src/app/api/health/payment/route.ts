@@ -26,9 +26,7 @@ export async function GET() {
   }
 
   const manualReviewAlert = await redisMetricsRecorder.getManualReviewAlert();
-  const healthy =
-    checks.database === 'ok' &&
-    checks.redis === 'ok';
+  const healthy = checks.database === 'ok' && checks.redis === 'ok';
 
   return NextResponse.json(
     {

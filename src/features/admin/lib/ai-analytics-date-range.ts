@@ -4,16 +4,20 @@ export type AnalyticsDateRange = {
   days: number;
 };
 
-export function resolveAnalyticsDateRange(input: {
-  days?: string;
-  from?: string;
-  to?: string;
-} = {}): AnalyticsDateRange {
+export function resolveAnalyticsDateRange(
+  input: {
+    days?: string;
+    from?: string;
+    to?: string;
+  } = {},
+): AnalyticsDateRange {
   const now = new Date();
 
   if (input.from || input.to) {
     return {
-      from: input.from ?? new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+      from:
+        input.from ??
+        new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(),
       to: input.to ?? now.toISOString(),
       days: 30,
     };

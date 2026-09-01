@@ -70,7 +70,9 @@ export function extractAssessmentHints(text: string): string | null {
 export function sanitizeAssessmentBody(text: string): string {
   const sanitizedLines = text
     .split('\n')
-    .filter((line) => !ANSWER_LINE_PATTERNS.some((pattern) => pattern.test(line)))
+    .filter(
+      (line) => !ANSWER_LINE_PATTERNS.some((pattern) => pattern.test(line)),
+    )
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 

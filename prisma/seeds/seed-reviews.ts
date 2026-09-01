@@ -8,7 +8,7 @@ dotenv.config();
 
 const connectionString = process.env.DATABASE_URL!.replace(
   /([?&]sslmode=)(require|prefer|verify-ca)\b/gi,
-  '$1verify-full'
+  '$1verify-full',
 );
 
 const adapter = new PrismaPg({

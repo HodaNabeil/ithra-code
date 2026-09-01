@@ -2,7 +2,7 @@
  * AI Tutor UI components
  *
  * Implemented:
- * - AITutorChat — main chat (sidebar + full variants)
+ * - AITutorChat — main chat (sidebar + full variants, Chatscope layout)
  * - TutorMessageContent — markdown-lite message body
  *
  * Planned (Phase 3):

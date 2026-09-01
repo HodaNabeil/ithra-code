@@ -28,9 +28,9 @@ export async function validateOutputNode(
 
   const hardFailure = errors.length > 0;
 
-  // Skip the leak check for already-blocked assessment responses — they are
-  // our own guided-learning message, not LLM output that might leak answers.
-  if (response && !state.assessmentBlocked) {
+  // Skip the leak check for already-blocked assessment/grounding responses — they are
+  // our own guided-learning or grounded-refusal message, not LLM output that might leak answers.
+  if (response && !state.assessmentBlocked && !state.groundingBlocked) {
     let courseId: string | undefined;
     let lectureId: string | undefined;
 
@@ -55,7 +55,9 @@ export async function validateOutputNode(
           signals.filterTriggered = true;
         } else if (processed.disposition === 'rejected') {
           errors.push('content_filter');
-          response = buildGuidedLearningResponse(state.sanitizedInput || state.input);
+          response = buildGuidedLearningResponse(
+            state.sanitizedInput || state.input,
+          );
           signals.filterTriggered = true;
         }
 
@@ -66,7 +68,9 @@ export async function validateOutputNode(
         const integrity = validateEducationalResponse(response);
         if (!integrity.isValid) {
           errors.push('assessment_leak');
-          response = buildGuidedLearningResponse(state.sanitizedInput || state.input);
+          response = buildGuidedLearningResponse(
+            state.sanitizedInput || state.input,
+          );
           signals.filterTriggered = true;
         }
       }
@@ -75,7 +79,9 @@ export async function validateOutputNode(
       const integrity = validateEducationalResponse(response);
       if (!integrity.isValid) {
         errors.push('assessment_leak');
-        response = buildGuidedLearningResponse(state.sanitizedInput || state.input);
+        response = buildGuidedLearningResponse(
+          state.sanitizedInput || state.input,
+        );
         signals.filterTriggered = true;
       }
     }

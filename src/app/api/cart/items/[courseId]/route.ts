@@ -30,7 +30,10 @@ export async function DELETE(
     return NextResponse.json({ data });
   } catch (error) {
     if (error instanceof CartServiceError) {
-      return NextResponse.json({ error: error.message }, { status: error.status });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status },
+      );
     }
     console.error('[CART_REMOVE_ERROR]', error);
     return NextResponse.json({ error: 'Internal Error' }, { status: 500 });

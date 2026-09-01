@@ -1,6 +1,9 @@
 import { Role } from '@/generated/prisma/enums';
 
-import type { IndexCourseInputDTO, IndexCourseResultDTO } from '../dto/index-course.dto';
+import type {
+  IndexCourseInputDTO,
+  IndexCourseResultDTO,
+} from '../dto/index-course.dto';
 import { IndexingError, IndexingErrorCodes } from '../errors/indexing.errors';
 import { loadCourseForIndexing } from '../services/content-extraction.service';
 import { runCourseIndexing } from '@/ai-platform/indexing/pipelines/course-indexing.pipeline';

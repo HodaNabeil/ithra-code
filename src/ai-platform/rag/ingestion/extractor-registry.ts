@@ -25,8 +25,9 @@ export class ExtractorRegistry {
 
   getBySourceType(sourceType: KnowledgeSourceType): TextExtractorPort | null {
     return (
-      this.extractors.find((extractor) => extractor.sourceType === sourceType) ??
-      null
+      this.extractors.find(
+        (extractor) => extractor.sourceType === sourceType,
+      ) ?? null
     );
   }
 

@@ -54,7 +54,12 @@ export async function executeTool(
     'ai.tool.invoke',
     { 'ai.tool.id': toolId, 'ai.run.id': context.agentRunId },
     async () => {
-      const result = await executeToolInternal(toolId, input, context, allowedTools);
+      const result = await executeToolInternal(
+        toolId,
+        input,
+        context,
+        allowedTools,
+      );
       platformMetrics.incrementToolInvocation(
         toolId,
         result.success ? 'success' : 'failed',
@@ -189,7 +194,8 @@ async function executeToolInternal(
     };
   } catch (error) {
     const durationMs = Date.now() - startedAt;
-    const message = error instanceof Error ? error.message : 'Tool execution failed';
+    const message =
+      error instanceof Error ? error.message : 'Tool execution failed';
     const isTimeout = message.includes('timed out');
 
     await logToolInvocation({

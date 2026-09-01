@@ -129,7 +129,7 @@ export function AddToCartButton({
       <form action={formAction} className="contents">
         <Button
           type="submit"
-          variant={isPurchased || isInCart ? 'default' : 'outline'}
+          variant="course"
           onClick={handleClick}
           disabled={isPending}
           className={className}

@@ -139,4 +139,5 @@ export class PrismaCourseContextRepository implements CourseContextRepositoryPor
   }
 }
 
-export const prismaCourseContextRepository = new PrismaCourseContextRepository();
+export const prismaCourseContextRepository =
+  new PrismaCourseContextRepository();

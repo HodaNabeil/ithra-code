@@ -64,7 +64,9 @@ function countPatternMatches(text: string, patterns: RegExp[]): number {
   );
 }
 
-export function inferPreferenceSignalsFromText(text: string): PreferenceSignals {
+export function inferPreferenceSignalsFromText(
+  text: string,
+): PreferenceSignals {
   const trimmed = text.trim();
   const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
   const codeScore = countPatternMatches(trimmed, CODE_PATTERNS);
@@ -136,11 +138,13 @@ export function inferPreferenceSignalsFromMessages(
   }
 
   const explanationDepth =
-    [...depthVotes.entries()].sort((left, right) => right[1] - left[1])[0]?.[0] ??
-    DEFAULT_LEARNING_PROFILE.explanationDepth;
+    [...depthVotes.entries()].sort(
+      (left, right) => right[1] - left[1],
+    )[0]?.[0] ?? DEFAULT_LEARNING_PROFILE.explanationDepth;
   const contentStyle =
-    [...styleVotes.entries()].sort((left, right) => right[1] - left[1])[0]?.[0] ??
-    DEFAULT_LEARNING_PROFILE.contentStyle;
+    [...styleVotes.entries()].sort(
+      (left, right) => right[1] - left[1],
+    )[0]?.[0] ?? DEFAULT_LEARNING_PROFILE.contentStyle;
 
   return {
     explanationDepth,
@@ -217,7 +221,9 @@ export function buildAdaptiveFormattingInstructions(
         ? '- ركّز على المفاهيم والأسباب قبل التفاصيل التقنية.'
         : '- وازن بين الشرح النظري والأمثلة العملية.';
 
-  return ['## تفضيلات التعلم المستنتجة', depthInstruction, styleInstruction].join(
-    '\n',
-  );
+  return [
+    '## تفضيلات التعلم المستنتجة',
+    depthInstruction,
+    styleInstruction,
+  ].join('\n');
 }

@@ -8,7 +8,11 @@ function main(): void {
     fallbacks: ['fallback-a', 'fallback-b'],
   };
 
-  assert.deepEqual(resolveModelChain(chain), ['env-default', 'fallback-a', 'fallback-b']);
+  assert.deepEqual(resolveModelChain(chain), [
+    'env-default',
+    'fallback-a',
+    'fallback-b',
+  ]);
   assert.deepEqual(resolveModelChain(chain, 'caller-model'), [
     'caller-model',
     'fallback-a',

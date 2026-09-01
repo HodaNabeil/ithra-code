@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
 import {
-  getPathCatalog,
-  PathCatalogError,
-  parsePathCatalogSearchParams,
+  listPaths,
+  PathListError,
+  parsePathSearchParams,
 } from '@/features/learning-paths/api';
 
 export async function GET(req: Request): Promise<NextResponse> {
@@ -12,8 +12,8 @@ export async function GET(req: Request): Promise<NextResponse> {
     const session = await auth();
     const { searchParams } = new URL(req.url);
 
-    const data = await getPathCatalog({
-      query: parsePathCatalogSearchParams({
+    const data = await listPaths({
+      query: parsePathSearchParams({
         page: searchParams.get('page') ?? undefined,
         limit: searchParams.get('limit') ?? undefined,
         search: searchParams.get('search') ?? undefined,
@@ -27,11 +27,11 @@ export async function GET(req: Request): Promise<NextResponse> {
 
     return apiSuccess(data, 'Paths fetched successfully');
   } catch (error) {
-    if (error instanceof PathCatalogError) {
+    if (error instanceof PathListError) {
       return apiError(error.message, error.status);
     }
 
-    console.error('[PATH_CATALOG_ERROR]', error);
+    console.error('[PATH_LIST_ERROR]', error);
     return apiError('Internal Error', 500);
   }
 }

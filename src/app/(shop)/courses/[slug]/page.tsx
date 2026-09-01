@@ -45,7 +45,7 @@ export default async function CourseDetailsPage({
           <CourseInfo course={course} overview={overview} />
 
           {/* On desktop, pricing card is a sticky sidebar */}
-          <div className="hidden lg:block w-[360px] xl:w-[400px] shrink-0">
+          <div className="hidden lg:block w-90 xl:w-100 shrink-0">
             <CoursePricingCard
               course={course}
               overview={{

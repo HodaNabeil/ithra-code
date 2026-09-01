@@ -122,7 +122,11 @@ export class PrismaKnowledgeChunkRepository implements KnowledgeChunkRepositoryP
         where: { sourceId: params.sourceId },
       });
 
-      for (let index = 0; index < params.chunks.length; index += INSERT_BATCH_SIZE) {
+      for (
+        let index = 0;
+        index < params.chunks.length;
+        index += INSERT_BATCH_SIZE
+      ) {
         const batch = params.chunks.slice(index, index + INSERT_BATCH_SIZE);
         await insertChunkBatch(tx, batch);
       }
@@ -151,4 +155,5 @@ export class PrismaKnowledgeChunkRepository implements KnowledgeChunkRepositoryP
   }
 }
 
-export const prismaKnowledgeChunkRepository = new PrismaKnowledgeChunkRepository();
+export const prismaKnowledgeChunkRepository =
+  new PrismaKnowledgeChunkRepository();

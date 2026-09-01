@@ -5,7 +5,10 @@ const PHONE_PATTERN = /\b(?:\+?\d[\d\s().-]{7,}\d)\b/g;
 const NATIONAL_ID_PATTERN = /\b\d{10,14}\b/g;
 
 function hashValue(value: string, salt: string): string {
-  return createHash('sha256').update(`${salt}:${value}`).digest('hex').slice(0, 16);
+  return createHash('sha256')
+    .update(`${salt}:${value}`)
+    .digest('hex')
+    .slice(0, 16);
 }
 
 function getPiiSalt(): string {

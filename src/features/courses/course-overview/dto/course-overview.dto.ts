@@ -1,4 +1,8 @@
-import type { CourseLevel, CourseStatus, CourseVisibility } from '@prisma/client';
+import type {
+  CourseLevel,
+  CourseStatus,
+  CourseVisibility,
+} from '@prisma/client';
 
 export type CourseOverviewDTO = {
   totalHours: number;
@@ -36,4 +40,5 @@ export type CourseOverviewAggregates = {
   lecturesCount: number;
 };
 
-export type CourseOverviewRecord = CourseOverviewIdentity & CourseOverviewAggregates;
+export type CourseOverviewRecord = CourseOverviewIdentity &
+  CourseOverviewAggregates;

@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth';
 import type { PathDetailDTO } from '@/types/path/path.dto';
-import type { PathViewer } from '../dto/path-catalog.dto';
+import type { PathViewer } from '../dto/path-list.dto';
 import { PathDetailError } from '../errors/path.errors';
 import { mapPathDetailItemToDTO } from '../mapper/to-list-dto';
 import { getPathDetail } from './get-path-detail.use-case';
@@ -23,9 +23,9 @@ export type LoadPathDetailResult =
 function isNextNotFoundError(error: unknown): boolean {
   return Boolean(
     error &&
-      typeof error === 'object' &&
-      'digest' in error &&
-      String((error as { digest?: string }).digest).startsWith('NEXT_NOT_FOUND'),
+    typeof error === 'object' &&
+    'digest' in error &&
+    String((error as { digest?: string }).digest).startsWith('NEXT_NOT_FOUND'),
   );
 }
 

@@ -1,6 +1,9 @@
 import type { EmbeddingPort, VectorSearchPort } from '../../domain/ports';
 import { AIPlatformConfig } from '../../infrastructure/config/ai-platform.config';
-import { getCachedEmbedding, setCachedEmbedding } from '../../embeddings/cache/embedding-cache';
+import {
+  getCachedEmbedding,
+  setCachedEmbedding,
+} from '../../embeddings/cache/embedding-cache';
 import { withSpan } from '../../observability/opentelemetry/span-helpers';
 import { buildScopeSpanAttributes } from '../../observability/opentelemetry/otel-attributes';
 import { platformMetrics } from '../../observability/metrics/platform-metrics';
@@ -174,7 +177,11 @@ async function retrieveRelevantContentInternal(
     );
     embeddingTokensUsed += searchResult.embeddingTokensUsed;
     if (searchResult.chunks.length > 0) {
-      return buildSuccessResult(searchResult.chunks, 'strict', embeddingTokensUsed);
+      return buildSuccessResult(
+        searchResult.chunks,
+        'strict',
+        embeddingTokensUsed,
+      );
     }
   }
 
@@ -208,7 +215,11 @@ async function retrieveRelevantContentInternal(
       );
       embeddingTokensUsed += searchResult.embeddingTokensUsed;
       if (searchResult.chunks.length > 0) {
-        return buildSuccessResult(searchResult.chunks, 'expanded', embeddingTokensUsed);
+        return buildSuccessResult(
+          searchResult.chunks,
+          'expanded',
+          embeddingTokensUsed,
+        );
       }
     }
 
@@ -226,7 +237,8 @@ async function retrieveRelevantContentInternal(
   }
 
   if (input.lectureId) {
-    const fallbackQuery = expandedQuery !== question ? expandedQuery : scopedQuery;
+    const fallbackQuery =
+      expandedQuery !== question ? expandedQuery : scopedQuery;
     searchResult = await searchChunks(
       fallbackQuery,
       input,

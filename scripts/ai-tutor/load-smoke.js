@@ -19,7 +19,8 @@ const baseUrl = __ENV.BASE_URL || 'http://localhost:3000';
 export default function loadSmoke() {
   const health = http.get(`${baseUrl}/api/health/tutor`);
   check(health, {
-    'health status is 200 or 503': (res) => res.status === 200 || res.status === 503,
+    'health status is 200 or 503': (res) =>
+      res.status === 200 || res.status === 503,
   });
 
   sleep(1);

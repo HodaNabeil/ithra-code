@@ -99,11 +99,6 @@ export function CourseCard({ course }: CourseCardProps) {
                 </>
               )}
 
-              {/* Total Hours */}
-              <Badge variant="outline" className="text-xs font-normal">
-                إجمالي الساعات {course.hours}
-              </Badge>
-
               {/* Lectures */}
               {course.lecturesCount > 0 && (
                 <Badge variant="outline" className="text-xs font-normal">
@@ -135,7 +130,7 @@ export function CourseCard({ course }: CourseCardProps) {
           {course.isPurchased ? (
             <Link
               href={learnHref}
-              className={buttonVariants({ variant: 'default' })}
+              className={buttonVariants({ variant: 'course' })}
             >
               شاهد الدورة
             </Link>

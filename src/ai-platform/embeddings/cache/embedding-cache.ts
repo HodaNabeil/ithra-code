@@ -28,7 +28,9 @@ async function getRedisClient() {
   return redis;
 }
 
-export async function getCachedEmbedding(text: string): Promise<number[] | null> {
+export async function getCachedEmbedding(
+  text: string,
+): Promise<number[] | null> {
   if (process.env.NODE_ENV === 'test') {
     return null;
   }
@@ -53,7 +55,10 @@ export async function getCachedEmbedding(text: string): Promise<number[] | null>
   }
 }
 
-export async function setCachedEmbedding(text: string, embedding: number[]): Promise<void> {
+export async function setCachedEmbedding(
+  text: string,
+  embedding: number[],
+): Promise<void> {
   if (process.env.NODE_ENV === 'test') {
     return;
   }

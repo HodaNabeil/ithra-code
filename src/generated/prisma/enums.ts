@@ -358,3 +358,13 @@ export const AiToolInvocationStatus = {
 } as const
 
 export type AiToolInvocationStatus = (typeof AiToolInvocationStatus)[keyof typeof AiToolInvocationStatus]
+
+
+export const ContactMessageStatus = {
+  NEW: 'NEW',
+  READ: 'READ',
+  REPLIED: 'REPLIED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type ContactMessageStatus = (typeof ContactMessageStatus)[keyof typeof ContactMessageStatus]

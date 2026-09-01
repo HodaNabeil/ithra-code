@@ -63,7 +63,9 @@ export interface GraphRuntimeConfigurable {
 export function getGraphRuntimeConfig(
   config: LangGraphRunnableConfig,
 ): GraphRuntimeConfigurable {
-  const configurable = config.configurable as GraphRuntimeConfigurable | undefined;
+  const configurable = config.configurable as
+    | GraphRuntimeConfigurable
+    | undefined;
   if (!configurable?.llmPort) {
     throw new Error('Graph runtime missing llmPort in configurable');
   }

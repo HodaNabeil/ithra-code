@@ -316,3 +316,8 @@ export type AiMemoryFact = Prisma.AiMemoryFactModel
  * 
  */
 export type AiToolInvocation = Prisma.AiToolInvocationModel
+/**
+ * Model ContactMessage
+ * 
+ */
+export type ContactMessage = Prisma.ContactMessageModel

@@ -20,7 +20,10 @@ export function registerOutputSchema(schema: OutputSchema): void {
   schemas.set(schemaKey(schema.id, schema.version), schema);
 }
 
-export function getOutputSchema(id: string, version?: number): OutputSchema | undefined {
+export function getOutputSchema(
+  id: string,
+  version?: number,
+): OutputSchema | undefined {
   if (version !== undefined) {
     return schemas.get(schemaKey(id, version));
   }

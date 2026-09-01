@@ -2,7 +2,7 @@ import type { PathListDTO } from '@/types/path/path.dto';
 
 const SITE_ORIGIN = 'https://ithracode.com';
 
-export function buildLearningPathsItemListJsonLd(paths: PathListDTO[]) {
+export function buildLearningPathsListingJsonLd(paths: PathListDTO[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',

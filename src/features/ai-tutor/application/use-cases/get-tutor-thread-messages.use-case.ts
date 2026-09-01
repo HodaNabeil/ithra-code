@@ -1,4 +1,7 @@
-import type { GetTutorThreadInputDTO, TutorThreadMessagesDTO } from '../dto/tutor-thread.dto';
+import type {
+  GetTutorThreadInputDTO,
+  TutorThreadMessagesDTO,
+} from '../dto/tutor-thread.dto';
 import {
   buildTutorSessionContext,
   type CourseContextServiceDeps,

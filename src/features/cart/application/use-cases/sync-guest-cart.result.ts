@@ -21,7 +21,10 @@ export function isGuestCartSyncSuccess(
     return true;
   }
 
-  return isCartErrorWithAnyCode(result.reason, GUEST_CART_IDEMPOTENT_SYNC_CODES);
+  return isCartErrorWithAnyCode(
+    result.reason,
+    GUEST_CART_IDEMPOTENT_SYNC_CODES,
+  );
 }
 
 export function summarizeGuestCartSyncResults(

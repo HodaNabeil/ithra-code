@@ -66,7 +66,8 @@ export class ReconciliationPolicy {
       ageMs >= this.config.maxWindowMs;
 
     const sessionExpired =
-      ctx.sessionExpiresAt != null && ctx.sessionExpiresAt.getTime() <= ctx.now.getTime();
+      ctx.sessionExpiresAt != null &&
+      ctx.sessionExpiresAt.getTime() <= ctx.now.getTime();
 
     const consecutiveNotFound =
       ctx.outcome === 'not_found'

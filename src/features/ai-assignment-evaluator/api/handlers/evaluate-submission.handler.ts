@@ -4,7 +4,9 @@ import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platfor
 import { evaluateSubmissionInputSchema } from '../../application/dto/evaluate-submission.dto';
 import { evaluateSubmissionUseCase } from '../../application/use-cases/evaluate-submission.use-case';
 
-export async function handleEvaluateSubmissionRequest(request: Request): Promise<Response> {
+export async function handleEvaluateSubmissionRequest(
+  request: Request,
+): Promise<Response> {
   if (!AIPlatformConfig.isEnabled()) {
     return Response.json(
       { success: false, message: 'AI evaluation is not enabled' },
@@ -24,7 +26,10 @@ export async function handleEvaluateSubmissionRequest(request: Request): Promise
   try {
     body = await request.json();
   } catch {
-    return Response.json({ success: false, message: 'Invalid request body' }, { status: 400 });
+    return Response.json(
+      { success: false, message: 'Invalid request body' },
+      { status: 400 },
+    );
   }
 
   const parsed = evaluateSubmissionInputSchema.safeParse(body);
@@ -41,7 +46,8 @@ export async function handleEvaluateSubmissionRequest(request: Request): Promise
 
     return Response.json({ success: true, data: result });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Evaluation failed';
+    const message =
+      error instanceof Error ? error.message : 'Evaluation failed';
     return Response.json({ success: false, message }, { status: 500 });
   }
 }

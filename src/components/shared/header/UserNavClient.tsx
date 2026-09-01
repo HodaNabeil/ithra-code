@@ -9,9 +9,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { signOut } from 'next-auth/react'; // Or your custom signout logic
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { UserAvatar } from './user-avatar';
 
 interface UserNavClientProps {
   user: {
@@ -22,25 +22,15 @@ interface UserNavClientProps {
 }
 
 export function UserNavClient({ user }: UserNavClientProps) {
-  const initials =
-    user?.name
-      ?.split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase() || 'U';
-
   return (
     <DropdownMenu dir="rtl">
       <DropdownMenuTrigger className="outline-none focus:ring-0">
-        <Avatar className="h-9 w-9 cursor-pointer border border-border hover:border-primary/50 transition-all duration-300 shadow-md">
-          <AvatarImage
-            src={user.image ?? undefined}
-            alt={user.name || 'User'}
-          />
-          <AvatarFallback className="bg-muted text-foreground">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar
+          name={user.name}
+          email={user.email}
+          image={user.image}
+          className="cursor-pointer transition-all duration-300 hover:ring-primary/60"
+        />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -56,7 +46,6 @@ export function UserNavClient({ user }: UserNavClientProps) {
 
         <DropdownMenuSeparator className="bg-border" />
 
-        {/* Note: Use 'asChild' on DropdownMenuItem when putting a Link inside */}
         <DropdownMenuItem
           asChild
           className="focus:bg-accent focus:text-primary cursor-pointer"

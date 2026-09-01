@@ -10,7 +10,11 @@ import {
   InputGroupInput,
 } from '@/components/ui/input-group';
 
-export function CoursesSearch() {
+type CoursesSearchProps = {
+  urlMode?: 'push' | 'replace';
+};
+
+export function CoursesSearch({ urlMode = 'push' }: CoursesSearchProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -45,7 +49,11 @@ export function CoursesSearch() {
       return;
     }
 
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(
+      urlMode === 'replace' && typeof window !== 'undefined'
+        ? window.location.search
+        : searchParams.toString(),
+    );
     if (debouncedSearchTerm) {
       params.set('search', debouncedSearchTerm);
     } else {
@@ -56,10 +64,23 @@ export function CoursesSearch() {
     const queryString = params.toString();
     const url = queryString ? `${pathname}?${queryString}` : pathname;
 
+    if (urlMode === 'replace') {
+      window.history.replaceState(window.history.state, '', url);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      return;
+    }
+
     startTransition(() => {
       router.push(url);
     });
-  }, [debouncedSearchTerm, searchTerm, router, searchParams, pathname]);
+  }, [
+    debouncedSearchTerm,
+    searchTerm,
+    router,
+    searchParams,
+    pathname,
+    urlMode,
+  ]);
 
   return (
     <InputGroup className="flex-1 rounded-[100rem] h-10 lg:h-11.5">

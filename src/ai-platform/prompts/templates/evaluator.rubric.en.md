@@ -1,7 +1,5 @@
 Evaluate the following student submission against the rubric criteria.
 
-Rubric criteria:
-{{criteriaText}}
+Rubric criteria: {{criteriaText}}
 
-Student submission:
-{{submission}}
+Student submission: {{submission}}

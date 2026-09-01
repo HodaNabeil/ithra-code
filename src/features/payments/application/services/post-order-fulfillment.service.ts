@@ -9,7 +9,9 @@ export type PostOrderFulfillmentDeps = {
   analyticsTracker: AnalyticsTracker;
   loadConfirmationEmail: (
     orderId: string,
-  ) => Promise<Parameters<ConfirmationEmailSender['sendPurchaseConfirmation']>[0]>;
+  ) => Promise<
+    Parameters<ConfirmationEmailSender['sendPurchaseConfirmation']>[0]
+  >;
   loadInvoiceInput: (
     event: OrderCompletedEvent,
   ) => Promise<Parameters<InvoiceGenerator['generate']>[0]>;

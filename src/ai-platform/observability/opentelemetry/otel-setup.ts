@@ -19,7 +19,10 @@ import {
   resolveTraceSampler,
   type OtelRuntimeConfig,
 } from './otel-config';
-import { markOtelInitialized, resetOtelInitializedForTests } from './span-helpers';
+import {
+  markOtelInitialized,
+  resetOtelInitializedForTests,
+} from './span-helpers';
 
 let sdk: NodeSDK | null = null;
 

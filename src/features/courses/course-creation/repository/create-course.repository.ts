@@ -37,10 +37,7 @@ export class PrismaCourseDraftRepository implements CourseCreationRepository {
     return path !== null;
   }
 
-  async trackBelongsToPath(
-    trackId: string,
-    pathId: string,
-  ): Promise<boolean> {
+  async trackBelongsToPath(trackId: string, pathId: string): Promise<boolean> {
     const track = await prisma.track.findFirst({
       where: { id: trackId, pathId },
       select: { id: true },

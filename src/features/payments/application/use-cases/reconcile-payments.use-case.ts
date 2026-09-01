@@ -152,8 +152,7 @@ export class ReconcilePaymentsUseCase {
         sessionExpiresAt: record.sessionExpiresAt,
         now: new Date(),
         failureCode: providerStatus.failureCode,
-        failureMessage:
-          providerStatus.failureMessage ?? providerStatus.detail,
+        failureMessage: providerStatus.failureMessage ?? providerStatus.detail,
       });
 
       const nextAttempt = record.payment.reconcileAttemptCount + 1;

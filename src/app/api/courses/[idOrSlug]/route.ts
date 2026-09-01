@@ -3,8 +3,12 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
 import { Course, Prisma } from '@prisma/client';
-import { CourseDetailError, getCourseDetail } from '@/features/courses/course-detail';
+import {
+  CourseDetailError,
+  getCourseDetail,
+} from '@/features/courses/course-detail';
 import { ArchiveCourseError } from '@/features/courses/errors/archive-course.errors';
+import { CourseAuthorizationError } from '@/features/courses/errors/course-authorization.errors';
 import { archiveCourseUseCase } from '@/features/courses/use-cases/archive-course.use-case';
 
 export async function GET(
@@ -72,7 +76,10 @@ export async function DELETE(
 
     return apiSuccess(result, 'Course archived successfully');
   } catch (error) {
-    if (error instanceof ArchiveCourseError) {
+    if (
+      error instanceof ArchiveCourseError ||
+      error instanceof CourseAuthorizationError
+    ) {
       return apiError(error.message, error.status);
     }
 

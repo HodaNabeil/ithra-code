@@ -51,7 +51,11 @@ async function* streamWithRetry(
         throw error;
       }
 
-      if (!(error instanceof LlmError) || !error.retryable || attempt === MAX_RETRIES - 1) {
+      if (
+        !(error instanceof LlmError) ||
+        !error.retryable ||
+        attempt === MAX_RETRIES - 1
+      ) {
         throw error;
       }
 
@@ -64,7 +68,10 @@ async function* streamWithRetry(
     }
   }
 
-  throw lastError ?? new LlmError('UNKNOWN', 'فشل الاتصال بخدمة الذكاء الاصطناعي', true);
+  throw (
+    lastError ??
+    new LlmError('UNKNOWN', 'فشل الاتصال بخدمة الذكاء الاصطناعي', true)
+  );
 }
 
 /**
@@ -73,7 +80,9 @@ async function* streamWithRetry(
 export class ResilientLlmAdapter implements LlmPort {
   constructor(private readonly inner: LlmPort) {}
 
-  async *streamAnswer(options: LlmStreamOptions): AsyncIterableIterator<string> {
+  async *streamAnswer(
+    options: LlmStreamOptions,
+  ): AsyncIterableIterator<string> {
     const model = options.model ?? 'unknown';
     const attributes = { 'ai.llm.model': model, 'ai.llm.mode': 'stream' };
 
@@ -131,9 +140,15 @@ export class ResilientLlmAdapter implements LlmPort {
     );
   }
 
-  private async completeWithRetry(options: LlmCompleteOptions): Promise<LlmCompleteResult> {
+  private async completeWithRetry(
+    options: LlmCompleteOptions,
+  ): Promise<LlmCompleteResult> {
     if (!this.inner.complete) {
-      throw new LlmError(LlmErrorCodes.INVALID_REQUEST, 'Inner LLM does not support complete()', false);
+      throw new LlmError(
+        LlmErrorCodes.INVALID_REQUEST,
+        'Inner LLM does not support complete()',
+        false,
+      );
     }
 
     let lastError: LlmError | undefined;
@@ -142,7 +157,11 @@ export class ResilientLlmAdapter implements LlmPort {
       try {
         return await this.inner.complete(options);
       } catch (error) {
-        if (!(error instanceof LlmError) || !error.retryable || attempt === MAX_RETRIES - 1) {
+        if (
+          !(error instanceof LlmError) ||
+          !error.retryable ||
+          attempt === MAX_RETRIES - 1
+        ) {
           throw error;
         }
         lastError = error;
@@ -150,6 +169,9 @@ export class ResilientLlmAdapter implements LlmPort {
       }
     }
 
-    throw lastError ?? new LlmError('UNKNOWN', 'فشل الاتصال بخدمة الذكاء الاصطناعي', true);
+    throw (
+      lastError ??
+      new LlmError('UNKNOWN', 'فشل الاتصال بخدمة الذكاء الاصطناعي', true)
+    );
   }
 }

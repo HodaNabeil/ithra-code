@@ -10,7 +10,10 @@ import {
 } from '@/ai-platform/indexing/pipelines/course-indexing.pipeline';
 import type { CourseIndexingRequestedEvent } from '@/ai-platform/indexing/constants';
 import { AITutorConfig } from '@/features/ai-tutor/infrastructure/config/ai-tutor.config';
-import { getCourseIndexingDeps, getCourseContentRepository } from '@/ai-platform/infrastructure/di/ai-platform.container';
+import {
+  getCourseIndexingDeps,
+  getCourseContentRepository,
+} from '@/ai-platform/infrastructure/di/ai-platform.container';
 import { bootstrapUnindexedCourseIndexing } from '@/ai-platform/indexing/pipelines/bootstrap';
 import { validateIndexingInfrastructure } from '@/features/ai-tutor/infrastructure/startup/validate-indexing-infrastructure';
 import { COURSE_INDEXING_QUEUE } from '@/ai-platform/indexing/pipelines/enqueue';
@@ -24,11 +27,14 @@ import { AI_PLATFORM_CONSTANTS } from '@/ai-platform/shared/constants';
 import { logger } from '@/lib/logger';
 import { redis } from '@/lib/redis';
 
-const shutdownGraceMs = Number(process.env.COURSE_INDEXING_SHUTDOWN_GRACE_MS ?? 30_000);
+const shutdownGraceMs = Number(
+  process.env.COURSE_INDEXING_SHUTDOWN_GRACE_MS ?? 30_000,
+);
 const workerConcurrency = AIPlatformConfig.isEnabled()
   ? AIPlatformConfig.getIndexingWorkerConcurrency()
   : AITutorConfig.getIndexingWorkerConcurrency();
-const WORKER_HEARTBEAT_KEY = AI_PLATFORM_CONSTANTS.COURSE_INDEXING_WORKER_HEARTBEAT_KEY;
+const WORKER_HEARTBEAT_KEY =
+  AI_PLATFORM_CONSTANTS.COURSE_INDEXING_WORKER_HEARTBEAT_KEY;
 const WORKER_HEARTBEAT_INTERVAL_MS = 30_000;
 
 initOtel();
@@ -51,7 +57,9 @@ async function processCourseIndexingEvent(
   return runCourseIndexing(course, deps);
 }
 
-async function processJob(job: Job<CourseIndexingRequestedEvent>): Promise<IndexingJobResult> {
+async function processJob(
+  job: Job<CourseIndexingRequestedEvent>,
+): Promise<IndexingJobResult> {
   return handleCourseIndexingJob(job, {
     isEnabled: () => AITutorConfig.isEnabled(),
     processEvent: processCourseIndexingEvent,

@@ -27,7 +27,9 @@ function parseChatRequest(request: ChatRequest): ChatRequest {
 }
 
 function toAgentRunRequest(request: ChatRequest) {
-  const lastUserMessage = [...request.messages].reverse().find((m) => m.role === 'user');
+  const lastUserMessage = [...request.messages]
+    .reverse()
+    .find((m) => m.role === 'user');
   if (!lastUserMessage) {
     throw new PlatformError(
       PlatformErrorCodes.VALIDATION_ERROR,
@@ -38,7 +40,9 @@ function toAgentRunRequest(request: ChatRequest) {
   return {
     userId: request.scope.userId,
     input: lastUserMessage.content,
-    locale: request.options?.locale?.startsWith('ar') ? ('ar' as const) : ('en' as const),
+    locale: request.options?.locale?.startsWith('ar')
+      ? ('ar' as const)
+      : ('en' as const),
     scope: {
       userId: request.scope.userId,
       courseId: request.scope.courseId,
@@ -70,7 +74,9 @@ export async function chat(request: ChatRequest): Promise<ChatResult> {
   };
 }
 
-export async function* chatStream(request: ChatRequest): AsyncGenerator<ChatStreamEvent> {
+export async function* chatStream(
+  request: ChatRequest,
+): AsyncGenerator<ChatStreamEvent> {
   assertPlatformReady();
   const parsed = parseChatRequest(request);
 

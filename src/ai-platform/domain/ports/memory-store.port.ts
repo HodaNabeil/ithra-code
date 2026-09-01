@@ -1,6 +1,15 @@
-export type MemoryFactType = 'preference' | 'misconception' | 'achievement' | 'note';
+export type MemoryFactType =
+  | 'preference'
+  | 'misconception'
+  | 'achievement'
+  | 'note';
 
-export type MemoryScopeType = 'session' | 'conversation' | 'course' | 'global' | 'lecture';
+export type MemoryScopeType =
+  | 'session'
+  | 'conversation'
+  | 'course'
+  | 'global'
+  | 'lecture';
 
 export interface MemoryScope {
   type: MemoryScopeType;
@@ -35,5 +44,8 @@ export interface MemoryQuery {
 export interface MemoryStorePort {
   storeFact(fact: MemoryFact): Promise<MemoryFact>;
   getFacts(query: MemoryQuery): Promise<MemoryFact[]>;
-  deleteFacts(userId: string, scope?: Pick<MemoryScope, 'type' | 'courseId' | 'lectureId'>): Promise<number>;
+  deleteFacts(
+    userId: string,
+    scope?: Pick<MemoryScope, 'type' | 'courseId' | 'lectureId'>,
+  ): Promise<number>;
 }

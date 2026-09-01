@@ -1,9 +1,13 @@
 import assert from 'node:assert/strict';
 
 (process.env as Record<string, string | undefined>).NODE_ENV = 'test';
-(process.env as Record<string, string | undefined>).SKIP_ENV_VALIDATION = 'true';
+(process.env as Record<string, string | undefined>).SKIP_ENV_VALIDATION =
+  'true';
 
-import type { EmbeddingPort, EmbeddingResult } from '@/ai-platform/domain/ports/embedding.port';
+import type {
+  EmbeddingPort,
+  EmbeddingResult,
+} from '@/ai-platform/domain/ports/embedding.port';
 import type { VectorSearchPort } from '@/ai-platform/domain/ports/vector-search.port';
 import { retrieveRelevantContent } from '@/ai-platform/rag/retrieval/content-retriever.service';
 
@@ -21,7 +25,9 @@ class FakeEmbeddingPort implements EmbeddingPort {
   }
 
   async generateBatchEmbeddings(texts: string[]) {
-    const embeddings = await Promise.all(texts.map((text) => this.generateEmbedding(text)));
+    const embeddings = await Promise.all(
+      texts.map((text) => this.generateEmbedding(text)),
+    );
     return {
       embeddings,
       totalTokensUsed: this.tokensUsed * texts.length,

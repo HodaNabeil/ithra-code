@@ -11,6 +11,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const breakdown = await getModelBreakdownAnalytics(parseAnalyticsFilters(request));
+  const breakdown = await getModelBreakdownAnalytics(
+    parseAnalyticsFilters(request),
+  );
   return NextResponse.json({ models: breakdown });
 }

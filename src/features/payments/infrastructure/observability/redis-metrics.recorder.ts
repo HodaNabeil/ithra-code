@@ -1,5 +1,8 @@
 import { redis } from '@/lib/redis';
-import type { MetricLabels, MetricsRecorder } from '@/features/payments/application/ports/metrics.recorder';
+import type {
+  MetricLabels,
+  MetricsRecorder,
+} from '@/features/payments/application/ports/metrics.recorder';
 
 const METRICS_PREFIX = 'payment:metrics:counter:';
 const HISTOGRAM_PREFIX = 'payment:metrics:histogram:';
@@ -29,11 +32,7 @@ export class RedisMetricsRecorder implements MetricsRecorder {
     });
   }
 
-  observeHistogram(
-    name: string,
-    valueMs: number,
-    labels?: MetricLabels,
-  ): void {
+  observeHistogram(name: string, valueMs: number, labels?: MetricLabels): void {
     const key = `${HISTOGRAM_PREFIX}${name}${formatLabels(labels)}`;
     void redis
       .multi()
@@ -57,8 +56,7 @@ export class RedisMetricsRecorder implements MetricsRecorder {
         const braceIndex = metricName.indexOf('{');
         const name =
           braceIndex === -1 ? metricName : metricName.slice(0, braceIndex);
-        const labelText =
-          braceIndex === -1 ? '' : metricName.slice(braceIndex);
+        const labelText = braceIndex === -1 ? '' : metricName.slice(braceIndex);
         lines.push(`# TYPE ${name} counter`, `${name}${labelText} ${value}`);
       }
 
@@ -69,9 +67,11 @@ export class RedisMetricsRecorder implements MetricsRecorder {
         const braceIndex = metricName.indexOf('{');
         const name =
           braceIndex === -1 ? metricName : metricName.slice(0, braceIndex);
-        const labelText =
-          braceIndex === -1 ? '' : metricName.slice(braceIndex);
-        const [count, sum] = await redis.mget(`${baseKey}:count`, `${baseKey}:sum`);
+        const labelText = braceIndex === -1 ? '' : metricName.slice(braceIndex);
+        const [count, sum] = await redis.mget(
+          `${baseKey}:count`,
+          `${baseKey}:sum`,
+        );
         if (!count) continue;
         lines.push(
           `# TYPE ${name} summary`,

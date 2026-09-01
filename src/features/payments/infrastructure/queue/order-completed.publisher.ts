@@ -35,9 +35,7 @@ function getOrderCompletedQueue(): Queue {
  * Publishes `OrderCompleted` secondary work to BullMQ.
  * Failures here must never roll back fulfillment (caller catches / logs).
  */
-export class BullmqOrderCompletedPublisher
-  implements OrderCompletedPublisher
-{
+export class BullmqOrderCompletedPublisher implements OrderCompletedPublisher {
   async publish(event: OrderCompletedEvent): Promise<void> {
     try {
       const queue = getOrderCompletedQueue();

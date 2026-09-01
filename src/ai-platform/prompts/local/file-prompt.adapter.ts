@@ -13,7 +13,9 @@ export class FilePromptAdapter implements PromptRepositoryPort {
     const local = getLocalTemplate(query.key, locale, query.variables);
 
     if (!local) {
-      throw new Error(`Local prompt template not found: ${query.key} (${locale})`);
+      throw new Error(
+        `Local prompt template not found: ${query.key} (${locale})`,
+      );
     }
 
     return {

@@ -12,7 +12,11 @@ import {
 import type { ToolContext } from '../types';
 import type { ToolDefinition } from '../types';
 
-function searchCacheScope(query: string, courseId: string, topK?: number): string {
+function searchCacheScope(
+  query: string,
+  courseId: string,
+  topK?: number,
+): string {
   return `tool:search:${courseId}:${topK ?? 'default'}:${query}`;
 }
 

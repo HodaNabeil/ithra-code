@@ -27,7 +27,8 @@ function isLegacyContentValidator(
     typeof value === 'object' &&
     value !== null &&
     'validateResponse' in value &&
-    typeof (value as EducationalContentValidatorPort).validateResponse === 'function'
+    typeof (value as EducationalContentValidatorPort).validateResponse ===
+      'function'
   );
 }
 
@@ -113,12 +114,20 @@ export function extractRunMetadata(
 
   const metadata: Record<string, unknown> = {};
 
-  if ('runSignals' in state && typeof state.runSignals === 'object' && state.runSignals) {
+  if (
+    'runSignals' in state &&
+    typeof state.runSignals === 'object' &&
+    state.runSignals
+  ) {
     Object.assign(metadata, state.runSignals as Record<string, unknown>);
   }
 
   if ('assessmentBlocked' in state && state.assessmentBlocked === true) {
     metadata.assessmentBlocked = true;
+  }
+
+  if ('groundingBlocked' in state && state.groundingBlocked === true) {
+    metadata.groundingBlocked = true;
   }
 
   if (

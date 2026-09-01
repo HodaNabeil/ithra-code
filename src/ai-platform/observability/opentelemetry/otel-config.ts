@@ -14,7 +14,9 @@ export type OtelRuntimeConfig = {
   tracesSamplerRatio: number;
 };
 
-export function resolveTraceSampler(config: OtelRuntimeConfig): Sampler | undefined {
+export function resolveTraceSampler(
+  config: OtelRuntimeConfig,
+): Sampler | undefined {
   switch (config.tracesSampler) {
     case 'always_on':
       return new AlwaysOnSampler();
@@ -33,7 +35,9 @@ export function resolveTraceSampler(config: OtelRuntimeConfig): Sampler | undefi
   }
 }
 
-export function resolveOtlpMetricsUrl(otlpEndpoint?: string): string | undefined {
+export function resolveOtlpMetricsUrl(
+  otlpEndpoint?: string,
+): string | undefined {
   if (!otlpEndpoint) {
     return undefined;
   }
@@ -41,7 +45,9 @@ export function resolveOtlpMetricsUrl(otlpEndpoint?: string): string | undefined
   return `${otlpEndpoint.replace(/\/$/, '')}/v1/metrics`;
 }
 
-export function resolveOtlpTracesUrl(otlpEndpoint?: string): string | undefined {
+export function resolveOtlpTracesUrl(
+  otlpEndpoint?: string,
+): string | undefined {
   if (!otlpEndpoint) {
     return undefined;
   }

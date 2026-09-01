@@ -34,7 +34,8 @@ function mapRecordToProfile(record: {
   return {
     userId: record.userId,
     courseId: record.courseId,
-    explanationDepth: record.explanationDepth as StudentLearningProfile['explanationDepth'],
+    explanationDepth:
+      record.explanationDepth as StudentLearningProfile['explanationDepth'],
     contentStyle: record.contentStyle as StudentLearningProfile['contentStyle'],
     confidence: record.confidence,
     interactionCount: record.interactionCount,
@@ -49,7 +50,8 @@ export async function loadStudentLearningProfile(
   },
   deps: LearningProfileServiceDeps,
 ): Promise<StudentLearningProfile> {
-  const record = await deps.studentLearningProfileRepository.findByUserAndCourse(params);
+  const record =
+    await deps.studentLearningProfileRepository.findByUserAndCourse(params);
 
   if (!record) {
     return {

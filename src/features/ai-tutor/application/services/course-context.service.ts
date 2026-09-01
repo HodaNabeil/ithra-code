@@ -1,7 +1,4 @@
-import {
-  AskTutorError,
-  AskTutorErrorCodes,
-} from '../errors/ask-tutor.errors';
+import { AskTutorError, AskTutorErrorCodes } from '../errors/ask-tutor.errors';
 import type {
   CourseContextInfo,
   LectureCatalogItem,
@@ -120,8 +117,9 @@ function buildStudentProgress(params: {
     totalLectures,
     completionPercentage,
     currentLectureCompleted: params.currentLectureId
-      ? (params.lectureProgress.find((lecture) => lecture.id === params.currentLectureId)
-          ?.isCompleted ?? false)
+      ? (params.lectureProgress.find(
+          (lecture) => lecture.id === params.currentLectureId,
+        )?.isCompleted ?? false)
       : false,
     lectureProgress: params.lectureProgress,
     sectionProgress: buildSectionProgressSummaries(params.lectureProgress),
@@ -130,7 +128,9 @@ function buildStudentProgress(params: {
   };
 }
 
-function mapCourseContext(course: EnrolledCourseWithProgressDTO): CourseContextInfo {
+function mapCourseContext(
+  course: EnrolledCourseWithProgressDTO,
+): CourseContextInfo {
   return {
     id: course.id,
     slug: course.slug,
@@ -163,10 +163,11 @@ export async function buildTutorSessionContext(
     return cached;
   }
 
-  const course = await deps.courseContextRepository.findEnrolledCourseWithProgress({
-    courseSlug: params.courseSlug,
-    userId: params.userId,
-  });
+  const course =
+    await deps.courseContextRepository.findEnrolledCourseWithProgress({
+      courseSlug: params.courseSlug,
+      userId: params.userId,
+    });
 
   if (!course) {
     throw new AskTutorError(
@@ -201,12 +202,14 @@ export async function buildTutorSessionContext(
     course,
     progressByLectureId,
   });
-  const lectureCatalog: LectureCatalogItem[] = lectureProgress.map((lecture) => ({
-    id: lecture.id,
-    title: lecture.title,
-    description: undefined,
-    sectionTitle: lecture.sectionTitle,
-  }));
+  const lectureCatalog: LectureCatalogItem[] = lectureProgress.map(
+    (lecture) => ({
+      id: lecture.id,
+      title: lecture.title,
+      description: undefined,
+      sectionTitle: lecture.sectionTitle,
+    }),
+  );
   const completedLectureIds = new Set(
     lectureProgress
       .filter((lecture) => lecture.isCompleted)

@@ -7,7 +7,10 @@ import type {
 } from '../infrastructure/prisma/cart.select';
 
 function countLectures(course: DB_CartItemCourse): number {
-  return course.sections.reduce((acc, section) => acc + section._count.lectures, 0);
+  return course.sections.reduce(
+    (acc, section) => acc + section._count.lectures,
+    0,
+  );
 }
 
 function formatDurationText(course: DB_CartItemCourse): string {
@@ -17,9 +20,7 @@ function formatDurationText(course: DB_CartItemCourse): string {
   if (totalSeconds > 0) {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
-    return hours > 0
-      ? `${hours} ساعة و ${minutes} دقيقة`
-      : `${minutes} دقيقة`;
+    return hours > 0 ? `${hours} ساعة و ${minutes} دقيقة` : `${minutes} دقيقة`;
   }
 
   return lecturesCount > 0 ? `${lecturesCount} محاضرة` : '';
@@ -40,7 +41,9 @@ export function mapCartItemCourse(
     description: course.description,
     thumbnailUrl: course.thumbnailUrl,
     price: snapshotPrice,
-    compareAtPrice: course.compareAtPrice ? Number(course.compareAtPrice) : null,
+    compareAtPrice: course.compareAtPrice
+      ? Number(course.compareAtPrice)
+      : null,
     currency: course.currency,
     duration: course.duration,
     level: course.level,

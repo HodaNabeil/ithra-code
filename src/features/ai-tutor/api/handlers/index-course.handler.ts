@@ -17,7 +17,9 @@ const INDEX_RATE_LIMITS = {
   requestsPerDay: 100,
 } as const;
 
-export async function handleIndexCourseRequest(request: Request): Promise<Response> {
+export async function handleIndexCourseRequest(
+  request: Request,
+): Promise<Response> {
   if (!AITutorConfig.isEnabled()) {
     return apiError('ميزة المدرس الذكي غير مفعّلة', 503);
   }
@@ -34,7 +36,10 @@ export async function handleIndexCourseRequest(request: Request): Promise<Respon
       scope: 'index:course',
     });
   } catch (error) {
-    if (error instanceof PlatformError && error.code === PlatformErrorCodes.RATE_LIMITED) {
+    if (
+      error instanceof PlatformError &&
+      error.code === PlatformErrorCodes.RATE_LIMITED
+    ) {
       return apiError(error.message, 429);
     }
     throw error;

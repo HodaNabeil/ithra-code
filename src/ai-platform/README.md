@@ -4,13 +4,18 @@ Internal AI module for IthraCode. Features import **only** from `@/ai-platform`.
 
 ## Status
 
-Phase 1 scaffold + provider extraction (Weeks 1–4): domain ports, OpenAI adapters, cost ledger, and `ai.chat()` / `ai.chatStream()` runtime.
+Phase 1 scaffold + provider extraction (Weeks 1–4): domain ports, OpenAI adapters, cost ledger, and
+`ai.chat()` / `ai.chatStream()` runtime.
 
-Weeks 5–6 RAG extraction: `PostgresVectorSearchAdapter`, embedding cache, embedding pipeline, BullMQ indexing handlers, and outbox/queue infrastructure.
+Weeks 5–6 RAG extraction: `PostgresVectorSearchAdapter`, embedding cache, embedding pipeline, BullMQ
+indexing handlers, and outbox/queue infrastructure.
 
-Week 7 guards + ingestion extraction: knowledge ingestion pipeline, `course-indexing.pipeline`, generalized Redis guards (`ai:*` keys), and staging `AI_PLATFORM_ENABLED=true`.
+Week 7 guards + ingestion extraction: knowledge ingestion pipeline, `course-indexing.pipeline`,
+generalized Redis guards (`ai:*` keys), and staging `AI_PLATFORM_ENABLED=true`.
 
-**Phase 2 (Weeks 8–10) — complete:** LangGraph agent runtime with `tutor.graph.ts` (sanitize → retrieve → generate → validate), agent registry, and `AgentRuntime`. Requires `AI_PLATFORM_ENABLED=true` and `AI_TUTOR_ENABLED=true`.
+**Phase 2 (Weeks 8–10) — complete:** LangGraph agent runtime with `tutor.graph.ts` (sanitize →
+retrieve → generate → validate), agent registry, and `AgentRuntime`. Requires
+`AI_PLATFORM_ENABLED=true` and `AI_TUTOR_ENABLED=true`.
 
 ## Quick start
 

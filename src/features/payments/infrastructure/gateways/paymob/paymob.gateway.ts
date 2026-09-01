@@ -73,7 +73,9 @@ function summarizePaymobError(error: unknown): {
  * Concrete Paymob implementation of the provider-agnostic
  * `PaymentProviderGateway`. Uses Paymob's Intention API and unified checkout.
  */
-export class PaymobGateway implements PaymentProviderGateway, PaymentInquiryPort {
+export class PaymobGateway
+  implements PaymentProviderGateway, PaymentInquiryPort
+{
   readonly provider: PaymentProvider = PaymentProvider.PAYMOB;
 
   private cachedAuthToken: { token: string; expiresAt: number } | null = null;
@@ -240,10 +242,7 @@ export class PaymobGateway implements PaymentProviderGateway, PaymentInquiryPort
         const summarized = summarizePaymobError(error);
         if (summarized.status === 404) {
           // Fall through to merchant_order_id inquiry.
-        } else if (
-          summarized.status != null &&
-          summarized.status >= 500
-        ) {
+        } else if (summarized.status != null && summarized.status >= 500) {
           return {
             outcome: 'transient_error',
             httpStatus: summarized.status,

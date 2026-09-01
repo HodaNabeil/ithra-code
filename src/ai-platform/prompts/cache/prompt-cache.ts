@@ -1,4 +1,7 @@
-import type { PromptQuery, ResolvedPrompt } from '../ports/prompt-repository.port';
+import type {
+  PromptQuery,
+  ResolvedPrompt,
+} from '../ports/prompt-repository.port';
 
 type CacheEntry = {
   prompt: ResolvedPrompt;

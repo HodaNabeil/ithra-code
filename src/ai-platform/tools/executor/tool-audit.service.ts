@@ -7,7 +7,9 @@ async function getPrismaClient() {
   return prisma;
 }
 
-export async function logToolInvocation(record: ToolInvocationRecord): Promise<void> {
+export async function logToolInvocation(
+  record: ToolInvocationRecord,
+): Promise<void> {
   try {
     const prisma = await getPrismaClient();
     await prisma.aiToolInvocation.create({

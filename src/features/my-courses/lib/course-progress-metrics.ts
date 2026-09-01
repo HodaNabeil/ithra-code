@@ -1,4 +1,4 @@
-import type { MyCourseSectionDTO } from '@/types/my-courses/my-courses.dto';
+import type { MyCourseSectionDTO } from '@/features/my-courses/dto/my-courses.dto';
 
 export type CourseProgressMetrics = {
   completedCount: number;

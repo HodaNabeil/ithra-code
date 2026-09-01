@@ -49,7 +49,8 @@ export const codeReviewerAgentDefinition: AgentDefinition = {
 export const supervisorAgentDefinition: AgentDefinition = {
   id: 'supervisor',
   name: 'AI Supervisor',
-  description: 'Routes user intent to tutor, evaluator, or code-reviewer agents',
+  description:
+    'Routes user intent to tutor, evaluator, or code-reviewer agents',
   graphId: 'supervisor-graph',
   capabilities: ['STRUCTURED_OUTPUT'],
   defaultModelPolicy: {

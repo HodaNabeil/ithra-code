@@ -45,6 +45,9 @@ void scheduleDailyCostAggregation().catch((error) => {
   logger.error({ error }, '[AI_COST_AGGREGATION_SCHEDULE_FAILED]');
 });
 
-logger.info({ queue: AI_COST_AGGREGATION_QUEUE }, '[AI_COST_AGGREGATION_WORKER_READY]');
+logger.info(
+  { queue: AI_COST_AGGREGATION_QUEUE },
+  '[AI_COST_AGGREGATION_WORKER_READY]',
+);
 
 export default worker;

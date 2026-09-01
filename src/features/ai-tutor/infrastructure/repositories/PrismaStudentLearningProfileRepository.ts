@@ -29,9 +29,7 @@ function mapRecord(record: {
   };
 }
 
-export class PrismaStudentLearningProfileRepository
-  implements StudentLearningProfileRepositoryPort
-{
+export class PrismaStudentLearningProfileRepository implements StudentLearningProfileRepositoryPort {
   async findByUserAndCourse(params: {
     userId: string;
     courseId: string;

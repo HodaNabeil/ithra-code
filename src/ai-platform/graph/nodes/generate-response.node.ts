@@ -13,7 +13,10 @@ import { getGraphRuntimeConfig } from '../runtime-config';
 function buildMessages(state: TutorAgentState) {
   const userContent = state.sanitizedInput || state.input;
   const toolContext = state.toolResults
-    .map((result) => `Tool result (${result.toolCallId}): ${JSON.stringify(result.output)}`)
+    .map(
+      (result) =>
+        `Tool result (${result.toolCallId}): ${JSON.stringify(result.output)}`,
+    )
     .join('\n');
 
   const messages = [...state.conversationHistory];
@@ -37,7 +40,11 @@ function toLlmTools(allowedTools: string[]) {
     try {
       parameters = z.toJSONSchema(tool.inputSchema) as Record<string, unknown>;
     } catch {
-      parameters = { type: 'object', properties: {}, additionalProperties: true };
+      parameters = {
+        type: 'object',
+        properties: {},
+        additionalProperties: true,
+      };
     }
 
     return {

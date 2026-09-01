@@ -57,7 +57,10 @@ function ChartTooltip({
       <p className="mb-2 font-medium">{label ? formatShortDate(label) : ''}</p>
       <div className="space-y-1">
         {payload.map((entry) => (
-          <div key={entry.name} className="flex items-center justify-between gap-4">
+          <div
+            key={entry.name}
+            className="flex items-center justify-between gap-4"
+          >
             <span className="text-muted-foreground">{entry.name}</span>
             <span style={{ color: entry.color }}>
               {valueFormatter(entry.value ?? 0)}
@@ -75,7 +78,9 @@ export function UsageCharts({ trend }: UsageChartsProps) {
       <Card className="py-5">
         <CardHeader className="px-5 sm:px-6">
           <CardTitle>اتجاهات الاستخدام</CardTitle>
-          <CardDescription>لا توجد بيانات يومية في الفترة المحددة.</CardDescription>
+          <CardDescription>
+            لا توجد بيانات يومية في الفترة المحددة.
+          </CardDescription>
         </CardHeader>
       </Card>
     );
@@ -95,7 +100,10 @@ export function UsageCharts({ trend }: UsageChartsProps) {
         </CardHeader>
         <CardContent className="h-72 px-3 pb-2 sm:px-5">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={trend} margin={{ top: 12, right: 20, left: 8, bottom: 8 }}>
+            <LineChart
+              data={trend}
+              margin={{ top: 12, right: 20, left: 8, bottom: 8 }}
+            >
               <CartesianGrid stroke={chartColors.grid} vertical={false} />
               <XAxis
                 dataKey="date"
@@ -134,7 +142,10 @@ export function UsageCharts({ trend }: UsageChartsProps) {
         </CardHeader>
         <CardContent className="h-72 px-3 pb-2 sm:px-5">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={tokenTrend} margin={{ top: 12, right: 20, left: 8, bottom: 8 }}>
+            <LineChart
+              data={tokenTrend}
+              margin={{ top: 12, right: 20, left: 8, bottom: 8 }}
+            >
               <CartesianGrid stroke={chartColors.grid} vertical={false} />
               <XAxis
                 dataKey="date"
@@ -149,7 +160,9 @@ export function UsageCharts({ trend }: UsageChartsProps) {
               />
               <Tooltip
                 content={
-                  <ChartTooltip valueFormatter={(value) => String(Math.round(value))} />
+                  <ChartTooltip
+                    valueFormatter={(value) => String(Math.round(value))}
+                  />
                 }
               />
               <Line
@@ -172,7 +185,10 @@ export function UsageCharts({ trend }: UsageChartsProps) {
         </CardHeader>
         <CardContent className="h-72 px-3 pb-2 sm:px-5">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={trend} margin={{ top: 12, right: 20, left: 8, bottom: 8 }}>
+            <LineChart
+              data={trend}
+              margin={{ top: 12, right: 20, left: 8, bottom: 8 }}
+            >
               <CartesianGrid stroke={chartColors.grid} vertical={false} />
               <XAxis
                 dataKey="date"
@@ -187,7 +203,9 @@ export function UsageCharts({ trend }: UsageChartsProps) {
               />
               <Tooltip
                 content={
-                  <ChartTooltip valueFormatter={(value) => String(Math.round(value))} />
+                  <ChartTooltip
+                    valueFormatter={(value) => String(Math.round(value))}
+                  />
                 }
               />
               <Legend />

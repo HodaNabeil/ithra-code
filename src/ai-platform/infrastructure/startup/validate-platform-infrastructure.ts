@@ -112,7 +112,10 @@ function checkPlatformConfigured(): PlatformInfrastructureCheckStatus {
     validateAIPlatformConfig();
     return 'ok';
   } catch (error) {
-    logger.error({ error }, '[AI_PLATFORM_STARTUP] Platform config check failed');
+    logger.error(
+      { error },
+      '[AI_PLATFORM_STARTUP] Platform config check failed',
+    );
     return 'error';
   }
 }

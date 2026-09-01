@@ -68,39 +68,41 @@ export class PrismaPublishableCourseRepository implements PublishableCourseRepos
 
 export class PrismaPublishableLectureRepository implements PublishableLectureRepository {
   async findById(lectureId: string): Promise<LecturePublishRecord | null> {
-    return prisma.lecture.findUnique({
-      where: { id: lectureId },
-      select: {
-        id: true,
-        sectionId: true,
-        isPublished: true,
-        updatedAt: true,
-        section: {
-          select: {
-            course: {
-              select: {
-                id: true,
-                slug: true,
-                status: true,
-                instructorId: true,
+    return prisma.lecture
+      .findUnique({
+        where: { id: lectureId },
+        select: {
+          id: true,
+          sectionId: true,
+          isPublished: true,
+          updatedAt: true,
+          section: {
+            select: {
+              course: {
+                select: {
+                  id: true,
+                  slug: true,
+                  status: true,
+                  instructorId: true,
+                },
               },
             },
           },
         },
-      },
-    }).then((lecture) => {
-      if (!lecture) {
-        return null;
-      }
+      })
+      .then((lecture) => {
+        if (!lecture) {
+          return null;
+        }
 
-      return {
-        id: lecture.id,
-        sectionId: lecture.sectionId,
-        isPublished: lecture.isPublished,
-        updatedAt: lecture.updatedAt,
-        course: lecture.section.course,
-      };
-    });
+        return {
+          id: lecture.id,
+          sectionId: lecture.sectionId,
+          isPublished: lecture.isPublished,
+          updatedAt: lecture.updatedAt,
+          course: lecture.section.course,
+        };
+      });
   }
 
   async publish(lectureId: string): Promise<LecturePublishRecord> {
@@ -137,5 +139,7 @@ export class PrismaPublishableLectureRepository implements PublishableLectureRep
   }
 }
 
-export const publishableCourseRepository = new PrismaPublishableCourseRepository();
-export const publishableLectureRepository = new PrismaPublishableLectureRepository();
+export const publishableCourseRepository =
+  new PrismaPublishableCourseRepository();
+export const publishableLectureRepository =
+  new PrismaPublishableLectureRepository();

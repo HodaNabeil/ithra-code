@@ -18,7 +18,9 @@ export interface CourseOverviewRepository {
   ): Promise<CourseOverviewAggregates>;
 }
 
-function mapIdentity(entity: DB_CourseOverviewIdentity): CourseOverviewIdentity {
+function mapIdentity(
+  entity: DB_CourseOverviewIdentity,
+): CourseOverviewIdentity {
   return {
     id: entity.id,
     slug: entity.slug,
@@ -32,7 +34,9 @@ function mapIdentity(entity: DB_CourseOverviewIdentity): CourseOverviewIdentity 
 }
 
 export class PrismaCourseOverviewRepository implements CourseOverviewRepository {
-  async findCourseIdentity(idOrSlug: string): Promise<CourseOverviewIdentity | null> {
+  async findCourseIdentity(
+    idOrSlug: string,
+  ): Promise<CourseOverviewIdentity | null> {
     const where = isCuid(idOrSlug) ? { id: idOrSlug } : { slug: idOrSlug };
 
     const entity = await prisma.course.findUnique({

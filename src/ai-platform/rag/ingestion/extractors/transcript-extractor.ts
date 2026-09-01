@@ -22,7 +22,9 @@ export const transcriptExtractor: TextExtractorPort = {
       return { source, skipped: true, skipReason: 'empty_transcript' };
     }
 
-    if (normalized.length > AI_PLATFORM_CONSTANTS.INDEXING_MAX_TRANSCRIPT_CHARS) {
+    if (
+      normalized.length > AI_PLATFORM_CONSTANTS.INDEXING_MAX_TRANSCRIPT_CHARS
+    ) {
       return {
         source,
         skipped: true,

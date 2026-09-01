@@ -3,7 +3,10 @@ import type { KnowledgeChunkRepositoryPort } from '@/ai-platform/indexing/domain
 import type { KnowledgeSourceHashRepositoryPort } from '@/ai-platform/indexing/domain/ports/KnowledgeSourceHashRepositoryPort';
 
 import type { EmbeddingPort } from '../../domain/ports/embedding.port';
-import { IndexingError, IndexingErrorCodes } from '../../application/errors/indexing.error';
+import {
+  IndexingError,
+  IndexingErrorCodes,
+} from '../../application/errors/indexing.error';
 import {
   ingestCourseKnowledge,
   ingestLectureKnowledge,

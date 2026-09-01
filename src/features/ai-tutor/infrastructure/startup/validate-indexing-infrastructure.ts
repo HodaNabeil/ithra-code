@@ -4,7 +4,10 @@ import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
 import { redis } from '@/lib/redis';
 
-import { AITutorConfig, validateAITutorConfig } from '../config/ai-tutor.config';
+import {
+  AITutorConfig,
+  validateAITutorConfig,
+} from '../config/ai-tutor.config';
 import { AIPlatformConfig } from '@/ai-platform/infrastructure/config/ai-platform.config';
 import { COURSE_INDEXING_QUEUE } from '@/ai-platform';
 
@@ -26,7 +29,10 @@ async function checkDatabase(): Promise<IndexingInfrastructureCheckStatus> {
     await prisma.$queryRaw`SELECT 1`;
     return 'ok';
   } catch (error) {
-    logger.error({ error }, '[INDEXING_STARTUP_VALIDATION] Database check failed');
+    logger.error(
+      { error },
+      '[INDEXING_STARTUP_VALIDATION] Database check failed',
+    );
     return 'error';
   }
 }
@@ -50,7 +56,10 @@ async function checkPgvector(): Promise<IndexingInfrastructureCheckStatus> {
     `;
     return result[0]?.exists ? 'ok' : 'error';
   } catch (error) {
-    logger.error({ error }, '[INDEXING_STARTUP_VALIDATION] pgvector check failed');
+    logger.error(
+      { error },
+      '[INDEXING_STARTUP_VALIDATION] pgvector check failed',
+    );
     return 'error';
   }
 }
@@ -62,7 +71,10 @@ async function checkQueueConnectivity(): Promise<IndexingInfrastructureCheckStat
     await queue.getJobCounts();
     return 'ok';
   } catch (error) {
-    logger.error({ error }, '[INDEXING_STARTUP_VALIDATION] BullMQ queue check failed');
+    logger.error(
+      { error },
+      '[INDEXING_STARTUP_VALIDATION] BullMQ queue check failed',
+    );
     return 'error';
   } finally {
     await queue.close();
@@ -78,7 +90,10 @@ function checkAiTutorConfigured(): IndexingInfrastructureCheckStatus {
     validateAITutorConfig();
     return 'ok';
   } catch (error) {
-    logger.error({ error }, '[INDEXING_STARTUP_VALIDATION] AI Tutor config check failed');
+    logger.error(
+      { error },
+      '[INDEXING_STARTUP_VALIDATION] AI Tutor config check failed',
+    );
     return 'error';
   }
 }
@@ -86,12 +101,13 @@ function checkAiTutorConfigured(): IndexingInfrastructureCheckStatus {
 export async function probeIndexingInfrastructure(): Promise<IndexingInfrastructureValidationResult> {
   const enabled = AITutorConfig.isEnabled();
 
-  const [database, redisStatus, pgvector, queueConnectivity] = await Promise.all([
-    checkDatabase(),
-    checkRedis(),
-    checkPgvector(),
-    enabled ? checkQueueConnectivity() : Promise.resolve('skipped' as const),
-  ]);
+  const [database, redisStatus, pgvector, queueConnectivity] =
+    await Promise.all([
+      checkDatabase(),
+      checkRedis(),
+      checkPgvector(),
+      enabled ? checkQueueConnectivity() : Promise.resolve('skipped' as const),
+    ]);
 
   const aiTutorConfigured = checkAiTutorConfigured();
 
@@ -107,7 +123,9 @@ export async function probeIndexingInfrastructure(): Promise<IndexingInfrastruct
   };
 }
 
-function hasCriticalFailures(checks: IndexingInfrastructureValidationResult['checks']): boolean {
+function hasCriticalFailures(
+  checks: IndexingInfrastructureValidationResult['checks'],
+): boolean {
   const criticalChecks = [
     checks.database,
     checks.redis,

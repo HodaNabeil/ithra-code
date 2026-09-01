@@ -21,7 +21,9 @@ export async function GET(request: Request) {
 
   const manualReview = await prisma.payment.findMany({
     where: { reconcileStatus: 'MANUAL_REVIEW' },
-    include: { order: { select: { id: true, orderNumber: true, status: true } } },
+    include: {
+      order: { select: { id: true, orderNumber: true, status: true } },
+    },
     orderBy: { lastReconciledAt: 'asc' },
     take: 100,
   });

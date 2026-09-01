@@ -4,9 +4,7 @@ import {
   getHistoryTokenBudget,
   trimConversationHistory,
 } from '../../domain/policies/token-budget.policy';
-import {
-  summarizeConversationIfNeeded,
-} from '../../memory/summarizer/context-summarizer';
+import { summarizeConversationIfNeeded } from '../../memory/summarizer/context-summarizer';
 import { toGraphTokenUpdate } from '../../observability/usage';
 import { getGraphRuntimeConfig } from '../runtime-config';
 import type { TutorAgentState } from '../state/tutor-agent.state';
@@ -24,11 +22,15 @@ export async function prepareHistoryNode(
 
   const trimmed = trimConversationHistory(state.conversationHistory, maxTokens);
 
-  const summarized = await summarizeConversationIfNeeded(runtime.llmPort, {
-    messages: trimmed,
-    locale: state.locale,
-    maxTokens,
-  }, { model: runtime.model });
+  const summarized = await summarizeConversationIfNeeded(
+    runtime.llmPort,
+    {
+      messages: trimmed,
+      locale: state.locale,
+      maxTokens,
+    },
+    { model: runtime.model },
+  );
 
   const usageUpdate = toGraphTokenUpdate(summarized.usage);
 

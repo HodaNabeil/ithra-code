@@ -9,12 +9,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 
 import { Session } from 'next-auth';
 import { AUTH_ROUTES } from '@/constants/auth';
+import { UserAvatar } from './user-avatar';
 
 export function UserNav({ session }: { session: Session | null }) {
   const user = session?.user;
@@ -32,25 +32,15 @@ export function UserNav({ session }: { session: Session | null }) {
     );
   }
 
-  const initials = user?.name
-    ?.split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase();
-
   return (
     <DropdownMenu dir="rtl">
       <DropdownMenuTrigger className="outline-none">
-        <Avatar
-          className="h-9 w-9 cursor-pointer border border-zinc-700/50
-         hover:border-primary/50 transition-all duration-300 shadow-md"
-        >
-          <AvatarImage
-            src={user?.image ?? undefined}
-            alt={user?.name || 'User'}
-          />
-          <AvatarFallback className="bg-primary/20 ">{initials}</AvatarFallback>
-        </Avatar>
+        <UserAvatar
+          name={user.name}
+          email={user.email}
+          image={user.image}
+          className="cursor-pointer transition-all duration-300 hover:ring-primary/60"
+        />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent

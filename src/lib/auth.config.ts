@@ -19,6 +19,14 @@ export const authConfig: NextAuthConfig = {
         token.id = user.id;
       }
 
+      if (user?.image) {
+        token.picture = user.image;
+      }
+
+      if (user?.name) {
+        token.name = user.name;
+      }
+
       return token;
     },
 
@@ -26,7 +34,10 @@ export const authConfig: NextAuthConfig = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
-        session.user.image = token.picture as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.image =
+          (token.picture as string | undefined) ?? session.user.image;
       }
 
       return session;

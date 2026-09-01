@@ -55,7 +55,8 @@ const cards = [
     key: 'latency',
     title: 'متوسط زمن الاستجابة',
     description: 'للطلبات المكتملة والفاشلة',
-    value: (overview: AnalyticsOverview) => formatLatency(overview.avgLatencyMs),
+    value: (overview: AnalyticsOverview) =>
+      formatLatency(overview.avgLatencyMs),
   },
 ] as const;
 

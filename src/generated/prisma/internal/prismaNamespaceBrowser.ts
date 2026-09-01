@@ -105,7 +105,8 @@ export const ModelName = {
   AiUsageDaily: 'AiUsageDaily',
   AiEvaluationRun: 'AiEvaluationRun',
   AiMemoryFact: 'AiMemoryFact',
-  AiToolInvocation: 'AiToolInvocation'
+  AiToolInvocation: 'AiToolInvocation',
+  ContactMessage: 'ContactMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1049,6 +1050,19 @@ export const AiToolInvocationScalarFieldEnum = {
 } as const
 
 export type AiToolInvocationScalarFieldEnum = (typeof AiToolInvocationScalarFieldEnum)[keyof typeof AiToolInvocationScalarFieldEnum]
+
+
+export const ContactMessageScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  message: 'message',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContactMessageScalarFieldEnum = (typeof ContactMessageScalarFieldEnum)[keyof typeof ContactMessageScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -211,7 +211,9 @@ async function runWithConcurrency<T>(
     }
   }
 
-  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => runWorker()));
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, () => runWorker()),
+  );
 }
 
 async function runIngestion(params: {
@@ -241,18 +243,25 @@ async function runIngestion(params: {
     hashRepository: params.deps.hashRepository,
   });
 
-  const sourceConcurrency = AIPlatformConfig.getKnowledgeIngestionSourceConcurrency();
+  const sourceConcurrency =
+    AIPlatformConfig.getKnowledgeIngestionSourceConcurrency();
 
-  await runWithConcurrency(params.sources, sourceConcurrency, async (source) => {
-    await processSource({
-      source,
-      existingHashes,
-      deps: params.deps,
-      stats,
-    });
-  });
+  await runWithConcurrency(
+    params.sources,
+    sourceConcurrency,
+    async (source) => {
+      await processSource({
+        source,
+        existingHashes,
+        deps: params.deps,
+        stats,
+      });
+    },
+  );
 
-  const activeSourceIds = new Set(params.sources.map((source) => source.sourceId));
+  const activeSourceIds = new Set(
+    params.sources.map((source) => source.sourceId),
+  );
   const staleSourceIds = await cleanupStaleHashes({
     activeSourceIds,
     courseId: params.course.id,
@@ -261,12 +270,16 @@ async function runIngestion(params: {
   });
 
   if (staleSourceIds.length > 0) {
-    await params.deps.knowledgeChunkRepository.deleteBySourceIds(staleSourceIds);
+    await params.deps.knowledgeChunkRepository.deleteBySourceIds(
+      staleSourceIds,
+    );
   }
 
   stats.staleSourcesRemoved = staleSourceIds.length;
 
-  await params.deps.knowledgeChunkRepository.markCourseIndexed(params.course.id);
+  await params.deps.knowledgeChunkRepository.markCourseIndexed(
+    params.course.id,
+  );
 
   logger.info(
     {

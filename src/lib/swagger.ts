@@ -14,6 +14,7 @@ import { courseIdSchema } from '@/validation/cart';
 import { cartApiResponseSchema } from '@/features/cart/dto/cart.dto';
 import { addCartItemBodySchema } from '@/features/cart/presentation/validators/add-cart-item.validator';
 import { createCourseSchema } from '@/features/courses/course-creation/dto/create-course.dto';
+import { registerEnrollmentsOpenApi } from '@/features/enrollments/api/register-enrollments-openapi';
 
 const registry = new OpenAPIRegistry();
 
@@ -54,6 +55,20 @@ const orderIdParams = z.object({
 
 const courseIdParams = z.object({
   courseId: courseIdSchema,
+});
+
+const lectureIdParams = z.object({
+  lectureId: z.string().cuid().openapi({
+    example: 'cllecture2k4m00008l5d6e3k1n',
+    description: 'Lecture UUID (CUID)',
+  }),
+});
+
+const sectionIdParams = z.object({
+  sectionId: z.string().cuid().openapi({
+    example: 'clsection2k4m00008l5d6e3k1n',
+    description: 'Section UUID (CUID)',
+  }),
 });
 
 const courseExample = {
@@ -145,6 +160,15 @@ const courseStatusSchema = z.enum([
 const courseVisibilitySchema = z.enum(['PUBLIC', 'PRIVATE', 'UNLISTED']);
 const roleSchema = z.enum(['STUDENT', 'INSTRUCTOR', 'ADMIN']);
 const pathCategorySchema = z.enum(['WEB', 'MOBILE', 'OTHER']);
+const lectureTypeSchema = z.enum([
+  'VIDEO',
+  'TEXT',
+  'AUDIO',
+  'QUIZ',
+  'ASSIGNMENT',
+  'LIVE_SESSION',
+  'ATTACHMENT',
+]);
 
 // ─── Response wrappers ────────────────────────────────────────────────────────
 
@@ -183,6 +207,56 @@ registry.register('ResetPasswordRequest', resetPasswordSchema);
 registry.register('VerifyEmailRequest', verifyEmailSchema);
 registry.register('AddToCartRequest', z.object({ courseId: courseIdSchema }));
 registry.register('CreateCourseRequest', createCourseSchema);
+
+// Lecture request schemas
+const createLectureSchema = z.object({
+  title: z.string().min(1).openapi({
+    example: 'مقدمة إلى Node.js',
+    description: 'Lecture title',
+  }),
+  description: z.string().nullable().optional().openapi({
+    example: 'في هذه المحاضرة سنتعرف على Node.js وكيفية استخدامه',
+    description: 'Lecture description (optional, defaults to null)',
+  }),
+  type: lectureTypeSchema.openapi({
+    example: 'VIDEO',
+    description: 'Lecture type',
+  }),
+});
+
+const updateLectureSchema = z.object({
+  title: z.string().min(1).optional().openapi({
+    example: 'مقدمة إلى Node.js - محدثة',
+    description: 'Lecture title',
+  }),
+  description: z.string().optional().openapi({
+    example: 'وصف محدث للمحاضرة',
+    description: 'Lecture description',
+  }),
+  type: z.enum(['VIDEO', 'TEXT', 'QUIZ', 'ASSIGNMENT']).optional().openapi({
+    example: 'VIDEO',
+    description: 'Lecture type',
+  }),
+  content: z.string().optional().openapi({
+    example: 'محتوى محدث',
+    description: 'Text content',
+  }),
+  position: z.number().int().optional().openapi({
+    example: 2,
+    description: 'Display position',
+  }),
+  isPublished: z.boolean().optional().openapi({
+    example: true,
+    description: 'Publication status',
+  }),
+  isFree: z.boolean().optional().openapi({
+    example: false,
+    description: 'Free preview status',
+  }),
+});
+
+registry.register('CreateLectureRequest', createLectureSchema);
+registry.register('UpdateLectureRequest', updateLectureSchema);
 
 // ─── Domain schemas ───────────────────────────────────────────────────────────
 
@@ -321,7 +395,7 @@ const PaginationMetaSchema = registry.register(
 
 // ─── Query schemas ────────────────────────────────────────────────────────────
 
-const courseCatalogQuerySchema = z.object({
+const courseListQuerySchema = z.object({
   page: z
     .string()
     .optional()
@@ -330,10 +404,10 @@ const courseCatalogQuerySchema = z.object({
     .string()
     .optional()
     .openapi({ example: '12', description: 'Items per page' }),
-  search: z
-    .string()
-    .optional()
-    .openapi({ example: 'node', description: 'Search in title and description' }),
+  search: z.string().optional().openapi({
+    example: 'node',
+    description: 'Search in title and description',
+  }),
   sort: z
     .string()
     .optional()
@@ -355,7 +429,7 @@ const courseCatalogQuerySchema = z.object({
     .openapi({ example: 'true', description: 'Featured courses only' }),
 });
 
-const pathCatalogQuerySchema = z.object({
+const pathListQuerySchema = z.object({
   page: z.string().optional().openapi({ example: '1' }),
   limit: z.string().optional().openapi({ example: '12' }),
   search: z.string().optional().openapi({ example: 'web' }),
@@ -384,14 +458,14 @@ registry.registerPath({
   path: '/courses',
   tags: ['Courses'],
   summary: 'List published courses',
-  request: { query: courseCatalogQuerySchema },
+  request: { query: courseListQuerySchema },
   responses: {
     200: {
-      description: 'Course catalog',
+      description: 'Course list',
       content: {
         'application/json': {
           schema: registerApiSuccess(
-            'CourseCatalogResponse',
+            'CourseListResponse',
             z.object({
               items: z.array(CourseSchema),
               meta: PaginationMetaSchema,
@@ -551,7 +625,11 @@ registry.registerPath({
       content: {
         'application/json': {
           schema: CourseSchema,
-          example: { ...courseExample, title: 'Node.js - دورة محدّثة', price: 549 },
+          example: {
+            ...courseExample,
+            title: 'Node.js - دورة محدّثة',
+            price: 549,
+          },
         },
       },
     },
@@ -679,7 +757,9 @@ const courseOverviewExample = {
 const CourseOverviewSchema = registry.register(
   'CourseOverview',
   z.object({
-    totalHours: z.number().openapi({ example: courseOverviewExample.totalHours }),
+    totalHours: z
+      .number()
+      .openapi({ example: courseOverviewExample.totalHours }),
     totalStudents: z
       .number()
       .int()
@@ -696,7 +776,9 @@ const CourseOverviewSchema = registry.register(
       .number()
       .int()
       .openapi({ example: courseOverviewExample.lecturesCount }),
-    skillLevel: z.string().openapi({ example: courseOverviewExample.skillLevel }),
+    skillLevel: z
+      .string()
+      .openapi({ example: courseOverviewExample.skillLevel }),
     description: z
       .string()
       .openapi({ example: courseOverviewExample.description }),
@@ -755,19 +837,405 @@ registry.registerPath({
   },
 });
 
+const lectureProgressExample = {
+  isCompleted: true,
+  timeSpent: 120,
+  lastAccessedAt: '2026-06-01T10:00:00.000Z',
+  completedAt: '2026-06-01T10:30:00.000Z',
+};
+
+const LectureProgressSchema = registry.register(
+  'LectureProgress',
+  z.object({
+    isCompleted: z
+      .boolean()
+      .openapi({ example: lectureProgressExample.isCompleted }),
+    timeSpent: z
+      .number()
+      .int()
+      .openapi({ example: lectureProgressExample.timeSpent }),
+    lastAccessedAt: z
+      .string()
+      .nullable()
+      .openapi({ example: lectureProgressExample.lastAccessedAt }),
+    completedAt: z
+      .string()
+      .nullable()
+      .openapi({ example: lectureProgressExample.completedAt }),
+  }),
+);
+
+const videoExample = {
+  id: 'clvideo2k4m00008l5d6e3k1n',
+  bunnyVideoId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  libraryId: '12345',
+  status: 'ready',
+  duration: 600,
+  thumbnailUrl: 'https://example.com/thumb.jpg',
+  hlsUrl:
+    'https://vz-xxxxx.b-cdn.net/a1b2c3d4-e5f6-7890-abcd-ef1234567890/playlist.m3u8?token=abc&expires=1234567890',
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+};
+
+const VideoSchema = registry.register(
+  'CourseSectionVideo',
+  z.object({
+    id: z.string().openapi({ example: videoExample.id }),
+    bunnyVideoId: z.string().openapi({ example: videoExample.bunnyVideoId }),
+    libraryId: z.string().openapi({ example: videoExample.libraryId }),
+    status: z.string().openapi({ example: videoExample.status }),
+    duration: z.number().nullable().openapi({ example: videoExample.duration }),
+    thumbnailUrl: z
+      .string()
+      .nullable()
+      .openapi({ example: videoExample.thumbnailUrl }),
+    hlsUrl: z.string().optional().openapi({ example: videoExample.hlsUrl }),
+    createdAt: z.string().openapi({ example: videoExample.createdAt }),
+    updatedAt: z.string().openapi({ example: videoExample.updatedAt }),
+  }),
+);
+
+const attachmentExample = {
+  id: 'clattach2k4m00008l5d6e3k1n',
+  name: 'slides.pdf',
+  type: 'PDF',
+  url: 'https://example.com/slides.pdf',
+  isDownloadable: true,
+  position: 0,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+};
+
+const AttachmentSchema = registry.register(
+  'CourseSectionAttachment',
+  z.object({
+    id: z.string().openapi({ example: attachmentExample.id }),
+    name: z.string().openapi({ example: attachmentExample.name }),
+    type: z.string().openapi({ example: attachmentExample.type }),
+    url: z.string().openapi({ example: attachmentExample.url }),
+    isDownloadable: z
+      .boolean()
+      .openapi({ example: attachmentExample.isDownloadable }),
+    position: z.number().int().openapi({ example: attachmentExample.position }),
+    createdAt: z.string().openapi({ example: attachmentExample.createdAt }),
+    updatedAt: z.string().openapi({ example: attachmentExample.updatedAt }),
+  }),
+);
+
+const lectureExample = {
+  id: 'cllecture2k4m00008l5d6e3k1n',
+  title: 'Introduction to Node.js',
+  description: 'Overview of Node.js runtime',
+  type: 'VIDEO',
+  videoDuration: 600,
+  position: 1,
+  isPublished: true,
+  isFree: true,
+  video: videoExample,
+  attachments: [attachmentExample],
+  progress: lectureProgressExample,
+};
+
+const LectureSchema = registry.register(
+  'CourseSectionLecture',
+  z.object({
+    id: z.string().openapi({ example: lectureExample.id }),
+    title: z.string().openapi({ example: lectureExample.title }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ example: lectureExample.description }),
+    type: z.string().openapi({ example: lectureExample.type }),
+    videoDuration: z
+      .number()
+      .nullable()
+      .openapi({ example: lectureExample.videoDuration }),
+    position: z.number().int().openapi({ example: lectureExample.position }),
+    isPublished: z.boolean().openapi({ example: lectureExample.isPublished }),
+    isFree: z.boolean().openapi({ example: lectureExample.isFree }),
+    video: VideoSchema.optional().openapi({ example: lectureExample.video }),
+    attachments: z
+      .array(AttachmentSchema)
+      .openapi({ example: lectureExample.attachments }),
+    progress: LectureProgressSchema.nullable()
+      .optional()
+      .openapi({ example: lectureExample.progress }),
+  }),
+);
+
+// ─── Lecture Detail Schemas ───────────────────────────────────────────────────
+
+const lectureDetailExample = {
+  id: 'cllecture2k4m00008l5d6e3k1n',
+  sectionId: 'clsection2k4m00008l5d6e3k1n',
+  title: 'مقدمة إلى Node.js',
+  description:
+    'في هذه المحاضرة سنتعرف على Node.js وكيفية استخدامه في بناء التطبيقات',
+  type: 'VIDEO',
+  content: null,
+  videoId: 'clvideo2k4m00008l5d6e3k1n',
+  videoHlsUrl:
+    'https://vz-xxxxx.b-cdn.net/a1b2c3d4-e5f6-7890-abcd-ef1234567890/playlist.m3u8?token=abc&expires=1234567890',
+  position: 1,
+  isPublished: true,
+  isFree: false,
+  createdAt: '2026-01-01T10:00:00.000Z',
+  updatedAt: '2026-01-01T10:00:00.000Z',
+};
+
+const LectureDetailSchema = registry.register(
+  'LectureDetail',
+  z.object({
+    id: z.string().openapi({ example: lectureDetailExample.id }),
+    sectionId: z.string().openapi({ example: lectureDetailExample.sectionId }),
+    title: z.string().openapi({ example: lectureDetailExample.title }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ example: lectureDetailExample.description }),
+    type: lectureTypeSchema.openapi({ example: lectureDetailExample.type }),
+    content: z
+      .string()
+      .nullable()
+      .openapi({ example: lectureDetailExample.content }),
+    videoId: z
+      .string()
+      .nullable()
+      .openapi({ example: lectureDetailExample.videoId }),
+    videoHlsUrl: z
+      .string()
+      .nullable()
+      .openapi({ example: lectureDetailExample.videoHlsUrl }),
+    position: z
+      .number()
+      .int()
+      .openapi({ example: lectureDetailExample.position }),
+    isPublished: z
+      .boolean()
+      .openapi({ example: lectureDetailExample.isPublished }),
+    isFree: z.boolean().openapi({ example: lectureDetailExample.isFree }),
+    createdAt: z.string().openapi({ example: lectureDetailExample.createdAt }),
+    updatedAt: z.string().openapi({ example: lectureDetailExample.updatedAt }),
+  }),
+);
+
+const lectureWithCourseExample = {
+  lecture: lectureDetailExample,
+  course: {
+    id: EX.courseId,
+    title: 'Node.js - دورة شاملة لتعلم تطوير الخلفية',
+    slug: EX.courseSlug,
+    instructorId: EX.instructorId,
+    status: 'PUBLISHED',
+  },
+  hasPurchased: true,
+  hasRated: false,
+};
+
+const LectureWithCourseSchema = registry.register(
+  'LectureWithCourse',
+  z.object({
+    lecture: LectureDetailSchema,
+    course: z.object({
+      id: z.string(),
+      title: z.string(),
+      slug: z.string(),
+      instructorId: z.string(),
+      status: courseStatusSchema,
+    }),
+    hasPurchased: z.boolean(),
+    hasRated: z.boolean(),
+  }),
+);
+
+const createLectureItemExample = {
+  id: 'cllecture2k4m00008l5d6e3k1n',
+  sectionId: 'clsection2k4m00008l5d6e3k1n',
+  title: 'مقدمة إلى Node.js',
+  description: null,
+  type: 'VIDEO',
+  content: null,
+  videoId: null,
+  position: 0,
+  isPublished: false,
+  isFree: false,
+};
+
+const CreateLectureItemSchema = registry.register(
+  'CreateLectureItem',
+  z.object({
+    id: z.string().openapi({ example: createLectureItemExample.id }),
+    sectionId: z
+      .string()
+      .openapi({ example: createLectureItemExample.sectionId }),
+    title: z.string().openapi({ example: createLectureItemExample.title }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ example: createLectureItemExample.description }),
+    type: lectureTypeSchema.openapi({
+      example: createLectureItemExample.type,
+    }),
+    content: z
+      .string()
+      .nullable()
+      .openapi({ example: createLectureItemExample.content }),
+    videoId: z
+      .string()
+      .nullable()
+      .openapi({ example: createLectureItemExample.videoId }),
+    position: z
+      .number()
+      .int()
+      .openapi({ example: createLectureItemExample.position }),
+    isPublished: z
+      .boolean()
+      .openapi({ example: createLectureItemExample.isPublished }),
+    isFree: z.boolean().openapi({ example: createLectureItemExample.isFree }),
+  }),
+);
+
+const createLectureResponseExample = {
+  lecture: createLectureItemExample,
+};
+
+const CreateLectureResponseSchema = registry.register(
+  'CreateLectureResponse',
+  z.object({
+    lecture: CreateLectureItemSchema,
+  }),
+);
+
+const sectionStatisticsExample = {
+  totalLectures: 3,
+  totalDuration: 1800,
+  completedLectures: 1,
+};
+
+const SectionStatisticsSchema = registry.register(
+  'SectionStatistics',
+  z.object({
+    totalLectures: z
+      .number()
+      .int()
+      .openapi({ example: sectionStatisticsExample.totalLectures }),
+    totalDuration: z
+      .number()
+      .int()
+      .openapi({ example: sectionStatisticsExample.totalDuration }),
+    completedLectures: z
+      .number()
+      .int()
+      .openapi({ example: sectionStatisticsExample.completedLectures }),
+  }),
+);
+
+const sectionExample = {
+  id: 'clsection2k4m00008l5d6e3k1n',
+  courseId: EX.courseId,
+  title: 'Getting Started',
+  description: 'Introduction section',
+  position: 1,
+  isPublished: true,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+  lectures: [lectureExample],
+  statistics: sectionStatisticsExample,
+};
+
+const SectionWithStatsSchema = registry.register(
+  'SectionWithStats',
+  z.object({
+    id: z.string().openapi({ example: sectionExample.id }),
+    courseId: z.string().openapi({ example: sectionExample.courseId }),
+    title: z.string().openapi({ example: sectionExample.title }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ example: sectionExample.description }),
+    position: z.number().int().openapi({ example: sectionExample.position }),
+    isPublished: z.boolean().openapi({ example: sectionExample.isPublished }),
+    createdAt: z.string().openapi({ example: sectionExample.createdAt }),
+    updatedAt: z.string().openapi({ example: sectionExample.updatedAt }),
+    lectures: z
+      .array(LectureSchema)
+      .openapi({ example: sectionExample.lectures }),
+    statistics: SectionStatisticsSchema.openapi({
+      example: sectionExample.statistics,
+    }),
+  }),
+);
+
+const courseSectionsSuccessExample = {
+  success: true,
+  message: 'تم جلب الأقسام بنجاح',
+  data: {
+    sections: [sectionExample],
+    total: 1,
+  },
+};
+
+registry.registerPath({
+  method: 'get',
+  path: '/courses/{idOrSlug}/sections',
+  tags: ['Courses'],
+  summary: 'Get course sections with lectures and progress',
+  description:
+    'Returns ordered course sections with nested lectures, attachments, video metadata, and optional progress for enrolled users. Works with a course ID or slug — e.g. `GET /api/courses/nodejs-complete-guide/sections`. Authentication is optional.',
+  request: {
+    params: idOrSlugParams,
+  },
+  responses: {
+    200: {
+      description: 'Course sections',
+      content: {
+        'application/json': {
+          schema: registerApiSuccess(
+            'CourseSectionsResponse',
+            z.object({
+              sections: z.array(SectionWithStatsSchema),
+              total: z.number().int(),
+            }),
+          ),
+          example: courseSectionsSuccessExample,
+        },
+      },
+    },
+    404: {
+      description: 'Course not found',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+  },
+});
+
 registry.registerPath({
   method: 'get',
   path: '/paths',
   tags: ['Paths'],
   summary: 'List learning paths',
-  request: { query: pathCatalogQuerySchema },
+  request: { query: pathListQuerySchema },
   responses: {
     200: {
-      description: 'Path catalog',
+      description: 'Path list',
       content: {
         'application/json': {
           schema: registerApiSuccess(
-            'PathCatalogResponse',
+            'PathListResponse',
             z.object({
               items: z.array(PathSchema),
               meta: PaginationMetaSchema,
@@ -1063,6 +1531,329 @@ registry.registerPath({
   },
 });
 
+// ─── Lectures ─────────────────────────────────────────────────────────────────
+
+registry.registerPath({
+  method: 'get',
+  path: '/lectures/{lectureId}',
+  tags: ['Lectures'],
+  summary: 'Get lecture details',
+  description:
+    'Retrieves detailed information about a specific lecture including video HLS URL (if applicable), course context, purchase status, and rating status. Requires authentication and appropriate permissions (enrollment or instructor ownership).',
+  security: authenticated,
+  request: {
+    params: lectureIdParams,
+  },
+  responses: {
+    200: {
+      description: 'Lecture details retrieved successfully',
+      content: {
+        'application/json': {
+          schema: registerApiSuccess(
+            'GetLectureResponse',
+            LectureWithCourseSchema,
+          ),
+          example: apiSuccessExample(
+            'تم جلب المحاضرة بنجاح',
+            lectureWithCourseExample,
+          ),
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - user not logged in',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'Unauthorized' },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'ليس لديك صلاحية' },
+        },
+      },
+    },
+    404: {
+      description: 'Lecture not found',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'المحاضرة غير موجودة' },
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/sections/{sectionId}/lectures',
+  tags: ['Lectures'],
+  summary: 'Create a new lecture',
+  description:
+    'Creates a new lecture within an existing course section. Requires `lecture:create` permission (instructor or admin). Instructors may only create lectures in their own courses; admins may create in any course. Position, publication status, and content fields are set server-side.',
+  security: authenticated,
+  request: {
+    params: sectionIdParams,
+    body: {
+      content: {
+        'application/json': {
+          schema: createLectureSchema,
+          example: {
+            title: 'مقدمة إلى Node.js',
+            description: 'في هذه المحاضرة سنتعرف على Node.js',
+            type: 'VIDEO',
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Lecture created successfully',
+      content: {
+        'application/json': {
+          schema: registerApiSuccess(
+            'CreateLectureSuccess',
+            CreateLectureResponseSchema,
+          ),
+          example: apiSuccessExample(
+            'Lecture created successfully',
+            createLectureResponseExample,
+          ),
+        },
+      },
+    },
+    400: {
+      description: 'Validation error - invalid input data',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: {
+            success: false,
+            message: 'بيانات الإدخال غير صالحة',
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - user not logged in',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'Unauthorized' },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'ليس لديك صلاحية' },
+        },
+      },
+    },
+    404: {
+      description: 'Section or course not found',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'Section not found' },
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: 'put',
+  path: '/lectures/{lectureId}',
+  tags: ['Lectures'],
+  summary: 'Update a lecture',
+  description:
+    'Updates an existing lecture. Requires instructor ownership or admin role. Only provided fields will be updated.',
+  security: authenticated,
+  request: {
+    params: lectureIdParams,
+    body: {
+      content: {
+        'application/json': {
+          schema: updateLectureSchema,
+          example: {
+            title: 'مقدمة إلى Node.js - محدثة',
+            description: 'وصف محدث للمحاضرة',
+            isPublished: true,
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Lecture updated successfully',
+      content: {
+        'application/json': {
+          schema: registerApiSuccess(
+            'UpdateLectureResponse',
+            LectureDetailSchema,
+          ),
+          example: apiSuccessExample('تم تحديث المحاضرة بنجاح', {
+            ...lectureDetailExample,
+            title: 'مقدمة إلى Node.js - محدثة',
+            description: 'وصف محدث للمحاضرة',
+            isPublished: true,
+          }),
+        },
+      },
+    },
+    400: {
+      description: 'Validation error - invalid input data',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: {
+            success: false,
+            message: 'بيانات الإدخال غير صالحة',
+          },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - user not logged in',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'Unauthorized' },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'ليس لديك صلاحية' },
+        },
+      },
+    },
+    404: {
+      description: 'Lecture not found',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'المحاضرة غير موجودة' },
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: 'delete',
+  path: '/lectures/{lectureId}',
+  tags: ['Lectures'],
+  summary: 'Delete a lecture',
+  description:
+    'Deletes a lecture from the course. Requires instructor ownership or admin role. This action is permanent and cannot be undone.',
+  security: authenticated,
+  request: {
+    params: lectureIdParams,
+  },
+  responses: {
+    200: {
+      description: 'Lecture deleted successfully',
+      content: {
+        'application/json': {
+          schema: registerApiSuccess(
+            'DeleteLectureResponse',
+            z.object({
+              id: z.string(),
+              title: z.string(),
+            }),
+          ),
+          example: apiSuccessExample('تم حذف المحاضرة بنجاح', {
+            id: 'cllecture2k4m00008l5d6e3k1n',
+            title: 'مقدمة إلى Node.js',
+          }),
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - user not logged in',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'Unauthorized' },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'ليس لديك صلاحية' },
+        },
+      },
+    },
+    404: {
+      description: 'Lecture not found',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: { success: false, message: 'المحاضرة غير موجودة' },
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: ApiErrorSchema,
+          example: apiErrorExample,
+        },
+      },
+    },
+  },
+});
+
+// ─── Orders ───────────────────────────────────────────────────────────────────
+
 const orderExample = {
   id: EX.orderId,
   orderNumber: 'ORD-2026-0001',
@@ -1113,6 +1904,16 @@ registry.registerPath({
   },
 });
 
+registerEnrollmentsOpenApi(registry, {
+  registerApiSuccess,
+  apiSuccessExample,
+  ApiErrorSchema,
+  apiErrorExample,
+  authenticated,
+  courseExample,
+  courseId: EX.courseId,
+});
+
 // ─── Document generator ─────────────────────────────────────────────────────────
 
 export function getOpenApiDocument(): ReturnType<
@@ -1129,10 +1930,12 @@ export function getOpenApiDocument(): ReturnType<
     },
     servers: [{ url: '/api', description: 'API base path' }],
     tags: [
-      { name: 'Courses', description: 'Course catalog and management' },
+      { name: 'Courses', description: 'Course listing and management' },
       { name: 'Paths', description: 'Learning paths' },
+      { name: 'Lectures', description: 'Course lecture management' },
       { name: 'Cart', description: 'Shopping cart' },
       { name: 'Orders', description: 'Order management' },
+      { name: 'Enrollments', description: 'Student course enrollments' },
     ],
   });
 }

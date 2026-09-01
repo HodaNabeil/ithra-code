@@ -51,7 +51,9 @@ export interface GraphExecutionResult {
   finalState: AgentGraphState;
 }
 
-function buildConfigurable(input: GraphExecutionInput): GraphRuntimeConfigurable {
+function buildConfigurable(
+  input: GraphExecutionInput,
+): GraphRuntimeConfigurable {
   return {
     llmPort: input.llmPort,
     embeddingPort: input.embeddingPort,
@@ -75,7 +77,9 @@ function buildConfigurable(input: GraphExecutionInput): GraphRuntimeConfigurable
   };
 }
 
-function buildRunnableConfig(input: GraphExecutionInput): LangGraphRunnableConfig {
+function buildRunnableConfig(
+  input: GraphExecutionInput,
+): LangGraphRunnableConfig {
   return {
     configurable: buildConfigurable(input),
     signal: input.signal,

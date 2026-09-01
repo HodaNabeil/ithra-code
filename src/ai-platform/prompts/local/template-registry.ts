@@ -4,7 +4,11 @@ import { fileURLToPath } from 'node:url';
 
 import type { PromptLocale } from '../ports/prompt-repository.port';
 
-const TEMPLATE_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'templates');
+const TEMPLATE_DIR = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  'templates',
+);
 
 const LOCAL_VERSION = 'local-v1';
 

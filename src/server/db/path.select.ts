@@ -47,6 +47,7 @@ export const pathDetailSelect = Prisma.validator<Prisma.PathSelect>()({
       title: true,
       slug: true,
       shortDescription: true,
+      description: true,
       thumbnailUrl: true,
       category: true,
       icon: true,

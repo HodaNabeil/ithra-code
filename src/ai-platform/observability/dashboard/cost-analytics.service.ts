@@ -1,15 +1,18 @@
 import type { PrismaClient } from '@/generated/prisma/client';
 import { prisma as appPrisma } from '@/lib/prisma';
 
-import {
-  type AnalyticsFilters,
-  computeErrorRate,
-} from './analytics-filters';
+import { type AnalyticsFilters, computeErrorRate } from './analytics-filters';
 
 const prisma = appPrisma as unknown as PrismaClient;
 
-export type { AnalyticsFilters, AnalyticsFiltersInput } from './analytics-filters';
-export { normalizeAnalyticsFilters, parseAnalyticsFiltersFromRequest } from './analytics-filters';
+export type {
+  AnalyticsFilters,
+  AnalyticsFiltersInput,
+} from './analytics-filters';
+export {
+  normalizeAnalyticsFilters,
+  parseAnalyticsFiltersFromRequest,
+} from './analytics-filters';
 
 export type AnalyticsOverview = {
   totalRequests: number;
@@ -81,29 +84,30 @@ export async function getOverviewAnalytics(
 ): Promise<AnalyticsOverview> {
   const baseWhere = buildBaseWhere(filters);
 
-  const [completedAggregate, statusCounts, latencyAggregate] = await Promise.all([
-    prisma.aiAgentRun.aggregate({
-      where: buildCompletedRunWhere(filters),
-      _count: { _all: true },
-      _sum: {
-        inputTokens: true,
-        outputTokens: true,
-        estimatedCostUsd: true,
-      },
-    }),
-    prisma.aiAgentRun.groupBy({
-      by: ['status'],
-      where: baseWhere,
-      _count: { _all: true },
-    }),
-    prisma.aiAgentRun.aggregate({
-      where: {
-        ...buildTerminalRunWhere(filters),
-        latencyMs: { not: null },
-      },
-      _avg: { latencyMs: true },
-    }),
-  ]);
+  const [completedAggregate, statusCounts, latencyAggregate] =
+    await Promise.all([
+      prisma.aiAgentRun.aggregate({
+        where: buildCompletedRunWhere(filters),
+        _count: { _all: true },
+        _sum: {
+          inputTokens: true,
+          outputTokens: true,
+          estimatedCostUsd: true,
+        },
+      }),
+      prisma.aiAgentRun.groupBy({
+        by: ['status'],
+        where: baseWhere,
+        _count: { _all: true },
+      }),
+      prisma.aiAgentRun.aggregate({
+        where: {
+          ...buildTerminalRunWhere(filters),
+          latencyMs: { not: null },
+        },
+        _avg: { latencyMs: true },
+      }),
+    ]);
 
   const completedRequests =
     statusCounts.find((row) => row.status === 'completed')?._count._all ?? 0;
@@ -318,7 +322,9 @@ export async function getDailyTrendAnalytics(
     prisma.aiAgentRun.findMany({
       where: {
         ...buildBaseWhere({ ...filters, status: undefined }),
-        status: { in: ['completed', 'failed'] as Array<'completed' | 'failed'> },
+        status: {
+          in: ['completed', 'failed'] as Array<'completed' | 'failed'>,
+        },
         createdAt: {
           gte: filters.from,
           lte: filters.to,
@@ -362,23 +368,21 @@ export async function getDailyTrendAnalytics(
     ...failedByDate.keys(),
   ]);
 
-  return [...allDates]
-    .sort()
-    .map((date) => {
-      const usage = usageByDate.get(date);
-      const completedRuns = completedByDate.get(date) ?? usage?.totalRuns ?? 0;
-      const failedRuns = failedByDate.get(date) ?? 0;
+  return [...allDates].sort().map((date) => {
+    const usage = usageByDate.get(date);
+    const completedRuns = completedByDate.get(date) ?? usage?.totalRuns ?? 0;
+    const failedRuns = failedByDate.get(date) ?? 0;
 
-      return {
-        date,
-        completedRuns,
-        failedRuns,
-        totalRuns: completedRuns + failedRuns,
-        totalInputTokens: usage?.totalInputTokens ?? 0,
-        totalOutputTokens: usage?.totalOutputTokens ?? 0,
-        totalCostUsd: usage?.totalCostUsd ?? 0,
-      };
-    });
+    return {
+      date,
+      completedRuns,
+      failedRuns,
+      totalRuns: completedRuns + failedRuns,
+      totalInputTokens: usage?.totalInputTokens ?? 0,
+      totalOutputTokens: usage?.totalOutputTokens ?? 0,
+      totalCostUsd: usage?.totalCostUsd ?? 0,
+    };
+  });
 }
 
 export async function getDailyUsageAnalytics(filters: AnalyticsFilters = {}) {

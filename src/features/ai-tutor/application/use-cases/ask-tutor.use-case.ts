@@ -36,6 +36,12 @@ export type AskTutorRequestOutcome = {
   usedFallback: boolean;
   filterTriggered: boolean;
   assessmentBlocked: boolean;
+  groundingBlocked: boolean;
+  grounded: boolean;
+  groundingReason?:
+    | 'SUFFICIENT_CONTEXT'
+    | 'INSUFFICIENT_CONTEXT'
+    | 'LOW_RELEVANCE';
   retrievalChunkCount: number;
 };
 
@@ -68,7 +74,8 @@ function mapPlatformSourcesToMessageSources(
       source: contentType,
       relevanceScore: source.score,
       contentType,
-      lectureId: typeof metadata.lectureId === 'string' ? metadata.lectureId : undefined,
+      lectureId:
+        typeof metadata.lectureId === 'string' ? metadata.lectureId : undefined,
     };
   });
 }
@@ -88,6 +95,24 @@ function mapRunMetadataToOutcome(
 
   if (metadata.filterTriggered === true) {
     outcome.filterTriggered = true;
+  }
+
+  if (metadata.groundingBlocked === true) {
+    outcome.groundingBlocked = true;
+    outcome.grounded = false;
+    outcome.usedFallback = true;
+  }
+
+  if (typeof metadata.grounded === 'boolean') {
+    outcome.grounded = metadata.grounded;
+  }
+
+  if (
+    metadata.groundingReason === 'SUFFICIENT_CONTEXT' ||
+    metadata.groundingReason === 'INSUFFICIENT_CONTEXT' ||
+    metadata.groundingReason === 'LOW_RELEVANCE'
+  ) {
+    outcome.groundingReason = metadata.groundingReason;
   }
 }
 
@@ -126,14 +151,19 @@ async function* streamTutorViaPlatformRuntime(input: {
   outcome: AskTutorRequestOutcome;
   idempotencyKey?: string;
   signal?: AbortSignal;
-}): AsyncGenerator<TutorSseEvent, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
+}): AsyncGenerator<
+  TutorSseEvent,
+  AskTutorResultDTO & { outcome: AskTutorRequestOutcome }
+> {
   const { outcome, conversationRepository, turn } = input;
   const sessionMetaIntent = detectSessionMetaIntent(input.question);
   const personalization = buildPersonalizationContext(
     input.sessionContext,
     sessionMetaIntent,
   );
-  const responseProcessor = new TutorResponseProcessorAdapter(input.contentFilter);
+  const responseProcessor = new TutorResponseProcessorAdapter(
+    input.contentFilter,
+  );
 
   let sources: MessageSourceDTO[] = [];
   let validatedOutput: string | undefined;
@@ -284,11 +314,7 @@ async function* streamTutorViaPlatformRuntime(input: {
     }
 
     if (error instanceof Error) {
-      throw new AskTutorError(
-        502,
-        error.message,
-        AskTutorErrorCodes.LLM_ERROR,
-      );
+      throw new AskTutorError(502, error.message, AskTutorErrorCodes.LLM_ERROR);
     }
 
     throw error;
@@ -302,13 +328,18 @@ export async function* askTutorUseCase(
     idempotencyKey?: string;
   },
   deps: AskTutorUseCaseDeps,
-): AsyncGenerator<TutorSseEvent, AskTutorResultDTO & { outcome: AskTutorRequestOutcome }> {
+): AsyncGenerator<
+  TutorSseEvent,
+  AskTutorResultDTO & { outcome: AskTutorRequestOutcome }
+> {
   const { conversationRepository, contentFilter } = deps;
 
   const outcome: AskTutorRequestOutcome = {
     usedFallback: false,
     filterTriggered: false,
     assessmentBlocked: false,
+    groundingBlocked: false,
+    grounded: true,
     retrievalChunkCount: 0,
   };
 
@@ -423,7 +454,10 @@ export async function* askTutorUseCase(
       })
       .catch((error) => {
         if (process.env.NODE_ENV === 'development') {
-          console.warn('[AI_TUTOR_PROFILE] Failed to update learning profile', error);
+          console.warn(
+            '[AI_TUTOR_PROFILE] Failed to update learning profile',
+            error,
+          );
         }
       });
 

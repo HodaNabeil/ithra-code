@@ -7,8 +7,14 @@ import { EvaluatorAgentStateAnnotation } from '../state/evaluator-agent.state';
 
 export function buildEvaluatorGraph() {
   const graph = new StateGraph(EvaluatorAgentStateAnnotation)
-    .addNode('sanitize-input', wrapGraphNode('sanitize-input', sanitizeInputNode as never))
-    .addNode('evaluate-rubric', wrapGraphNode('evaluate-rubric', evaluateRubricNode))
+    .addNode(
+      'sanitize-input',
+      wrapGraphNode('sanitize-input', sanitizeInputNode as never),
+    )
+    .addNode(
+      'evaluate-rubric',
+      wrapGraphNode('evaluate-rubric', evaluateRubricNode),
+    )
     .addEdge(START, 'sanitize-input')
     .addEdge('sanitize-input', 'evaluate-rubric')
     .addEdge('evaluate-rubric', END);

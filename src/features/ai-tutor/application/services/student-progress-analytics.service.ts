@@ -12,11 +12,15 @@ const ASSESSMENT_TYPES = {
 export function analyzeAssessmentPerformance(
   lectures: LectureProgressItem[],
 ): AssessmentPerformanceSummary {
-  const quizzes = lectures.filter((lecture) => lecture.type === ASSESSMENT_TYPES.QUIZ);
+  const quizzes = lectures.filter(
+    (lecture) => lecture.type === ASSESSMENT_TYPES.QUIZ,
+  );
   const assignments = lectures.filter(
     (lecture) => lecture.type === ASSESSMENT_TYPES.ASSIGNMENT,
   );
-  const completedQuizzes = quizzes.filter((lecture) => lecture.isCompleted).length;
+  const completedQuizzes = quizzes.filter(
+    (lecture) => lecture.isCompleted,
+  ).length;
   const completedAssignments = assignments.filter(
     (lecture) => lecture.isCompleted,
   ).length;
@@ -75,7 +79,9 @@ export function buildSectionProgressSummaries(
       completionPercentage:
         section.totalLectures === 0
           ? 0
-          : Math.round((section.completedLectures / section.totalLectures) * 100),
+          : Math.round(
+              (section.completedLectures / section.totalLectures) * 100,
+            ),
     }));
 }
 

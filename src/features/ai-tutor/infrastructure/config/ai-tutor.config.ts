@@ -75,7 +75,9 @@ export function resetAITutorConfigValidationForTests(): void {
 export function validateAITutorConfig(): void {
   if (!AITutorConfig.isEnabled()) {
     if (!tutorConfigValidated) {
-      logger.info('[AI_TUTOR_CONFIG] AI Tutor feature is disabled (AI_TUTOR_ENABLED=false)');
+      logger.info(
+        '[AI_TUTOR_CONFIG] AI Tutor feature is disabled (AI_TUTOR_ENABLED=false)',
+      );
       tutorConfigValidated = true;
     }
     return;

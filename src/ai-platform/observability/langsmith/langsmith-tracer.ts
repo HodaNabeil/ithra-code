@@ -22,7 +22,10 @@ export type AgentTraceMetadata = {
 export type AgentTraceSession = {
   callbacks: BaseCallbackHandler[];
   runTree: RunTree | null;
-  endTrace: (outputs?: Record<string, unknown>, error?: string) => Promise<void>;
+  endTrace: (
+    outputs?: Record<string, unknown>,
+    error?: string,
+  ) => Promise<void>;
 };
 
 function configureLangSmithEnv(): void {

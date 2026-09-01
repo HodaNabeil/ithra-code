@@ -13,7 +13,11 @@ import { enrichDatasetWithAgentOutput } from './tutor-agent-eval.runner';
 const prisma = appPrisma as unknown as PrismaClient;
 
 export function loadDataset(fileName: string): EvalDataset {
-  const path = join(process.cwd(), 'src/ai-platform/evaluation/datasets', fileName);
+  const path = join(
+    process.cwd(),
+    'src/ai-platform/evaluation/datasets',
+    fileName,
+  );
   return JSON.parse(readFileSync(path, 'utf-8')) as EvalDataset;
 }
 

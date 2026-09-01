@@ -11,12 +11,11 @@ export function Logo({ className }: LogoProps) {
   return (
     <Link href={APP_ROUTES.ROOT}>
       <Image
-        src="/img/logo.png"
-        alt="Logo"
-        width={120}
-        height={32}
-        className={className}
-        style={{ width: 'auto', height: 'auto' }}
+        src="/img/ithracode.png"
+        alt="IthraCode"
+        width={1960}
+        height={802}
+        className={className ?? 'h-12 w-auto shrink-0 sm:h-14 lg:h-16'}
         priority
       />
     </Link>

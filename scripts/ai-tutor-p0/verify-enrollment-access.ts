@@ -13,7 +13,10 @@ function main(): void {
     { id: '3', courseId: 'course-c' },
   ];
 
-  const filtered = filterConversationsByAccessibleCourses(conversations, accessible);
+  const filtered = filterConversationsByAccessibleCourses(
+    conversations,
+    accessible,
+  );
   assert.deepEqual(
     filtered.map((conversation) => conversation.id),
     ['1', '3'],

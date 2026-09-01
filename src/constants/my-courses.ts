@@ -1,20 +1,15 @@
-export const PROGRESS_FILTERS = {
-  ALL: 'all',
-  COMPLETED: 'completed',
-  IN_PROGRESS: 'in_progress',
-  NOT_STARTED: 'not_started',
-} as const;
-
 export const SEARCH_PARAMS_KEYS = {
-  TRACK: 'category_filter',
-  STATUS: 'progress_filter',
   SEARCH: 'search',
-  INSTRUCTOR: 'instructor_filter',
+  TAB: 'tab',
 } as const;
 
-export const DEFAULT_VALUES = {
-  INSTRUCTOR_NAME: 'محاضر',
-} as const;
+export const DASHBOARD_TABS = [
+  'overview',
+  'enrollments',
+  'certificates',
+] as const;
+
+export type DashboardTab = (typeof DASHBOARD_TABS)[number];
 
 export const MY_COURSES_ROUTES = {
   COURSES: '/courses',

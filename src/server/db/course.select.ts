@@ -1,7 +1,7 @@
 export {
   courseListSelect,
   type DB_CourseListItem,
-} from '@/features/courses/course-list';
+} from '@/features/courses/listing';
 
 export {
   courseDetailSelect,

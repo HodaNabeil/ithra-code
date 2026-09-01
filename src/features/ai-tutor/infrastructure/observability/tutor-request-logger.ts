@@ -9,11 +9,16 @@ export type TutorRequestLogContext = {
   usedFallback?: boolean;
   filterTriggered?: boolean;
   assessmentBlocked?: boolean;
+  groundingBlocked?: boolean;
+  grounded?: boolean;
+  groundingReason?: string;
   retrievalChunkCount?: number;
   errorCode?: string;
 };
 
-export function logTutorRequestCompleted(context: TutorRequestLogContext): void {
+export function logTutorRequestCompleted(
+  context: TutorRequestLogContext,
+): void {
   logger.info(
     {
       event: 'tutor.request.completed',

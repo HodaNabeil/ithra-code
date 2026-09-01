@@ -1,9 +1,6 @@
 import type { CartRepository } from '../../domain/repositories/cart.repository';
 import type { DB_CartWithItems } from '../../infrastructure/prisma/cart.select';
-import {
-  calculateDiscount,
-  isCouponValid,
-} from '../../mappers/cart.mapper';
+import { calculateDiscount, isCouponValid } from '../../mappers/cart.mapper';
 
 export type CartTotalsResult = {
   subtotal: number;

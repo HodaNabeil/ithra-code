@@ -12,7 +12,9 @@ let shuttingDown = false;
 
 async function runReconciliation(): Promise<void> {
   if (running) {
-    logger.warn('[PAYMENT_RECONCILE_WORKER_SKIPPED] Previous batch still running');
+    logger.warn(
+      '[PAYMENT_RECONCILE_WORKER_SKIPPED] Previous batch still running',
+    );
     return;
   }
 

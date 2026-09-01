@@ -6,9 +6,7 @@ import type { PrismaClientLike } from '../prisma.types';
  * Clears a user's cart as part of payment fulfillment.
  * Runs through the same transactional client as the Unit of Work.
  */
-export class PrismaCartFulfillmentRepository
-  implements CartFulfillmentRepository
-{
+export class PrismaCartFulfillmentRepository implements CartFulfillmentRepository {
   constructor(private readonly db: PrismaClientLike = prisma) {}
 
   async clearForUser(userId: string): Promise<void> {

@@ -19,7 +19,9 @@ export const agentRunOptionsSchema = z.object({
   metadata: z.record(z.string(), z.unknown()).optional(),
   locale: z.string().optional(),
   signal: z
-    .custom<AbortSignal>((value) => value === undefined || value instanceof AbortSignal)
+    .custom<AbortSignal>(
+      (value) => value === undefined || value instanceof AbortSignal,
+    )
     .optional(),
 });
 

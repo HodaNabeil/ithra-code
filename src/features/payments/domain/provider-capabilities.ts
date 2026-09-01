@@ -17,12 +17,7 @@ export type ProviderCapabilityMatrix = Record<
  * Declares what each PSP supports today. Used for routing and ops tooling.
  */
 export const PROVIDER_CAPABILITIES: Partial<ProviderCapabilityMatrix> = {
-  [PaymentProvider.PAYMOB]: [
-    'checkout',
-    'inquiry',
-    'webhooks',
-    'refunds',
-  ],
+  [PaymentProvider.PAYMOB]: ['checkout', 'inquiry', 'webhooks', 'refunds'],
   [PaymentProvider.STRIPE]: [
     'checkout',
     'inquiry',

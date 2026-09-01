@@ -50,7 +50,10 @@ export async function acquireConcurrencySlot(
           await redis.del(key);
         }
       } catch (error) {
-        logger.error({ userId: options.userId, guard: 'stream_slot', error }, '[AI_STREAM_LIMIT_RELEASE]');
+        logger.error(
+          { userId: options.userId, guard: 'stream_slot', error },
+          '[AI_STREAM_LIMIT_RELEASE]',
+        );
       }
     };
   } catch (error) {
@@ -58,7 +61,10 @@ export async function acquireConcurrencySlot(
       throw error;
     }
 
-    logger.error({ userId: options.userId, guard: 'stream_slot' }, '[AI_STREAM_LIMIT_REDIS_FAILURE]');
+    logger.error(
+      { userId: options.userId, guard: 'stream_slot' },
+      '[AI_STREAM_LIMIT_REDIS_FAILURE]',
+    );
     throw new PlatformError(
       PlatformErrorCodes.PROVIDER_UNAVAILABLE,
       'خدمة الذكاء الاصطناعي غير متاحة مؤقتاً. حاول مرة أخرى بعد قليل.',

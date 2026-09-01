@@ -2,7 +2,10 @@ import { CourseIndexingOutboxStatus } from '@/generated/prisma/enums';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 
-import { addIndexingJobToQueue, buildIndexingEvent } from '../../infrastructure/queue/course-indexing.queue';
+import {
+  addIndexingJobToQueue,
+  buildIndexingEvent,
+} from '../../infrastructure/queue/course-indexing.queue';
 
 export type IndexingOutboxRequest = {
   courseId: string;
@@ -46,7 +49,8 @@ export async function markIndexingOutboxFailed(
   outboxId: string,
   error: unknown,
 ): Promise<void> {
-  const message = error instanceof Error ? error.message : 'Unknown enqueue error';
+  const message =
+    error instanceof Error ? error.message : 'Unknown enqueue error';
 
   await prisma.courseIndexingOutbox.update({
     where: { id: outboxId },
@@ -58,7 +62,9 @@ export async function markIndexingOutboxFailed(
   });
 }
 
-export async function markIndexingOutboxCompleted(outboxId: string): Promise<void> {
+export async function markIndexingOutboxCompleted(
+  outboxId: string,
+): Promise<void> {
   await prisma.courseIndexingOutbox.update({
     where: { id: outboxId },
     data: {
@@ -99,11 +105,16 @@ export async function enqueueIndexingFromOutbox(
   }
 }
 
-export async function reconcilePendingIndexingOutbox(limit = 50): Promise<number> {
+export async function reconcilePendingIndexingOutbox(
+  limit = 50,
+): Promise<number> {
   const pending = await prisma.courseIndexingOutbox.findMany({
     where: {
       status: {
-        in: [CourseIndexingOutboxStatus.PENDING, CourseIndexingOutboxStatus.FAILED],
+        in: [
+          CourseIndexingOutboxStatus.PENDING,
+          CourseIndexingOutboxStatus.FAILED,
+        ],
       },
     },
     orderBy: { createdAt: 'asc' },

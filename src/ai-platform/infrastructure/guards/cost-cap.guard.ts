@@ -125,7 +125,8 @@ export async function reserveDailyBudgetUsd(params: {
     return null;
   }
 
-  const userCapMicro = params.userCapUsd > 0 ? usdToMicro(params.userCapUsd) : 0;
+  const userCapMicro =
+    params.userCapUsd > 0 ? usdToMicro(params.userCapUsd) : 0;
   const globalCapMicro =
     params.globalCapUsd > 0 ? usdToMicro(params.globalCapUsd) : 0;
 
@@ -162,7 +163,10 @@ export async function reserveDailyBudgetUsd(params: {
   }
 }
 
-async function adjustBudgetMicro(userId: string, deltaMicro: number): Promise<void> {
+async function adjustBudgetMicro(
+  userId: string,
+  deltaMicro: number,
+): Promise<void> {
   if (deltaMicro === 0) {
     return;
   }
@@ -215,10 +219,7 @@ export async function releaseDailyBudgetReservation(
   }
 
   try {
-    await adjustBudgetMicro(
-      reservation.userId,
-      -reservation.reservedMicroUsd,
-    );
+    await adjustBudgetMicro(reservation.userId, -reservation.reservedMicroUsd);
   } catch (error) {
     platformMetrics.incrementRedisGuardFailure('budget_release');
     logger.error(
@@ -238,7 +239,7 @@ export async function assertUserDailyBudgetUsd(
   }
 
   try {
-    const spentMicro = Number(await redis.get(getUserBudgetKey(userId)) ?? 0);
+    const spentMicro = Number((await redis.get(getUserBudgetKey(userId))) ?? 0);
     if (isOverBudget(spentMicro, capUsd)) {
       platformMetrics.incrementBudgetReservationRejected('cap_exceeded');
       throw new PlatformError(
@@ -252,13 +253,15 @@ export async function assertUserDailyBudgetUsd(
 }
 
 /** Read-only global budget check for legacy callers. */
-export async function assertGlobalDailyBudgetUsd(capUsd: number): Promise<void> {
+export async function assertGlobalDailyBudgetUsd(
+  capUsd: number,
+): Promise<void> {
   if (!capUsd || capUsd <= 0) {
     return;
   }
 
   try {
-    const spentMicro = Number(await redis.get(getGlobalBudgetKey()) ?? 0);
+    const spentMicro = Number((await redis.get(getGlobalBudgetKey())) ?? 0);
     if (isOverBudget(spentMicro, capUsd)) {
       platformMetrics.incrementBudgetReservationRejected('cap_exceeded');
       throw new PlatformError(
@@ -285,7 +288,10 @@ export async function recordDailySpendUsd(params: {
     await adjustBudgetMicro(params.userId, microUsd);
   } catch (error) {
     platformMetrics.incrementRedisGuardFailure('budget_record');
-    logger.error({ error, userId: params.userId }, '[AI_BUDGET_RECORD_FAILURE]');
+    logger.error(
+      { error, userId: params.userId },
+      '[AI_BUDGET_RECORD_FAILURE]',
+    );
     throw new PlatformError(
       PlatformErrorCodes.PROVIDER_UNAVAILABLE,
       'خدمة الذكاء الاصطناعي غير متاحة مؤقتاً. حاول مرة أخرى بعد قليل.',

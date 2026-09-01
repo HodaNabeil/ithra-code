@@ -51,9 +51,9 @@ describe('buildTutorSessionContext enrollment auth', () => {
   it('rejects when enrollment check fails even if cache has context', async () => {
     const deps: CourseContextServiceDeps = {
       courseContextRepository: {
-        assertStudentEnrolled: vi.fn().mockRejectedValue(
-          new AskTutorError(403, 'denied', 'UNAUTHORIZED'),
-        ),
+        assertStudentEnrolled: vi
+          .fn()
+          .mockRejectedValue(new AskTutorError(403, 'denied', 'UNAUTHORIZED')),
         findEnrolledCourseWithProgress: vi.fn(),
         getAccessibleCourseIds: vi.fn(),
       },
@@ -70,13 +70,12 @@ describe('buildTutorSessionContext enrollment auth', () => {
     };
 
     await expect(
-      buildTutorSessionContext(
-        { courseSlug: 'slug', userId: 'user-1' },
-        deps,
-      ),
+      buildTutorSessionContext({ courseSlug: 'slug', userId: 'user-1' }, deps),
     ).rejects.toBeInstanceOf(AskTutorError);
 
-    expect(deps.courseContextRepository.assertStudentEnrolled).toHaveBeenCalled();
+    expect(
+      deps.courseContextRepository.assertStudentEnrolled,
+    ).toHaveBeenCalled();
     expect(deps.sessionContextCache.get).not.toHaveBeenCalled();
   });
 });

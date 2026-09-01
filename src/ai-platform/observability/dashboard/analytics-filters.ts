@@ -41,7 +41,10 @@ export function normalizeAnalyticsFilters(
   };
 }
 
-export function computeErrorRate(completedRuns: number, failedRuns: number): number {
+export function computeErrorRate(
+  completedRuns: number,
+  failedRuns: number,
+): number {
   const terminalRuns = completedRuns + failedRuns;
   if (terminalRuns <= 0) {
     return 0;
@@ -50,7 +53,9 @@ export function computeErrorRate(completedRuns: number, failedRuns: number): num
   return failedRuns / terminalRuns;
 }
 
-export function parseAnalyticsFiltersFromRequest(request: Request): AnalyticsFilters {
+export function parseAnalyticsFiltersFromRequest(
+  request: Request,
+): AnalyticsFilters {
   const url = new URL(request.url);
   const from = url.searchParams.get('from');
   const to = url.searchParams.get('to');
@@ -59,7 +64,10 @@ export function parseAnalyticsFiltersFromRequest(request: Request): AnalyticsFil
 
   return normalizeAnalyticsFilters({
     userId: url.searchParams.get('userId') ?? undefined,
-    agentId: url.searchParams.get('agentId') ?? url.searchParams.get('agent') ?? undefined,
+    agentId:
+      url.searchParams.get('agentId') ??
+      url.searchParams.get('agent') ??
+      undefined,
     provider: url.searchParams.get('provider') ?? undefined,
     model: url.searchParams.get('model') ?? undefined,
     status:

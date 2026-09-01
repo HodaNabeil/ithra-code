@@ -43,12 +43,14 @@ describe('lecture validation', () => {
 
   it('allows lecture in enrolled course', () => {
     expect(lectureExistsInCourse(course, 'lecture-1')).toBe(true);
-    expect(() => assertLectureBelongsToCourse('lecture-1', course)).not.toThrow();
+    expect(() =>
+      assertLectureBelongsToCourse('lecture-1', course),
+    ).not.toThrow();
   });
 
   it('rejects foreign lectureId', () => {
-    expect(() => assertLectureBelongsToCourse('lecture-foreign', course)).toThrow(
-      AskTutorError,
-    );
+    expect(() =>
+      assertLectureBelongsToCourse('lecture-foreign', course),
+    ).toThrow(AskTutorError);
   });
 });

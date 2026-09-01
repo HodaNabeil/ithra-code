@@ -7,7 +7,11 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { AI_TUTOR_CONSTANTS } from '@/features/ai-tutor/shared';
 
-export type TutorIndexingStatus = 'ready' | 'indexing' | 'not_indexed' | 'failed';
+export type TutorIndexingStatus =
+  | 'ready'
+  | 'indexing'
+  | 'not_indexed'
+  | 'failed';
 
 export type TutorIndexingStatusBannerProps = {
   courseSlug: string;
@@ -96,7 +100,9 @@ export function TutorIndexingStatusBanner({
             {isReindexing ? 'جاري الطلب...' : 'إعادة فهرسة الدورة'}
           </Button>
         )}
-        {reindexMessage && <p className="text-xs text-muted-foreground">{reindexMessage}</p>}
+        {reindexMessage && (
+          <p className="text-xs text-muted-foreground">{reindexMessage}</p>
+        )}
       </AlertDescription>
     </Alert>
   );

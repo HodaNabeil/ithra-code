@@ -3,7 +3,8 @@ import { Queue } from 'bullmq';
 import { AI_PLATFORM_CONSTANTS } from '../../shared/constants';
 import { redis } from '@/lib/redis';
 
-export const AI_COST_AGGREGATION_QUEUE = AI_PLATFORM_CONSTANTS.AI_COST_AGGREGATION_QUEUE;
+export const AI_COST_AGGREGATION_QUEUE =
+  AI_PLATFORM_CONSTANTS.AI_COST_AGGREGATION_QUEUE;
 
 export type CostAggregationJobData = {
   date?: string;
