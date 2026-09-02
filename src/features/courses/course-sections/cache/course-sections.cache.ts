@@ -8,19 +8,19 @@ const CACHE_PREFIX = 'course:sections:v1';
 const CACHE_TTL_SECONDS = 300;
 
 function buildCacheKey(
-  idOrSlug: string,
+  courseIdOrSlug: string,
   scope: CourseSectionsCacheScope,
 ): string {
-  return `${CACHE_PREFIX}:${idOrSlug}:${scope}`;
+  return `${CACHE_PREFIX}:${courseIdOrSlug}:${scope}`;
 }
 
 export const courseSectionsCache = {
   async get(
-    idOrSlug: string,
+    courseIdOrSlug: string,
     scope: CourseSectionsCacheScope,
   ): Promise<GetCourseSectionsResponse | null> {
     try {
-      const raw = await redis.get(buildCacheKey(idOrSlug, scope));
+      const raw = await redis.get(buildCacheKey(courseIdOrSlug, scope));
       if (!raw) return null;
       return JSON.parse(raw) as GetCourseSectionsResponse;
     } catch (error) {
@@ -30,13 +30,13 @@ export const courseSectionsCache = {
   },
 
   async set(
-    idOrSlug: string,
+    courseIdOrSlug: string,
     scope: CourseSectionsCacheScope,
     data: GetCourseSectionsResponse,
   ): Promise<void> {
     try {
       await redis.set(
-        buildCacheKey(idOrSlug, scope),
+        buildCacheKey(courseIdOrSlug, scope),
         JSON.stringify(data),
         'EX',
         CACHE_TTL_SECONDS,
@@ -46,11 +46,11 @@ export const courseSectionsCache = {
     }
   },
 
-  async invalidate(idOrSlug: string): Promise<void> {
+  async invalidate(courseIdOrSlug: string): Promise<void> {
     try {
       await Promise.all([
-        redis.del(buildCacheKey(idOrSlug, 'public')),
-        redis.del(buildCacheKey(idOrSlug, 'staff')),
+        redis.del(buildCacheKey(courseIdOrSlug, 'public')),
+        redis.del(buildCacheKey(courseIdOrSlug, 'staff')),
       ]);
     } catch (error) {
       console.error('[COURSE_SECTIONS_CACHE_INVALIDATE]', error);

@@ -1,21 +1,19 @@
 import { NextResponse } from 'next/server';
+
 import { auth } from '@/lib/auth';
 import { apiError, apiSuccess } from '@/lib/api-response';
-import {
-  CourseSectionsError,
-  getCourseSections,
-} from '@/features/courses/course-sections';
 
-export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ idOrSlug: string }> },
+import { CourseSectionsError } from '../errors/course-sections.errors';
+import { getCourseSections } from '../use-cases/get-course-sections.use-case';
+
+export async function handleGetCourseSectionsRequest(
+  _request: Request,
+  courseIdOrSlug: string,
 ): Promise<NextResponse> {
-  const { idOrSlug } = await params;
-
   try {
     const session = await auth();
     const data = await getCourseSections({
-      idOrSlug,
+      courseIdOrSlug,
       user: session?.user?.id
         ? { id: session.user.id, role: session.user.role }
         : null,

@@ -26,7 +26,7 @@ import {
 import { parseCourseSectionsParams } from '../validation/course-sections.validation';
 
 export type GetCourseSectionsInput = {
-  idOrSlug: string;
+  courseIdOrSlug: string;
   user?: CourseSectionsViewer;
 };
 
@@ -34,10 +34,12 @@ export async function getCourseSections(
   input: GetCourseSectionsInput,
   repository: CourseSectionsRepository = courseSectionsRepository,
 ): Promise<GetCourseSectionsResponse> {
-  let idOrSlug: string;
+  let courseIdOrSlug: string;
 
   try {
-    ({ idOrSlug } = parseCourseSectionsParams({ idOrSlug: input.idOrSlug }));
+    ({ courseIdOrSlug } = parseCourseSectionsParams({
+      courseIdOrSlug: input.courseIdOrSlug,
+    }));
   } catch (error) {
     if (error instanceof ZodError) {
       throw new CourseSectionsError(
@@ -49,23 +51,23 @@ export async function getCourseSections(
   }
 
   const viewer = input.user ?? null;
-  const course = await repository.findCourseIdentity(idOrSlug);
+  const course = await repository.findCourseIdentity(courseIdOrSlug);
 
   if (!course) {
     throw new CourseSectionsError(
       404,
-      courseNotFoundMessage(idOrSlug),
+      courseNotFoundMessage(courseIdOrSlug),
       'COURSE_NOT_FOUND',
     );
   }
 
-  assertCourseSectionsAccessible(course, idOrSlug, viewer);
+  assertCourseSectionsAccessible(course, courseIdOrSlug, viewer);
 
   const publishedOnly = resolvePublishedOnly(course, viewer);
   const cacheScope = resolveCacheScope(course, viewer);
 
   if (!viewer?.id) {
-    const cached = await courseSectionsCache.get(idOrSlug, cacheScope);
+    const cached = await courseSectionsCache.get(courseIdOrSlug, cacheScope);
     if (cached) {
       return cached;
     }
@@ -79,7 +81,7 @@ export async function getCourseSections(
   if (!courseWithSections) {
     throw new CourseSectionsError(
       404,
-      courseNotFoundMessage(idOrSlug),
+      courseNotFoundMessage(courseIdOrSlug),
       'COURSE_NOT_FOUND',
     );
   }
@@ -106,7 +108,7 @@ export async function getCourseSections(
   });
 
   if (!viewer?.id) {
-    await courseSectionsCache.set(idOrSlug, cacheScope, data);
+    await courseSectionsCache.set(courseIdOrSlug, cacheScope, data);
   }
 
   return data;
