@@ -3,15 +3,13 @@ import {
   CourseVisibility,
   type Currency,
 } from '@/generated/prisma/enums';
+import { SUPPORTED_CHECKOUT_CURRENCIES } from '@/constants/currency';
 import { isCouponValid } from '@/features/cart/mappers/cart.mapper';
 import type { DB_CartCoupon } from '@/features/cart/infrastructure/prisma/cart.select';
 import { isSupportedPaymentProvider } from '@/features/payments/domain';
 import { CheckoutError } from '../errors/checkout.errors';
 
-export const SUPPORTED_CHECKOUT_CURRENCIES: readonly Currency[] = [
-  'EGP',
-  'USD',
-] as const;
+export { SUPPORTED_CHECKOUT_CURRENCIES };
 
 export type CheckoutCartCourse = {
   id: string;

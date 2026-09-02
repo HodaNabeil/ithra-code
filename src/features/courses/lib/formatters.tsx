@@ -250,7 +250,6 @@ export function formatTimestamp(
 export function formatCurrencySymbol(currency: string): string {
   const currencyMap: Record<string, string> = {
     USD: '$',
-    EGP: 'ج.م',
   };
 
   return currencyMap[currency.toUpperCase()] || currency;

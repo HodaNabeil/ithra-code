@@ -79,8 +79,8 @@ function resolveCurrency(value: unknown): Currency | null {
   }
 
   const upper = value.toUpperCase();
-  if (upper === 'EGP' || upper === 'USD') {
-    return upper as Currency;
+  if (upper === 'USD' || upper === 'EGP') {
+    return 'USD';
   }
 
   return null;

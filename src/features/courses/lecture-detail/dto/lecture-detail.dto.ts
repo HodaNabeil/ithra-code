@@ -9,7 +9,11 @@ export type LectureDetailViewer = {
 
 export type LectureDetailEnrollment = {
   id: string;
-  status: string;
+};
+
+export type CourseRatingAggregate = {
+  rating: number;
+  ratingCount: number;
 };
 
 export type LectureDetailCourseIdentity = {

@@ -79,7 +79,7 @@ async function findStudentId(): Promise<string> {
 async function findPurchasableCourseId(studentId: string): Promise<{
   courseId: string;
   price: number;
-  currency: 'EGP' | 'USD';
+  currency: 'USD';
 }> {
   const enrolled = await prisma.enrollment.findMany({
     where: { studentId, status: EnrollmentStatus.ACTIVE },
@@ -107,14 +107,14 @@ async function findPurchasableCourseId(studentId: string): Promise<{
   return {
     courseId: course.id,
     price: Number(course.price),
-    currency: course.currency as 'EGP' | 'USD',
+    currency: course.currency as 'USD',
   };
 }
 
 /** Fixture only — Prisma for seed setup, not for fulfillment wiring. */
 async function ensureCartWithCourse(
   studentId: string,
-  course: { courseId: string; price: number; currency: 'EGP' | 'USD' },
+  course: { courseId: string; price: number; currency: 'USD' },
 ): Promise<void> {
   const cart = await prisma.cart.upsert({
     where: { userId: studentId },
@@ -271,7 +271,7 @@ async function countCartItems(userId: string): Promise<number> {
 async function runFailedPaymentScenario(
   provider: PaymentProvider,
   studentId: string,
-  course: { courseId: string; price: number; currency: 'EGP' | 'USD' },
+  course: { courseId: string; price: number; currency: 'USD' },
 ): Promise<void> {
   console.log('\n[1/3] Failed payment scenario');
   await ensureCartWithCourse(studentId, course);
@@ -337,7 +337,7 @@ async function runFailedPaymentScenario(
 async function runSuccessAndDuplicateScenarios(
   provider: PaymentProvider,
   studentId: string,
-  course: { courseId: string; price: number; currency: 'EGP' | 'USD' },
+  course: { courseId: string; price: number; currency: 'USD' },
 ): Promise<void> {
   console.log('\n[2/3] Success payment scenario');
   await ensureCartWithCourse(studentId, course);
@@ -440,7 +440,7 @@ async function runSuccessAndDuplicateScenarios(
 async function runReconcileScenario(
   provider: PaymentProvider,
   studentId: string,
-  course: { courseId: string; price: number; currency: 'EGP' | 'USD' },
+  course: { courseId: string; price: number; currency: 'USD' },
 ): Promise<void> {
   console.log(
     '\n[4/4] Reconciliation scenario (stuck PROCESSING → provider succeeded)',

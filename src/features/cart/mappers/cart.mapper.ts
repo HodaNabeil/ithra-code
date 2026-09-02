@@ -1,4 +1,5 @@
 import { CourseStatus, CourseVisibility, CouponType } from '@prisma/client';
+import { DEFAULT_CURRENCY } from '@/constants/currency';
 import type { CartDataType, CartItemType } from '@/types/cart/cart';
 import type {
   DB_CartCoupon,
@@ -114,7 +115,7 @@ export function emptyCartDto(userId: string): CartDataType {
     subtotal: 0,
     discount: 0,
     total: 0,
-    currency: 'EGP',
+    currency: DEFAULT_CURRENCY,
     items: [],
     coupon: null,
     createdAt: now,

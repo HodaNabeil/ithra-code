@@ -1,7 +1,10 @@
+import { Role } from '@prisma/client';
 import { ZodError } from 'zod';
 
 import type {
   GetLectureResponse,
+  LectureDetailCourseIdentity,
+  LectureDetailEnrollment,
   LectureDetailViewer,
 } from '../dto/lecture-detail.dto';
 import {
@@ -25,6 +28,15 @@ export type GetLectureInput = {
   lectureId: string;
   user: LectureDetailViewer;
 };
+
+function canBypassEnrollment(
+  viewer: LectureDetailViewer,
+  course: LectureDetailCourseIdentity,
+): boolean {
+  return (
+    viewer.role === Role.ADMIN || viewer.id === course.instructorId
+  );
+}
 
 export async function getLecture(
   input: GetLectureInput,
@@ -73,16 +85,39 @@ export async function getLecture(
 
   assertLecturePublishedContent(courseIdentity, lecture, lectureId, viewer);
 
-  const enrollment = await repository.findEnrollment(viewer.id, course.id);
+  const bypassEnrollment = canBypassEnrollment(viewer, courseIdentity);
+
+  let enrollment: LectureDetailEnrollment | null = null;
+  let hasRated: boolean;
+  let ratingAggregate: Awaited<
+    ReturnType<LectureDetailRepository['getCourseRatingAggregate']>
+  >;
+
+  if (bypassEnrollment) {
+    [hasRated, ratingAggregate] = await Promise.all([
+      repository.hasUserReviewedCourse(course.id, viewer.id),
+      repository.getCourseRatingAggregate(course.id),
+    ]);
+  } else {
+    [enrollment, hasRated, ratingAggregate] = await Promise.all([
+      repository.findValidEnrollment(viewer.id, course.id),
+      repository.hasUserReviewedCourse(course.id, viewer.id),
+      repository.getCourseRatingAggregate(course.id),
+    ]);
+  }
 
   assertLecturePaidAccess(courseIdentity, lecture, viewer, enrollment);
 
-  const hasPurchased = computeHasPurchased(courseIdentity, viewer, enrollment);
-  const hasRated = await repository.hasUserReviewedCourse(course.id, viewer.id);
+  const hasPurchased = computeHasPurchased(
+    courseIdentity,
+    viewer,
+    enrollment,
+  );
 
   return mapGetLectureResponse({
     lecture,
     course,
+    ratingAggregate,
     hasPurchased,
     hasRated,
   });

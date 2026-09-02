@@ -2,21 +2,18 @@ import { LectureType } from '@prisma/client';
 
 import type { CourseDetailApiDTO } from '@/features/courses/course-detail/dto/course-detail.dto';
 import {
-  computeRating,
   prismaDateToIso,
   prismaDateToIsoNullable,
 } from '@/features/courses/course-detail/mapper/shared';
 import { isBunnyStreamConfigured, signBunnyHlsUrl } from '@/lib/bunny-stream';
 
 import type {
+  CourseRatingAggregate,
   GetLectureResponse,
   LectureDetailDTO,
 } from '../dto/lecture-detail.dto';
-import { LectureDetailError } from '../errors/lecture-detail.errors';
 import type { DB_LectureDetailCourseEntity } from '../repository/lecture-detail.select';
 import type { DB_LectureDetailEntity } from '../repository/lecture-detail.select';
-
-const BUNNY_SIGNING_ERROR_MESSAGE = 'Bunny/CDN signing configuration error';
 
 function resolveVideoHlsUrl(lecture: DB_LectureDetailEntity): string | null {
   if (lecture.type !== LectureType.VIDEO || !lecture.videoId) {
@@ -38,11 +35,11 @@ function resolveVideoHlsUrl(lecture: DB_LectureDetailEntity): string | null {
   });
 
   if (!hlsUrl) {
-    throw new LectureDetailError(
-      500,
-      BUNNY_SIGNING_ERROR_MESSAGE,
-      'BUNNY_SIGNING_ERROR',
+    console.error(
+      '[LECTURE_DETAIL] Bunny HLS signing failed for video',
+      video.id,
     );
+    return null;
   }
 
   return hlsUrl;
@@ -71,8 +68,8 @@ export function mapLectureToDTO(
 export function mapLectureDetailCourseToApiDTO(
   course: DB_LectureDetailCourseEntity,
   isPurchased: boolean,
+  ratingAggregate: CourseRatingAggregate,
 ): CourseDetailApiDTO {
-  const { rating, ratingCount } = computeRating(course.reviews ?? []);
   const hours = course.duration ? Math.round(course.duration / 60) : null;
 
   return {
@@ -103,8 +100,8 @@ export function mapLectureDetailCourseToApiDTO(
     firstLectureId: undefined,
     lecturesCount: 0,
     sections: [],
-    rating,
-    ratingCount,
+    rating: ratingAggregate.rating,
+    ratingCount: ratingAggregate.ratingCount,
     metaTitle: course.metaTitle,
     metaDescription: course.metaDescription,
     certificateEnabled: course.certificateEnabled,
@@ -121,6 +118,7 @@ export function mapLectureDetailCourseToApiDTO(
 type MapGetLectureResponseInput = {
   lecture: DB_LectureDetailEntity;
   course: DB_LectureDetailCourseEntity;
+  ratingAggregate: CourseRatingAggregate;
   hasPurchased: boolean;
   hasRated: boolean;
 };
@@ -130,7 +128,11 @@ export function mapGetLectureResponse(
 ): GetLectureResponse {
   return {
     lecture: mapLectureToDTO(input.lecture),
-    course: mapLectureDetailCourseToApiDTO(input.course, input.hasPurchased),
+    course: mapLectureDetailCourseToApiDTO(
+      input.course,
+      input.hasPurchased,
+      input.ratingAggregate,
+    ),
     hasPurchased: input.hasPurchased,
     hasRated: input.hasRated,
   };

@@ -2,7 +2,10 @@ import { EnrollmentStatus } from '@prisma/client';
 
 import { prisma } from '@/lib/prisma';
 
-import type { LectureDetailEnrollment } from '../dto/lecture-detail.dto';
+import type {
+  CourseRatingAggregate,
+  LectureDetailEnrollment,
+} from '../dto/lecture-detail.dto';
 import {
   lectureDetailSelect,
   type DB_LectureDetailEntity,
@@ -10,11 +13,12 @@ import {
 
 export interface LectureDetailRepository {
   findLectureById(lectureId: string): Promise<DB_LectureDetailEntity | null>;
-  findEnrollment(
+  findValidEnrollment(
     studentId: string,
     courseId: string,
   ): Promise<LectureDetailEnrollment | null>;
   hasUserReviewedCourse(courseId: string, userId: string): Promise<boolean>;
+  getCourseRatingAggregate(courseId: string): Promise<CourseRatingAggregate>;
 }
 
 export class PrismaLectureDetailRepository implements LectureDetailRepository {
@@ -27,23 +31,24 @@ export class PrismaLectureDetailRepository implements LectureDetailRepository {
     });
   }
 
-  async findEnrollment(
+  async findValidEnrollment(
     studentId: string,
     courseId: string,
   ): Promise<LectureDetailEnrollment | null> {
-    const enrollment = await prisma.enrollment.findUnique({
+    const enrollment = await prisma.enrollment.findFirst({
       where: {
-        studentId_courseId: { studentId, courseId },
+        studentId,
+        courseId,
+        status: {
+          in: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED],
+        },
       },
-      select: { id: true, status: true },
+      select: { id: true },
     });
 
     if (!enrollment) return null;
 
-    return {
-      id: enrollment.id,
-      status: enrollment.status,
-    };
+    return { id: enrollment.id };
   }
 
   async hasUserReviewedCourse(
@@ -59,15 +64,27 @@ export class PrismaLectureDetailRepository implements LectureDetailRepository {
 
     return review !== null;
   }
+
+  async getCourseRatingAggregate(
+    courseId: string,
+  ): Promise<CourseRatingAggregate> {
+    const aggregate = await prisma.review.aggregate({
+      where: { courseId },
+      _avg: { rating: true },
+      _count: { rating: true },
+    });
+
+    return {
+      rating: aggregate._avg.rating ?? 0,
+      ratingCount: aggregate._count.rating,
+    };
+  }
 }
 
 export function isEnrollmentEligibleForAccess(
-  enrollment: LectureDetailEnrollment,
-): boolean {
-  return (
-    enrollment.status === EnrollmentStatus.ACTIVE ||
-    enrollment.status === EnrollmentStatus.COMPLETED
-  );
+  enrollment: LectureDetailEnrollment | null,
+): enrollment is LectureDetailEnrollment {
+  return enrollment !== null;
 }
 
 export const lectureDetailRepository = new PrismaLectureDetailRepository();

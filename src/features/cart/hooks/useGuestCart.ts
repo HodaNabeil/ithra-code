@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { isAuthenticatedStatus } from '@/constants/states';
+import { DEFAULT_CURRENCY } from '@/constants/currency';
 import { create } from 'zustand';
 import type { CourseListDTO as Course } from '@/types/course/course.dto';
 import type { CartDataType as Cart, CartItemType } from '@/types/cart/cart';
@@ -156,7 +157,7 @@ export function useGuestCart() {
     const total = courses.reduce((sum, c) => sum + c.price, 0);
     const discount =
       subtotal > 0 ? Math.round(((subtotal - total) / subtotal) * 100) : 0;
-    const currency = courses[0]?.currency ?? 'EGP';
+    const currency = courses[0]?.currency ?? DEFAULT_CURRENCY;
 
     return {
       id: 'guest',
