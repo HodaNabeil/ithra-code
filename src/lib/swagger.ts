@@ -15,6 +15,7 @@ import { cartApiResponseSchema } from '@/features/cart/dto/cart.dto';
 import { addCartItemBodySchema } from '@/features/cart/presentation/validators/add-cart-item.validator';
 import { createCourseSchema } from '@/features/courses/course-creation/dto/create-course.dto';
 import { registerEnrollmentsOpenApi } from '@/features/enrollments/api/register-enrollments-openapi';
+import { registerLectureDetailOpenApi } from '@/features/courses/lecture-detail/api/register-lecture-detail-openapi';
 
 const registry = new OpenAPIRegistry();
 
@@ -83,7 +84,7 @@ const courseExample = {
   previewVideo: 'https://example.com/videos/nodejs-preview.mp4',
   price: 499,
   compareAtPrice: 799,
-  currency: 'EGP' as const,
+  currency: 'USD' as const,
   level: 'BEGINNER' as const,
   status: 'PUBLISHED' as const,
   visibility: 'PUBLIC' as const,
@@ -144,7 +145,7 @@ const cartErrorExample = {
   error: 'غير مصرح',
 };
 
-const currencySchema = z.enum(['USD', 'EGP']);
+const currencySchema = z.enum(['USD']);
 const courseLevelSchema = z.enum([
   'BEGINNER',
   'INTERMEDIATE',
@@ -1020,35 +1021,6 @@ const LectureDetailSchema = registry.register(
   }),
 );
 
-const lectureWithCourseExample = {
-  lecture: lectureDetailExample,
-  course: {
-    id: EX.courseId,
-    title: 'Node.js - دورة شاملة لتعلم تطوير الخلفية',
-    slug: EX.courseSlug,
-    instructorId: EX.instructorId,
-    status: 'PUBLISHED',
-  },
-  hasPurchased: true,
-  hasRated: false,
-};
-
-const LectureWithCourseSchema = registry.register(
-  'LectureWithCourse',
-  z.object({
-    lecture: LectureDetailSchema,
-    course: z.object({
-      id: z.string(),
-      title: z.string(),
-      slug: z.string(),
-      instructorId: z.string(),
-      status: courseStatusSchema,
-    }),
-    hasPurchased: z.boolean(),
-    hasRated: z.boolean(),
-  }),
-);
-
 const createLectureItemExample = {
   id: 'cllecture2k4m00008l5d6e3k1n',
   sectionId: 'clsection2k4m00008l5d6e3k1n',
@@ -1321,7 +1293,7 @@ registry.registerPath({
               subtotal: 0,
               discount: 0,
               total: 0,
-              currency: 'EGP',
+              currency: 'USD',
               items: [],
               coupon: null,
               createdAt: '2026-01-01T00:00:00.000Z',
@@ -1373,7 +1345,7 @@ registry.registerPath({
               subtotal: 0,
               discount: 0,
               total: 0,
-              currency: 'EGP',
+              currency: 'USD',
               items: [],
               coupon: null,
               createdAt: '2026-01-01T00:00:00.000Z',
@@ -1532,72 +1504,6 @@ registry.registerPath({
 });
 
 // ─── Lectures ─────────────────────────────────────────────────────────────────
-
-registry.registerPath({
-  method: 'get',
-  path: '/lectures/{lectureId}',
-  tags: ['Lectures'],
-  summary: 'Get lecture details',
-  description:
-    'Retrieves detailed information about a specific lecture including video HLS URL (if applicable), course context, purchase status, and rating status. Requires authentication and appropriate permissions (enrollment or instructor ownership).',
-  security: authenticated,
-  request: {
-    params: lectureIdParams,
-  },
-  responses: {
-    200: {
-      description: 'Lecture details retrieved successfully',
-      content: {
-        'application/json': {
-          schema: registerApiSuccess(
-            'GetLectureResponse',
-            LectureWithCourseSchema,
-          ),
-          example: apiSuccessExample(
-            'تم جلب المحاضرة بنجاح',
-            lectureWithCourseExample,
-          ),
-        },
-      },
-    },
-    401: {
-      description: 'Unauthorized - user not logged in',
-      content: {
-        'application/json': {
-          schema: ApiErrorSchema,
-          example: { success: false, message: 'Unauthorized' },
-        },
-      },
-    },
-    403: {
-      description: 'Forbidden - insufficient permissions',
-      content: {
-        'application/json': {
-          schema: ApiErrorSchema,
-          example: { success: false, message: 'ليس لديك صلاحية' },
-        },
-      },
-    },
-    404: {
-      description: 'Lecture not found',
-      content: {
-        'application/json': {
-          schema: ApiErrorSchema,
-          example: { success: false, message: 'المحاضرة غير موجودة' },
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: ApiErrorSchema,
-          example: apiErrorExample,
-        },
-      },
-    },
-  },
-});
 
 registry.registerPath({
   method: 'post',
@@ -1862,7 +1768,7 @@ const orderExample = {
   discountCents: 0,
   taxCents: 0,
   totalCents: 49900,
-  currency: 'EGP' as const,
+  currency: 'USD' as const,
   status: 'COMPLETED' as const,
   couponCode: null,
   createdAt: '2026-06-01T10:00:00.000Z',
@@ -1874,7 +1780,7 @@ const orderExample = {
       orderId: EX.orderId,
       courseId: EX.courseId,
       priceCents: 49900,
-      currency: 'EGP' as const,
+      currency: 'USD' as const,
       status: 'ACTIVE' as const,
       refundedAt: null,
       course: courseExample,
@@ -1912,6 +1818,15 @@ registerEnrollmentsOpenApi(registry, {
   authenticated,
   courseExample,
   courseId: EX.courseId,
+});
+
+registerLectureDetailOpenApi(registry, {
+  registerApiSuccess,
+  apiSuccessExample,
+  ApiErrorSchema,
+  apiErrorExample,
+  authenticated,
+  courseExample,
 });
 
 // ─── Document generator ─────────────────────────────────────────────────────────

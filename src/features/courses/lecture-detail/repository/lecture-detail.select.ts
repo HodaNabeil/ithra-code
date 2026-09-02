@@ -29,11 +29,6 @@ const lectureDetailCourseSelect = Prisma.validator<Prisma.CourseSelect>()({
   createdAt: true,
   updatedAt: true,
   publishedAt: true,
-  reviews: {
-    select: {
-      rating: true,
-    },
-  },
 });
 
 export const lectureDetailSelect = Prisma.validator<Prisma.LectureSelect>()({

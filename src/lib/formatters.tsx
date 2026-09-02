@@ -5,7 +5,6 @@ export type Locale = 'ar' | 'en';
 const CONFIG = {
   currencyMap: {
     USD: '$',
-    EGP: 'ج.م',
     SAR: 'ر.س',
   },
 } as const;
@@ -22,7 +21,7 @@ export function formatCurrencySymbol(currency?: string): string {
 
 export function formatCurrency(
   amount: number,
-  currency: string = 'SAR',
+  currency: string = 'USD',
   locale: Locale = 'ar',
 ): string {
   const safeAmount = Number.isFinite(amount) ? amount : 0;

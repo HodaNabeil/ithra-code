@@ -39,8 +39,7 @@ export type CourseVisibility = (typeof CourseVisibility)[keyof typeof CourseVisi
 
 
 export const Currency = {
-  USD: 'USD',
-  EGP: 'EGP'
+  USD: 'USD'
 } as const
 
 export type Currency = (typeof Currency)[keyof typeof Currency]

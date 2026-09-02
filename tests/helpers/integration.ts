@@ -94,7 +94,7 @@ function buildCourseData(params: {
     slug: params.slug,
     thumbnailUrl: 'https://example.com/thumb.jpg',
     price: 0,
-    currency: Currency.EGP,
+    currency: Currency.USD,
     level: CourseLevel.BEGINNER,
     status: CourseStatus.PUBLISHED,
     visibility: CourseVisibility.PUBLIC,

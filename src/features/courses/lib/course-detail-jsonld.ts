@@ -1,3 +1,4 @@
+import { DEFAULT_CURRENCY } from '@/constants/currency';
 import type { CourseDetailDTO } from '@/types/course/course.dto';
 
 export function buildCourseDetailJsonLd(course: CourseDetailDTO) {
@@ -14,7 +15,7 @@ export function buildCourseDetailJsonLd(course: CourseDetailDTO) {
     offers: {
       '@type': 'Offer',
       price: course.price,
-      priceCurrency: course.currency || 'EGP',
+      priceCurrency: course.currency || DEFAULT_CURRENCY,
       category: 'Paid',
       availability: 'https://schema.org/InStock',
     },

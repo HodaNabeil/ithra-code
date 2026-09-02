@@ -23,7 +23,7 @@ model Course {
   previewVideo       String?          @map("preview_video")
   price              Decimal          @db.Decimal(10, 2)
   compareAtPrice     Decimal?         @map("compare_at_price") @db.Decimal(10, 2)
-  currency           Currency         @default(EGP)
+  currency           Currency         @default(USD)
   level              CourseLevel      @default(BEGINNER)
   status             CourseStatus     @default(DRAFT)
   visibility         CourseVisibility @default(PRIVATE)
@@ -94,7 +94,6 @@ enum CourseVisibility {
 
 enum Currency {
   USD
-  EGP
 }
 
 enum PaymentProvider {
@@ -532,7 +531,7 @@ model Cart {
   subtotal  Decimal  @default(0) @db.Decimal(10, 2)
   discount  Decimal  @default(0) @db.Decimal(10, 2)
   total     Decimal  @default(0) @db.Decimal(10, 2)
-  currency  Currency @default(EGP)
+  currency  Currency @default(USD)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -550,7 +549,7 @@ model CartItem {
   cartId   String   @map("cart_id")
   courseId String   @map("course_id")
   price    Decimal  @db.Decimal(10, 2)
-  currency Currency @default(EGP)
+  currency Currency @default(USD)
   addedAt  DateTime @default(now()) @map("added_at")
 
   cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
@@ -618,7 +617,7 @@ model Order {
   discountCents Int      @default(0) @map("discount_cents")
   taxCents      Int      @default(0) @map("tax_cents")
   totalCents    Int      @map("total_cents")
-  currency      Currency @default(EGP)
+  currency      Currency @default(USD)
 
   status OrderStatus @default(PENDING)
 
@@ -654,7 +653,7 @@ model OrderItem {
   course   Course @relation(fields: [courseId], references: [id], onDelete: Restrict)
 
   priceCents Int             @map("price_cents")
-  currency   Currency        @default(EGP)
+  currency   Currency        @default(USD)
   status     OrderItemStatus @default(ACTIVE)
   refundedAt DateTime?       @map("refunded_at")
 
@@ -692,7 +691,7 @@ model Payment {
   providerMetadata      Json?           @map("provider_metadata")
 
   amountCents Int      @map("amount_cents")
-  currency    Currency @default(EGP)
+  currency    Currency @default(USD)
 
   status PaymentStatus @default(PENDING)
 
@@ -805,7 +804,7 @@ model PaymentDispute {
   status           PaymentDisputeStatus @default(OPEN)
   providerDisputeId String?             @map("provider_dispute_id")
   amountCents      Int                  @map("amount_cents")
-  currency         Currency             @default(EGP)
+  currency         Currency             @default(USD)
   reason           String?
   openedAt         DateTime             @default(now()) @map("opened_at")
   resolvedAt       DateTime?            @map("resolved_at")
@@ -823,7 +822,7 @@ model Refund {
   payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
 
   amountCents Int          @map("amount_cents")
-  currency    Currency     @default(EGP)
+  currency    Currency     @default(USD)
   reason      String?
   status      RefundStatus @default(PENDING)
 
@@ -859,7 +858,7 @@ model CheckoutSession {
   status            CheckoutSessionStatus @default(OPEN)
 
   amountCents Int      @map("amount_cents")
-  currency    Currency @default(EGP)
+  currency    Currency @default(USD)
 
   url       String?
   expiresAt DateTime? @map("expires_at")
@@ -941,7 +940,7 @@ model InstructorAvailability {
   timezone     String    @default("UTC")
   durations    Int[]     @default([60]) @map("durations")
   price        Decimal   @map("price") @db.Decimal(10, 2)
-  currency     Currency  @default(EGP)
+  currency     Currency  @default(USD)
   isActive     Boolean   @default(true) @map("is_active")
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
@@ -1011,7 +1010,7 @@ model ConsultationBooking {
 
   // Price snapshot captured at booking time (consistent with OrderItem pattern)
   amountCents Int      @map("amount_cents")
-  currency    Currency @default(EGP)
+  currency    Currency @default(USD)
 
   // Google Calendar / Meet
   googleMeetLink String? @map("google_meet_link")
@@ -1099,7 +1098,7 @@ model RefundRequest {
   orderItem        OrderItem           @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
   reasonCode       RefundReasonCode    @map("reason_code")
   amountCents      Int                 @map("amount_cents")
-  currency         Currency            @default(EGP)
+  currency         Currency            @default(USD)
   status           RefundRequestStatus @default(PENDING_REVIEW)
   autoApproved     Boolean             @default(false) @map("auto_approved")
   progressPercent  Decimal             @map("progress_percent") @db.Decimal(5, 2)
@@ -1142,7 +1141,7 @@ model InstructorEarning {
   orderItemId  String                  @unique @map("order_item_id")
   orderItem    OrderItem               @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
   amountCents  Int                     @map("amount_cents")
-  currency     Currency                @default(EGP)
+  currency     Currency                @default(USD)
   status       InstructorEarningStatus @default(HELD)
   heldUntil    DateTime                @map("held_until")
   releasedAt   DateTime?               @map("released_at")

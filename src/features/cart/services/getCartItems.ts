@@ -1,4 +1,5 @@
 import { auth } from '@/lib/auth';
+import { DEFAULT_CURRENCY } from '@/constants/currency';
 import type { CartDataType } from '@/types/cart/cart';
 import { getCartUseCase } from '../use-cases/get-cart.use-case';
 
@@ -20,7 +21,7 @@ export async function getCart(): Promise<{
         subtotal: 0,
         discount: 0,
         total: 0,
-        currency: 'EGP',
+        currency: DEFAULT_CURRENCY,
         items: [],
         coupon: null,
         createdAt: now,
