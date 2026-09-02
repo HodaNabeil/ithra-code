@@ -14,7 +14,9 @@ import {
 } from './course-sections.select';
 
 export interface CourseSectionsRepository {
-  findCourseIdentity(idOrSlug: string): Promise<CourseSectionsIdentity | null>;
+  findCourseIdentity(
+    courseIdOrSlug: string,
+  ): Promise<CourseSectionsIdentity | null>;
   findSectionsWithLectures(
     courseId: string,
     options: { publishedOnly: boolean },
@@ -46,9 +48,11 @@ const PROGRESS_ELIGIBLE_STATUSES: EnrollmentStatus[] = [
 
 export class PrismaCourseSectionsRepository implements CourseSectionsRepository {
   async findCourseIdentity(
-    idOrSlug: string,
+    courseIdOrSlug: string,
   ): Promise<CourseSectionsIdentity | null> {
-    const where = isCuid(idOrSlug) ? { id: idOrSlug } : { slug: idOrSlug };
+    const where = isCuid(courseIdOrSlug)
+      ? { id: courseIdOrSlug }
+      : { slug: courseIdOrSlug };
 
     const entity = await prisma.course.findUnique({
       where,

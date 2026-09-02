@@ -19,7 +19,7 @@ export function isStaffViewer(
 
 export function assertCourseSectionsAccessible(
   course: CourseSectionsIdentity,
-  idOrSlug: string,
+  courseIdOrSlug: string,
   viewer: CourseSectionsViewer,
 ): void {
   if (isStaffViewer(course, viewer)) return;
@@ -27,7 +27,7 @@ export function assertCourseSectionsAccessible(
   if (course.status !== CourseStatus.PUBLISHED) {
     throw new CourseSectionsError(
       404,
-      courseNotFoundMessage(idOrSlug),
+      courseNotFoundMessage(courseIdOrSlug),
       'COURSE_NOT_FOUND',
     );
   }
