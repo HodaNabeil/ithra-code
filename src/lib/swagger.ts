@@ -1149,28 +1149,15 @@ const courseSectionsSuccessExample = {
   },
 };
 
-const courseIdOrSlugParams = registry.register(
-  'CourseIdOrSlugParam',
-  z.object({
-    courseIdOrSlug: z
-      .string()
-      .openapi({
-        param: { name: 'courseIdOrSlug', in: 'path' },
-        example: 'nodejs-complete-guide',
-        description: 'Course CUID or slug',
-      }),
-  }),
-);
-
 registry.registerPath({
   method: 'get',
-  path: '/v1/courses/{courseIdOrSlug}/sections',
+  path: '/courses/{idOrSlug}/sections',
   tags: ['Courses'],
   summary: 'Get course sections with lectures and progress',
   description:
-    'Returns ordered course sections with nested lectures, attachments, video metadata, and optional progress for enrolled users. Works with a course ID or slug — e.g. `GET /api/v1/courses/nodejs-complete-guide/sections`. Authentication is optional.',
+    'Returns ordered course sections with nested lectures, attachments, video metadata, and optional progress for enrolled users. Works with a course ID or slug — e.g. `GET /api/courses/nodejs-complete-guide/sections`. Authentication is optional.',
   request: {
-    params: courseIdOrSlugParams,
+    params: idOrSlugParams,
   },
   responses: {
     200: {

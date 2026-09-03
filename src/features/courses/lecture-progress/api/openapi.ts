@@ -57,3 +57,10 @@ export const progressRecordSchema = z.object({
 export const updateLectureProgressDataSchema = z.object({
   progress: progressRecordSchema,
 });
+
+export const getLectureProgressDataSchema = z.object({
+  progress: progressRecordSchema.nullable().openapi({
+    description:
+      'Progress record for the authenticated user’s enrollment, or null when the user has not started tracking this lecture yet.',
+  }),
+});

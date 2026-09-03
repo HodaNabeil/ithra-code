@@ -14,7 +14,7 @@ export type UpdateLectureProgressClientInput = {
 } & Partial<UpdateLectureProgressBody>;
 
 /**
- * Client entry point for PATCH /api/v1/courses/:courseIdOrSlug/lectures/:lectureId/progress.
+ * Client entry point for PATCH /api/courses/:courseIdOrSlug/lectures/:lectureId/progress.
  * All UI progress writes must go through this function.
  */
 export async function updateLectureProgressClient(
@@ -29,7 +29,7 @@ export async function updateLectureProgressClient(
   const response = await http.patch<
     ApiSuccessResponse<UpdateLectureProgressResponse>
   >(
-    `/v1/courses/${encodeURIComponent(courseIdOrSlug)}/lectures/${encodeURIComponent(lectureId)}/progress`,
+    `/courses/${encodeURIComponent(courseIdOrSlug)}/lectures/${encodeURIComponent(lectureId)}/progress`,
     body,
   );
 

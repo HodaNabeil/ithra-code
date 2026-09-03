@@ -1,4 +1,5 @@
 export type {
+  GetLectureProgressResponse,
   ProgressRecordDTO,
   UpdateLectureProgressBody,
   UpdateLectureProgressResponse,
@@ -32,7 +33,14 @@ export {
   type UpdateLectureProgressParams,
 } from './validation/lecture-progress.validation';
 
+export { handleGetLectureProgressRequest } from './api/get-lecture-progress.handler';
+
 export { handleUpdateLectureProgressRequest } from './api/update-lecture-progress.handler';
+
+export {
+  getLectureProgress,
+  type GetLectureProgressInput,
+} from './use-cases/get-lecture-progress.use-case';
 
 export {
   updateLectureProgress,
