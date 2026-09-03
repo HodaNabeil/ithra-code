@@ -25,9 +25,14 @@ export {
 
 export {
   parseUpdateLectureProgressBody,
+  parseUpdateLectureProgressParams,
   updateLectureProgressBodySchema,
+  updateLectureProgressParamsSchema,
   type UpdateLectureProgressBodyInput,
+  type UpdateLectureProgressParams,
 } from './validation/lecture-progress.validation';
+
+export { handleUpdateLectureProgressRequest } from './api/update-lecture-progress.handler';
 
 export {
   updateLectureProgress,

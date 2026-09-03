@@ -16,6 +16,7 @@ import { addCartItemBodySchema } from '@/features/cart/presentation/validators/a
 import { createCourseSchema } from '@/features/courses/course-creation/dto/create-course.dto';
 import { registerEnrollmentsOpenApi } from '@/features/enrollments/api/register-enrollments-openapi';
 import { registerLectureDetailOpenApi } from '@/features/courses/lecture-detail/api/register-lecture-detail-openapi';
+import { registerLectureProgressOpenApi } from '@/features/courses/lecture-progress/api/register-lecture-progress-openapi';
 
 const registry = new OpenAPIRegistry();
 
@@ -1840,6 +1841,16 @@ registerLectureDetailOpenApi(registry, {
   apiErrorExample,
   authenticated,
   courseExample,
+});
+
+registerLectureProgressOpenApi(registry, {
+  registerApiSuccess,
+  apiSuccessExample,
+  ApiErrorSchema,
+  apiErrorExample,
+  authenticated,
+  courseSlug: EX.courseSlug,
+  lectureId: 'cllecture2k4m00008l5d6e3k1n',
 });
 
 // ─── Document generator ─────────────────────────────────────────────────────────

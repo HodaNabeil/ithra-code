@@ -3,11 +3,7 @@ export const SEARCH_PARAMS_KEYS = {
   TAB: 'tab',
 } as const;
 
-export const DASHBOARD_TABS = [
-  'overview',
-  'enrollments',
-  'certificates',
-] as const;
+export const DASHBOARD_TABS = ['enrollments', 'certificates'] as const;
 
 export type DashboardTab = (typeof DASHBOARD_TABS)[number];
 

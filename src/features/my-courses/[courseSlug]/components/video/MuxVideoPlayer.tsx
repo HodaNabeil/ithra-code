@@ -1,7 +1,7 @@
 'use client';
 
 import MuxPlayer from '@mux/mux-player-react';
-import { toggleLectureCompletion } from '@/features/my-courses/actions/my-course';
+import { updateLectureProgressClient } from '@/features/courses/lecture-progress/api/update-lecture-progress.client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { APP_ROUTES } from '@/constants/enums';
@@ -25,7 +25,11 @@ export const MuxVideoPlayer = ({
 
   const onEnded = async () => {
     try {
-      await toggleLectureCompletion(lectureId, true);
+      await updateLectureProgressClient({
+        courseIdOrSlug: courseSlug,
+        lectureId,
+        isCompleted: true,
+      });
       toast.success('تم إكمال المحاضرة بنجاح');
 
       router.refresh();

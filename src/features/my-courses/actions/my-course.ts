@@ -11,7 +11,6 @@ import {
   mapLectureDetailsToDTO,
 } from '@/features/my-courses/lib/my-course.mapper';
 import { cache } from '@/lib/cache';
-import { revalidateTag } from 'next/cache';
 
 export async function getCourseSections(courseSlug: string) {
   const session = await auth();
@@ -128,70 +127,6 @@ export async function getLectureDetails(lectureId: string, courseSlug: string) {
       revalidate: 3600,
     },
   )();
-}
-
-export async function toggleLectureCompletion(
-  lectureId: string,
-  isCompleted: boolean,
-) {
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  if (!userId) {
-    throw new Error('يجب تسجيل الدخول لتحديث التقدم');
-  }
-
-  // Get lecture and course context
-  const lecture = await prisma.lecture.findUnique({
-    where: { id: lectureId },
-    include: {
-      section: {
-        select: { courseId: true },
-      },
-    },
-  });
-
-  if (!lecture) throw new Error('المحاضرة غير موجودة');
-
-  // Find the enrollment
-  const enrollment = await prisma.enrollment.findUnique({
-    where: {
-      studentId_courseId: {
-        studentId: userId,
-        courseId: lecture.section.courseId,
-      },
-    },
-  });
-
-  if (!enrollment) {
-    throw new Error('أنت غير مسجل في هذا الكورس');
-  }
-
-  // إنشاء أو تحديث التقدم
-  await prisma.progress.upsert({
-    where: {
-      enrollmentId_lectureId: {
-        enrollmentId: enrollment.id,
-        lectureId: lecture.id,
-      },
-    },
-    update: {
-      isCompleted,
-      completedAt: isCompleted ? new Date() : null,
-    },
-    create: {
-      lectureId: lecture.id,
-      enrollmentId: enrollment.id,
-      isCompleted,
-      completedAt: isCompleted ? new Date() : null,
-    },
-  });
-
-  // Revalidate cache
-  revalidateTag(`user-${userId}`, 'max');
-  revalidateTag('my-courses', 'max');
-
-  return { success: true };
 }
 
 export async function getLectureNavigation(

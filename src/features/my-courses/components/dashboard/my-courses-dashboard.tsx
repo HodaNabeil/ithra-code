@@ -28,7 +28,7 @@ type MyCoursesDashboardProps = {
 function resolveDashboardTab(tab: string | null | undefined): DashboardTab {
   return DASHBOARD_TABS.includes(tab as DashboardTab)
     ? (tab as DashboardTab)
-    : 'overview';
+    : 'enrollments';
 }
 
 export function MyCoursesDashboard({
@@ -50,7 +50,7 @@ export function MyCoursesDashboard({
     (tab: DashboardTab) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      if (tab === 'overview') {
+      if (tab === 'enrollments') {
         params.delete(SEARCH_PARAMS_KEYS.TAB);
       } else {
         params.set(SEARCH_PARAMS_KEYS.TAB, tab);
@@ -77,6 +77,34 @@ export function MyCoursesDashboard({
 
   return (
     <div className="container py-6 lg:py-8">
+      <div className="mb-6 rounded-[9px] p-5 shadow-[0px_0px_5px_#0000003d] lg:mb-8">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <section className="min-w-0 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-xl font-bold text-foreground">تابع التعلم</h2>
+              <button
+                type="button"
+                onClick={() => handleTabChange('enrollments')}
+                className="text-sm font-semibold text-progress-indicator"
+                disabled={isPending}
+              >
+                جميع التسجيلات ({totalEnrollments})
+              </button>
+            </div>
+
+            {continueLearningEnrollment ? (
+              <ContinueLearningCard enrollment={continueLearningEnrollment} />
+            ) : (
+              <div className="rounded-xl border border-dashed border-border bg-muted/20 p-10 text-center text-muted-foreground">
+                لا توجد دورات للمتابعة حالياً
+              </div>
+            )}
+          </section>
+
+          <ProgressStatsWidget stats={progressStats} />
+        </div>
+      </div>
+
       <Tabs
         value={activeTab}
         onValueChange={(value) =>
@@ -85,38 +113,6 @@ export function MyCoursesDashboard({
         className="w-full"
       >
         <StudentDashboardTabs />
-
-        <TabsContent value="overview" className="pt-6 lg:pt-8">
-          <div className="rounded-[9px] p-5 shadow-[0px_0px_5px_#0000003d]">
-            <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-              <section className="min-w-0 space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-xl font-bold text-foreground">
-                    تابع التعلم
-                  </h2>
-                  <button
-                    type="button"
-                    onClick={() => handleTabChange('enrollments')}
-                    className="text-sm font-semibold text-progress-indicator"
-                    disabled={isPending}
-                  >
-                    جميع التسجيلات ({totalEnrollments})
-                  </button>
-                </div>
-
-                {continueLearningEnrollment ? (
-                  <ContinueLearningCard enrollment={continueLearningEnrollment} />
-                ) : (
-                  <div className="rounded-xl border border-dashed border-border bg-muted/20 p-10 text-center text-muted-foreground">
-                    لا توجد دورات للمتابعة حالياً
-                  </div>
-                )}
-              </section>
-
-              <ProgressStatsWidget stats={progressStats} />
-            </div>
-          </div>
-        </TabsContent>
 
         <TabsContent
           value="enrollments"
