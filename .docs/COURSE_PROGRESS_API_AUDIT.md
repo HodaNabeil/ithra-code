@@ -320,7 +320,7 @@ ship; add repository tests before treating aggregation behavior as fully verifie
 
 | Path                                                                             | Role                                         |
 | -------------------------------------------------------------------------------- | -------------------------------------------- |
-| `src/app/api/courses/[idOrSlug]/progress/route.ts`                               | Thin route                                   |
+| `src/app/api/courses/[courseIdOrSlug]/progress/route.ts`                               | Thin route                                   |
 | `src/features/courses/course-progress/api/get-course-progress.handler.ts`        | Auth, permission, HTTP mapping               |
 | `src/features/courses/course-progress/use-cases/get-course-progress.use-case.ts` | Business rules                               |
 | `src/features/courses/course-progress/repository/course-progress.repository.ts`  | DB aggregation                               |

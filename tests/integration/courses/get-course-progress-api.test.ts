@@ -28,7 +28,7 @@ vi.mock('@/lib/auth', () => ({
   auth: mockAuth,
 }));
 
-import { GET } from '@/app/api/courses/[idOrSlug]/progress/route';
+import { GET } from '@/app/api/courses/[courseIdOrSlug]/progress/route';
 
 type CourseProgressApiBody = {
   success: boolean;
@@ -55,7 +55,7 @@ async function callCourseProgressApi(courseIdOrSlug: string) {
       `http://localhost:3000/api/courses/${encodeURIComponent(courseIdOrSlug)}/progress`,
       { method: 'GET' },
     ),
-    { params: Promise.resolve({ idOrSlug: courseIdOrSlug }) },
+    { params: Promise.resolve({ courseIdOrSlug }) },
   );
 }
 

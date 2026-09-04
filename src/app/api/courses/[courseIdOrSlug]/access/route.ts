@@ -11,17 +11,18 @@ import { findUserCourseSignals } from '@/features/courses/services/user-course-s
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ idOrSlug: string }> },
+  { params }: { params: Promise<{ courseIdOrSlug: string }> },
 ) {
   try {
-    const { idOrSlug } = await params;
+    const { courseIdOrSlug } = await params;
     const session = await auth();
 
     if (!session?.user?.id) {
       return apiError('Unauthorized', 401);
     }
 
-    const entity = await courseDetailRepository.findCourseByIdOrSlug(idOrSlug);
+    const entity =
+      await courseDetailRepository.findCourseByIdOrSlug(courseIdOrSlug);
     if (!entity) {
       return apiError('Course not found', 404);
     }

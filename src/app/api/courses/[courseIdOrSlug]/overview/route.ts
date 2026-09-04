@@ -8,14 +8,14 @@ import {
 
 export async function GET(
   _req: Request,
-  { params }: { params: Promise<{ idOrSlug: string }> },
+  { params }: { params: Promise<{ courseIdOrSlug: string }> },
 ): Promise<NextResponse> {
-  const { idOrSlug } = await params;
+  const { courseIdOrSlug } = await params;
 
   try {
     const session = await auth();
     const data = await getCourseOverview({
-      idOrSlug,
+      courseIdOrSlug,
       user: session?.user?.id
         ? { id: session.user.id, role: session.user.role }
         : null,

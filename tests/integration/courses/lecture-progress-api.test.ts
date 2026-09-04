@@ -22,7 +22,7 @@ vi.mock('@/lib/auth', () => ({
   auth: mockAuth,
 }));
 
-import { GET, PATCH } from '@/app/api/courses/[idOrSlug]/lectures/[lectureId]/progress/route';
+import { GET, PATCH } from '@/app/api/courses/[courseIdOrSlug]/lectures/[lectureId]/progress/route';
 
 type LectureProgressApiBody = {
   success: boolean;
@@ -52,7 +52,7 @@ async function callGetLectureProgressApi(
       `http://localhost:3000/api/courses/${encodeURIComponent(courseIdOrSlug)}/lectures/${lectureId}/progress`,
       { method: 'GET' },
     ),
-    { params: Promise.resolve({ idOrSlug: courseIdOrSlug, lectureId }) },
+    { params: Promise.resolve({ courseIdOrSlug, lectureId }) },
   );
 }
 
@@ -70,7 +70,7 @@ async function callPatchLectureProgressApi(
         body: JSON.stringify(body),
       },
     ),
-    { params: Promise.resolve({ idOrSlug: courseIdOrSlug, lectureId }) },
+    { params: Promise.resolve({ courseIdOrSlug, lectureId }) },
   );
 }
 

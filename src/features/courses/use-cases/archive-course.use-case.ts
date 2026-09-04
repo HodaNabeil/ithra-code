@@ -22,11 +22,11 @@ export async function archiveCourseUseCase(
   input: ArchiveCourseInput,
   repository: CourseRepository = courseRepository,
 ): Promise<ArchiveCourseResult> {
-  const { idOrSlug, user } = input;
+  const { courseIdOrSlug, user } = input;
 
   assertCanArchiveCourse(user);
 
-  const course = await repository.findByIdOrSlug(idOrSlug);
+  const course = await repository.findByIdOrSlug(courseIdOrSlug);
   if (!course) {
     throw new ArchiveCourseError(
       404,

@@ -87,7 +87,7 @@ export async function updateCourse(
   ) {
     const published = await publishCourseUseCase(
       {
-        idOrSlug: existing.id,
+        courseIdOrSlug: existing.id,
         user: { id: userId, role: session.user.role },
       },
       defaultPublishCourseUseCaseDeps,

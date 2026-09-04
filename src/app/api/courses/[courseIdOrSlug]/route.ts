@@ -13,14 +13,14 @@ import { archiveCourseUseCase } from '@/features/courses/use-cases/archive-cours
 
 export async function GET(
   _req: Request,
-  { params }: { params: Promise<{ idOrSlug: string }> },
+  { params }: { params: Promise<{ courseIdOrSlug: string }> },
 ): Promise<NextResponse> {
-  const { idOrSlug } = await params;
+  const { courseIdOrSlug } = await params;
 
   try {
     const session = await auth();
     const course = await getCourseDetail({
-      idOrSlug,
+      courseIdOrSlug,
       user: session?.user?.id
         ? { id: session.user.id, role: session.user.role }
         : null,
@@ -39,14 +39,14 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: Promise<{ idOrSlug: string }> },
+  { params }: { params: Promise<{ courseIdOrSlug: string }> },
 ): Promise<Response> {
   try {
     const body: Prisma.CourseUpdateInput = await req.json();
-    const { idOrSlug } = await params;
+    const { courseIdOrSlug } = await params;
 
     const course: Course = await prisma.course.update({
-      where: { slug: idOrSlug },
+      where: { slug: courseIdOrSlug },
       data: body,
     });
 
@@ -58,7 +58,7 @@ export async function PUT(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: Promise<{ idOrSlug: string }> },
+  { params }: { params: Promise<{ courseIdOrSlug: string }> },
 ): Promise<NextResponse> {
   try {
     const session = await auth();
@@ -67,10 +67,10 @@ export async function DELETE(
       return apiError('Unauthorized', 401);
     }
 
-    const { idOrSlug } = await params;
+    const { courseIdOrSlug } = await params;
 
     const result = await archiveCourseUseCase({
-      idOrSlug,
+      courseIdOrSlug,
       user: { id: session.user.id, role: session.user.role },
     });
 

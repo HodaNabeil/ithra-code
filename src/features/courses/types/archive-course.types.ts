@@ -1,7 +1,7 @@
 import type { AuthenticatedUser } from './authenticated-user.types';
 
 export type ArchiveCourseInput = {
-  idOrSlug: string;
+  courseIdOrSlug: string;
   user: AuthenticatedUser;
 };
 

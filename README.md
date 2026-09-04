@@ -268,8 +268,8 @@ Sources are typed (`KnowledgeContentType`) and tagged with sensitivity (`PUBLIC`
 
 | Trigger         | Mechanism                                                       |
 | --------------- | --------------------------------------------------------------- |
-| Course publish  | `POST /api/courses/[idOrSlug]/publish` enqueues indexing        |
-| Lecture publish | `POST /api/courses/[idOrSlug]/lectures/[lectureId]/publish`     |
+| Course publish  | `POST /api/courses/[courseIdOrSlug]/publish` enqueues indexing        |
+| Lecture publish | `POST /api/courses/[courseIdOrSlug]/lectures/[lectureId]/publish`     |
 | Manual re-index | `POST /api/tutor/index` (authenticated)                         |
 | Bootstrap       | `bootstrapUnindexedCourseIndexing()` for courses missing chunks |
 | Worker          | `pnpm worker:course-indexing` (BullMQ `course-indexing` queue)  |

@@ -2,8 +2,8 @@ import { handleGetCourseProgressRequest } from '@/features/courses/course-progre
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ idOrSlug: string }> },
+  { params }: { params: Promise<{ courseIdOrSlug: string }> },
 ) {
-  const { idOrSlug: courseIdOrSlug } = await params;
+  const { courseIdOrSlug } = await params;
   return handleGetCourseProgressRequest(request, courseIdOrSlug);
 }

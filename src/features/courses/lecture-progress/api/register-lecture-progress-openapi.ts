@@ -409,16 +409,16 @@ export function registerLectureProgressOpenApi(
   );
 
   const courseOnlyParams = z.object({
-    idOrSlug: z.string().openapi({
-      param: { name: 'idOrSlug', in: 'path' },
+    courseIdOrSlug: z.string().openapi({
+      param: { name: 'courseIdOrSlug', in: 'path' },
       example: deps.courseSlug,
       description: 'Course CUID or slug',
     }),
   });
 
   const courseParams = z.object({
-    idOrSlug: z.string().openapi({
-      param: { name: 'idOrSlug', in: 'path' },
+    courseIdOrSlug: z.string().openapi({
+      param: { name: 'courseIdOrSlug', in: 'path' },
       example: deps.courseSlug,
       description: 'Course CUID or slug (must match the lecture’s course)',
     }),
@@ -436,7 +436,7 @@ export function registerLectureProgressOpenApi(
 
   registry.registerPath({
     method: 'get',
-    path: '/courses/{idOrSlug}/lectures/progress',
+    path: '/courses/{courseIdOrSlug}/lectures/progress',
     tags: ['Courses'],
     operationId: 'listCourseLectureProgress',
     summary: 'List course lecture progress',
@@ -450,7 +450,7 @@ export function registerLectureProgressOpenApi(
 
   registry.registerPath({
     method: 'get',
-    path: '/courses/{idOrSlug}/lectures/{lectureId}/progress',
+    path: '/courses/{courseIdOrSlug}/lectures/{lectureId}/progress',
     tags: ['Courses'],
     operationId: 'getLectureProgress',
     summary: 'Get lecture progress',
@@ -464,7 +464,7 @@ export function registerLectureProgressOpenApi(
 
   registry.registerPath({
     method: 'patch',
-    path: '/courses/{idOrSlug}/lectures/{lectureId}/progress',
+    path: '/courses/{courseIdOrSlug}/lectures/{lectureId}/progress',
     tags: ['Courses'],
     operationId: 'updateLectureProgress',
     summary: 'Update lecture progress',

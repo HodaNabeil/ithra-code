@@ -9,7 +9,9 @@ import {
 
 export interface CourseDetailRepository {
   findCourseBySlug(slug: string): Promise<DB_CourseDetailEntity | null>;
-  findCourseByIdOrSlug(idOrSlug: string): Promise<DB_CourseDetailEntity | null>;
+  findCourseByIdOrSlug(
+    courseIdOrSlug: string,
+  ): Promise<DB_CourseDetailEntity | null>;
   findUserSignals(userId: string, courseId: string): Promise<UserCourseSignals>;
 }
 
@@ -22,16 +24,16 @@ export class PrismaCourseDetailRepository implements CourseDetailRepository {
   }
 
   async findCourseByIdOrSlug(
-    idOrSlug: string,
+    courseIdOrSlug: string,
   ): Promise<DB_CourseDetailEntity | null> {
-    if (isCuid(idOrSlug)) {
+    if (isCuid(courseIdOrSlug)) {
       return prisma.course.findUnique({
-        where: { id: idOrSlug },
+        where: { id: courseIdOrSlug },
         select: courseDetailSelect,
       });
     }
 
-    return this.findCourseBySlug(idOrSlug);
+    return this.findCourseBySlug(courseIdOrSlug);
   }
 
   async findUserSignals(

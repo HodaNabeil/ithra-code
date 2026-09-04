@@ -29,7 +29,7 @@ export type LecturePublishRecord = {
 };
 
 export interface PublishableCourseRepository {
-  findByIdOrSlug(idOrSlug: string): Promise<CourseRecord | null>;
+  findByIdOrSlug(courseIdOrSlug: string): Promise<CourseRecord | null>;
   publish(id: string): Promise<CourseRecord>;
 }
 
@@ -39,16 +39,16 @@ export interface PublishableLectureRepository {
 }
 
 export class PrismaPublishableCourseRepository implements PublishableCourseRepository {
-  async findByIdOrSlug(idOrSlug: string): Promise<CourseRecord | null> {
-    if (isCuid(idOrSlug)) {
+  async findByIdOrSlug(courseIdOrSlug: string): Promise<CourseRecord | null> {
+    if (isCuid(courseIdOrSlug)) {
       return prisma.course.findUnique({
-        where: { id: idOrSlug },
+        where: { id: courseIdOrSlug },
         select: courseRecordSelect,
       });
     }
 
     return prisma.course.findUnique({
-      where: { slug: idOrSlug },
+      where: { slug: courseIdOrSlug },
       select: courseRecordSelect,
     });
   }

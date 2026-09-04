@@ -16,7 +16,7 @@ const courseRecordSelect = {
 export interface CourseRepository {
   findById(id: string): Promise<CourseRecord | null>;
   findBySlug(slug: string): Promise<CourseRecord | null>;
-  findByIdOrSlug(idOrSlug: string): Promise<CourseRecord | null>;
+  findByIdOrSlug(courseIdOrSlug: string): Promise<CourseRecord | null>;
   archive(id: string): Promise<CourseRecord>;
 }
 
@@ -35,12 +35,12 @@ export class PrismaCourseRepository implements CourseRepository {
     });
   }
 
-  async findByIdOrSlug(idOrSlug: string): Promise<CourseRecord | null> {
-    if (isCuid(idOrSlug)) {
-      return this.findById(idOrSlug);
+  async findByIdOrSlug(courseIdOrSlug: string): Promise<CourseRecord | null> {
+    if (isCuid(courseIdOrSlug)) {
+      return this.findById(courseIdOrSlug);
     }
 
-    return this.findBySlug(idOrSlug);
+    return this.findBySlug(courseIdOrSlug);
   }
 
   async archive(id: string): Promise<CourseRecord> {

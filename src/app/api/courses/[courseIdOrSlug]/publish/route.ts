@@ -9,7 +9,7 @@ import { apiError, apiSuccess } from '@/lib/api-response';
 
 export async function POST(
   _req: Request,
-  { params }: { params: Promise<{ idOrSlug: string }> },
+  { params }: { params: Promise<{ courseIdOrSlug: string }> },
 ): Promise<NextResponse> {
   try {
     const session = await auth();
@@ -18,11 +18,11 @@ export async function POST(
       return apiError('Unauthorized', 401);
     }
 
-    const { idOrSlug } = await params;
+    const { courseIdOrSlug } = await params;
 
     const result = await publishCourseUseCase(
       {
-        idOrSlug,
+        courseIdOrSlug,
         user: { id: session.user.id, role: session.user.role },
       },
       defaultPublishCourseUseCaseDeps,
