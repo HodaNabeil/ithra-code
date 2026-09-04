@@ -52,6 +52,7 @@ export interface LectureProgressRepository {
     enrollmentId: string,
     lectureId: string,
   ): Promise<LectureProgressRecord | null>;
+  findByEnrollmentId(enrollmentId: string): Promise<LectureProgressRecord[]>;
   upsertProgressInTransaction(
     input: UpsertProgressInput,
   ): Promise<LectureProgressRecord>;
@@ -116,6 +117,16 @@ export class PrismaLectureProgressRepository implements LectureProgressRepositor
       where: {
         enrollmentId_lectureId: { enrollmentId, lectureId },
       },
+    });
+  }
+
+  async findByEnrollmentId(
+    enrollmentId: string,
+  ): Promise<LectureProgressRecord[]> {
+    return prisma.progress.findMany({
+      where: { enrollmentId },
+      orderBy: { createdAt: 'asc' },
+      take: 500,
     });
   }
 

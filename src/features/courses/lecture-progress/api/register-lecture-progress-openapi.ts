@@ -4,6 +4,7 @@ import { z } from '@/lib/zod-openapi';
 
 import {
   getLectureProgressDataSchema,
+  listCourseLectureProgressDataSchema,
   progressRecordSchema,
   updateLectureProgressBodyOpenApiSchema,
   updateLectureProgressDataSchema,
@@ -85,6 +86,26 @@ const getProgressDescription = [
   '**Missing progress:** returns `200` with `progress: null` when the user is authorized but has not started tracking the lecture yet.',
   '',
   '**Visibility:** no publish-state gate for enrolled users (consistent with PATCH progress writes).',
+  '',
+  '**Scope:** returns only the authenticated user’s own progress; no instructor/admin analytics bypass.',
+].join('\n');
+
+const listCourseLectureProgressDescription = [
+  'Returns all stored lecture progress rows for the **authenticated user’s enrollment** in a course.',
+  '',
+  '**Authentication:** session cookie (`authjs.session-token`). Returns `401` when missing.',
+  '**RBAC:** requires `progress:read`. Returns `403` when the role lacks permission.',
+  '',
+  '**Authorization (after RBAC):**',
+  '- Resolves the course by CUID or slug.',
+  '- Requires enrollment for `session.user.id` + course with status `ACTIVE` or `COMPLETED`.',
+  '- `DROPPED` / `REVOKED` enrollments and missing enrollments return `404` (masked as course not found).',
+  '',
+  '**Read-only:** does not create, update, or mutate progress or enrollment.',
+  '',
+  '**Stored rows only:** returns progress records that exist in the database. Does not synthesize zero-progress rows for lectures without records.',
+  '',
+  '**Empty progress:** returns `200` with `progress: []` and `total: 0` when the user is authorized but has no progress rows yet.',
   '',
   '**Scope:** returns only the authenticated user’s own progress; no instructor/admin analytics bypass.',
 ].join('\n');
@@ -289,6 +310,85 @@ function buildGetResponses(deps: RegisterLectureProgressOpenApiDeps) {
   };
 }
 
+function buildListCourseLectureProgressResponses(
+  deps: RegisterLectureProgressOpenApiDeps,
+) {
+  return {
+    200: {
+      description: 'تم جلب تقدم محاضرات الدورة بنجاح',
+      content: {
+        'application/json': {
+          schema: deps.registerApiSuccess(
+            'ListCourseLectureProgressResponse',
+            listCourseLectureProgressDataSchema,
+          ),
+          examples: {
+            withProgress: {
+              summary: 'Progress records exist',
+              value: deps.apiSuccessExample('تم جلب تقدم محاضرات الدورة بنجاح', {
+                progress: [progressRecordExample],
+                total: 1,
+              }),
+            },
+            noProgress: {
+              summary: 'No progress rows yet',
+              value: deps.apiSuccessExample('تم جلب تقدم محاضرات الدورة بنجاح', {
+                progress: [],
+                total: 0,
+              }),
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid course identifier',
+      content: {
+        'application/json': {
+          schema: deps.ApiErrorSchema,
+          example: deps.apiErrorExample,
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - user not logged in',
+      content: {
+        'application/json': {
+          schema: deps.ApiErrorSchema,
+          example: { success: false, message: 'Unauthorized' },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - missing progress:read permission',
+      content: {
+        'application/json': {
+          schema: deps.ApiErrorSchema,
+          example: { success: false, message: 'ليس لديك صلاحية' },
+        },
+      },
+    },
+    404: {
+      description: 'Course not found or access denied',
+      content: {
+        'application/json': {
+          schema: deps.ApiErrorSchema,
+          example: deps.apiErrorExample,
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: deps.ApiErrorSchema,
+          example: deps.apiErrorExample,
+        },
+      },
+    },
+  };
+}
+
 export function registerLectureProgressOpenApi(
   registry: OpenAPIRegistry,
   deps: RegisterLectureProgressOpenApiDeps,
@@ -303,6 +403,18 @@ export function registerLectureProgressOpenApi(
     updateLectureProgressDataSchema,
   );
   registry.register('GetLectureProgressData', getLectureProgressDataSchema);
+  registry.register(
+    'ListCourseLectureProgressData',
+    listCourseLectureProgressDataSchema,
+  );
+
+  const courseOnlyParams = z.object({
+    idOrSlug: z.string().openapi({
+      param: { name: 'idOrSlug', in: 'path' },
+      example: deps.courseSlug,
+      description: 'Course CUID or slug',
+    }),
+  });
 
   const courseParams = z.object({
     idOrSlug: z.string().openapi({
@@ -319,6 +431,22 @@ export function registerLectureProgressOpenApi(
 
   const updateResponses = buildUpdateResponses(deps);
   const getResponses = buildGetResponses(deps);
+  const listCourseLectureProgressResponses =
+    buildListCourseLectureProgressResponses(deps);
+
+  registry.registerPath({
+    method: 'get',
+    path: '/courses/{idOrSlug}/lectures/progress',
+    tags: ['Courses'],
+    operationId: 'listCourseLectureProgress',
+    summary: 'List course lecture progress',
+    description: listCourseLectureProgressDescription,
+    security: deps.authenticated,
+    request: {
+      params: courseOnlyParams,
+    },
+    responses: listCourseLectureProgressResponses,
+  });
 
   registry.registerPath({
     method: 'get',

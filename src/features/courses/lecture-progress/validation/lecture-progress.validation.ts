@@ -2,6 +2,12 @@ import { z } from 'zod';
 
 import { parseCourseSectionsParams } from '@/features/courses/course-sections/validation/course-sections.validation';
 
+export function parseListCourseLectureProgressParams(params: unknown): {
+  courseIdOrSlug: string;
+} {
+  return parseCourseSectionsParams(params);
+}
+
 export const updateLectureProgressParamsSchema = z.object({
   courseIdOrSlug: z
     .string()

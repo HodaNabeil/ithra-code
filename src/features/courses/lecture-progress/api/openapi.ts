@@ -64,3 +64,14 @@ export const getLectureProgressDataSchema = z.object({
       'Progress record for the authenticated user’s enrollment, or null when the user has not started tracking this lecture yet.',
   }),
 });
+
+export const listCourseLectureProgressDataSchema = z.object({
+  progress: z.array(progressRecordSchema).openapi({
+    description:
+      'Stored progress rows for the authenticated user’s enrollment only. Does not synthesize zero-progress rows for lectures without records.',
+  }),
+  total: z.number().int().openapi({
+    example: 1,
+    description: 'Number of progress records returned',
+  }),
+});
