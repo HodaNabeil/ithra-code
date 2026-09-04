@@ -144,8 +144,8 @@ export function registerCourseProgressOpenApi(
   registry.register('CourseProgress', courseProgressSchema);
 
   const courseParams = z.object({
-    idOrSlug: z.string().openapi({
-      param: { name: 'idOrSlug', in: 'path' },
+    courseIdOrSlug: z.string().openapi({
+      param: { name: 'courseIdOrSlug', in: 'path' },
       example: deps.courseSlug,
       description: 'Course CUID or slug',
     }),
@@ -153,7 +153,7 @@ export function registerCourseProgressOpenApi(
 
   registry.registerPath({
     method: 'get',
-    path: '/courses/{idOrSlug}/progress',
+    path: '/courses/{courseIdOrSlug}/progress',
     tags: ['Courses'],
     operationId: 'getCourseProgress',
     summary: 'Get course progress',

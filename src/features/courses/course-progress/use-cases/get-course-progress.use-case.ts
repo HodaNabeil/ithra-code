@@ -1,8 +1,6 @@
 import { ZodError } from 'zod';
 
-import {
-  courseNotFoundMessage,
-} from '@/features/courses/course-sections/errors/course-sections.errors';
+import { courseNotFoundMessage } from '@/features/courses/course-sections/errors/course-sections.errors';
 import {
   courseSectionsRepository,
   isProgressEligibleEnrollment,

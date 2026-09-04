@@ -1,4 +1,12 @@
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import type { CourseProgressDTO } from '@/features/courses/course-progress/dto/course-progress.dto';
 import { courseNotFoundMessage } from '@/features/courses/course-sections/errors/course-sections.errors';
@@ -253,7 +261,9 @@ describe.skipIf(!isIntegrationEnabled)(
       expect(body.data?.totalTimeSpent).toBe(100);
       expect(body.data?.totalTimeSpent).not.toBe(50); // Student B's time
       // lastAccessedAt must be A1's timestamp, not B1's (excluded)
-      expect(body.data?.lastAccessedAt).toBe(fixture.accessTimes.studentAPublished);
+      expect(body.data?.lastAccessedAt).toBe(
+        fixture.accessTimes.studentAPublished,
+      );
       expect(body.data?.lastAccessedAt).not.toBe(fixture.accessTimes.studentB);
     });
 
@@ -385,7 +395,9 @@ describe.skipIf(!isIntegrationEnabled)(
       expect(response.status).toBe(200);
       // B1 has a later timestamp (2026-01-15) but is excluded.
       // Only A1 (2026-01-10) is eligible.
-      expect(body.data?.lastAccessedAt).toBe(fixture.accessTimes.studentAPublished);
+      expect(body.data?.lastAccessedAt).toBe(
+        fixture.accessTimes.studentAPublished,
+      );
       expect(body.data?.lastAccessedAt).not.toBe(
         fixture.accessTimes.studentAUnpublishedSection,
       );

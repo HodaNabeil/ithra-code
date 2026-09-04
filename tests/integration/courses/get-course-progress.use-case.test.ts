@@ -122,9 +122,8 @@ describe.skipIf(!isIntegrationEnabled)(
         return;
       }
 
-      const { CourseProgressError } = await import(
-        '@/features/courses/course-progress/errors/course-progress.errors'
-      );
+      const { CourseProgressError } =
+        await import('@/features/courses/course-progress/errors/course-progress.errors');
 
       await expect(
         getCourseProgress(

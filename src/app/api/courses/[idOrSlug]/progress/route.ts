@@ -4,6 +4,6 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ idOrSlug: string }> },
 ) {
-  const { idOrSlug } = await params;
-  return handleGetCourseProgressRequest(request, idOrSlug);
+  const { idOrSlug: courseIdOrSlug } = await params;
+  return handleGetCourseProgressRequest(request, courseIdOrSlug);
 }
