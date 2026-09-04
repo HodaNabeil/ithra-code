@@ -45,6 +45,8 @@ that delegates agent execution to the platform runtime.
 | **Admins**      | User/course management, payment reconciliation, AI usage analytics dashboard                           |
 | **Auth**        | NextAuth v5 — credentials, Google, GitHub; role-based access (Student / Instructor / Admin)            |
 | **Payments**    | Stripe (default) + optional Paymob; webhooks, BullMQ fulfillment, reconciliation workers               |
+| **Progress**    | Course- and lecture-level progress APIs with enrollment scoping, RBAC, and publication rules           |
+| **Contact**     | Secure contact form — Cloudflare Turnstile, honeypot, Redis rate limiting, Resend notifications        |
 | **Video**       | Mux streaming and playback                                                                             |
 
 ### AI Platform
@@ -325,7 +327,7 @@ rate-limit guard failures are fail-closed**.
 | Langfuse-managed prompts                   | Works with local template fallback when Langfuse is not configured         |
 | Real-time dashboards                       | Metrics export is pull-based (Prometheus scrape); no bundled Grafana stack |
 | Nightly Ragas CI gate                      | `pnpm eval:ragas` exists; automated nightly job not in repo                |
-| Advanced cost engine (forecasting, quotas) | Documented in `docs/ai-platform/16-cost-engine.md` — not implemented       |
+| Advanced cost engine (forecasting, quotas) | Not implemented — planned for a future cost-engine phase                    |
 
 ---
 
@@ -393,6 +395,7 @@ ithra-code/
 │   ├── features/
 │   │   ├── ai-tutor/       # Tutor product (use cases, API handlers, UI)
 │   │   ├── ai-assignment-evaluator/
+│   │   ├── contact/        # Contact form (Turnstile, rate limit, Resend)
 │   │   ├── payments/       # Hexagonal payment module
 │   │   ├── courses/, cart/, my-courses/, ...
 │   │   └── admin/
@@ -400,11 +403,10 @@ ithra-code/
 │   ├── config/env.ts       # Centralized env validation
 │   └── lib/                # Auth, Prisma, Redis, Stripe, logging
 ├── tests/
-│   ├── unit/               # Focused unit tests (tutor config, protocol, validation)
-│   └── integration/ai-tutor/
-├── docs/
-│   ├── ai-platform/        # Platform blueprint, runtime, observability ADRs
-│   └── ai-tutor/           # Tutor architecture, indexing, operations
+│   ├── integration/        # AI Tutor, contact, courses (progress & lectures)
+│   ├── helpers/            # Auth stubs, course-progress fixtures, Redis mock
+│   └── setup/              # Vitest env bootstrap
+├── .docs/                  # Feature specs and API audits (contact, progress, lectures)
 ├── eval/                   # Python deps for Ragas evaluation
 └── scripts/                # Payment, eval, and ops scripts
 ```
@@ -480,8 +482,7 @@ pnpm worker:reconcile-consumer   # reconciliation queue consumer
 
 Open [http://localhost:3000](http://localhost:3000).
 
-See `.env.example` for the full variable list. Observability template:
-`docs/ai-platform/production/vps-observability.env.example`.
+See `.env.example` for the full variable list.
 
 ---
 
@@ -496,10 +497,9 @@ See `.env.example` for the full variable list. Observability template:
 | `pnpm format`                     | Prettier write                                    |
 | `pnpm format:check`               | Prettier check                                    |
 | `pnpm type-check`                 | `tsc --noEmit`                                    |
-| `pnpm test`                       | Vitest (unit; integration skipped unless flagged) |
+| `pnpm test`                       | Vitest — smoke tests only; integration suite skipped |
 | `pnpm test:watch`                 | Vitest watch mode                                 |
-| `pnpm test:unit`                  | Unit tests only                                   |
-| `pnpm test:integration`           | Integration tests (`VITEST_INTEGRATION=true`)     |
+| `pnpm test:integration`           | Full integration suite (`VITEST_INTEGRATION=true`)  |
 | `pnpm eval:ragas`                 | Run Ragas evaluation suite                        |
 | `pnpm deepeval:golden`            | Run DeepEval golden suite                         |
 | `pnpm seed`                       | Seed database                                     |
@@ -508,11 +508,15 @@ See `.env.example` for the full variable list. Observability template:
 | `pnpm db:studio`                  | Prisma Studio                                     |
 | `pnpm worker:order-completed`     | Post-payment fulfillment worker                   |
 | `pnpm worker:course-indexing`     | Course knowledge indexing worker                  |
+| `pnpm index:course`               | Manual course indexing script                     |
 | `pnpm worker:ai-cost-aggregation` | AI usage daily aggregation worker                 |
 | `pnpm worker:reconcile`           | Payment reconciliation scheduler                  |
 | `pnpm worker:reconcile-consumer`  | Reconciliation queue consumer                     |
 | `pnpm payment:e2e`                | Payment end-to-end script                         |
+| `pnpm payment:webhook-smoke`      | Paymob webhook smoke test                         |
 | `pnpm payment:reconcile`          | Manual reconciliation script                      |
+| `pnpm payment:reconcile-review`   | Review reconciliation discrepancies               |
+| `pnpm payment:reconcile-report`   | Generate reconciliation report                    |
 
 `prisma generate` runs automatically on `postinstall`.
 
@@ -520,16 +524,24 @@ See `.env.example` for the full variable list. Observability template:
 
 ## Testing
 
-| Item                  | Detail                                                                           |
-| --------------------- | -------------------------------------------------------------------------------- |
-| **Framework**         | Vitest (`vitest.config.ts`)                                                      |
-| **Unit tests**        | `tests/unit/` — tutor config, SSE protocol, lecture validation, enrollment cache, analytics |
-| **Integration tests** | `tests/integration/` — AI Tutor and contact API; require `VITEST_INTEGRATION=true` and a database |
-| **Setup**             | `tests/setup/env.ts`                                                             |
-| **Current status**    | 15 passed, 6 skipped (integration) when running `pnpm test`                      |
+| Item                  | Detail                                                                                        |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| **Framework**         | Vitest (`vitest.config.ts`)                                                                   |
+| **Integration tests** | `tests/integration/` — AI Tutor, contact API, course progress & lectures; require PostgreSQL |
+| **Helpers**           | `tests/helpers/` — auth stubs, course-progress fixtures, Redis mock, tutor fixtures           |
+| **Setup**             | `tests/setup/env.ts` — loads `.env`, sets test defaults, `SKIP_ENV_VALIDATION=true`           |
+| **Default run**       | `pnpm test` — 4 smoke tests pass; 66 integration tests skipped                                |
+| **Full suite**        | `pnpm test:integration` — 70 tests across 12 files (requires live database)                   |
 
-Integration tests cover smoke, enrollment/auth cache, idempotency, pagination, lecture validation,
-and GDPR delete flows.
+### Integration coverage
+
+| Area            | Tests | Focus                                                                 |
+| --------------- | ----- | --------------------------------------------------------------------- |
+| **AI Tutor**    | 7     | Smoke, enrollment cache, idempotency, pagination, lecture validation, GDPR delete |
+| **Contact**     | 3     | API validation, security, and response handling                       |
+| **Courses**     | 60    | Course/lecture progress APIs, repository aggregation, publication rules, RBAC |
+
+Integration tests auto-skip when `VITEST_INTEGRATION` is unset or the database is unreachable.
 
 ---
 
@@ -561,7 +573,7 @@ Startup validation runs for platform and tutor config when respective flags are 
 - Admin AI analytics API and dashboard
 - Optional OTEL/LangSmith instrumentation with failure isolation
 - Payment webhooks, fulfillment workers, and reconciliation tooling
-- Vitest unit and integration tests for tutor, contact, and analytics flows
+- Vitest integration tests for AI Tutor, contact API, and course progress flows (70 tests)
 
 ### Hardening / limitations
 
@@ -580,16 +592,13 @@ Startup validation runs for platform and tutor config when respective flags are 
 - **Multi-provider routing** — fallback chains work when keys are set; routing policies are basic.
 - **Paymob** — implemented but optional; Stripe remains the default path.
 
-Operational runbooks: `docs/ai-tutor/08-production-operations.md`,
-`docs/ai-platform/production/production-readiness-checklist.md`.
-
 ---
 
 ## Roadmap
 
 Items below are explicitly tracked in project documentation as incomplete — not assumptions.
 
-### AI Platform (`docs/ai-platform/14-roadmap.md`)
+### AI Platform (`src/ai-platform/README.md`)
 
 - Langfuse as primary prompt source (local fallback today)
 - Automated LangSmith tracing for all agent runs in production
@@ -600,7 +609,7 @@ Items below are explicitly tracked in project documentation as incomplete — no
 - Context summarization node for token budget overflow
 - Generic `ai-indexing` and `ai-memory-summarize` workers
 
-### AI Tutor (`docs/ai-tutor/07-future-roadmap.md`)
+### AI Tutor (`src/features/ai-tutor/README.md`)
 
 - Persistent short-term memory (Redis session resumption)
 - Student knowledge graph / mastery modeling
@@ -611,17 +620,16 @@ Items below are explicitly tracked in project documentation as incomplete — no
 
 ## Documentation
 
-| Area                     | Location                                    |
-| ------------------------ | ------------------------------------------- |
-| AI Platform blueprint    | `docs/ai-platform/00-platform-blueprint.md` |
-| Runtime and graphs       | `docs/ai-platform/17-runtime.md`            |
-| RAG design               | `docs/ai-platform/05-rag.md`                |
-| Observability            | `docs/ai-platform/09-observability.md`      |
-| AI Tutor architecture    | `docs/ai-tutor/02-architecture.md`          |
-| Indexing pipeline        | `docs/ai-tutor/04-indexing-pipeline.md`     |
-| Product features catalog | `docs/FEATURES.md`                          |
-| Agent guidelines         | `AGENTS.md`                                 |
-| API docs (live)          | `/docs` (Swagger UI)                        |
+| Area                     | Location                                      |
+| ------------------------ | --------------------------------------------- |
+| AI Platform overview     | `src/ai-platform/README.md`                   |
+| AI Tutor feature         | `src/features/ai-tutor/README.md`               |
+| Contact feature          | `.docs/contact/README.md`                       |
+| Course progress API      | `.docs/COURSE_PROGRESS_API_AUDIT.md`            |
+| Lectures API quickstart  | `.docs/LECTURES_API_QUICKSTART.md`              |
+| Product features catalog | `FEATURES.md` (Arabic)                          |
+| Agent guidelines         | `AGENTS.md`                                   |
+| API docs (live)          | `/docs` (Swagger UI)                          |
 
 ---
 
