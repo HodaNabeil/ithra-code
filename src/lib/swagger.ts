@@ -16,6 +16,7 @@ import { addCartItemBodySchema } from '@/features/cart/presentation/validators/a
 import { createCourseSchema } from '@/features/courses/course-creation/dto/create-course.dto';
 import { registerEnrollmentsOpenApi } from '@/features/enrollments/api/register-enrollments-openapi';
 import { registerLectureDetailOpenApi } from '@/features/courses/lecture-detail/api/register-lecture-detail-openapi';
+import { registerCourseProgressOpenApi } from '@/features/courses/course-progress/api/register-course-progress-openapi';
 import { registerLectureProgressOpenApi } from '@/features/courses/lecture-progress/api/register-lecture-progress-openapi';
 
 const registry = new OpenAPIRegistry();
@@ -1828,6 +1829,15 @@ registerLectureDetailOpenApi(registry, {
   apiErrorExample,
   authenticated,
   courseExample,
+});
+
+registerCourseProgressOpenApi(registry, {
+  registerApiSuccess,
+  apiSuccessExample,
+  ApiErrorSchema,
+  apiErrorExample,
+  authenticated,
+  courseSlug: EX.courseSlug,
 });
 
 registerLectureProgressOpenApi(registry, {

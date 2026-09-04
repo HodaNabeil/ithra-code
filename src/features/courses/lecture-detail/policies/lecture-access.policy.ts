@@ -13,9 +13,17 @@ import { isEnrollmentEligibleForAccess } from '../repository/lecture-detail.repo
 
 const PURCHASE_REQUIRED_MESSAGE = 'يجب شراء هذه الدورة للوصول إلى محاضراتها';
 
+export function isStudentVisibleLectureContent(
+  section: { isPublished: boolean },
+  lecture: { isPublished: boolean },
+): boolean {
+  return section.isPublished && lecture.isPublished;
+}
+
 export function assertLecturePublishedContent(
   course: LectureDetailCourseIdentity,
   lecture: { isPublished: boolean },
+  section: { isPublished: boolean },
   lectureId: string,
   viewer: LectureDetailViewer,
 ): void {
@@ -25,7 +33,10 @@ export function assertLecturePublishedContent(
     return;
   }
 
-  if (course.status !== CourseStatus.PUBLISHED || !lecture.isPublished) {
+  if (
+    course.status !== CourseStatus.PUBLISHED ||
+    !isStudentVisibleLectureContent(section, lecture)
+  ) {
     throw new LectureDetailError(
       404,
       lectureNotFoundMessage(lectureId),

@@ -7,6 +7,7 @@ import {
 } from '@/features/courses/course-sections/repository/course-sections.repository';
 import {
   LectureDetailError,
+  isStudentVisibleLectureContent,
   lectureNotFoundMessage,
 } from '@/features/courses/lecture-detail';
 import { parseLectureDetailParams } from '@/features/courses/lecture-detail/validation/lecture-detail.validation';
@@ -66,6 +67,19 @@ export async function getLectureProgress(
   const course = await courseRepository.findCourseIdentity(courseIdOrSlug);
 
   if (!course || course.id !== lecture.courseId) {
+    throw new LectureProgressError(
+      404,
+      lectureNotFoundMessage(lectureId),
+      'LECTURE_NOT_FOUND',
+    );
+  }
+
+  if (
+    !isStudentVisibleLectureContent(
+      { isPublished: lecture.sectionIsPublished },
+      { isPublished: lecture.lectureIsPublished },
+    )
+  ) {
     throw new LectureProgressError(
       404,
       lectureNotFoundMessage(lectureId),

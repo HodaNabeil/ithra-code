@@ -12,6 +12,8 @@ export type LectureContext = {
   id: string;
   courseId: string;
   videoDuration: number | null;
+  sectionIsPublished: boolean;
+  lectureIsPublished: boolean;
 };
 
 export type LectureProgressEnrollment = {
@@ -61,9 +63,11 @@ export class PrismaLectureProgressRepository implements LectureProgressRepositor
       where: { id: lectureId },
       select: {
         id: true,
+        isPublished: true,
         section: {
           select: {
             courseId: true,
+            isPublished: true,
           },
         },
         video: {
@@ -80,6 +84,8 @@ export class PrismaLectureProgressRepository implements LectureProgressRepositor
       id: lecture.id,
       courseId: lecture.section.courseId,
       videoDuration: lecture.video?.duration ?? null,
+      sectionIsPublished: lecture.section.isPublished,
+      lectureIsPublished: lecture.isPublished,
     };
   }
 
@@ -170,8 +176,8 @@ export class PrismaLectureProgressRepository implements LectureProgressRepositor
       if (isCompleted) {
         const publishedLectures = await tx.lecture.findMany({
           where: {
-            section: { courseId },
             isPublished: true,
+            section: { courseId, isPublished: true },
           },
           select: { id: true },
         });

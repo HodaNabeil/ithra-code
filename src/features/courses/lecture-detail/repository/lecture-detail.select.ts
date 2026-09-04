@@ -54,6 +54,7 @@ export const lectureDetailSelect = Prisma.validator<Prisma.LectureSelect>()({
   },
   section: {
     select: {
+      isPublished: true,
       course: {
         select: lectureDetailCourseSelect,
       },

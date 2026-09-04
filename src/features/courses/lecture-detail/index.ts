@@ -23,6 +23,7 @@ export {
   assertLecturePaidAccess,
   assertLecturePublishedContent,
   computeHasPurchased,
+  isStudentVisibleLectureContent,
 } from './policies/lecture-access.policy';
 
 export {

@@ -14,7 +14,6 @@
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:unit": "vitest run tests/unit",
     "test:integration": "VITEST_INTEGRATION=true vitest run tests/integration",
     "deepeval:golden": "tsx scripts/deepeval/run-golden-suite.ts",
     "eval:ragas": "tsx scripts/eval/run-ragas-suite.ts",
