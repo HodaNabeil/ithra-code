@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useTransition } from 'react';
+import { useCallback, useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import {
@@ -10,8 +10,6 @@ import {
 } from '@/constants/my-courses';
 import type { EnrollmentItem } from '@/types/course/course.types';
 import { CertificatesPlaceholder } from './certificates-placeholder';
-import { deriveProgressStats } from '@/features/my-courses/lib/dashboard-stats';
-import { ProgressStatsWidget } from './progress-stats-widget';
 import { StudentDashboardTabs } from './student-dashboard-tabs';
 
 type MyCoursesDashboardProps = {
@@ -28,7 +26,7 @@ function resolveDashboardTab(tab: string | null | undefined): DashboardTab {
 }
 
 export function MyCoursesDashboard({
-  allEnrollments,
+  allEnrollments: _allEnrollments,
   totalEnrollments: _totalEnrollments,
   initialTab,
   enrollmentsContent,
@@ -62,17 +60,8 @@ export function MyCoursesDashboard({
     [pathname, router, searchParams],
   );
 
-  const progressStats = useMemo(
-    () => deriveProgressStats(allEnrollments),
-    [allEnrollments],
-  );
-
   return (
     <div className="container py-6 lg:py-8">
-      <div className="mb-6 lg:mb-8">
-        <ProgressStatsWidget stats={progressStats} />
-      </div>
-
       <Tabs
         value={activeTab}
         onValueChange={(value) =>

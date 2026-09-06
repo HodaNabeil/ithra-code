@@ -3,7 +3,7 @@
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const DASHBOARD_TAB_ITEMS = [
-  { value: 'enrollments', label: 'التسجيلات' },
+  { value: 'enrollments', label: 'دوراتي' },
   { value: 'certificates', label: 'الشهادات' },
 ] as const;
 
