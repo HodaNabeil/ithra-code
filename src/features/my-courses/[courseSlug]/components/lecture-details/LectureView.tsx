@@ -5,7 +5,7 @@ import {
   useLectureDetails,
   useLectureNavigation,
 } from '@/features/my-courses/hooks/use-my-courses-queries';
-import { useCourseLearningLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-learning-layout-store';
+import { useCourseLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-layout-store';
 import { LectureVideoSection } from './LectureVideoSection';
 import { LectureContentTabs } from './index';
 import { DEFAULT_MUX_PLAYBACK_ID } from '@/features/my-courses/lib/video';
@@ -32,9 +32,7 @@ export function LectureView({
     lectureId,
     courseSlug,
   );
-  const setCurrentLecture = useCourseLearningLayoutStore(
-    (s) => s.setCurrentLecture,
-  );
+  const setCurrentLecture = useCourseLayoutStore((s) => s.setCurrentLecture);
 
   useEffect(() => {
     if (!details?.lecture) {

@@ -3,17 +3,17 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCourseLearningLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-learning-layout-store';
+import { useCourseLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-layout-store';
 
-interface CourseMainContainerProps {
+interface CourseMainContentProps {
   children: React.ReactNode;
 }
 
-export const CourseMainContainer: React.FC<CourseMainContainerProps> = ({
+export const CourseMainContent: React.FC<CourseMainContentProps> = ({
   children,
 }) => {
-  const isSidebarOpen = useCourseLearningLayoutStore((s) => s.isSidebarOpen);
-  const setSidebarOpen = useCourseLearningLayoutStore((s) => s.setSidebarOpen);
+  const isSidebarOpen = useCourseLayoutStore((s) => s.isSidebarOpen);
+  const setSidebarOpen = useCourseLayoutStore((s) => s.setSidebarOpen);
 
   return (
     <main

@@ -5,18 +5,19 @@ import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Sparkles, X, Maximize2, Minimize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useCourseLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-layout-store';
 
 interface CourseSidebarHeaderProps {
-  onClose?: () => void;
-  onMaximize?: () => void;
-  isMaximized?: boolean;
+  isAiTutorEnabled?: boolean;
 }
 
 export const CourseSidebarHeader: React.FC<CourseSidebarHeaderProps> = ({
-  onClose,
-  onMaximize,
-  isMaximized,
+  isAiTutorEnabled = false,
 }) => {
+  const isMaximized = useCourseLayoutStore((s) => s.isMaximized);
+  const closeSidebar = useCourseLayoutStore((s) => s.closeSidebar);
+  const toggleMaximized = useCourseLayoutStore((s) => s.toggleMaximized);
+
   return (
     <div className="relative z-10 flex min-w-0 shrink-0 items-center justify-between border-b border-border/50 bg-sidebar/50 px-2 pt-2">
       <TabsList className="h-11 min-w-0 flex-1 gap-0.5 border-0 bg-transparent">
@@ -30,20 +31,22 @@ export const CourseSidebarHeader: React.FC<CourseSidebarHeaderProps> = ({
         >
           <span className="truncate">محتوى الدورة</span>
         </TabsTrigger>
-        <TabsTrigger
-          value="assistant"
-          className={cn(
-            'min-w-0 gap-1.5 rounded-none px-3 py-2.5 text-sm font-medium',
-            'text-muted-foreground hover:text-foreground',
-            'data-[state=active]:text-foreground data-[state=active]:font-semibold',
-          )}
-        >
-          <Sparkles
-            className="size-3.5 shrink-0 text-sidebar-primary"
-            aria-hidden
-          />
-          <span className="truncate">المدرس الذكي</span>
-        </TabsTrigger>
+        {isAiTutorEnabled && (
+          <TabsTrigger
+            value="assistant"
+            className={cn(
+              'min-w-0 gap-1.5 rounded-none px-3 py-2.5 text-sm font-medium',
+              'text-muted-foreground hover:text-foreground',
+              'data-[state=active]:text-foreground data-[state=active]:font-semibold',
+            )}
+          >
+            <Sparkles
+              className="size-3.5 shrink-0 text-sidebar-primary"
+              aria-hidden
+            />
+            <span className="truncate">المدرس الذكي</span>
+          </TabsTrigger>
+        )}
       </TabsList>
 
       <div className="flex items-center gap-0.5 pe-1">
@@ -51,7 +54,7 @@ export const CourseSidebarHeader: React.FC<CourseSidebarHeaderProps> = ({
           variant="ghost"
           size="icon"
           className="size-8 rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-          onClick={onMaximize}
+          onClick={toggleMaximized}
           aria-label={isMaximized ? 'تصغير' : 'تكبير'}
         >
           {isMaximized ? (
@@ -64,7 +67,7 @@ export const CourseSidebarHeader: React.FC<CourseSidebarHeaderProps> = ({
           variant="ghost"
           size="icon"
           className="size-8 rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-          onClick={onClose}
+          onClick={closeSidebar}
           aria-label="إغلاق"
         >
           <X className="size-4" />

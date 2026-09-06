@@ -22,9 +22,15 @@ export function mapMyCourseLecturesToDTO(
       lectures: section.lectures.map((lecture) => ({
         id: lecture.id,
         title: lecture.title,
+        position: lecture.position,
         duration: lecture.video?.duration ?? 0,
         isCompleted: lecture.progress?.[0]?.isCompleted || false,
-        attachmentsCount: lecture._count.attachments,
+        attachments: lecture.attachments.map((attachment) => ({
+          id: attachment.id,
+          name: attachment.name,
+          url: attachment.url,
+        })),
+        attachmentsCount: lecture.attachments.length,
       })),
     })),
   };

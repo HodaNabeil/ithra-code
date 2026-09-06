@@ -4,11 +4,11 @@ import { redirect } from 'next/navigation';
 import { requireAuth } from '@/features/my-courses/lib/require-auth';
 import { APP_ROUTES } from '@/constants/enums';
 import { getCourseSections } from '@/features/my-courses/actions/my-course';
-import { CourseContentLayoutBody } from '@/features/my-courses/[courseSlug]/components/layout/course-content-layout-body';
+import { CourseLearningShell } from '@/features/my-courses/[courseSlug]/components/layout/course-learning-shell';
 import { LectureHeader } from '@/features/my-courses/[courseSlug]/components/layout/header';
 import { AITutorConfig } from '@/features/ai-tutor';
 
-export default async function CourseLearningLayout({
+export default async function MyCourseLayout({
   children,
   params,
 }: {
@@ -25,16 +25,16 @@ export default async function CourseLearningLayout({
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden" dir="rtl">
+    <div>
       <LectureHeader />
-      <div className="flex-1 overflow-hidden">
-        <CourseContentLayoutBody
+      <main className=" overflow-hidden">
+        <CourseLearningShell
           courseSlug={courseSlug}
-          aiTutorEnabled={AITutorConfig.isEnabled()}
+          isAiTutorEnabled={AITutorConfig.isEnabled()}
         >
           {children}
-        </CourseContentLayoutBody>
-      </div>
+        </CourseLearningShell>
+      </main>
     </div>
   );
 }
