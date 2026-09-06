@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 
 /**
  * Wraps the Header and hides it on course learning pages
- * where the CourseLearningHeader is used instead.
+ * where the LectureHeader is used instead.
  */
 export function HeaderWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

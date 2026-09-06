@@ -16,3 +16,5 @@ export {
   getCourseProgress,
   type GetCourseProgressInput,
 } from './use-cases/get-course-progress.use-case';
+
+export { getCourseProgressClient } from './api/get-course-progress.client';

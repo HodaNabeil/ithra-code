@@ -5,7 +5,7 @@ import { requireAuth } from '@/features/my-courses/lib/require-auth';
 import { APP_ROUTES } from '@/constants/enums';
 import { getCourseSections } from '@/features/my-courses/actions/my-course';
 import { CourseContentLayoutBody } from '@/features/my-courses/[courseSlug]/components/layout/course-content-layout-body';
-import { CourseLearningHeader } from '@/features/my-courses/[courseSlug]/components/layout/course-learning-header';
+import { LectureHeader } from '@/features/my-courses/[courseSlug]/components/layout/header';
 import { AITutorConfig } from '@/features/ai-tutor';
 
 export default async function CourseLearningLayout({
@@ -26,11 +26,7 @@ export default async function CourseLearningLayout({
 
   return (
     <div className="h-screen flex flex-col overflow-hidden" dir="rtl">
-      <CourseLearningHeader
-        courseTitle={'mastering-react-hooks'}
-        completedCount={10}
-        totalCount={20}
-      />
+      <LectureHeader />
       <div className="flex-1 overflow-hidden">
         <CourseContentLayoutBody
           courseSlug={courseSlug}

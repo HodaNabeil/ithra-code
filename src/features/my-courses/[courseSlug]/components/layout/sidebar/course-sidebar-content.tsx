@@ -5,7 +5,7 @@ import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AITutorChat } from '@/features/ai-tutor/presentation/components/AITutorChat';
 import { useCourseLearningLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-learning-layout-store';
-import { SectionAccordion } from '../content/SectionAccordion';
+import { SectionAccordion } from '../../content/SectionAccordion';
 import { CourseSidebarHeader } from './course-sidebar-header';
 import { CourseSidebarAssistant } from './course-sidebar-assistant';
 

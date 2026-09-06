@@ -49,3 +49,5 @@ export {
   getLecture,
   type GetLectureInput,
 } from './use-cases/get-lecture.use-case';
+
+export { getLectureClient } from './api/get-lecture.client';
