@@ -7,6 +7,10 @@ import type {
   CourseViewer,
 } from '../dto/course-list.dto';
 import {
+  getCourseProgress,
+  type CourseProgressDTO,
+} from '@/features/courses/course-progress';
+import {
   courseListCache,
   resolveCacheScope,
 } from '../cache/course-list.cache';
@@ -39,12 +43,53 @@ function mergeUserSignals(
   items: CourseListPublicItem[],
   cartCourseIds: Set<string>,
   enrolledCourseIds: Set<string>,
+  progressMap?: Map<string, CourseProgressDTO>,
 ): CourseListItem[] {
-  return items.map((item) => ({
-    ...item,
-    isInCart: cartCourseIds.has(item.id),
-    isPurchased: enrolledCourseIds.has(item.id),
-  }));
+  return items.map((item) => {
+    const isPurchased = enrolledCourseIds.has(item.id);
+    const progress = isPurchased ? progressMap?.get(item.id) : undefined;
+
+    return {
+      ...item,
+      isInCart: cartCourseIds.has(item.id),
+      isPurchased,
+      progressPercentage: progress?.completionPercentage,
+      progress,
+    };
+  });
+}
+
+async function fetchEnrolledProgressMap(
+  items: CourseListPublicItem[],
+  enrolledCourseIds: Set<string>,
+  userId: string,
+): Promise<Map<string, CourseProgressDTO>> {
+  const progressMap = new Map<string, CourseProgressDTO>();
+  const enrolledItems = items.filter((item) => enrolledCourseIds.has(item.id));
+
+  if (enrolledItems.length === 0) return progressMap;
+
+  const results = await Promise.all(
+    enrolledItems.map(async (item) => {
+      try {
+        const progress = await getCourseProgress({
+          courseIdOrSlug: item.id,
+          userId,
+        });
+        return [item.id, progress] as const;
+      } catch {
+        return [item.id, null] as const;
+      }
+    }),
+  );
+
+  for (const [courseId, progress] of results) {
+    if (progress) {
+      progressMap.set(courseId, progress);
+    }
+  }
+
+  return progressMap;
 }
 
 async function loadPublicCourseList(
@@ -105,11 +150,18 @@ export async function listCourses(
     repository.findUserEnrolledCourseIds(viewer.id),
   ]);
 
+  const progressMap = await fetchEnrolledProgressMap(
+    publicResult.items,
+    enrolledCourseIds,
+    viewer.id,
+  );
+
   return {
     courses: mergeUserSignals(
       publicResult.items,
       cartCourseIds,
       enrolledCourseIds,
+      progressMap,
     ),
     pagination: publicResult.pagination,
   };

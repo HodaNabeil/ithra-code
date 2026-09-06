@@ -28,6 +28,8 @@ export function mapCourseListItemToListDTO(
     firstLectureId: item.firstLectureId,
     isPurchased: item.isPurchased,
     isInCart: item.isInCart,
+    progressPercentage: item.progressPercentage,
+    progress: item.progress,
     createdAt: item.createdAt,
     updatedAt: item.updatedAt,
     publishedAt: item.publishedAt,

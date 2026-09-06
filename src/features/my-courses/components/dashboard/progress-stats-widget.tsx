@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { BookOpen, Clock, FileText, Wrench } from 'lucide-react';
+import { Award, BookOpen, Clock } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import Select from '@/components/shared/select';
 import type { ProgressStats } from '@/features/my-courses/lib/dashboard-stats';
@@ -32,13 +32,6 @@ const STAT_ITEMS: StatItem[] = [
     iconColor: 'text-chart-primary-stroke',
   },
   {
-    key: 'completedConcepts',
-    label: 'المفاهيم المكتملة',
-    icon: FileText,
-    iconBg: 'bg-success/10',
-    iconColor: 'text-success',
-  },
-  {
     key: 'completedLessons',
     label: 'الدروس المكتملة',
     icon: BookOpen,
@@ -46,9 +39,9 @@ const STAT_ITEMS: StatItem[] = [
     iconColor: 'text-brand',
   },
   {
-    key: 'completedProjects',
-    label: 'المشاريع المكتملة',
-    icon: Wrench,
+    key: 'completedCourses',
+    label: 'الدورات المكتملة',
+    icon: Award,
     iconBg: 'bg-collection-purple-900/10',
     iconColor: 'text-collection-purple-900',
   },
@@ -81,24 +74,24 @@ export function ProgressStatsWidget({ stats }: ProgressStatsWidgetProps) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-2.5">
         {STAT_ITEMS.map(({ key, label, icon: Icon, iconBg, iconColor }) => (
           <div
             key={key}
-            className="flex flex-col gap-3 rounded-xl bg-card p-4 ring-1 ring-foreground/5"
+            className="flex flex-col gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/5"
           >
             <div
-              className={`element-center size-10 shrink-0 rounded-full ${iconBg}`}
+              className={`element-center size-9 shrink-0 rounded-full ${iconBg}`}
             >
               <Icon
-                className={`size-5 stroke-[2.5px] ${iconColor}`}
+                className={`size-4 stroke-[2.5px] ${iconColor}`}
                 aria-hidden
               />
             </div>
-            <span className="text-2xl font-bold leading-none tabular-nums text-foreground">
+            <span className="text-xl font-bold leading-none tabular-nums text-foreground">
               {formatStatValue(key, stats[key])}
             </span>
-            <span className="text-sm leading-snug text-muted-foreground">
+            <span className="text-xs font-medium leading-snug text-muted-foreground">
               {label}
             </span>
           </div>
