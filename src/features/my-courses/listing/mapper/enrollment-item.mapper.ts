@@ -23,8 +23,8 @@ export function mapEnrollmentListItem(
       ? new Date(item.progress.lastAccessedAt)
       : new Date(item.enrollment.updatedAt),
     firstLectureId,
-    // API has no last-watched lecture; resume links fall back to first lecture.
-    lastLectureId: firstLectureId,
+    // Use the actual last-accessed lecture if available, fall back to first lecture for new enrolments.
+    lastLectureId: item.progress.lastLectureId ?? firstLectureId,
     lastLectureTitle: undefined,
   };
 }

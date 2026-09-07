@@ -2,7 +2,7 @@ import React from 'react';
 import { redirect } from 'next/navigation';
 
 import { courseSectionsRepository } from '@/features/courses/course-sections';
-import { getIsUserEnrolledInCourse } from '@/features/courses/services/enrollment.service';
+import { canAccessCourseContent } from '@/features/courses/services/enrollment.service';
 import { requireAuth } from '@/features/my-courses/lib/require-auth';
 import { APP_ROUTES } from '@/constants/enums';
 import { CourseLearningShell } from '@/features/my-courses/[courseSlug]/components/layout/shell';
@@ -26,7 +26,7 @@ export default async function MyCourseLayout({
     redirect(`${APP_ROUTES.COURSES}/${courseSlug}?notEnrolled=1`);
   }
 
-  const isEnrolled = await getIsUserEnrolledInCourse(userId, course.id);
+  const isEnrolled = await canAccessCourseContent(userId, course.id);
 
   if (!isEnrolled) {
     redirect(`${APP_ROUTES.COURSES}/${courseSlug}?notEnrolled=1`);

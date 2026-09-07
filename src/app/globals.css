@@ -494,7 +494,7 @@
 }
 
 .dark {
-  --card: rgba(62, 62, 62, 0.96);
+  --card: #141414;
   --card-foreground: var(--foreground);
   --popover: var(--tw-gray-800);
   --popover-foreground: var(--foreground);
@@ -707,12 +707,20 @@
 
 .sidebar-scroll:hover::-webkit-scrollbar-thumb,
 .sidebar-scroll[data-scrolling='true']::-webkit-scrollbar-thumb {
-  background-color: color-mix(in srgb, var(--sidebar-foreground) 28%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--sidebar-foreground) 28%,
+    transparent
+  );
 }
 
 .sidebar-scroll:hover,
 .sidebar-scroll[data-scrolling='true'] {
-  scrollbar-color: color-mix(in srgb, var(--sidebar-foreground) 28%, transparent)
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--sidebar-foreground) 28%,
+      transparent
+    )
     transparent;
 }
 

@@ -126,6 +126,7 @@ export const enrollmentProgressSchema = z.object({
   totalTimeSpent: z.number().int(),
   completionPercentage: z.number(),
   lastAccessedAt: z.string().datetime().nullable(),
+  lastLectureId: z.string().nullable(),
 });
 
 export const enrollmentPurchaseSchema = z

@@ -144,7 +144,7 @@ function Lecture({
                 isCompleted: checked === true,
               });
             }}
-            className="h-5 w-5 border"
+            className="h-5 w-5 rounded-md border-muted-foreground/30 bg-transparent data-[state=checked]:border-success data-[state=checked]:bg-success data-[state=checked]:text-success-foreground"
           />
         </div>
         <div className="min-w-0 flex-1">
