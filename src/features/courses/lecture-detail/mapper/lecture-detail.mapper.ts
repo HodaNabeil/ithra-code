@@ -5,7 +5,12 @@ import {
   prismaDateToIso,
   prismaDateToIsoNullable,
 } from '@/features/courses/course-detail/mapper/shared';
-import { isBunnyStreamConfigured, signBunnyHlsUrl } from '@/lib/bunny-stream';
+import {
+  DEV_SAMPLE_HLS_URL,
+  isBunnyStreamConfigured,
+  signBunnyHlsUrl,
+} from '@/lib/bunny-stream';
+import { env } from '@/config/env';
 
 import type {
   CourseRatingAggregate,
@@ -16,33 +21,35 @@ import type { DB_LectureDetailCourseEntity } from '../repository/lecture-detail.
 import type { DB_LectureDetailEntity } from '../repository/lecture-detail.select';
 
 function resolveVideoHlsUrl(lecture: DB_LectureDetailEntity): string | null {
-  if (lecture.type !== LectureType.VIDEO || !lecture.videoId) {
+  if (lecture.type !== LectureType.VIDEO) {
     return null;
   }
 
   const video = lecture.video;
-  if (!video || video.status !== 'ready') {
-    return null;
-  }
+  const hasReadyVideo =
+    Boolean(lecture.videoId) && video?.status === 'ready';
 
-  if (!isBunnyStreamConfigured()) {
-    return null;
-  }
+  if (hasReadyVideo && isBunnyStreamConfigured()) {
+    const hlsUrl = signBunnyHlsUrl({
+      bunnyVideoId: video!.bunnyVideoId,
+      libraryId: video!.libraryId,
+    });
 
-  const hlsUrl = signBunnyHlsUrl({
-    bunnyVideoId: video.bunnyVideoId,
-    libraryId: video.libraryId,
-  });
+    if (hlsUrl) {
+      return hlsUrl;
+    }
 
-  if (!hlsUrl) {
     console.error(
       '[LECTURE_DETAIL] Bunny HLS signing failed for video',
-      video.id,
+      video!.id,
     );
-    return null;
   }
 
-  return hlsUrl;
+  if (env.NODE_ENV === 'development') {
+    return DEV_SAMPLE_HLS_URL;
+  }
+
+  return null;
 }
 
 export function mapLectureToDTO(

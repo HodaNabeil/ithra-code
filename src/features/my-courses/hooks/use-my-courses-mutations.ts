@@ -1,7 +1,46 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateLectureProgressClient } from '@/features/courses/lecture-progress/api/update-lecture-progress.client';
-import { MY_COURSES_TAGS } from '@/lib/query-keys';
+import { COURSE_PROGRESS_TAGS, MY_COURSES_TAGS } from '@/lib/query-keys';
 import type { MyCourseLecturesDTO } from '@/features/my-courses/dto/my-courses.dto';
+
+type UpdateLectureWatchProgressInput = {
+  lectureId: string;
+  incrementTime?: number;
+  isCompleted?: boolean;
+};
+
+function invalidateCourseProgressQueries(
+  queryClient: ReturnType<typeof useQueryClient>,
+  courseSlug: string,
+) {
+  void queryClient.invalidateQueries({
+    queryKey: MY_COURSES_TAGS.sections(courseSlug),
+  });
+  void queryClient.invalidateQueries({
+    queryKey: COURSE_PROGRESS_TAGS.detail(courseSlug),
+  });
+}
+
+export function useUpdateLectureWatchProgress(courseSlug: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      lectureId,
+      incrementTime,
+      isCompleted,
+    }: UpdateLectureWatchProgressInput) =>
+      updateLectureProgressClient({
+        courseIdOrSlug: courseSlug,
+        lectureId,
+        incrementTime,
+        isCompleted,
+      }),
+    onSuccess: () => {
+      invalidateCourseProgressQueries(queryClient, courseSlug);
+    },
+  });
+}
 
 export function useToggleLectureCompletion(courseSlug: string) {
   const queryClient = useQueryClient();
