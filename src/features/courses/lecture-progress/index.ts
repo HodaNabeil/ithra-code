@@ -1,4 +1,6 @@
 export type {
+  GetLectureProgressResponse,
+  ListCourseLectureProgressResponse,
   ProgressRecordDTO,
   UpdateLectureProgressBody,
   UpdateLectureProgressResponse,
@@ -24,10 +26,30 @@ export {
 } from './repository/lecture-progress.repository';
 
 export {
+  parseListCourseLectureProgressParams,
   parseUpdateLectureProgressBody,
+  parseUpdateLectureProgressParams,
   updateLectureProgressBodySchema,
+  updateLectureProgressParamsSchema,
   type UpdateLectureProgressBodyInput,
+  type UpdateLectureProgressParams,
 } from './validation/lecture-progress.validation';
+
+export { handleGetLectureProgressRequest } from './api/get-lecture-progress.handler';
+
+export { handleListCourseLectureProgressRequest } from './api/list-course-lecture-progress.handler';
+
+export { handleUpdateLectureProgressRequest } from './api/update-lecture-progress.handler';
+
+export {
+  getLectureProgress,
+  type GetLectureProgressInput,
+} from './use-cases/get-lecture-progress.use-case';
+
+export {
+  listCourseLectureProgress,
+  type ListCourseLectureProgressInput,
+} from './use-cases/list-course-lecture-progress.use-case';
 
 export {
   updateLectureProgress,

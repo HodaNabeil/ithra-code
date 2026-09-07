@@ -2,7 +2,7 @@
 
 /* ── Chatscope token overrides ───────────────────────────────────────── */
 .ai-tutor-chatscope {
-  --cs-primary-color: var(--sidebar-primary);
+  --cs-primary-color: var(--brand);
   --cs-secondary-color: var(--muted);
   --cs-message-list-background-color: transparent;
   --cs-message-list-content-background-color: transparent;
@@ -149,9 +149,9 @@
 }
 
 .ai-tutor-chatscope .ai-tutor-message-avatar--user {
-  background: color-mix(in oklch, var(--sidebar-primary) 12%, transparent);
-  color: var(--sidebar-primary);
-  border-color: color-mix(in oklch, var(--sidebar-primary) 25%, transparent);
+  background: color-mix(in oklch, var(--brand) 12%, transparent);
+  color: var(--brand);
+  border-color: color-mix(in oklch, var(--brand) 25%, transparent);
 }
 
 .ai-tutor-chatscope .ai-tutor-message-avatar--assistant {
@@ -180,9 +180,9 @@
 
 .ai-tutor-chatscope .ai-tutor-message-bubble--user {
   border-radius: 1rem 1rem 0.25rem 1rem;
-  background: var(--sidebar-primary);
-  color: var(--sidebar-primary-foreground);
-  border: 1px solid color-mix(in oklch, var(--sidebar-primary) 80%, transparent);
+  background: var(--brand);
+  color: #fff;
+  border: 1px solid color-mix(in oklch, var(--brand) 80%, transparent);
 }
 
 .ai-tutor-chatscope .ai-tutor-message-bubble--assistant {
@@ -215,9 +215,9 @@
 }
 
 .ai-tutor-chatscope .cs-message-input__content-editor-wrapper:focus-within {
-  border-color: color-mix(in oklch, var(--sidebar-primary) 50%, transparent);
+  border-color: color-mix(in oklch, var(--brand) 50%, transparent);
   box-shadow: 0 0 0 3px
-    color-mix(in oklch, var(--sidebar-primary) 12%, transparent);
+    color-mix(in oklch, var(--brand) 12%, transparent);
 }
 
 .ai-tutor-chatscope .cs-message-input__content-editor {
@@ -234,8 +234,8 @@
 
 .ai-tutor-chatscope .cs-button--send {
   border-radius: 0.625rem;
-  background: var(--sidebar-primary);
-  color: var(--sidebar-primary-foreground);
+  background: var(--brand);
+  color: #fff;
   transition: opacity 150ms ease;
 }
 

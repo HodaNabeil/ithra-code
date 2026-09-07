@@ -13,8 +13,17 @@ import {
   type DB_CourseSectionsIdentity,
 } from './course-sections.select';
 
+export type CourseIdRef = {
+  id: string;
+};
+
 export interface CourseSectionsRepository {
-  findCourseIdentity(idOrSlug: string): Promise<CourseSectionsIdentity | null>;
+  findCourseIdByIdOrSlug(
+    courseIdOrSlug: string,
+  ): Promise<CourseIdRef | null>;
+  findCourseIdentity(
+    courseIdOrSlug: string,
+  ): Promise<CourseSectionsIdentity | null>;
   findSectionsWithLectures(
     courseId: string,
     options: { publishedOnly: boolean },
@@ -45,10 +54,25 @@ const PROGRESS_ELIGIBLE_STATUSES: EnrollmentStatus[] = [
 ];
 
 export class PrismaCourseSectionsRepository implements CourseSectionsRepository {
+  async findCourseIdByIdOrSlug(
+    courseIdOrSlug: string,
+  ): Promise<CourseIdRef | null> {
+    const where = isCuid(courseIdOrSlug)
+      ? { id: courseIdOrSlug }
+      : { slug: courseIdOrSlug };
+
+    return prisma.course.findUnique({
+      where,
+      select: { id: true },
+    });
+  }
+
   async findCourseIdentity(
-    idOrSlug: string,
+    courseIdOrSlug: string,
   ): Promise<CourseSectionsIdentity | null> {
-    const where = isCuid(idOrSlug) ? { id: idOrSlug } : { slug: idOrSlug };
+    const where = isCuid(courseIdOrSlug)
+      ? { id: courseIdOrSlug }
+      : { slug: courseIdOrSlug };
 
     const entity = await prisma.course.findUnique({
       where,

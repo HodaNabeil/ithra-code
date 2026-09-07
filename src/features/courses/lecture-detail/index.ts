@@ -23,6 +23,7 @@ export {
   assertLecturePaidAccess,
   assertLecturePublishedContent,
   computeHasPurchased,
+  isStudentVisibleLectureContent,
 } from './policies/lecture-access.policy';
 
 export {
@@ -48,3 +49,5 @@ export {
   getLecture,
   type GetLectureInput,
 } from './use-cases/get-lecture.use-case';
+
+export { getLectureClient } from './api/get-lecture.client';

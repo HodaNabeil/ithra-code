@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const courseSectionsParamsSchema = z.object({
-  idOrSlug: z
+  courseIdOrSlug: z
     .string()
     .trim()
     .min(1, 'Course identifier is required')

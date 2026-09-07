@@ -41,11 +41,11 @@ export async function publishCourseUseCase(
   input: PublishCourseInput,
   deps: PublishCourseUseCaseDeps,
 ): Promise<PublishCourseResult> {
-  const { idOrSlug, user } = input;
+  const { courseIdOrSlug, user } = input;
 
   assertCanArchiveCourse(user);
 
-  const existing = await deps.courseRepository.findByIdOrSlug(idOrSlug);
+  const existing = await deps.courseRepository.findByIdOrSlug(courseIdOrSlug);
   if (!existing) {
     throw new PublishCourseError(
       404,

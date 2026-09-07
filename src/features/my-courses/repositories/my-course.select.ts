@@ -13,13 +13,19 @@ export const myCourseLecturesSelect = Prisma.validator<Prisma.CourseSelect>()({
         select: {
           id: true,
           title: true,
+          position: true,
           video: {
             select: {
               duration: true,
             },
           },
-          _count: {
-            select: { attachments: true },
+          attachments: {
+            orderBy: { position: 'asc' },
+            select: {
+              id: true,
+              name: true,
+              url: true,
+            },
           },
           progress: {
             select: {

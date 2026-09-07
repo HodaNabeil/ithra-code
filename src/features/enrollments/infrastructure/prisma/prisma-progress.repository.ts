@@ -33,7 +33,7 @@ export class PrismaEnrollmentProgressRepository implements EnrollmentProgressRep
       prisma.lecture.findMany({
         where: {
           isPublished: true,
-          section: { courseId: { in: courseIds } },
+          section: { courseId: { in: courseIds }, isPublished: true },
         },
         select: {
           section: { select: { courseId: true } },

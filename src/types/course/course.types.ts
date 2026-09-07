@@ -131,6 +131,9 @@ export type EnrollmentItem = {
   trackId: string | null;
   instructorId: string | null;
   progressPercentage: number;
+  completedLectures?: number;
+  totalLectures?: number;
+  totalTimeSpent?: number;
   enrolledAt: Date;
   lastActivity: Date;
   firstLectureId?: string;

@@ -357,11 +357,11 @@ pnpm worker:ai-cost-aggregation    # تجميع تكاليف الذكاء الا
 | -------------------------------------- | ----------------------- |
 | `GET /api/courses`                     | قائمة الدورات المنشورة  |
 | `POST /api/courses`                    | إنشاء مسودة دورة        |
-| `GET /api/courses/{idOrSlug}`          | تفاصيل الدورة           |
-| `PUT /api/courses/{idOrSlug}`          | تحديث الدورة            |
-| `DELETE /api/courses/{idOrSlug}`       | أرشفة الدورة            |
-| `GET /api/courses/{idOrSlug}/access`   | التحقق من صلاحية الوصول |
-| `GET /api/courses/{idOrSlug}/overview` | إحصائيات الدورة         |
+| `GET /api/courses/{courseIdOrSlug}`          | تفاصيل الدورة           |
+| `PUT /api/courses/{courseIdOrSlug}`          | تحديث الدورة            |
+| `DELETE /api/courses/{courseIdOrSlug}`       | أرشفة الدورة            |
+| `GET /api/courses/{courseIdOrSlug}/access`   | التحقق من صلاحية الوصول |
+| `GET /api/courses/{courseIdOrSlug}/overview` | إحصائيات الدورة         |
 | `GET /api/paths`                       | قائمة مسارات التعلم     |
 | `GET /api/paths/{slug}`                | تفاصيل مسار التعلم      |
 

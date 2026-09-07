@@ -225,6 +225,7 @@
   --input: hsl(220 13% 91%);
   --ring: hsl(224 71.4% 4.1%);
   --radius: 0.5rem;
+  --header-height-real: 68px;
   --dark-gray-base: 224, 90%, 9%;
   --h-screen-dvh-unsafe: 100dvh;
   --h-screen-dvh: var(--h-screen-dvh-unsafe, 100vh);
@@ -660,6 +661,60 @@
 
 @utility container {
   @apply mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Hidden scrollbar — scroll still works (mouse wheel, touch, keyboard) */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Udemy-style sidebar scroll: hidden by default, thin thumb on hover/scroll */
+.sidebar-scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.sidebar-scroll:hover::-webkit-scrollbar,
+.sidebar-scroll[data-scrolling='true']::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar-scroll:hover::-webkit-scrollbar-track,
+.sidebar-scroll[data-scrolling='true']::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll:hover::-webkit-scrollbar-thumb,
+.sidebar-scroll[data-scrolling='true']::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--sidebar-foreground) 28%, transparent);
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-scroll:hover,
+.sidebar-scroll[data-scrolling='true'] {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--sidebar-foreground) 28%, transparent)
+    transparent;
 }
 
 .testimonial-card {

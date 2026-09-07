@@ -55,3 +55,6 @@ export {
   getCourseSections,
   type GetCourseSectionsInput,
 } from './use-cases/get-course-sections.use-case';
+
+export { handleGetCourseSectionsRequest } from './api/get-course-sections.handler';
+export { getCourseSectionsClient } from './api/get-course-sections.client';

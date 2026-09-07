@@ -1,14 +1,15 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 
+import { courseSectionsRepository } from '@/features/courses/course-sections';
+import { getIsUserEnrolledInCourse } from '@/features/courses/services/enrollment.service';
 import { requireAuth } from '@/features/my-courses/lib/require-auth';
 import { APP_ROUTES } from '@/constants/enums';
-import { getCourseSections } from '@/features/my-courses/actions/my-course';
-import { CourseContentLayoutBody } from '@/features/my-courses/[courseSlug]/components/layout/course-content-layout-body';
-import { CourseLearningHeader } from '@/features/my-courses/[courseSlug]/components/layout/course-learning-header';
+import { CourseLearningShell } from '@/features/my-courses/[courseSlug]/components/layout/shell';
+import { LectureHeader } from '@/features/my-courses/[courseSlug]/components/layout/header';
 import { AITutorConfig } from '@/features/ai-tutor';
 
-export default async function CourseLearningLayout({
+export default async function MyCourseLayout({
   children,
   params,
 }: {
@@ -16,29 +17,32 @@ export default async function CourseLearningLayout({
   params: Promise<{ courseSlug: string }>;
 }) {
   const { courseSlug } = await params;
-  await requireAuth(`${APP_ROUTES.COURSES}/${courseSlug}`);
+  const userId = await requireAuth(`${APP_ROUTES.COURSES}/${courseSlug}`);
 
-  const data = await getCourseSections(courseSlug);
+  const course =
+    await courseSectionsRepository.findCourseIdByIdOrSlug(courseSlug);
 
-  if (!data) {
+  if (!course) {
+    redirect(`${APP_ROUTES.COURSES}/${courseSlug}?notEnrolled=1`);
+  }
+
+  const isEnrolled = await getIsUserEnrolledInCourse(userId, course.id);
+
+  if (!isEnrolled) {
     redirect(`${APP_ROUTES.COURSES}/${courseSlug}?notEnrolled=1`);
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden" dir="rtl">
-      <CourseLearningHeader
-        courseTitle={'mastering-react-hooks'}
-        completedCount={10}
-        totalCount={20}
-      />
-      <div className="flex-1 overflow-hidden">
-        <CourseContentLayoutBody
+    <>
+      <LectureHeader />
+      <main className=" overflow-hidden">
+        <CourseLearningShell
           courseSlug={courseSlug}
-          aiTutorEnabled={AITutorConfig.isEnabled()}
+          isAiTutorEnabled={AITutorConfig.isEnabled()}
         >
           {children}
-        </CourseContentLayoutBody>
-      </div>
-    </div>
+        </CourseLearningShell>
+      </main>
+    </>
   );
 }

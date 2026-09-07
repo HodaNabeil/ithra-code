@@ -21,20 +21,20 @@ import {
 export type CourseDetailUser = CourseVisibilityUser;
 
 export type GetCourseDetailInput = {
-  idOrSlug: string;
+  courseIdOrSlug: string;
   user?: CourseDetailUser | null;
 };
 
 async function loadPublicCourse(
-  idOrSlug: string,
+  courseIdOrSlug: string,
   repository: CourseDetailRepository,
 ): Promise<CourseDetailPublicDTO> {
-  const cached = isCuid(idOrSlug)
+  const cached = isCuid(courseIdOrSlug)
     ? null
-    : await courseDetailCache.get(idOrSlug);
+    : await courseDetailCache.get(courseIdOrSlug);
   if (cached) return cached;
 
-  const entity = await repository.findCourseByIdOrSlug(idOrSlug);
+  const entity = await repository.findCourseByIdOrSlug(courseIdOrSlug);
   if (!entity) {
     throw new CourseDetailError(
       404,
@@ -63,8 +63,8 @@ export async function getCourseDetail(
   input: GetCourseDetailInput,
   repository: CourseDetailRepository = courseDetailRepository,
 ): Promise<CourseDetailApiDTO> {
-  const { idOrSlug, user } = input;
-  const publicDto = await loadPublicCourse(idOrSlug, repository);
+  const { courseIdOrSlug, user } = input;
+  const publicDto = await loadPublicCourse(courseIdOrSlug, repository);
 
   assertCourseVisible(publicDto, user);
 

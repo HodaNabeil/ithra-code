@@ -14,6 +14,15 @@ export type UpdateLectureProgressResponse = {
   progress: ProgressRecordDTO;
 };
 
+export type GetLectureProgressResponse = {
+  progress: ProgressRecordDTO | null;
+};
+
+export type ListCourseLectureProgressResponse = {
+  progress: ProgressRecordDTO[];
+  total: number;
+};
+
 export type UpdateLectureProgressBody = {
   isCompleted: boolean;
   incrementTime: number;

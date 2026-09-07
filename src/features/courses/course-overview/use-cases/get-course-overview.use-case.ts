@@ -21,7 +21,7 @@ import {
 import { parseCourseOverviewParams } from '../validation/course-overview.validation';
 
 export type GetCourseOverviewInput = {
-  idOrSlug: string;
+  courseIdOrSlug: string;
   user?: CourseOverviewViewer;
 };
 
@@ -29,10 +29,12 @@ export async function getCourseOverview(
   input: GetCourseOverviewInput,
   repository: CourseOverviewRepository = courseOverviewRepository,
 ): Promise<GetCourseOverviewResponse> {
-  let idOrSlug: string;
+  let courseIdOrSlug: string;
 
   try {
-    ({ idOrSlug } = parseCourseOverviewParams({ idOrSlug: input.idOrSlug }));
+    ({ courseIdOrSlug } = parseCourseOverviewParams({
+      courseIdOrSlug: input.courseIdOrSlug,
+    }));
   } catch (error) {
     if (error instanceof ZodError) {
       throw new CourseOverviewError(
@@ -43,7 +45,7 @@ export async function getCourseOverview(
     throw error;
   }
 
-  const course = await repository.findCourseIdentity(idOrSlug);
+  const course = await repository.findCourseIdentity(courseIdOrSlug);
   if (!course) {
     throw new CourseOverviewError(
       404,
@@ -55,7 +57,7 @@ export async function getCourseOverview(
   assertCourseOverviewVisible(course, input.user ?? null);
 
   const cacheScope = resolveCacheScope(course, input.user ?? null);
-  const cached = await courseOverviewCache.get(idOrSlug, cacheScope);
+  const cached = await courseOverviewCache.get(courseIdOrSlug, cacheScope);
   if (cached) {
     return { overview: cached };
   }
@@ -68,7 +70,7 @@ export async function getCourseOverview(
     mergeIdentityAndAggregates(course, aggregates),
   );
 
-  await courseOverviewCache.set(idOrSlug, cacheScope, overview);
+  await courseOverviewCache.set(courseIdOrSlug, cacheScope, overview);
 
   return { overview };
 }

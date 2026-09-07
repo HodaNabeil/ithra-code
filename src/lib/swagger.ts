@@ -16,6 +16,8 @@ import { addCartItemBodySchema } from '@/features/cart/presentation/validators/a
 import { createCourseSchema } from '@/features/courses/course-creation/dto/create-course.dto';
 import { registerEnrollmentsOpenApi } from '@/features/enrollments/api/register-enrollments-openapi';
 import { registerLectureDetailOpenApi } from '@/features/courses/lecture-detail/api/register-lecture-detail-openapi';
+import { registerCourseProgressOpenApi } from '@/features/courses/course-progress/api/register-course-progress-openapi';
+import { registerLectureProgressOpenApi } from '@/features/courses/lecture-progress/api/register-lecture-progress-openapi';
 
 const registry = new OpenAPIRegistry();
 
@@ -33,8 +35,8 @@ const EX = {
   password: 'SecurePass1!',
 } as const;
 
-const idOrSlugParams = z.object({
-  idOrSlug: z.string().openapi({
+const courseIdOrSlugParams = z.object({
+  courseIdOrSlug: z.string().openapi({
     example: EX.courseSlug,
     description: 'Course UUID or URL slug',
   }),
@@ -557,11 +559,11 @@ registry.registerPath({
 
 registry.registerPath({
   method: 'get',
-  path: '/courses/{idOrSlug}',
+  path: '/courses/{courseIdOrSlug}',
   tags: ['Courses'],
   summary: 'Get course details',
   request: {
-    params: idOrSlugParams,
+    params: courseIdOrSlugParams,
   },
   responses: {
     200: {
@@ -601,11 +603,11 @@ registry.registerPath({
 
 registry.registerPath({
   method: 'put',
-  path: '/courses/{idOrSlug}',
+  path: '/courses/{courseIdOrSlug}',
   tags: ['Courses'],
   summary: 'Update a course',
   request: {
-    params: idOrSlugParams,
+    params: courseIdOrSlugParams,
     body: {
       content: {
         'application/json': {
@@ -640,12 +642,12 @@ registry.registerPath({
 
 registry.registerPath({
   method: 'delete',
-  path: '/courses/{idOrSlug}',
+  path: '/courses/{courseIdOrSlug}',
   tags: ['Courses'],
   summary: 'Archive a course',
   security: authenticated,
   request: {
-    params: idOrSlugParams,
+    params: courseIdOrSlugParams,
   },
   responses: {
     200: {
@@ -691,12 +693,12 @@ registry.registerPath({
 
 registry.registerPath({
   method: 'get',
-  path: '/courses/{idOrSlug}/access',
+  path: '/courses/{courseIdOrSlug}/access',
   tags: ['Courses'],
   summary: 'Check enrollment access for a course',
   security: authenticated,
   request: {
-    params: idOrSlugParams,
+    params: courseIdOrSlugParams,
   },
   responses: {
     200: {
@@ -796,13 +798,13 @@ const courseOverviewSuccessExample = {
 
 registry.registerPath({
   method: 'get',
-  path: '/courses/{idOrSlug}/overview',
+  path: '/courses/{courseIdOrSlug}/overview',
   tags: ['Courses'],
   summary: 'Get course overview stats and description',
   description:
     'Returns aggregated course stats (duration, students, rating, lectures) and the full course description. Works with a course ID or slug — e.g. `GET /api/courses/nodejs-complete-guide/overview`.',
   request: {
-    params: idOrSlugParams,
+    params: courseIdOrSlugParams,
   },
   responses: {
     200: {
@@ -1150,13 +1152,13 @@ const courseSectionsSuccessExample = {
 
 registry.registerPath({
   method: 'get',
-  path: '/courses/{idOrSlug}/sections',
+  path: '/courses/{courseIdOrSlug}/sections',
   tags: ['Courses'],
   summary: 'Get course sections with lectures and progress',
   description:
     'Returns ordered course sections with nested lectures, attachments, video metadata, and optional progress for enrolled users. Works with a course ID or slug — e.g. `GET /api/courses/nodejs-complete-guide/sections`. Authentication is optional.',
   request: {
-    params: idOrSlugParams,
+    params: courseIdOrSlugParams,
   },
   responses: {
     200: {
@@ -1827,6 +1829,25 @@ registerLectureDetailOpenApi(registry, {
   apiErrorExample,
   authenticated,
   courseExample,
+});
+
+registerCourseProgressOpenApi(registry, {
+  registerApiSuccess,
+  apiSuccessExample,
+  ApiErrorSchema,
+  apiErrorExample,
+  authenticated,
+  courseSlug: EX.courseSlug,
+});
+
+registerLectureProgressOpenApi(registry, {
+  registerApiSuccess,
+  apiSuccessExample,
+  ApiErrorSchema,
+  apiErrorExample,
+  authenticated,
+  courseSlug: EX.courseSlug,
+  lectureId: 'cllecture2k4m00008l5d6e3k1n',
 });
 
 // ─── Document generator ─────────────────────────────────────────────────────────

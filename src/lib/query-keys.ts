@@ -35,3 +35,13 @@ export const MY_COURSES_TAGS = {
   navigation: (lectureId: string, courseSlug: string) =>
     [...MY_COURSES_TAGS.all, 'navigation', lectureId, { courseSlug }] as const,
 };
+
+export const LECTURE_DETAIL_TAGS = {
+  detail: (lectureId: string) =>
+    ['lectures', 'detail', lectureId] as const,
+};
+
+export const COURSE_PROGRESS_TAGS = {
+  detail: (courseSlug: string) =>
+    ['courses', 'progress', courseSlug] as const,
+};

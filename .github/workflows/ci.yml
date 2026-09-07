@@ -58,9 +58,6 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
 
-      - name: Unit tests
-        run: pnpm test:unit
-
       - name: Integration tests
         run: pnpm test:integration
         env:

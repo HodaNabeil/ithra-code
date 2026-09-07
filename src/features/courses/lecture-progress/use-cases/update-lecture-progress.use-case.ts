@@ -1,11 +1,17 @@
 import { ZodError } from 'zod';
 
-import { isProgressEligibleEnrollment } from '@/features/courses/course-sections';
+import {
+  courseSectionsRepository,
+  isProgressEligibleEnrollment,
+  type CourseSectionsRepository,
+} from '@/features/courses/course-sections/repository/course-sections.repository';
 import {
   LectureDetailError,
+  isStudentVisibleLectureContent,
   lectureNotFoundMessage,
 } from '@/features/courses/lecture-detail';
 import { parseLectureDetailParams } from '@/features/courses/lecture-detail/validation/lecture-detail.validation';
+import { parseUpdateLectureProgressParams } from '../validation/lecture-progress.validation';
 
 import type {
   ProgressRecordDTO,
@@ -23,6 +29,7 @@ import {
 } from '../repository/lecture-progress.repository';
 
 export type UpdateLectureProgressInput = {
+  courseIdOrSlug: string;
   lectureId: string;
   userId: string;
 } & UpdateLectureProgressBody;
@@ -30,11 +37,17 @@ export type UpdateLectureProgressInput = {
 export async function updateLectureProgress(
   input: UpdateLectureProgressInput,
   repository: LectureProgressRepository = lectureProgressRepository,
+  courseRepository: CourseSectionsRepository = courseSectionsRepository,
 ): Promise<ProgressRecordDTO> {
   let lectureId: string;
+  let courseIdOrSlug: string;
 
   try {
-    ({ lectureId } = parseLectureDetailParams({ lectureId: input.lectureId }));
+    ({ lectureId, courseIdOrSlug } = parseUpdateLectureProgressParams({
+      courseIdOrSlug: input.courseIdOrSlug,
+      lectureId: input.lectureId,
+    }));
+    parseLectureDetailParams({ lectureId });
   } catch (error) {
     if (error instanceof ZodError) {
       throw new LectureProgressError(
@@ -51,6 +64,29 @@ export async function updateLectureProgress(
   const lecture = await repository.findLectureContext(lectureId);
 
   if (!lecture) {
+    throw new LectureProgressError(
+      404,
+      lectureNotFoundMessage(lectureId),
+      'LECTURE_NOT_FOUND',
+    );
+  }
+
+  const course = await courseRepository.findCourseIdentity(courseIdOrSlug);
+
+  if (!course || course.id !== lecture.courseId) {
+    throw new LectureProgressError(
+      404,
+      lectureNotFoundMessage(lectureId),
+      'LECTURE_NOT_FOUND',
+    );
+  }
+
+  if (
+    !isStudentVisibleLectureContent(
+      { isPublished: lecture.sectionIsPublished },
+      { isPublished: lecture.lectureIsPublished },
+    )
+  ) {
     throw new LectureProgressError(
       404,
       lectureNotFoundMessage(lectureId),

@@ -26,3 +26,4 @@ eval/reports
 
 # internal docs (not for public repo)
 docs/
+tsconfig.tsbuildinfo

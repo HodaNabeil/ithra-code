@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleLectureCompletion } from '../actions/my-course';
+import { updateLectureProgressClient } from '@/features/courses/lecture-progress/api/update-lecture-progress.client';
 import { MY_COURSES_TAGS } from '@/lib/query-keys';
 import type { MyCourseLecturesDTO } from '@/features/my-courses/dto/my-courses.dto';
 
@@ -13,7 +13,12 @@ export function useToggleLectureCompletion(courseSlug: string) {
     }: {
       lectureId: string;
       isCompleted: boolean;
-    }) => toggleLectureCompletion(lectureId, isCompleted),
+    }) =>
+      updateLectureProgressClient({
+        courseIdOrSlug: courseSlug,
+        lectureId,
+        isCompleted,
+      }),
     onMutate: async ({ lectureId, isCompleted }) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({

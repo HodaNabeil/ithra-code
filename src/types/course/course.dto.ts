@@ -1,4 +1,5 @@
 import type { Currency } from '@/generated/prisma/enums';
+import type { CourseProgressDTO } from '@/features/courses/course-progress/dto/course-progress.dto';
 
 // types/course/course.dto.ts
 
@@ -72,6 +73,8 @@ export type CourseListDTO = {
   firstLectureId?: string;
   isPurchased?: boolean;
   isInCart?: boolean;
+  progressPercentage?: number;
+  progress?: CourseProgressDTO;
 
   createdAt: string;
   updatedAt: string;

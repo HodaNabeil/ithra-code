@@ -15,6 +15,9 @@ export function mapEnrollmentListItem(
     trackId: item.course.pathId ?? null,
     instructorId: item.course.instructorId,
     progressPercentage: item.progress.completionPercentage,
+    completedLectures: item.progress.completedLectures,
+    totalLectures: item.progress.totalLectures,
+    totalTimeSpent: item.progress.totalTimeSpent,
     enrolledAt: new Date(item.enrollment.enrolledAt),
     lastActivity: item.progress.lastAccessedAt
       ? new Date(item.progress.lastAccessedAt)

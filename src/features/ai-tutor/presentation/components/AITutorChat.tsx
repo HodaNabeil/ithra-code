@@ -88,7 +88,7 @@ export function AITutorChat({
       {!isSidebar ? (
         <div className="flex shrink-0 items-center justify-between border-b border-border/50 px-5 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-sidebar-primary/10 text-sidebar-primary ring-1 ring-sidebar-primary/20">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-brand/10 text-brand ring-1 ring-brand/15">
               <Sparkles className="size-5" />
             </div>
             <div>
@@ -103,7 +103,7 @@ export function AITutorChat({
       ) : (
         <div className="flex shrink-0 items-center justify-between border-b border-border/40 px-4 py-3">
           <div className="flex min-w-0 items-center gap-2">
-            <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary/10 text-sidebar-primary">
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand ring-1 ring-brand/15">
               <Sparkles className="size-3.5" />
             </div>
             <div className="min-w-0">
@@ -290,7 +290,7 @@ function StreamingIndicator({ compact = false }: { compact?: boolean }) {
   return (
     <div
       className={cn(
-        'flex items-center gap-1.5 rounded-full bg-sidebar-primary/10 px-2.5 py-1 text-sidebar-primary',
+        'flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-1 text-brand',
         compact ? 'text-[11px]' : 'text-xs',
       )}
     >
@@ -334,12 +334,12 @@ function EmptyState({
     >
       <div
         className={cn(
-          'mb-4 flex items-center justify-center rounded-2xl bg-sidebar-primary/10 ring-1 ring-sidebar-primary/15',
+          'mb-4 flex items-center justify-center rounded-2xl bg-brand/10 ring-1 ring-brand/15',
           compact ? 'size-14' : 'size-16',
         )}
       >
         <Bot
-          className={cn('text-sidebar-primary', compact ? 'size-7' : 'size-8')}
+          className={cn('text-brand', compact ? 'size-7' : 'size-8')}
         />
       </div>
       <h4

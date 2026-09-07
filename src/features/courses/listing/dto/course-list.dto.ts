@@ -5,6 +5,7 @@ import type {
   Currency,
 } from '@prisma/client';
 import type { SortOption } from '@/types/course/course.types';
+import type { CourseProgressDTO } from '@/features/courses/course-progress/dto/course-progress.dto';
 
 export type CourseViewer = {
   id: string;
@@ -49,6 +50,8 @@ export type CourseListPublicItem = {
 export type CourseListItem = CourseListPublicItem & {
   isInCart: boolean;
   isPurchased: boolean;
+  progressPercentage?: number;
+  progress?: CourseProgressDTO;
 };
 
 export type CourseListPagination = {

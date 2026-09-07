@@ -83,7 +83,13 @@ export async function getLecture(
     status: course.status,
   };
 
-  assertLecturePublishedContent(courseIdentity, lecture, lectureId, viewer);
+  assertLecturePublishedContent(
+    courseIdentity,
+    lecture,
+    lecture.section,
+    lectureId,
+    viewer,
+  );
 
   const bypassEnrollment = canBypassEnrollment(viewer, courseIdentity);
 

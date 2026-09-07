@@ -17,9 +17,9 @@ export default async function CourseDetailsPage({
   params,
 }: CourseSlugPageProps) {
   const { slug } = await params;
-  const course: Course = await getCourseDetail({ idOrSlug: slug });
+  const course: Course = await getCourseDetail({ courseIdOrSlug: slug });
   const { overview }: { overview: CourseOverview } = await getCourseOverview({
-    idOrSlug: slug,
+    courseIdOrSlug: slug,
   });
   return (
     <>
