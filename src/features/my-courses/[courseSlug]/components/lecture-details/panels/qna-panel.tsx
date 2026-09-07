@@ -5,7 +5,7 @@ import { MessageSquare, Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { AITutorChat } from '@/features/ai-tutor/presentation/components/AITutorChat';
+import { AITutorChat } from '@/features/ai-tutor/presentation/components/ai-tutor-chat';
 
 type QnAPanelProps = {
   aiTutorEnabled?: boolean;

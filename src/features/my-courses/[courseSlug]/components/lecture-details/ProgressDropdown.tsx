@@ -23,7 +23,7 @@ export function ProgressDropdown({
   return (
     <DropdownMenu dir="rtl">
       <DropdownMenuTrigger asChild>
-        <button className="group flex items-center gap-3 px-3 py-1.5 hover:bg-accent rounded transition-colors outline-none cursor-pointer">
+        <button className="group flex items-center gap-3 px-3 py-1.5 rounded transition-colors outline-none cursor-pointer">
           <div className="relative size-9 flex items-center justify-center">
             {/* Progress Circle SVG */}
             <svg className="absolute inset-0 size-full -rotate-90">
@@ -47,11 +47,13 @@ export function ProgressDropdown({
                 className="transition-all duration-500"
               />
             </svg>
-            <Trophy className="size-4 text-primary group-hover:text-primary transition-colors" />
+            <Trophy className="size-4 text-primary group-hover:text-foreground transition-colors" />
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-sm font-bold text-primary">تقدمك</span>
-            <ChevronDown className="size-4 text-primary/70 group-data-[state=open]:rotate-180 transition-transform" />
+            <span className="text-sm font-bold text-primary group-hover:text-foreground transition-colors">
+              تقدمك
+            </span>
+            <ChevronDown className="size-4 text-primary/70 group-hover:text-foreground group-data-[state=open]:rotate-180 transition-all" />
           </div>
         </button>
       </DropdownMenuTrigger>

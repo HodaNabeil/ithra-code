@@ -29,6 +29,7 @@ export type EnrollmentProgressDTO = {
   totalTimeSpent: number;
   completionPercentage: number;
   lastAccessedAt: string | null;
+  lastLectureId: string | null;
 };
 
 export type EnrollmentPurchaseDTO = {

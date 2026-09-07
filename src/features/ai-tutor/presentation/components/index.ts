@@ -9,11 +9,11 @@
  * - ThreadSelector, ConversationHeader, MessageCard, SourceCitation
  */
 
-export { AITutorChat } from './AITutorChat';
-export type { AITutorChatProps } from './AITutorChat';
-export { TutorMessageContent } from './TutorMessageContent';
-export { TutorIndexingStatusBanner } from './TutorIndexingStatusBanner';
+export { AITutorChat } from './ai-tutor-chat';
+export type { AITutorChatProps } from './ai-tutor-chat';
+export { TutorMessageContent } from './tutor-message-content';
+export { TutorIndexingStatusBanner } from './tutor-indexing-status-banner';
 export type {
   TutorIndexingStatus,
   TutorIndexingStatusBannerProps,
-} from './TutorIndexingStatusBanner';
+} from './tutor-indexing-status-banner';

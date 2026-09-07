@@ -86,6 +86,8 @@ const SESSION_META_PATTERNS = [
   /\bmy\s+progress\b/i,
   /\bhow\s+am\s+i\s+doing\b/i,
   /اسمي/,
+  /(ايه|إيه|اي|إي)\s+اسمي/,
+  /اسمي\s+(ايه|إيه|اي|إي|هو|هي)/,
   /اسمك/,
   /فاكر\s+اسم/,
   /تتذكر\s+اسم/,

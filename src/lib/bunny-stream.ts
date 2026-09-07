@@ -4,6 +4,10 @@ import { env } from '@/config/env';
 
 const HLS_TOKEN_TTL_SECONDS = 3600;
 
+/** Public HLS sample used when Bunny Stream is not configured in development. */
+export const DEV_SAMPLE_HLS_URL =
+  'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8';
+
 type SignBunnyHlsUrlInput = {
   bunnyVideoId: string;
   libraryId: string;

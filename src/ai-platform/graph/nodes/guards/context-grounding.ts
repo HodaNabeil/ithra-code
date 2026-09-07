@@ -45,7 +45,22 @@ export function evaluateContextGrounding(params: {
     };
   }
 
-  if (retrievalStrategy === 'lecture-relaxed' || topScore < minScore) {
+  // `lecture-relaxed` chunks were already filtered by the retriever's own
+  // fallback threshold and are scoped to the current lecture, so we accept
+  // them here and let the LLM (with its "answer strictly from context"
+  // instruction) decide whether it can help. Rejecting them here made the
+  // whole relaxed-retrieval path dead code and caused false refusals.
+  if (retrievalStrategy === 'lecture-relaxed') {
+    return {
+      grounded: true,
+      reason: 'SUFFICIENT_CONTEXT',
+      topScore,
+      chunkCount,
+      retrievalStrategy,
+    };
+  }
+
+  if (topScore < minScore) {
     return {
       grounded: false,
       reason: 'LOW_RELEVANCE',

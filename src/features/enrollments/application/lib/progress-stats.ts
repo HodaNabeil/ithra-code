@@ -4,6 +4,7 @@ export const ZERO_ENROLLMENT_PROGRESS = {
   totalTimeSpent: 0,
   completionPercentage: 0,
   lastAccessedAt: null,
+  lastLectureId: null,
 } as const;
 
 export function computeCompletionPercentage(

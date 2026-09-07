@@ -48,6 +48,19 @@ export async function getIsUserEnrolledInCourse(
   return signals.isPurchased;
 }
 
+/** Returns true when the student's enrollment allows access to course content
+ * (ACTIVE = currently enrolled, COMPLETED = finished the course). */
+export async function canAccessCourseContent(
+  userId: string,
+  courseId: string,
+): Promise<boolean> {
+  const signals = await findUserCourseSignals(userId, courseId);
+  return (
+    signals.enrollmentStatus === EnrollmentStatus.ACTIVE ||
+    signals.enrollmentStatus === EnrollmentStatus.COMPLETED
+  );
+}
+
 export async function resolveCourseEnrollmentState(
   courseId: string,
   userId?: string,

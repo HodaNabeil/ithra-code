@@ -25,6 +25,7 @@ export class PrismaEnrollmentProgressRepository implements EnrollmentProgressRep
         where: { enrollmentId: { in: enrollmentIds } },
         select: {
           enrollmentId: true,
+          lectureId: true,
           isCompleted: true,
           timeSpent: true,
           lastAccessedAt: true,
@@ -56,6 +57,7 @@ export class PrismaEnrollmentProgressRepository implements EnrollmentProgressRep
         completedLectures: number;
         totalTimeSpent: number;
         lastAccessedAt: Date | null;
+        lastLectureId: string | null;
       }
     >();
 
@@ -64,6 +66,7 @@ export class PrismaEnrollmentProgressRepository implements EnrollmentProgressRep
         completedLectures: 0,
         totalTimeSpent: 0,
         lastAccessedAt: null,
+        lastLectureId: null,
       };
 
       if (row.isCompleted) {
@@ -76,6 +79,7 @@ export class PrismaEnrollmentProgressRepository implements EnrollmentProgressRep
         row.lastAccessedAt > current.lastAccessedAt
       ) {
         current.lastAccessedAt = row.lastAccessedAt;
+        current.lastLectureId = row.lectureId;
       }
 
       progressByEnrollmentId.set(row.enrollmentId, current);
@@ -97,6 +101,7 @@ export class PrismaEnrollmentProgressRepository implements EnrollmentProgressRep
           totalLectures,
         ),
         lastAccessedAt: totals?.lastAccessedAt?.toISOString() ?? null,
+        lastLectureId: totals?.lastLectureId ?? null,
       });
     }
 
