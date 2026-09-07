@@ -2,8 +2,8 @@
 
 import React, { useLayoutEffect } from 'react';
 
-import { CourseMainContent } from '@/features/my-courses/[courseSlug]/components/layout/course-main-content';
-import { CourseSidebar } from '@/features/my-courses/[courseSlug]/components/layout/sidebar/course-sidebar';
+import { CourseMainContent } from './main-content';
+import { CourseSidebar } from '../sidebar';
 import { cn } from '@/lib/utils';
 import { useCourseLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-layout-store';
 

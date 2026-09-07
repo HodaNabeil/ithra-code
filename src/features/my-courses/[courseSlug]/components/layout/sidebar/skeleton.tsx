@@ -3,6 +3,7 @@
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SectionAccordionSkeleton } from '../../content/section-accordion-skeleton';
+import { SidebarScrollArea } from './scroll-area';
 
 export const CourseSidebarSkeleton: React.FC = () => {
   return (
@@ -26,9 +27,9 @@ export const CourseSidebarSkeleton: React.FC = () => {
       {/* Main Skeleton Content */}
       <div className="flex-1 overflow-hidden">
         <div className="h-full flex flex-col">
-          <div className="flex-1 overflow-y-auto">
+          <SidebarScrollArea>
             <SectionAccordionSkeleton />
-          </div>
+          </SidebarScrollArea>
         </div>
       </div>
     </div>

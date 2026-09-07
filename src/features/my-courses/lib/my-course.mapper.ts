@@ -1,10 +1,17 @@
 // mappers/my-course.mapper.ts
 
 import type { GetCourseSectionsResponse } from '@/features/courses/course-sections/dto/course-sections.dto';
-import type {
-  MyCourseLectureDetailsDTO,
-  MyCourseLecturesDTO,
-} from '@/features/my-courses/dto/my-courses.dto';
+import type { MyCourseLecturesDTO } from '@/features/my-courses/dto/my-courses.dto';
+
+export type LectureNavigationDTO = {
+  prevLectureId: string | null;
+  prevLectureTitle: string | null;
+  prevLecturePosition: number | null;
+  nextLectureId: string | null;
+  nextLectureTitle: string | null;
+  nextLecturePosition: number | null;
+  courseSlug: string;
+};
 
 /**
  * Maps a raw Prisma course row (my course lectures select)
@@ -36,42 +43,26 @@ export function mapCourseSectionsResponseToMyCourseLectures(
   };
 }
 
-type LectureDetailsEntity = {
-  id: string;
-  title: string;
-  description: string | null;
-  updatedAt: Date;
-  section: {
-    course: {
-      slug: string;
-      sections: Array<{
-        lectures: Array<{ id: string }>;
-      }>;
-    };
-  };
-};
-
 /**
- * Maps lecture query result into a serialisable DTO (no Prisma Decimal/Date objects).
+ * Derives prev/next lecture navigation from course sections.
  */
-export function mapLectureDetailsToDTO(
-  lecture: LectureDetailsEntity,
+export function mapLectureNavigationFromSections(
+  response: GetCourseSectionsResponse,
   lectureId: string,
-): MyCourseLectureDetailsDTO {
-  const allLectures = lecture.section.course.sections.flatMap(
-    (section) => section.lectures,
-  );
-  const currentIndex = allLectures.findIndex((l) => l.id === lectureId);
+  courseSlug: string,
+): LectureNavigationDTO {
+  const allLectures = response.sections.flatMap((section) => section.lectures);
+  const currentIndex = allLectures.findIndex((lecture) => lecture.id === lectureId);
+  const prevLecture = allLectures[currentIndex - 1];
   const nextLecture = allLectures[currentIndex + 1];
 
   return {
-    lecture: {
-      id: lecture.id,
-      title: lecture.title,
-      description: lecture.description,
-      updatedAt: lecture.updatedAt.toISOString(),
-    },
+    prevLectureId: prevLecture?.id ?? null,
+    prevLectureTitle: prevLecture?.title ?? null,
+    prevLecturePosition: prevLecture?.position ?? null,
     nextLectureId: nextLecture?.id ?? null,
-    courseSlug: lecture.section.course.slug,
+    nextLectureTitle: nextLecture?.title ?? null,
+    nextLecturePosition: nextLecture?.position ?? null,
+    courseSlug,
   };
 }

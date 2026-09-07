@@ -5,7 +5,7 @@ import { courseSectionsRepository } from '@/features/courses/course-sections';
 import { getIsUserEnrolledInCourse } from '@/features/courses/services/enrollment.service';
 import { requireAuth } from '@/features/my-courses/lib/require-auth';
 import { APP_ROUTES } from '@/constants/enums';
-import { CourseLearningShell } from '@/features/my-courses/[courseSlug]/components/layout/course-learning-shell';
+import { CourseLearningShell } from '@/features/my-courses/[courseSlug]/components/layout/shell';
 import { LectureHeader } from '@/features/my-courses/[courseSlug]/components/layout/header';
 import { AITutorConfig } from '@/features/ai-tutor';
 

@@ -7,7 +7,7 @@ import {
   getSidebarContentWidthClass,
   useCourseLayoutStore,
 } from '@/features/my-courses/[courseSlug]/stores/use-course-layout-store';
-import { CourseSidebarTabs } from '@/features/my-courses/[courseSlug]/components/layout/sidebar/course-sidebar-tabs';
+import { CourseSidebarTabs } from './tabs';
 
 interface CourseSidebarProps {
   isAiTutorEnabled?: boolean;
@@ -29,7 +29,7 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({
     >
       <div
         className={cn(
-          'h-full ',
+          'h-full min-h-0 overflow-hidden',
           getSidebarContentWidthClass(isSidebarExpanded),
         )}
       >
