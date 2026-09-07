@@ -1,6 +1,6 @@
 // mappers/my-course.mapper.ts
 
-import type { DB_MyCourseLectures } from '@/features/my-courses/repositories/my-course.select';
+import type { GetCourseSectionsResponse } from '@/features/courses/course-sections/dto/course-sections.dto';
 import type {
   MyCourseLectureDetailsDTO,
   MyCourseLecturesDTO,
@@ -10,12 +10,12 @@ import type {
  * Maps a raw Prisma course row (my course lectures select)
  * into a serialisable MyCourseLecturesDTO for the client.
  */
-export function mapMyCourseLecturesToDTO(
-  course: DB_MyCourseLectures,
+export function mapCourseSectionsResponseToMyCourseLectures(
+  response: GetCourseSectionsResponse,
 ): MyCourseLecturesDTO {
   return {
-    title: course.title,
-    sections: course.sections.map((section) => ({
+    title: '',
+    sections: response.sections.map((section) => ({
       id: section.id,
       title: section.title,
       position: section.position,
@@ -23,8 +23,8 @@ export function mapMyCourseLecturesToDTO(
         id: lecture.id,
         title: lecture.title,
         position: lecture.position,
-        duration: lecture.video?.duration ?? 0,
-        isCompleted: lecture.progress?.[0]?.isCompleted || false,
+        duration: lecture.videoDuration ?? lecture.video?.duration ?? 0,
+        isCompleted: lecture.progress?.isCompleted ?? false,
         attachments: lecture.attachments.map((attachment) => ({
           id: attachment.id,
           name: attachment.name,

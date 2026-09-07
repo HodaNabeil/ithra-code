@@ -2,71 +2,8 @@
 
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import {
-  myCourseLecturesSelect,
-  type DB_MyCourseLectures,
-} from '@/features/my-courses/repositories/my-course.select';
-import {
-  mapMyCourseLecturesToDTO,
-  mapLectureDetailsToDTO,
-} from '@/features/my-courses/lib/my-course.mapper';
+import { mapLectureDetailsToDTO } from '@/features/my-courses/lib/my-course.mapper';
 import { cache } from '@/lib/cache';
-
-export async function getCourseSections(courseSlug: string) {
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  if (!userId) {
-    return null;
-  }
-
-  return cache(
-    async () => {
-      const course = (await prisma.course.findFirst({
-        where: {
-          slug: courseSlug,
-          enrollments: {
-            some: { studentId: userId },
-          },
-        },
-        select: {
-          ...myCourseLecturesSelect,
-          sections: {
-            ...myCourseLecturesSelect.sections,
-            select: {
-              ...myCourseLecturesSelect.sections.select,
-              lectures: {
-                ...myCourseLecturesSelect.sections.select.lectures,
-                select: {
-                  ...myCourseLecturesSelect.sections.select.lectures.select,
-                  progress: {
-                    where: {
-                      enrollment: {
-                        studentId: userId,
-                      },
-                    },
-                    select: {
-                      isCompleted: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      })) as DB_MyCourseLectures | null;
-
-      if (!course) return null;
-
-      return mapMyCourseLecturesToDTO(course);
-    },
-    ['course-lectures', courseSlug, userId],
-    {
-      tags: ['my-courses', `course-lectures-${courseSlug}`, `user-${userId}`],
-      revalidate: 3600,
-    },
-  )();
-}
 
 export async function getLectureDetails(lectureId: string, courseSlug: string) {
   const session = await auth();
