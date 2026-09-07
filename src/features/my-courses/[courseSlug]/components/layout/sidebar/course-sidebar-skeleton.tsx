@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SectionAccordionSkeleton } from '../../content/SectionAccordionSkeleton';
+import { SectionAccordionSkeleton } from '../../content/section-accordion-skeleton';
 
 export const CourseSidebarSkeleton: React.FC = () => {
   return (

@@ -6,7 +6,7 @@ import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { AITutorChat } from '@/features/ai-tutor/presentation/components/AITutorChat';
 import { CourseSidebarAssistant } from '@/features/my-courses/[courseSlug]/components/layout/sidebar/course-sidebar-assistant';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { SectionAccordion } from '@/features/my-courses/[courseSlug]/components/content/SectionAccordion';
+import { SectionAccordion } from '@/features/my-courses/[courseSlug]/components/content/section-accordion';
 import { useCourseLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-layout-store';
 
 interface CourseSidebarTabsProps {
@@ -18,7 +18,7 @@ export const CourseSidebarTabs: React.FC<CourseSidebarTabsProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState('content');
   const activeCourseSlug = useCourseLayoutStore((s) => s.activeCourseSlug);
-  const currentLecture = useCourseLayoutStore((s) => s.currentLecture);
+  const activeLecture = useCourseLayoutStore((s) => s.activeLecture);
 
   if (!activeCourseSlug) {
     return null;
@@ -26,9 +26,10 @@ export const CourseSidebarTabs: React.FC<CourseSidebarTabsProps> = ({
 
   return (
     <Tabs
+      dir="rtl"
       value={activeTab}
       onValueChange={setActiveTab}
-      className="flex h-full flex-col gap-0 bg-sidebar border-l border-border/50"
+      className="flex h-full flex-col gap-0 border-s border-border/50 bg-sidebar"
     >
       <CourseSidebarHeader isAiTutorEnabled={isAiTutorEnabled} />
 
@@ -46,13 +47,13 @@ export const CourseSidebarTabs: React.FC<CourseSidebarTabsProps> = ({
           value="assistant"
           className="m-0 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
         >
-          {currentLecture ? (
+          {activeLecture ? (
             <AITutorChat
               variant="sidebar"
               courseSlug={activeCourseSlug}
-              lectureId={currentLecture.lectureId}
-              lectureTitle={currentLecture.lectureTitle}
-              courseTitle={currentLecture.courseTitle}
+              lectureId={activeLecture.lectureId}
+              lectureTitle={activeLecture.lectureTitle}
+              courseTitle={activeLecture.courseTitle}
             />
           ) : (
             <CourseSidebarAssistant />

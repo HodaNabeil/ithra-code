@@ -25,7 +25,7 @@ export default async function MyCourseLayout({
   }
 
   return (
-    <div>
+    <>
       <LectureHeader />
       <main className=" overflow-hidden">
         <CourseLearningShell
@@ -35,6 +35,6 @@ export default async function MyCourseLayout({
           {children}
         </CourseLearningShell>
       </main>
-    </div>
+    </>
   );
 }

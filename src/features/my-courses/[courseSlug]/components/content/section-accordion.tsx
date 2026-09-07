@@ -18,9 +18,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Link } from '@/components/shared/link';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
-import { LANGUAGES } from '@/constants/i18n';
+import {
+  DIRECTIONS,
+  LANGUAGES,
+  type Direction,
+} from '@/constants/i18n';
 import { STUDENT_ROUTES } from '@/constants/routes';
 import { formatDurationFromSeconds } from '@/features/courses/lib/formatters';
+import type { Locale } from '@/features/courses/lib/formatters';
 import type {
   MyCourseLectureAttachmentDTO,
   MyCourseLectureDTO,
@@ -28,7 +33,8 @@ import type {
 } from '@/features/my-courses/dto/my-courses.dto';
 import { useToggleLectureCompletion } from '@/features/my-courses/hooks/use-my-courses-mutations';
 import { useCourseSections } from '@/features/my-courses/hooks/use-my-courses-queries';
-import { SectionAccordionSkeleton } from './SectionAccordionSkeleton';
+import { useDocumentDirection } from '@/hooks/use-document-direction';
+import { SectionAccordionSkeleton } from './section-accordion-skeleton';
 
 type SectionLecture = MyCourseLectureDTO;
 
@@ -91,6 +97,7 @@ interface LectureProps {
   courseSlug: string;
   searchParams: URLSearchParams;
   pathname: string;
+  direction: Direction;
 }
 
 function Lecture({
@@ -98,6 +105,7 @@ function Lecture({
   courseSlug,
   searchParams,
   pathname,
+  direction,
 }: LectureProps) {
   const toggleMutation = useToggleLectureCompletion(courseSlug);
   const basePath = STUDENT_ROUTES.LEARN.replace(
@@ -111,6 +119,7 @@ function Lecture({
   return (
     <Link
       href={href}
+      dir={direction}
       className={`block border-b border-sidebar-border last:border-b-0 no-underline ${
         isActive ? 'bg-primary/10' : ''
       }`}
@@ -141,16 +150,22 @@ function Lecture({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <h4
-              className={`m-0 text-xs leading-relaxed text-sidebar-foreground lg:text-sm ${
+              className={`m-0 text-start text-xs leading-relaxed text-sidebar-foreground lg:text-sm ${
                 isActive ? 'font-semibold' : 'font-normal'
               }`}
             >
-              {lecture.position}. {lecture.title}
+              <span
+                dir="ltr"
+                className="tabular-nums [unicode-bidi:isolate]"
+              >
+                {lecture.position}.
+              </span>{' '}
+              {lecture.title}
             </h4>
           </div>
 
           {lecture.attachments.length > 0 && (
-            <div className="mt-2 flex items-center justify-end gap-4">
+            <div className="mt-2 flex items-center justify-start gap-4">
               <AttachmentDropdown attachments={lecture.attachments} />
             </div>
           )}
@@ -165,6 +180,8 @@ interface SectionProps {
   courseSlug: string;
   searchParams: URLSearchParams;
   pathname: string;
+  direction: Direction;
+  locale: Locale;
 }
 
 function Section({
@@ -172,6 +189,8 @@ function Section({
   courseSlug,
   searchParams,
   pathname,
+  direction,
+  locale,
 }: SectionProps) {
   const statistics = getSectionStatistics(section.lectures);
 
@@ -180,17 +199,29 @@ function Section({
       value={`section-${section.id}`}
       className="border-b border-sidebar-border"
     >
-      <AccordionTrigger className="min-w-0 flex-1 items-start px-6 py-4 text-right transition-colors hover:bg-sidebar-accent hover:no-underline">
-        <div>
-          <h3 className="m-0 mb-1.5 text-sm font-semibold leading-tight text-sidebar-foreground md:text-sm lg:text-base">
-            القسم {section.position}: {section.title}
+      <AccordionTrigger
+        dir={direction}
+        className="min-w-0 flex-1 items-start px-6 py-4 text-start transition-colors hover:bg-sidebar-accent hover:no-underline"
+      >
+        <div className="min-w-0 flex-1 text-start">
+          <h3 className="m-0 mb-1.5 text-start text-sm font-semibold leading-tight text-sidebar-foreground md:text-sm lg:text-base">
+            {direction === DIRECTIONS.RTL ? 'القسم ' : 'Section '}
+            <span dir="ltr" className="tabular-nums [unicode-bidi:isolate]">
+              {section.position}
+            </span>
+            : {section.title}
           </h3>
-          <p className="text-xs text-sidebar-foreground/70 md:text-sm">
-            {statistics.completedLectures} / {statistics.totalLectures} |{' '}
-            {formatDurationFromSeconds(
-              statistics.totalDuration,
-              LANGUAGES.ARABIC,
-            )}
+          <p className="text-start text-xs text-sidebar-foreground/70 md:text-sm">
+            <span dir="ltr" className="tabular-nums [unicode-bidi:isolate]">
+              {statistics.completedLectures} / {statistics.totalLectures}
+            </span>
+            {' | '}
+            <span dir="ltr" className="tabular-nums [unicode-bidi:isolate]">
+              {formatDurationFromSeconds(
+                statistics.totalDuration,
+                locale,
+              )}
+            </span>
           </p>
         </div>
       </AccordionTrigger>
@@ -203,6 +234,7 @@ function Section({
               courseSlug={courseSlug}
               searchParams={searchParams}
               pathname={pathname}
+              direction={direction}
             />
           ))}
         </div>
@@ -218,6 +250,9 @@ interface SectionAccordionProps {
 export function SectionAccordion({ courseSlug }: SectionAccordionProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const direction = useDocumentDirection();
+  const locale =
+    direction === DIRECTIONS.RTL ? LANGUAGES.ARABIC : LANGUAGES.ENGLISH;
   const {
     data: sectionsData,
     isLoading: sectionsLoading,
@@ -265,6 +300,7 @@ export function SectionAccordion({ courseSlug }: SectionAccordionProps) {
 
   return (
     <Accordion
+      dir={direction}
       type="multiple"
       className="w-full"
       defaultValue={activeSectionId ? [activeSectionId] : undefined}
@@ -276,6 +312,8 @@ export function SectionAccordion({ courseSlug }: SectionAccordionProps) {
           courseSlug={courseSlug}
           searchParams={searchParams}
           pathname={pathname}
+          direction={direction}
+          locale={locale}
         />
       ))}
     </Accordion>

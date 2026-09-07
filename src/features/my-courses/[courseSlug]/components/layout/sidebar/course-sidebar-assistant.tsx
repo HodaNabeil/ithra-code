@@ -7,9 +7,9 @@ export const CourseSidebarAssistant: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-6 gap-6">
       <div className="relative">
-        <div className="absolute -inset-4 bg-primary/10 rounded-full blur-2xl animate-pulse" />
-        <div className="relative size-20 rounded-3xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
-          <Sparkles className="size-10 text-primary" />
+        <div className="absolute -inset-4 rounded-full bg-brand/10 blur-2xl animate-pulse" />
+        <div className="relative flex size-20 items-center justify-center rounded-3xl border border-brand/20 bg-brand/10 shadow-inner ring-1 ring-brand/15">
+          <Sparkles className="size-10 text-brand" />
         </div>
       </div>
       <div className="space-y-2 max-w-60">

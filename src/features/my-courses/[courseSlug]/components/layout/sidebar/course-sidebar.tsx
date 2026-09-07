@@ -3,8 +3,8 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import {
-  getAsideWidthClass,
-  getSidebarInnerWidthClass,
+  getSidebarContainerWidthClass,
+  getSidebarContentWidthClass,
   useCourseLayoutStore,
 } from '@/features/my-courses/[courseSlug]/stores/use-course-layout-store';
 import { CourseSidebarTabs } from '@/features/my-courses/[courseSlug]/components/layout/sidebar/course-sidebar-tabs';
@@ -17,16 +17,22 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({
   isAiTutorEnabled = false,
 }) => {
   const isSidebarOpen = useCourseLayoutStore((s) => s.isSidebarOpen);
-  const isMaximized = useCourseLayoutStore((s) => s.isMaximized);
+  const isSidebarExpanded = useCourseLayoutStore((s) => s.isSidebarExpanded);
 
   return (
     <aside
+      dir="rtl"
       className={cn(
-        'h-full overflow-hidden border-r border-border/40 bg-sidebar',
-        getAsideWidthClass(isSidebarOpen, isMaximized),
+        'h-full overflow-hidden border-e border-border/40 bg-sidebar',
+        getSidebarContainerWidthClass(isSidebarOpen, isSidebarExpanded),
       )}
     >
-      <div className={cn('h-full ', getSidebarInnerWidthClass(isMaximized))}>
+      <div
+        className={cn(
+          'h-full ',
+          getSidebarContentWidthClass(isSidebarExpanded),
+        )}
+      >
         <CourseSidebarTabs isAiTutorEnabled={isAiTutorEnabled} />
       </div>
     </aside>

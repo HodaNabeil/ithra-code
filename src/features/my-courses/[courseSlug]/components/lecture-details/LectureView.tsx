@@ -32,22 +32,22 @@ export function LectureView({
     lectureId,
     courseSlug,
   );
-  const setCurrentLecture = useCourseLayoutStore((s) => s.setCurrentLecture);
+  const setActiveLecture = useCourseLayoutStore((s) => s.setActiveLecture);
 
   useEffect(() => {
     if (!details?.lecture) {
       return;
     }
 
-    setCurrentLecture({
+    setActiveLecture({
       lectureId,
       lectureTitle: details.lecture.title,
     });
 
     return () => {
-      setCurrentLecture(null);
+      setActiveLecture(null);
     };
-  }, [details?.lecture, lectureId, setCurrentLecture]);
+  }, [details?.lecture, lectureId, setActiveLecture]);
 
   if (isDetailsLoading || isNavLoading) {
     return <LectureViewSkeleton />;

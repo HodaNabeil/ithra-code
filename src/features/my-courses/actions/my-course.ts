@@ -68,7 +68,6 @@ export async function getCourseSections(courseSlug: string) {
   )();
 }
 
-// جلب بيانات المحاضرة الحالية (الفيديو والوصف)
 export async function getLectureDetails(lectureId: string, courseSlug: string) {
   const session = await auth();
   const userId = session?.user?.id;

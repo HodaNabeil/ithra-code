@@ -44,7 +44,7 @@ export const LectureItem: React.FC<LectureItemProps> = ({
       className={cn(
         'group flex flex-col gap-2 p-3 px-4 transition-all duration-200 cursor-pointer',
         isActive
-          ? 'bg-sidebar-primary/8 ring-1 ring-inset ring-sidebar-primary/10'
+          ? 'bg-brand/10 ring-1 ring-inset ring-brand/15'
           : 'hover:bg-muted/25',
       )}
       onClick={handleSelect}
@@ -66,7 +66,7 @@ export const LectureItem: React.FC<LectureItemProps> = ({
               className={cn(
                 'text-sm font-medium leading-snug transition-colors text-start',
                 isActive
-                  ? 'text-primary'
+                  ? 'text-brand'
                   : 'text-foreground/80 group-hover:text-foreground',
               )}
             >

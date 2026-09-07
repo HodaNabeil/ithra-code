@@ -14,12 +14,17 @@ interface CourseSidebarHeaderProps {
 export const CourseSidebarHeader: React.FC<CourseSidebarHeaderProps> = ({
   isAiTutorEnabled = false,
 }) => {
-  const isMaximized = useCourseLayoutStore((s) => s.isMaximized);
+  const isSidebarExpanded = useCourseLayoutStore((s) => s.isSidebarExpanded);
   const closeSidebar = useCourseLayoutStore((s) => s.closeSidebar);
-  const toggleMaximized = useCourseLayoutStore((s) => s.toggleMaximized);
+  const toggleSidebarExpanded = useCourseLayoutStore(
+    (s) => s.toggleSidebarExpanded,
+  );
 
   return (
-    <div className="relative z-10 flex min-w-0 shrink-0 items-center justify-between border-b border-border/50 bg-sidebar/50 px-2 pt-2">
+    <div
+      dir="rtl"
+      className="relative z-10 flex min-w-0 shrink-0 items-center gap-2 border-b border-border/50 bg-sidebar/50 px-2 pt-2"
+    >
       <TabsList className="h-11 min-w-0 flex-1 gap-0.5 border-0 bg-transparent">
         <TabsTrigger
           value="content"
@@ -40,24 +45,21 @@ export const CourseSidebarHeader: React.FC<CourseSidebarHeaderProps> = ({
               'data-[state=active]:text-foreground data-[state=active]:font-semibold',
             )}
           >
-            <Sparkles
-              className="size-3.5 shrink-0 text-sidebar-primary"
-              aria-hidden
-            />
+            <Sparkles className="size-3.5 shrink-0 text-brand" aria-hidden />
             <span className="truncate">المدرس الذكي</span>
           </TabsTrigger>
         )}
       </TabsList>
 
-      <div className="flex items-center gap-0.5 pe-1">
+      <div className="ms-auto flex shrink-0 items-center gap-0.5 pe-1">
         <Button
           variant="ghost"
           size="icon"
           className="size-8 rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-          onClick={toggleMaximized}
-          aria-label={isMaximized ? 'تصغير' : 'تكبير'}
+          onClick={toggleSidebarExpanded}
+          aria-label={isSidebarExpanded ? 'تصغير' : 'تكبير'}
         >
-          {isMaximized ? (
+          {isSidebarExpanded ? (
             <Minimize2 className="size-4" />
           ) : (
             <Maximize2 className="size-4" />

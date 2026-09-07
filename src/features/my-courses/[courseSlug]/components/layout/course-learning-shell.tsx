@@ -18,11 +18,11 @@ export const CourseLearningShell: React.FC<CourseLearningShellProps> = ({
   isAiTutorEnabled = false,
   children,
 }) => {
-  const initializeLayout = useCourseLayoutStore((s) => s.initializeLayout);
+  const initializeForCourse = useCourseLayoutStore((s) => s.initializeForCourse);
 
   useLayoutEffect(() => {
-    initializeLayout(courseSlug);
-  }, [courseSlug, initializeLayout]);
+    initializeForCourse(courseSlug);
+  }, [courseSlug, initializeForCourse]);
 
   return (
     <div className={cn('flex overflow-hidden relative  h-[90vh]')}>
