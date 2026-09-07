@@ -494,9 +494,9 @@
 }
 
 .dark {
-  --card: #141414;
+  --card: var(--gray-sidebar);
   --card-foreground: var(--foreground);
-  --popover: var(--tw-gray-800);
+  --popover: var(--card);
   --popover-foreground: var(--foreground);
   --primary: hsl(210 20% 98%);
   --primary-foreground: hsl(220.9 39.3% 11%);
