@@ -11,6 +11,7 @@ export type LectureNavigationDTO = {
   nextLectureTitle: string | null;
   nextLecturePosition: number | null;
   courseSlug: string;
+  isCompleted: boolean;
 };
 
 /**
@@ -53,6 +54,7 @@ export function mapLectureNavigationFromSections(
 ): LectureNavigationDTO {
   const allLectures = response.sections.flatMap((section) => section.lectures);
   const currentIndex = allLectures.findIndex((lecture) => lecture.id === lectureId);
+  const currentLecture = allLectures[currentIndex];
   const prevLecture = allLectures[currentIndex - 1];
   const nextLecture = allLectures[currentIndex + 1];
 
@@ -64,5 +66,6 @@ export function mapLectureNavigationFromSections(
     nextLectureTitle: nextLecture?.title ?? null,
     nextLecturePosition: nextLecture ? nextLecture.position + 1 : null,
     courseSlug,
+    isCompleted: currentLecture?.progress?.isCompleted ?? false,
   };
 }

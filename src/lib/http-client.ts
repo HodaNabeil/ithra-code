@@ -134,7 +134,10 @@ function createAxiosInstance(): AxiosInstance {
         }
       }
 
-      console.error('[HTTP] Error:', error.message);
+      const status = error.response?.status;
+      if (status !== 409) {
+        console.error('[HTTP] Error:', error.message);
+      }
       return Promise.reject(error);
     },
   );

@@ -23,13 +23,13 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({
     <aside
       dir="rtl"
       className={cn(
-        'h-full overflow-hidden border-e border-border/40 bg-sidebar',
+        'h-full overflow-hidden border-e border-border/40 bg-sidebar whitespace-nowrap transition-all duration-300 ease-in-out',
         getSidebarContainerWidthClass(isSidebarOpen, isSidebarExpanded),
       )}
     >
       <div
         className={cn(
-          'h-full min-h-0 overflow-hidden',
+          'h-full min-h-0 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out',
           getSidebarContentWidthClass(isSidebarExpanded),
         )}
       >

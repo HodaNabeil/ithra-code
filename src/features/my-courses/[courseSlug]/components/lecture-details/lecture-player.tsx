@@ -60,6 +60,12 @@ export function LecturePlayer({
   }, [lectureId]);
 
   useEffect(() => {
+    if (lectureNavigation?.isCompleted) {
+      stoppedRef.current = true;
+    }
+  }, [lectureNavigation?.isCompleted]);
+
+  useEffect(() => {
     if (!currentLecture) {
       return;
     }
