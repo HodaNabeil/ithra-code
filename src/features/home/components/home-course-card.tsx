@@ -1,13 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star } from 'lucide-react';
-import { CourseLevel } from '@/generated/prisma/enums';
 import type { CourseListDTO } from '@/types/course/course.dto';
 import { formatPrice } from '@/lib/formatters';
-import { formatCourseLevel } from '@/features/courses/lib/course-formatters';
 import { PUBLIC_ROUTES } from '@/constants/routes';
 import { CourseCardWrapper } from '@/components/shared/course-card-wrapper';
-import { Badge } from '@/components/ui/badge';
+import { CourseMetadataBadges } from '@/features/courses/components/course-metadata-badges';
 import { FEATURED_COURSE_THUMBNAIL_SIZES } from '@/features/home/constants/image-sizes';
 import { HomeHoverCard } from './home-hover-card';
 
@@ -46,33 +43,7 @@ export function HomeCourseCard({ course }: HomeCourseCardProps) {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            {/* Rating & Ratings Count — hidden when both are 0 */}
-            {(course.rating > 0 || course.ratingCount > 0) && (
-              <>
-                <Badge variant="outline" className="text-xs font-normal gap-1">
-                  <Star className="size-3 fill-[rgb(246,156,8)] text-[rgb(246,156,8)]" />
-                  {course.rating}
-                </Badge>
-
-                <Badge variant="outline" className="text-xs font-normal">
-                  {course.ratingCount} من التقييمات
-                </Badge>
-              </>
-            )}
-
-            {/* Lectures */}
-            {course.lecturesCount > 0 && (
-              <Badge variant="outline" className="text-xs font-normal">
-                {course.lecturesCount} من المحاضرات
-              </Badge>
-            )}
-
-            {/* Level */}
-            <Badge variant="outline" className="text-xs font-normal">
-              {formatCourseLevel(course.level as CourseLevel)}
-            </Badge>
-          </div>
+          <CourseMetadataBadges course={course} />
 
           <div className="mt-auto pt-2">
             {course.price > 0 ? (
