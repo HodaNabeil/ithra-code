@@ -61,6 +61,19 @@ export async function retrieveContextNode(
     };
   }
 
+  if (state.personalization?.sessionMetaMode) {
+    return {
+      retrievedChunks: [],
+      retrievalStrategy: 'none',
+      runSignals: {
+        ...state.runSignals,
+        usedFallback: false,
+        retrievalStrategy: 'none',
+        retrievalChunkCount: 0,
+      },
+    };
+  }
+
   const question = state.sanitizedInput || state.input;
 
   const cached = runtime.runId

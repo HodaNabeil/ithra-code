@@ -28,8 +28,11 @@ export const AI_PLATFORM_CONSTANTS = {
   AI_EVALUATION_QUEUE: 'ai-evaluation',
 
   DEFAULT_TOP_K: 10,
-  DEFAULT_MIN_SIMILARITY: 0.7,
-  DEFAULT_LECTURE_FALLBACK_MIN_SIMILARITY: 0.3,
+  // Tuned for `text-embedding-3-small` with mixed Arabic/English content — 0.7 was
+  // too strict and caused most valid student questions to fall into the RAG
+  // fallback ("this info isn't in the course") even when relevant chunks existed.
+  DEFAULT_MIN_SIMILARITY: 0.4,
+  DEFAULT_LECTURE_FALLBACK_MIN_SIMILARITY: 0.25,
 
   REQUEST_TIMEOUT_MS: 60_000,
   MAX_RESPONSE_TOKENS: 402,

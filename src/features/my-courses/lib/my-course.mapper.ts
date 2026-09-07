@@ -25,11 +25,11 @@ export function mapCourseSectionsResponseToMyCourseLectures(
     sections: response.sections.map((section) => ({
       id: section.id,
       title: section.title,
-      position: section.position,
+      position: section.position + 1,
       lectures: section.lectures.map((lecture) => ({
         id: lecture.id,
         title: lecture.title,
-        position: lecture.position,
+        position: lecture.position + 1,
         duration: lecture.videoDuration ?? lecture.video?.duration ?? 0,
         isCompleted: lecture.progress?.isCompleted ?? false,
         attachments: lecture.attachments.map((attachment) => ({
@@ -59,10 +59,10 @@ export function mapLectureNavigationFromSections(
   return {
     prevLectureId: prevLecture?.id ?? null,
     prevLectureTitle: prevLecture?.title ?? null,
-    prevLecturePosition: prevLecture?.position ?? null,
+    prevLecturePosition: prevLecture ? prevLecture.position + 1 : null,
     nextLectureId: nextLecture?.id ?? null,
     nextLectureTitle: nextLecture?.title ?? null,
-    nextLecturePosition: nextLecture?.position ?? null,
+    nextLecturePosition: nextLecture ? nextLecture.position + 1 : null,
     courseSlug,
   };
 }

@@ -127,7 +127,12 @@ export function buildTutorSystemPrompt(
     }
   }
 
-  if (retrievedChunks.length > 0) {
+  if (personalization?.sessionMetaMode) {
+    // Session-meta questions (name, progress, current lecture) must use session
+    // context — not RAG chunks. When chunks were retrieved anyway (e.g. "اسم"
+    // matching course content), strict RAG instructions caused false refusals.
+    lines.push('', resolvePromptSync('tutor/session-context', locale).content);
+  } else if (retrievedChunks.length > 0) {
     lines.push(
       '',
       '## Relevant course material',
@@ -139,8 +144,6 @@ export function buildTutorSystemPrompt(
       'When answering, naturally cite the source (e.g. "according to the lecture...") when appropriate.',
       'Answer strictly from the retrieved course material above. Do not supplement with general knowledge.',
     );
-  } else if (personalization?.sessionMetaMode) {
-    lines.push('', resolvePromptSync('tutor/session-context', locale).content);
   } else {
     lines.push('', resolvePromptSync('tutor/rag-fallback', locale).content);
   }

@@ -514,15 +514,18 @@ export function useAITutorChat(options: UseAITutorChatOptions) {
     [appendToken, applyMeta, markStreamingComplete, options, replaceContent],
   );
 
-  const sendMessage = useCallback(async () => {
-    const question = input.trim();
-    if (!question || isStreaming || isLoadingHistory) {
-      return;
-    }
+  const sendMessage = useCallback(
+    async (overrideQuestion?: string) => {
+      const question = (overrideQuestion ?? input).trim();
+      if (!question || isStreaming || isLoadingHistory) {
+        return;
+      }
 
-    setInput('');
-    await runQuestion(question, { includeUserMessage: true });
-  }, [input, isLoadingHistory, isStreaming, runQuestion]);
+      setInput('');
+      await runQuestion(question, { includeUserMessage: true });
+    },
+    [input, isLoadingHistory, isStreaming, runQuestion],
+  );
 
   const retry = useCallback(async () => {
     const lastUserMessage = [...messages]
