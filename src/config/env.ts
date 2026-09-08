@@ -635,7 +635,9 @@ export const env = createEnv({
 });
 
 // Auth.js reads AUTH_URL / NEXTAUTH_URL directly from process.env.
-process.env.AUTH_URL = env.AUTH_URL;
-process.env.NEXTAUTH_URL = env.NEXTAUTH_URL
-  ? normalizeAuthUrl(env.NEXTAUTH_URL)
-  : env.AUTH_URL;
+if (typeof window === 'undefined') {
+  process.env.AUTH_URL = env.AUTH_URL;
+  process.env.NEXTAUTH_URL = env.NEXTAUTH_URL
+    ? normalizeAuthUrl(env.NEXTAUTH_URL)
+    : env.AUTH_URL;
+}
