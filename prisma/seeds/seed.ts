@@ -121,8 +121,7 @@ async function main() {
         'Reduce decision risk and rework',
       ],
       targetAudience: [
-        'Mid-level software engineers',
-        'Tech leads and engineering managers',
+        'Beginners and software engineers at any level',
       ],
       tags: ['engineering', 'architecture', 'decision-making', 'leadership'],
       metaTitle: 'Engineering Decisions - ithracode',
