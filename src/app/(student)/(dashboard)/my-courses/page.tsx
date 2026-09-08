@@ -75,7 +75,7 @@ export default async function MyCoursesPage({
           }
         />
       )}
-      {hasError && <ErrorRetry />}
+      {hasError && <ErrorRetry message="حدث خطأ أثناء تحميل الدورات" />}
     </>
   );
 }
