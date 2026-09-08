@@ -5,6 +5,7 @@ import { AuthProvider } from '@/providers/AuthProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { NavigationTopLoader } from '@/providers/NavigationTopLoader';
 import { QueryProvider } from '@/providers/QueryProvider';
+import Footer from '@/components/shared/footer';
 import { Header } from '@/components/shared/header/Header';
 import { HeaderWrapper } from '@/components/shared/header/HeaderWrapper';
 import { auth } from '@/lib/auth';
@@ -49,6 +50,7 @@ export default async function RootLayout({
                 <Header session={session} />
               </HeaderWrapper>
               <main className="flex-1">{children}</main>
+              <Footer />
               <Toaster position="top-center" richColors />
             </AuthProvider>
           </QueryProvider>
