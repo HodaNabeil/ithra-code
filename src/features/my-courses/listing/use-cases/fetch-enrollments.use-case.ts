@@ -1,35 +1,36 @@
-import type { EnrollmentListResult } from '@/features/enrollments';
-import type { ApiSuccessResponse } from '@/lib/api-response';
-import { httpServer } from '@/lib/http-server';
+import {
+  ENROLLMENTS_MAX_LIMIT,
+  listStudentEnrollments,
+} from '@/features/enrollments';
 import type {
   GetMyCoursesParams,
   GetMyCoursesResult,
 } from '@/types/course/course.types';
 import { mapEnrollmentListItem } from '../mapper/enrollment-item.mapper';
-import {
-  buildEnrollmentsApiSearchParams,
-  getOverviewEnrollmentsApiSearchParams,
-} from '../lib/my-courses-api-query';
+import { getEnrollmentsApiQuery } from '../lib/my-courses-api-query';
 
-type EnrollmentsApiResponse = ApiSuccessResponse<EnrollmentListResult>;
+type FetchEnrollmentsParams = GetMyCoursesParams & {
+  studentId: string;
+};
 
-async function requestEnrollmentsApi(
-  searchParams: string,
-): Promise<EnrollmentListResult> {
-  const response = await httpServer.get<EnrollmentsApiResponse>(
-    `/enrollments?${searchParams}`,
-  );
-
-  return response.data;
-}
-
-/** Loads student enrollments for the my-courses page via GET /api/enrollments. */
+/** Loads student enrollments for the my-courses page. */
 export async function fetchEnrollments(
-  params: GetMyCoursesParams,
+  params: FetchEnrollmentsParams,
 ): Promise<GetMyCoursesResult> {
+  const { studentId, ...queryParams } = params;
+
   const [overview, listing] = await Promise.all([
-    requestEnrollmentsApi(getOverviewEnrollmentsApiSearchParams()),
-    requestEnrollmentsApi(buildEnrollmentsApiSearchParams(params)),
+    listStudentEnrollments({
+      studentId,
+      query: getEnrollmentsApiQuery({
+        page: 1,
+        limit: ENROLLMENTS_MAX_LIMIT,
+      }),
+    }),
+    listStudentEnrollments({
+      studentId,
+      query: getEnrollmentsApiQuery(queryParams),
+    }),
   ]);
 
   const allEnrollments = overview.courses.map(mapEnrollmentListItem);

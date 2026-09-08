@@ -4,7 +4,7 @@ export function generateHomePageMetadata(): Metadata {
   return {
     title: 'IthraCode - تعلم البرمجة من الواقع',
     description:
-      'منصة تعليمية عربية لتعلم البرمجة من خلال تجارب وخبرات واقعية من الشركات. مصممة للمبتدئين والمطورين المتوسطين مع هدى نبيل ابوهشيمة.',
+      'منصة تعليمية عربية لتعلم البرمجة من خلال تجارب وخبرات واقعية من الشركات. مصممة للمبتدئين والمطورين المتوسطين مع Hoda Abu Hashima.',
     keywords: [
       'تعلم البرمجة',
       'برمجة',
@@ -13,7 +13,7 @@ export function generateHomePageMetadata(): Metadata {
       'تطوير الويب',
       'IthraCode',
     ],
-    authors: [{ name: 'هدى نبيل ابوهشيمة' }],
+    authors: [{ name: 'Hoda Abu Hashima' }],
     creator: 'IthraCode',
     publisher: 'IthraCode',
     openGraph: {

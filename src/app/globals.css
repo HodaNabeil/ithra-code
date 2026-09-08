@@ -494,7 +494,7 @@
 }
 
 .dark {
-  --card: var(--gray-sidebar);
+  --card: #141414;
   --card-foreground: var(--foreground);
   --popover: var(--card);
   --popover-foreground: var(--foreground);
