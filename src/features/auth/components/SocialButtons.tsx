@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
+import { APP_ROUTES } from '@/constants/enums';
 import { stageGuestCartForLoginAction } from '@/features/cart/actions/cart';
 import { useGuestCart } from '@/features/cart/hooks/useGuestCart';
 
@@ -32,7 +33,9 @@ export function SocialButtons({
         await stageGuestCartForLoginAction(guestIds);
       }
 
-      await signIn(provider, { callbackUrl: callbackUrl || '/' });
+      await signIn(provider, {
+        callbackUrl: callbackUrl || APP_ROUTES.MY_COURSES,
+      });
     } catch (_err) {
       onError?.(
         `فشل تسجيل الدخول بـ ${provider === 'google' ? 'جوجل' : 'جيت هاب'}`,

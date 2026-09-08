@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { SocialButtons } from './SocialButtons';
 import Link from 'next/link';
+import { APP_ROUTES } from '@/constants/enums';
 import { cn } from '../../../lib/utils';
 
 export function AuthCard() {
@@ -20,7 +21,8 @@ export function AuthCard() {
   const [isLoading, setIsLoading] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const callbackUrl =
+    searchParams.get('callbackUrl') || APP_ROUTES.MY_COURSES;
 
   return (
     <Card
