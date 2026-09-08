@@ -69,21 +69,22 @@ async function main() {
   console.log('🛤️ Creating one path...');
   const engineeringPath = await prisma.path.create({
     data: {
-      title: 'Engineering Leadership Path',
+      title: 'Engineering Decisions',
       slug: 'engineering-leadership-path',
-      tagline: 'Think clearly, choose wisely, build confidently.',
-      shortDescription: 'A focused learning path for modern engineering teams.',
+      tagline: 'Decide faster, scale smarter, deliver with confidence.',
+      shortDescription:
+        'An advanced path for engineers who lead architecture decisions, scalability direction, and high-impact delivery.',
       description:
-        'This path helps developers and team leads make high-quality technical decisions across architecture, scalability, and product delivery.',
+        'This path gives developers and team leads a decision system used by high-performing engineering teams. You will master architecture trade-off analysis, build for scalability and reliability from day one, cut technical risk before it becomes rework, and align engineering choices with measurable product outcomes.',
       thumbnailUrl:
         'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800',
       category: 'WEB',
       icon: '🧭',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: 'Engineering Leadership Path - ithracode',
+      metaTitle: 'Engineering Decisions - ithracode',
       metaDescription:
-        'Build better technical judgment through practical engineering decisions.',
+        'Master high-impact engineering decisions across architecture, scalability, reliability, and product delivery.',
     },
   });
 
@@ -95,9 +96,9 @@ async function main() {
       title: 'Engineering Decisions',
       slug: 'engineering-decisions',
       description:
-        'A practical course about making better technical decisions in real-world software teams. Learn trade-off analysis, architecture decision records, risk management, and decision communication.',
+        'A high-impact course for engineers who want to make stronger technical decisions in real-world teams. Learn a practical framework for trade-off analysis, architecture decision records (ADRs), technical risk control, and clear decision communication across stakeholders.',
       shortDescription:
-        'Learn how senior engineers evaluate trade-offs and make strong technical decisions.',
+        'Learn how senior engineers evaluate trade-offs, reduce risk, and make high-confidence technical decisions.',
       thumbnailUrl:
         'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800',
       previewVideo: 'https://example.com/videos/engineering-decisions-preview.mp4',
@@ -126,7 +127,7 @@ async function main() {
       tags: ['engineering', 'architecture', 'decision-making', 'leadership'],
       metaTitle: 'Engineering Decisions - ithracode',
       metaDescription:
-        'Master practical engineering decision-making for architecture and delivery.',
+        'Learn the decision frameworks senior engineers use for architecture, delivery, and scalable systems.',
       certificateEnabled: true,
       maxStudents: 500,
     },
