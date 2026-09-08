@@ -27,8 +27,8 @@ export function MyCoursesList({
           'flex flex-col items-center justify-center space-y-6 py-20 text-center',
         )}
       >
-        <div className={cn('rounded-full bg-muted p-6')}>
-          <BookOpen className={cn('size-12 text-muted-foreground')} />
+        <div className={cn('rounded-full bg-primary/10 p-6')}>
+          <BookOpen className={cn('size-12 text-primary')} />
         </div>
         <div className="space-y-2">
           <h2 className={cn('text-2xl font-bold')}>
