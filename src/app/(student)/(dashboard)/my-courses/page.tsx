@@ -44,6 +44,7 @@ export default async function MyCoursesPage({
 
   try {
     const result = await fetchEnrollments({
+      studentId: session.user.id,
       page,
       search,
       sort,
@@ -59,23 +60,27 @@ export default async function MyCoursesPage({
     hasError = true;
   }
 
+  if (hasError) {
+    return <ErrorRetry message="حدث خطأ أثناء تحميل الدورات" />;
+  }
+
+  const resolvedPagination: PaginationInfo = pagination ?? {
+    currentPage: 1,
+    totalPages: 1,
+  };
+
   return (
-    <>
-      {!hasError && pagination && (
-        <MyCoursesDashboard
-          allEnrollments={allEnrollments}
+    <MyCoursesDashboard
+      allEnrollments={allEnrollments}
+      totalEnrollments={totalEnrollments}
+      initialTab={tab}
+      enrollmentsContent={
+        <MyCoursesContainer
+          enrollments={enrollments}
+          pagination={resolvedPagination}
           totalEnrollments={totalEnrollments}
-          initialTab={tab}
-          enrollmentsContent={
-            <MyCoursesContainer
-              enrollments={enrollments}
-              pagination={pagination}
-              totalEnrollments={totalEnrollments}
-            />
-          }
         />
-      )}
-      {hasError && <ErrorRetry message="حدث خطأ أثناء تحميل الدورات" />}
-    </>
+      }
+    />
   );
 }

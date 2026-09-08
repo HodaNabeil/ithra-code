@@ -9,42 +9,44 @@ export default function InstructorSection() {
     <section className="pb-16 md:pb-20 lg:pb-24">
       <div className="container element-center flex-col">
         <SectionHeading
-          subTitle="تعلّم مباشرة مع هدى نبيل"
+          subTitle="تعلّم مباشرة مع Hoda Abu Hashima"
           title="تعرّف على مدربتك"
+          subTitleUppercase={false}
         />
-        <div className="max-w-5xl mx-auto mt-12 w-full overflow-hidden rounded-xl border border-border bg-card [--fade-background:var(--card)] shadow-sm flex flex-col md:flex-row md:items-stretch">
+        <div className="max-w-5xl mx-auto mt-12 w-full overflow-hidden rounded-xl border border-border bg-card [--fade-background:var(--card)] shadow-sm flex flex-col md:flex-row md:items-start">
           {/* Image block */}
-          <div className="relative w-full aspect-4/5 sm:aspect-3/4 md:aspect-auto md:w-1/2 md:min-h-112.5 shrink-0">
+          <div
+            className="relative w-full aspect-4/5 sm:aspect-3/4 md:aspect-auto
+           md:w-1/2 md:min-h-112.5 shrink-0"
+          >
             <Image
               src="/img/hoda.jpg"
-              alt="هدى نبيل ابوهشيمة - مطورة الواجهات الأمامية"
+              alt="Hoda Abu Hashima - مطورة الواجهات الأمامية"
               fill
               sizes={INSTRUCTOR_IMAGE_SIZES}
-              className="object-cover object-[50%_12%]"
+              className="object-cover "
             />
           </div>
 
           {/* Text content */}
           <div className="p-6 md:p-8 flex flex-col justify-center md:w-1/2 min-w-0">
             <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mt-1">
-              هدى نبيل ابوهشيمة
+              Hoda Abu Hashima
             </h3>
             <p className="text-brand font-medium mt-2">
-              مطوّرة واجهات أمامية (Frontend Engineer) Founder & Instructor at
-              IthraCode
+              Frontend Engineer, Founder & Instructor at IthraCode
             </p>
-            <ExpandableContent className="mt-4" initialHeight={150}>
+            <ExpandableContent className="mt-4">
               <div className="space-y-4 text-muted-foreground text-base leading-relaxed">
                 <p>
-                  هدى نبيل مطوّرة واجهات أمامية (Frontend Engineer) متخصّصة في
-                  تصميم وبناء تطبيقات ويب حديثة وعالية الأداء وقابلة للتوسع
-                  (Scalable Web Applications). تتمتع بكفاءة متقدمة في تطوير
-                  الواجهات الأمامية (Frontend Development) باستخدام React
-                  وNext.js وTypeScript، إلى جانب خبرة في هندسة البرمجيات
-                  (Software Engineering)، وتصميم معماريات الواجهات (Frontend
-                  Architecture)، وبناء أنظمة مكوّنات قابلة لإعادة الاستخدام
-                  (Reusable Component Systems)، وتحسين الأداء وتجربة المستخدم
-                  وتحسين محركات البحث (SEO).
+                  Hoda Abu Hashima (Frontend Engineer) متخصّصة في تصميم وبناء
+                  تطبيقات ويب حديثة وعالية الأداء وقابلة للتوسع (Scalable Web
+                  Applications). تتمتع بكفاءة متقدمة في تطوير الواجهات الأمامية
+                  (Frontend Development) باستخدام React وNext.js وTypeScript،
+                  إلى جانب خبرة في هندسة البرمجيات (Software Engineering)،
+                  وتصميم معماريات الواجهات (Frontend Architecture)، وبناء أنظمة
+                  مكوّنات قابلة لإعادة الاستخدام (Reusable Component Systems)،
+                  وتحسين الأداء وتجربة المستخدم وتحسين محركات البحث (SEO).
                 </p>
                 <p>
                   تمتلك هدى كذلك خلفية برمجية متينة في C++ وJava، تعزّز فهمها

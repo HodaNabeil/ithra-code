@@ -65,7 +65,11 @@ export default function ThemeToggleButton({
           <span className="sr-only">تغيير المظهر</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={8} className="min-w-36">
+      <DropdownMenuContent
+        align="end"
+        sideOffset={8}
+        className="min-w-36 bg-card/95 text-card-foreground backdrop-blur-sm"
+      >
         <DropdownMenuRadioGroup
           value={currentTheme}
           onValueChange={handleThemeChange}
@@ -75,7 +79,7 @@ export default function ThemeToggleButton({
               key={value}
               value={value}
               dir="ltr"
-              className="flex w-full items-center gap-3 px-3 **:data-[slot=dropdown-menu-radio-item-indicator]:hidden"
+              className="flex w-full items-center gap-3 px-3 focus:bg-foreground/10 focus:text-foreground data-highlighted:bg-foreground/10 data-highlighted:text-foreground data-[state=checked]:bg-transparent data-[state=checked]:text-foreground **:data-[slot=dropdown-menu-radio-item-indicator]:hidden"
             >
               <span className="flex size-4 shrink-0 items-center justify-center">
                 {currentTheme === value ? (

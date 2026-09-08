@@ -5,6 +5,7 @@ interface SectionHeadingProps {
   subTitle: string;
   className?: string;
   icon?: React.ReactNode;
+  subTitleUppercase?: boolean;
 }
 
 const SectionHeading = ({
@@ -12,10 +13,16 @@ const SectionHeading = ({
   subTitle,
   className = '',
   icon,
+  subTitleUppercase = true,
 }: SectionHeadingProps) => {
   const heading = (
     <div className="space-y-3">
-      <span className="text-brand font-medium tracking-wider uppercase text-sm block">
+      <span
+        className={cn(
+          'text-brand font-medium tracking-wider text-sm block',
+          subTitleUppercase && 'uppercase',
+        )}
+      >
         {subTitle}
       </span>
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
