@@ -52,7 +52,7 @@ jobs:
         run: pnpm lint
 
       - name: Prepare database
-        run: pnpm db:push
+        run: npx prisma migrate deploy
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
 

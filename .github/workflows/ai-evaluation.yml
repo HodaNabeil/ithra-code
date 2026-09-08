@@ -43,7 +43,7 @@ jobs:
           pip install -r eval/requirements.txt
 
       - name: Prepare database
-        run: pnpm db:push
+        run: npx prisma migrate deploy
         env:
           SKIP_ENV_VALIDATION: 'true'
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
