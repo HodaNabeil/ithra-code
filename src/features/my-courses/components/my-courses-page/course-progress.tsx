@@ -13,7 +13,7 @@ export const CourseProgress = ({
 }: CourseProgressProps) => {
   return (
     <div className={`space-y-2 ${className}`}>
-      <Progress value={progress} className="h-[2px]" />
+      <Progress value={progress} className="h-0.5" />
       <div className="flex justify-between items-center text-xs font-bold">
         <span className="text-progress-indicator">تم إكمال %{progress}</span>
       </div>
