@@ -60,12 +60,12 @@ export function ShoppingCartButtonClient({
   return (
     <Link
       href={APP_ROUTES.CART}
-      className="relative inline-flex text-primary"
+      className="relative inline-flex h-8 w-8 items-center justify-center text-primary"
       aria-label="السلة"
     >
-      <ShoppingCartIcon className="w-4 h-4" />
+      <ShoppingCartIcon className="h-5 w-5" />
       {count > 0 && (
-        <span className="absolute -top-1.5 -end-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-0.5 text-[10px] font-medium text-primary-foreground">
+        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-0.5 text-[10px] font-medium leading-none text-primary-foreground">
           {count > 99 ? '99+' : count}
         </span>
       )}
