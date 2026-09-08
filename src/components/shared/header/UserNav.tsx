@@ -24,7 +24,7 @@ export function UserNav({ session }: { session: Session | null }) {
       <div className="flex items-center gap-4">
         <Link
           href={AUTH_ROUTES.SIGN_IN}
-          className="text-accent transition-all duration-200 bg-primary hover:bg-primary/90 hover:text-accent rounded-3xl w-[100px] h-10 element-center"
+          className="text-base font-bold text-accent transition-all duration-200 bg-primary hover:bg-primary/90 hover:text-accent rounded-3xl w-[100px] h-10 element-center"
         >
           تسجيل
         </Link>

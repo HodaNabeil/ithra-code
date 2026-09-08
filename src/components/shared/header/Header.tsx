@@ -9,7 +9,7 @@ import { ThemeToggle } from './ThemeToggle';
 
 export function Header({ session }: { session: Session | null }) {
   return (
-    <header className="site-header sticky top-0 z-50 w-full">
+    <header className="site-header sticky top-0 z-50 w-full text-base">
       <div className="container flex h-header-height items-center justify-between">
         <Logo />
 

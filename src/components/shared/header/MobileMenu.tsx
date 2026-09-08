@@ -93,7 +93,7 @@ export function MobileMenu({ session: serverSession }: { session: Session | null
                 href={link.href}
                 onClick={closeMenu}
                 className={cn(
-                  'block w-full text-base font-medium leading-tight transition-colors',
+                  'block w-full text-base font-bold leading-tight transition-colors',
                   pathname === link.href
                     ? 'text-foreground'
                     : 'text-foreground/85 hover:text-foreground',

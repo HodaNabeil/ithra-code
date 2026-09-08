@@ -58,7 +58,7 @@ export function NavItems({ session: serverSession }: { session: Session | null }
           key={link.href}
           href={link.href}
           className={cn(
-            'site-header-nav-link text-lg font-bold hover:text-white',
+            'site-header-nav-link text-base font-bold hover:text-white',
             pathname === link.href ? 'text-primary' : 'text-muted-foreground',
           )}
         >
