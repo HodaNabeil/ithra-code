@@ -4,7 +4,6 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { AUTH_ENDPOINTS } from '@/constants/auth';
 import { APP_ROUTES } from '@/constants/enums';
@@ -63,14 +62,13 @@ export function CheckoutButton() {
 
   return (
     <Button
-      asChild
+      type="button"
       size="lg"
       className="w-full h-12 text-base font-bold rounded-lg"
+      disabled
     >
-      <Link href={APP_ROUTES.CHECKOUT}>
-        الانتقال إلى الدفع
-        <ArrowLeft className="size-4" />
-      </Link>
+      الدفع قريبًا
+      <ArrowLeft className="size-4" />
     </Button>
   );
 }

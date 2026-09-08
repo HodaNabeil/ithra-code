@@ -33,20 +33,18 @@ export default function InstructorSection() {
             <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mt-1">
               Hoda Abu Hashima
             </h3>
-            <p className="text-brand font-medium mt-2">
-              Frontend Engineer, Founder & Instructor at IthraCode
-            </p>
+            <p className="text-brand mt-2 font-bold">Founder & Instructor</p>
             <ExpandableContent className="mt-4">
               <div className="space-y-4 text-muted-foreground text-base leading-relaxed">
                 <p>
-                  Hoda Abu Hashima (Frontend Engineer) متخصّصة في تصميم وبناء
-                  تطبيقات ويب حديثة وعالية الأداء وقابلة للتوسع (Scalable Web
-                  Applications). تتمتع بكفاءة متقدمة في تطوير الواجهات الأمامية
-                  (Frontend Development) باستخدام React وNext.js وTypeScript،
-                  إلى جانب خبرة في هندسة البرمجيات (Software Engineering)،
-                  وتصميم معماريات الواجهات (Frontend Architecture)، وبناء أنظمة
-                  مكوّنات قابلة لإعادة الاستخدام (Reusable Component Systems)،
-                  وتحسين الأداء وتجربة المستخدم وتحسين محركات البحث (SEO).
+                  هدي (Frontend Engineer) متخصّصة في تصميم وبناء تطبيقات ويب
+                  حديثة وعالية الأداء وقابلة للتوسع (Scalable Web Applications).
+                  تتمتع بكفاءة متقدمة في تطوير الواجهات الأمامية (Frontend
+                  Development) باستخدام React وNext.js وTypeScript، إلى جانب
+                  خبرة في هندسة البرمجيات (Software Engineering)، وتصميم
+                  معماريات الواجهات (Frontend Architecture)، وبناء أنظمة مكوّنات
+                  قابلة لإعادة الاستخدام (Reusable Component Systems)، وتحسين
+                  الأداء وتجربة المستخدم وتحسين محركات البحث (SEO).
                 </p>
                 <p>
                   تمتلك هدى كذلك خلفية برمجية متينة في C++ وJava، تعزّز فهمها

@@ -17,6 +17,10 @@ const SectionHeading = ({
 }: SectionHeadingProps) => {
   const heading = (
     <div className="space-y-3">
+      <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
+        {title}
+      </h2>
+
       <span
         className={cn(
           'text-brand font-medium tracking-wider text-sm block',
@@ -25,9 +29,6 @@ const SectionHeading = ({
       >
         {subTitle}
       </span>
-      <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
-        {title}
-      </h2>
     </div>
   );
 
