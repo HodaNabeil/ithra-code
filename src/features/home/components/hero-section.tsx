@@ -9,6 +9,7 @@ interface Course {
   title: string;
   slug: string;
   price?: number;
+  currency?: string;
   instructor?: {
     name: string;
   };
