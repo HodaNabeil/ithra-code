@@ -1,6 +1,11 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
+/** Auth.js expects the site origin, not `/api/auth`. */
+function normalizeAuthUrl(url: string): string {
+  return url.replace(/\/api\/auth\/?$/, '');
+}
+
 export const env = createEnv({
   server: {
     // Node environment
@@ -13,7 +18,11 @@ export const env = createEnv({
     DATABASE_URL: z.string().url().describe('PostgreSQL database URL'),
 
     // NextAuth settings
-    AUTH_URL: z.string().url().describe('NextAuth base URL'),
+    AUTH_URL: z
+      .string()
+      .url()
+      .transform(normalizeAuthUrl)
+      .describe('NextAuth base URL (site origin)'),
     NEXTAUTH_URL: z
       .string()
       .url()
@@ -624,3 +633,9 @@ export const env = createEnv({
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
 });
+
+// Auth.js reads AUTH_URL / NEXTAUTH_URL directly from process.env.
+process.env.AUTH_URL = env.AUTH_URL;
+process.env.NEXTAUTH_URL = env.NEXTAUTH_URL
+  ? normalizeAuthUrl(env.NEXTAUTH_URL)
+  : env.AUTH_URL;

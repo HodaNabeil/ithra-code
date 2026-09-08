@@ -9,7 +9,6 @@ import { AddToCartButton } from '@/features/courses/components/add-to-cart-butto
 import { PUBLIC_ROUTES, STUDENT_ROUTES } from '@/constants/routes';
 import { buttonVariants } from '@/components/ui/button';
 import { CourseCardWrapper } from '@/components/shared/course-card-wrapper';
-import { CourseProgress } from '@/features/my-courses/components/my-courses-page/course-progress';
 // Hover Card Component
 interface CourseHoverCardProps {
   objectives: CourseListDTO['objectives'];
@@ -81,14 +80,6 @@ export function CourseCard({ course }: CourseCardProps) {
             </div>
 
             <CourseMetadataBadges course={course} />
-
-            {/* Course Progress for Enrolled / Purchased Courses */}
-            {course.isPurchased &&
-              typeof course.progressPercentage === 'number' && (
-                <div className="mt-4 pt-2 border-t border-border">
-                  <CourseProgress progress={course.progressPercentage} />
-                </div>
-              )}
           </CardContent>
         </Link>
 

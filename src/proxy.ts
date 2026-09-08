@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import { NextResponse, type NextMiddleware } from 'next/server';
+import '@/config/env';
 import { authConfig } from '@/lib/auth.config';
 import { AUTH_ROUTES } from '@/constants/auth';
 import { APP_ROUTES } from '@/constants/enums';

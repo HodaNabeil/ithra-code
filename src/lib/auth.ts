@@ -32,10 +32,10 @@ export const config: NextAuthConfig = {
     async signIn({ user }) {
       if (!user.id) return;
 
-      const courseIds = await readAndClearPendingGuestCartCookie();
-      if (courseIds.length === 0) return;
-
       try {
+        const courseIds = await readAndClearPendingGuestCartCookie();
+        if (courseIds.length === 0) return;
+
         await syncGuestCartUseCase(user.id, courseIds);
       } catch (error) {
         console.error('[GUEST_CART_SYNC_ON_SIGNIN]', error);
