@@ -61,8 +61,5 @@ jobs:
           AUTH_GOOGLE_SECRET: test
           AUTH_GITHUB_ID: test
           AUTH_GITHUB_SECRET: test
-          STRIPE_API_KEY: sk_test
-          STRIPE_WEBHOOK_SECRET: whsec_test
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test
           AI_PLATFORM_ENABLED: 'false'
           AI_TUTOR_ENABLED: 'false'

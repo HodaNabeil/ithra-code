@@ -18,7 +18,7 @@ import {
 } from '@/features/payments/infrastructure/http/rate-limit';
 
 const checkoutSchema = z.object({
-  provider: z.enum(['PAYMOB', 'STRIPE', 'PAYPAL', 'CASH']),
+  provider: z.enum(['PAYMOB', 'PAYPAL', 'CASH']),
   successUrl: z.string().url(),
   cancelUrl: z.string().url(),
 });

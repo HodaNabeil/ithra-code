@@ -3,6 +3,7 @@ export {
   SUPPORTED_PAYMENT_PROVIDERS,
   isSupportedPaymentProvider,
 } from './payment-provider';
+export type { SupportedPaymentProvider } from './payment-provider';
 
 export type { PaymentEntity } from './payment.entity';
 export {

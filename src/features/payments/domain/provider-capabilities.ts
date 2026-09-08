@@ -18,14 +18,6 @@ export type ProviderCapabilityMatrix = Record<
  */
 export const PROVIDER_CAPABILITIES: Partial<ProviderCapabilityMatrix> = {
   [PaymentProvider.PAYMOB]: ['checkout', 'inquiry', 'webhooks', 'refunds'],
-  [PaymentProvider.STRIPE]: [
-    'checkout',
-    'inquiry',
-    'webhooks',
-    'refunds',
-    'disputes',
-    'partial_capture',
-  ],
   [PaymentProvider.PAYPAL]: ['checkout', 'webhooks', 'refunds', 'disputes'],
   [PaymentProvider.CASH]: ['checkout'],
 };
