@@ -1,8 +1,8 @@
 /** Arabic brand used in document titles (`%s | إثرالكود`). */
-export const SEO_SITE_NAME_AR = 'إثرالكود';
+export const SEO_SITE_NAME_AR = 'ithracode';
 
 /** Latin brand used for Open Graph `siteName`. */
-export const SEO_SITE_NAME_EN = 'IthraCode';
+export const SEO_SITE_NAME_EN = 'ithracode';
 
 export const SEO_OG_LOCALE = 'ar_EG';
 
@@ -29,7 +29,7 @@ export const SEO_HOME_KEYWORDS = [
   'React',
   'JavaScript',
   'تطوير الويب',
-  'IthraCode',
+  'ithracode',
 ] as const;
 
 /**
