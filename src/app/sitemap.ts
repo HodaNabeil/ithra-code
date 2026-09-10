@@ -2,38 +2,30 @@ import { getAllCoursesForSitemap } from '@/features/courses/services/course.serv
 import { getAllPathsForSitemap } from '@/features/learning-paths/services/path.queries';
 import { env } from '@/config/env';
 import { APP_ROUTES } from '@/constants/enums';
-import { MetadataRoute } from 'next';
+import { isSeoIndexingEnabled } from '@/lib/seo/environment';
+import { buildSitemapEntries } from '@/lib/seo/sitemap';
+import { getSiteOrigin } from '@/lib/seo/urls';
+import type { MetadataRoute } from 'next';
+
+export const revalidate = 3600;
+
+const STATIC_SITEMAP_PATHS = [
+  APP_ROUTES.ROOT,
+  APP_ROUTES.COURSES,
+  APP_ROUTES.LEARNING_PATHS,
+  APP_ROUTES.CONTACT,
+] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = env.NEXT_PUBLIC_APP_URL;
-  const currentDate = new Date();
+  const origin = getSiteOrigin();
+  const indexingEnabled = isSeoIndexingEnabled({
+    nodeEnv: env.NODE_ENV,
+    origin,
+  });
 
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}${APP_ROUTES.COURSES}`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}${APP_ROUTES.LEARNING_PATHS}`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}${APP_ROUTES.CONTACT}`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-  ];
+  if (!indexingEnabled) {
+    return [];
+  }
 
   try {
     const [courses, paths] = await Promise.all([
@@ -41,29 +33,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       getAllPathsForSitemap(),
     ]);
 
-    const courseUrls: MetadataRoute.Sitemap = courses.map(
-      (course: { slug: string; updatedAt: Date }) => ({
-        url: `${baseUrl}${APP_ROUTES.COURSES}/${course.slug}`,
-        lastModified: course.updatedAt
-          ? new Date(course.updatedAt)
-          : currentDate,
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-      }),
-    );
-
-    const pathUrls: MetadataRoute.Sitemap = paths.map(
-      (path: { slug: string; updatedAt: Date }) => ({
-        url: `${baseUrl}${APP_ROUTES.LEARNING_PATHS}/${path.slug}`,
-        lastModified: path.updatedAt ? new Date(path.updatedAt) : currentDate,
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-      }),
-    );
-
-    return [...staticPages, ...courseUrls, ...pathUrls];
+    return buildSitemapEntries({
+      indexingEnabled: true,
+      origin,
+      staticPaths: STATIC_SITEMAP_PATHS,
+      dynamicEntries: [
+        ...courses.map((course: { slug: string; updatedAt: Date }) => ({
+          path: `${APP_ROUTES.COURSES}/${course.slug}`,
+          lastModified: course.updatedAt,
+        })),
+        ...paths.map((path: { slug: string; updatedAt: Date }) => ({
+          path: `${APP_ROUTES.LEARNING_PATHS}/${path.slug}`,
+          lastModified: path.updatedAt,
+        })),
+      ],
+    });
   } catch (error) {
     console.error('Sitemap Generation Error:', error);
-    return staticPages;
+    return buildSitemapEntries({
+      indexingEnabled: true,
+      origin,
+      staticPaths: STATIC_SITEMAP_PATHS,
+      dynamicEntries: [],
+    });
   }
 }

@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+
 import CourseInfo from '@/features/courses/[slug]/components/course-info';
 
 import { CoursePricingCard } from '@/features/courses/[slug]/components/course-pricing-card';
@@ -5,6 +7,9 @@ import { CourseVideoPreview } from '@/features/courses/[slug]/components/course-
 import CourseBreadCrumbs from '@/features/courses/components/course-bread-crumbs';
 import { getCourseDetail } from '@/features/courses/course-detail/use-cases/get-course-detail.use-case';
 import { getCourseOverview } from '@/features/courses/course-overview/use-cases/get-course-overview.use-case';
+import { buildCoursePageJsonLd } from '@/features/courses/lib/seo/course-page-schema.adapter';
+import { resolveCoursePageMetadata } from '@/features/courses/lib/seo/resolve-course-page-metadata';
+import { JsonLd } from '@/lib/seo/json-ld/json-ld';
 import type { Course, CourseOverview } from '@/types/course/course.types';
 
 type CourseSlugPageProps = {
@@ -12,6 +17,13 @@ type CourseSlugPageProps = {
     slug: string;
   }>;
 };
+
+export async function generateMetadata({
+  params,
+}: CourseSlugPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  return resolveCoursePageMetadata(slug);
+}
 
 export default async function CourseDetailsPage({
   params,
@@ -23,6 +35,7 @@ export default async function CourseDetailsPage({
   });
   return (
     <>
+      <JsonLd id="course-detail-jsonld" data={buildCoursePageJsonLd(course)} />
       <main>
         <div className="container flex flex-col lg:flex-row gap-2 lg:gap-12 xl:gap-20 pb-10">
           {/* On mobile, breadcrumbs come first */}

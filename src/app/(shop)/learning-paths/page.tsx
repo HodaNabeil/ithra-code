@@ -4,15 +4,16 @@ import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import {
   LearningPathsContainer,
   LearningPathsHero,
-  LearningPathsListingJsonLd,
 } from '@/features/learning-paths/components';
 import { getPaths } from '@/features/learning-paths/api';
-import { buildLearningPathsListingMetadata } from '@/features/learning-paths/lib/learning-paths-listing-metadata';
+import { buildLearningPathsListingMetadata } from '@/features/learning-paths/lib/seo/learning-paths-listing-metadata';
+import { buildLearningPathsListingJsonLd } from '@/features/learning-paths/lib/seo/learning-paths-listing-schema.adapter';
 import {
   learningPathsPageQueryToGetPathsParams,
   parseLearningPathsPageSearchParams,
   type LearningPathsPageSearchParamsInput,
 } from '@/features/learning-paths/lib/learning-paths-page-query';
+import { JsonLd } from '@/lib/seo/json-ld/json-ld';
 import type { PathListDTO } from '@/types/path/path.dto';
 
 interface LearningPathsPageProps {
@@ -52,16 +53,15 @@ export default async function LearningPathsPage({
 
   return (
     <>
-      <LearningPathsListingJsonLd
-        params={learningPathsPageQueryToGetPathsParams(query)}
+      <JsonLd
+        id="learning-paths-list-jsonld"
+        data={buildLearningPathsListingJsonLd(paths)}
       />
 
       <main className="py-14 space-y-8">
         <LearningPathsHero />
 
-        {!hasError && pagination && (
-          <LearningPathsContainer paths={paths} />
-        )}
+        {!hasError && pagination && <LearningPathsContainer paths={paths} />}
 
         {hasError && <ErrorRetry />}
       </main>
