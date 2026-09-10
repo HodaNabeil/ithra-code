@@ -1,3 +1,12 @@
+import type { Metadata } from 'next';
+
+import { createNoIndexMetadata } from '@/lib/seo/create-page-metadata';
+
+export const metadata: Metadata = createNoIndexMetadata({
+  title: 'API Docs',
+  path: '/docs',
+});
+
 export default function DocsLayout({
   children,
 }: {

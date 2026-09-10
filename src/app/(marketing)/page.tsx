@@ -6,12 +6,17 @@ import {
   TestimonialSection,
   WhyIthraCode,
 } from '@/features/home';
+import { buildHomePageMetadata } from '@/features/home/lib/seo/home-page-metadata';
+import { buildHomePageJsonLd } from '@/features/home/lib/seo/home-page-schema.adapter';
 import {
   getFeaturedCoursesForHome,
   getHomeFaqs,
   getHomeTestimonials,
 } from '@/features/home/services/server/home-page.data';
 import { ErrorRetry } from '@/components/shared';
+import { JsonLd } from '@/lib/seo/json-ld/json-ld';
+
+export const generateMetadata = buildHomePageMetadata;
 
 export default async function Home() {
   const [coursesResponse, testimonialsResponse, faqsResponse] =
@@ -34,6 +39,7 @@ export default async function Home() {
 
   return (
     <main>
+      <JsonLd id="home-jsonld" data={buildHomePageJsonLd(faqs)} />
       <HeroSection promoCourse={courses[0]} />
       <WhyIthraCode />
       <InstructorSection />

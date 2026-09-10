@@ -1,23 +1,15 @@
 import { env } from '@/config/env';
-import { MetadataRoute } from 'next';
+import { buildRobotsConfig } from '@/lib/seo/robots';
+import { isSeoIndexingEnabled } from '@/lib/seo/environment';
+import { getSiteOrigin } from '@/lib/seo/urls';
+import type { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = env.NEXT_PUBLIC_APP_URL;
-
-  return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: [
-        '/admin/',
-        '/instructor/',
-        '/api/',
-        '/auth/',
-        '/payment/',
-        '/success/',
-        '/unauthorized/',
-      ],
-    },
-    sitemap: `${baseUrl}/sitemap.xml`,
-  };
+  return buildRobotsConfig({
+    indexingEnabled: isSeoIndexingEnabled({
+      nodeEnv: env.NODE_ENV,
+      origin: getSiteOrigin(),
+    }),
+    origin: getSiteOrigin(),
+  });
 }

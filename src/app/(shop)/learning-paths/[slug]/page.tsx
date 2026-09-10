@@ -1,13 +1,13 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import Script from 'next/script';
 
 import { PathHero } from '@/features/learning-paths/[slug]/components/path-hero';
 import { PathTracks } from '@/features/learning-paths/[slug]/components/path-tracks';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import { loadPathDetailBySlug } from '@/features/learning-paths/lib/learning-path-detail-data';
-import { buildLearningPathDetailJsonLd } from '@/features/learning-paths/lib/learning-path-detail-jsonld';
-import { resolveLearningPathDetailMetadata } from '@/features/learning-paths/lib/learning-path-detail-metadata';
+import { buildLearningPathPageJsonLd } from '@/features/learning-paths/lib/seo/learning-path-page-schema.adapter';
+import { resolveLearningPathDetailMetadata } from '@/features/learning-paths/lib/seo/resolve-learning-path-page-metadata';
+import { JsonLd } from '@/lib/seo/json-ld/json-ld';
 
 type PathSlugPageProps = {
   params: Promise<{
@@ -37,14 +37,11 @@ export default async function LearningPathDetailPage({
     return <ErrorRetry />;
   }
 
-  const jsonLd = buildLearningPathDetailJsonLd(result.path);
-
   return (
     <main>
-      <Script
+      <JsonLd
         id="path-detail-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        data={buildLearningPathPageJsonLd(result.path)}
       />
       <PathHero path={result.path} />
 

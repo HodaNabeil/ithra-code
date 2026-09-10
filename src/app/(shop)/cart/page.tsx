@@ -1,9 +1,16 @@
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
+import { APP_ROUTES } from '@/constants/enums';
 import { CartContainer } from '@/features/cart/components/cart-container';
 import { GuestCartContainer } from '@/features/cart/components/guest-cart-container';
 import { getCart } from '@/features/cart/services/getCartItems';
 import { auth } from '@/lib/auth';
+import { createNoIndexMetadata } from '@/lib/seo/create-page-metadata';
 import type { CartDataType } from '@/types/cart/cart';
+
+export const metadata = createNoIndexMetadata({
+  title: 'سلة المشتريات',
+  path: APP_ROUTES.CART,
+});
 
 export default async function CartPage() {
   const session = await auth();

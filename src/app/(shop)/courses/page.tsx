@@ -1,11 +1,12 @@
 import { Metadata } from 'next';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
-import { CoursesListingJsonLd } from '@/features/courses/components/courses-page/courses-listing-json-ld';
 import { CoursesContainer } from '@/features/courses/components/courses-page/courses-container';
 import { CoursesHero } from '@/features/courses/components/courses-hero';
-import { buildCoursesListingMetadata } from '@/features/courses/lib/courses-listing-metadata';
+import { buildCoursesListingMetadata } from '@/features/courses/lib/seo/courses-listing-metadata';
+import { buildCoursesListingJsonLd } from '@/features/courses/lib/seo/courses-listing-schema.adapter';
 import { getPathsForFilters } from '@/features/learning-paths/api';
 import { getCourses } from '@/features/courses/services/course.service';
+import { JsonLd } from '@/lib/seo/json-ld/json-ld';
 import type { CourseListDTO } from '@/types/course/course.dto';
 import type { PathListDTO } from '@/types/path/path.dto';
 import type { PaginationInfo } from '@/features/courses/components/courses-list';
@@ -30,8 +31,22 @@ export async function generateMetadata({
   const page = Number(resolvedSearchParams.page) || 1;
   const search = resolvedSearchParams.search || undefined;
   const path = resolvedSearchParams.path || undefined;
+  const level = resolvedSearchParams.level || undefined;
+  const sort = resolvedSearchParams.sort || undefined;
+  const featured =
+    resolvedSearchParams.featured === 'true' ||
+    resolvedSearchParams.featured === '1'
+      ? true
+      : undefined;
 
-  return buildCoursesListingMetadata({ page, search, path });
+  return buildCoursesListingMetadata({
+    page,
+    search,
+    path,
+    level,
+    sort,
+    featured,
+  });
 }
 
 export default async function Courses({ searchParams }: CoursesPageProps) {
@@ -81,8 +96,9 @@ export default async function Courses({ searchParams }: CoursesPageProps) {
 
   return (
     <>
-      <CoursesListingJsonLd
-        params={{ page, search, sort, level, path, featured }}
+      <JsonLd
+        id="courses-list-jsonld"
+        data={buildCoursesListingJsonLd(courses)}
       />
 
       <main className="py-14 space-y-8">
