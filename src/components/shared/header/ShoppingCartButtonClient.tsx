@@ -3,7 +3,7 @@
 import { APP_ROUTES } from '@/constants/enums';
 import { useGuestCart } from '@/features/cart/hooks/useGuestCart';
 import { useCartStore } from '@/features/cart/stores/use-cart-store';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCartIcon } from './shopping-cart-icon';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -60,12 +60,12 @@ export function ShoppingCartButtonClient({
   return (
     <Link
       href={APP_ROUTES.CART}
-      className="relative inline-flex text-primary"
+      className="relative inline-flex h-8 w-8 items-center justify-center text-primary"
       aria-label="السلة"
     >
-      <ShoppingCart className="size-6" />
+      <ShoppingCartIcon className="h-4 w-4" />
       {count > 0 && (
-        <span className="absolute -top-1.5 -end-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-0.5 text-[10px] font-medium text-primary-foreground">
+        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-0.5 text-[10px] font-medium leading-none text-primary-foreground">
           {count > 99 ? '99+' : count}
         </span>
       )}

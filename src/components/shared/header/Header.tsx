@@ -5,11 +5,10 @@ import { UserNav } from './UserNav';
 import { MobileMenu } from './MobileMenu';
 import ShopingCartButton from './ShopingCartButton';
 import { Session } from 'next-auth';
-import { ThemeToggle } from './ThemeToggle';
 
 export function Header({ session }: { session: Session | null }) {
   return (
-    <header className="site-header sticky top-0 z-50 w-full">
+    <header className="site-header sticky top-0 z-50 w-full text-base">
       <div className="container flex h-header-height items-center justify-between">
         <Logo />
 
@@ -21,7 +20,6 @@ export function Header({ session }: { session: Session | null }) {
 
           {/* User Navigation - Hidden on mobile */}
           <div className="flex items-center gap-4">
-            <ThemeToggle />
             <ShopingCartButton />
 
             <div className="hidden lg:flex items-center gap-4">

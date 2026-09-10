@@ -1,5 +1,4 @@
 import Cookies from 'js-cookie';
-import { env } from '@/config/env';
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/constants/auth';
 
 /**
@@ -14,17 +13,11 @@ import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/constants/auth';
 class ClientCookieManager {
   /** 🍪 Set access token */
   setAccessToken(token: string): void {
-    const options: Cookies.CookieAttributes = {
-      secure: env.NODE_ENV === 'production',
+    Cookies.set(AUTH_TOKEN_KEY, token, {
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-    };
-
-    if (env.NODE_ENV === 'production' && env.COOKIE_DOMAIN) {
-      options.domain = env.COOKIE_DOMAIN;
-    }
-
-    Cookies.set(AUTH_TOKEN_KEY, token, options);
+    });
   }
 
   /** 🍪 Get access token */

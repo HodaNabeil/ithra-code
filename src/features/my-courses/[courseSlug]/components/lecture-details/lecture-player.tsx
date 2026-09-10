@@ -11,6 +11,7 @@ import { useUpdateLectureWatchProgress } from '@/features/my-courses/hooks/use-m
 import { useCourseLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-layout-store';
 import { LectureVideoPlayer } from './lecture-video-player';
 import { LectureContentTabs } from './lecture-content-tabs';
+import { ClientErrorBoundary } from '@/components/shared/client-error-boundary';
 import { Skeleton } from '@/components/ui/skeleton';
 import { APP_ROUTES } from '@/constants/enums';
 
@@ -141,49 +142,83 @@ export function LecturePlayer({
     return <LecturePlayerSkeleton />;
   }
 
-  if (isLectureDetailsError || !currentLecture) {
-    return <LectureNotFoundMessage />;
-  }
-
-  const videoSrc = currentLecture.videoHlsUrl;
-
-  if (!videoSrc) {
-    return <LectureVideoUnavailableMessage />;
-  }
+  const videoSrc = currentLecture?.videoHlsUrl;
 
   return (
     <div className="flex flex-col gap-8 pb-10">
-      <LectureVideoPlayer
-        videoSrc={videoSrc}
-        lectureId={lectureId}
-        courseSlug={courseSlug}
-        lectureNavigation={lectureNavigation ?? null}
-        onProgress={handleVideoProgress}
-        onEnded={handleVideoEnded}
-      />
+      <section aria-label="مشغل الفيديو">
+        {isLectureDetailsError || !currentLecture ? (
+          <LectureNotFoundMessage />
+        ) : !videoSrc ? (
+          <LectureVideoUnavailableMessage />
+        ) : (
+          <ClientErrorBoundary
+            resetKey={lectureId}
+            fallback={<LectureVideoErrorMessage />}
+          >
+            <LectureVideoPlayer
+              videoSrc={videoSrc}
+              lectureId={lectureId}
+              courseSlug={courseSlug}
+              lectureNavigation={lectureNavigation ?? null}
+              onProgress={handleVideoProgress}
+              onEnded={handleVideoEnded}
+            />
+          </ClientErrorBoundary>
+        )}
+      </section>
 
-      <div className="px-4">
-        <LectureContentTabs />
-      </div>
+      <LectureContentTabs />
+    </div>
+  );
+}
+
+function LecturePlayerMessage({
+  message,
+  variant = 'neutral',
+}: {
+  message: string;
+  variant?: 'neutral' | 'error';
+}) {
+  return (
+    <div
+      className={
+        variant === 'error'
+          ? 'flex h-[88vh] w-full items-center justify-center border-b border-destructive/20 bg-destructive/10'
+          : 'flex h-[88vh] w-full items-center justify-center border-b border-white/5 bg-black'
+      }
+    >
+      <p
+        className={
+          variant === 'error'
+            ? 'px-6 text-center text-destructive'
+            : 'px-6 text-center text-white/80'
+        }
+      >
+        {message}
+      </p>
     </div>
   );
 }
 
 function LectureNotFoundMessage() {
   return (
-    <div className="p-6 text-white text-center rounded-lg bg-destructive/10 border border-destructive/20">
-      المحاضرة غير موجودة
-    </div>
+    <LecturePlayerMessage message="المحاضرة غير موجودة" variant="error" />
   );
 }
 
 function LectureVideoUnavailableMessage() {
   return (
-    <div className="flex h-[88vh] w-full items-center justify-center bg-black border-b border-white/5">
-      <p className="px-6 text-center text-white/80">
-        لا يتوفر مصدر تشغيل لهذه المحاضرة
-      </p>
-    </div>
+    <LecturePlayerMessage message="لا يتوفر مصدر تشغيل لهذه المحاضرة" />
+  );
+}
+
+function LectureVideoErrorMessage() {
+  return (
+    <LecturePlayerMessage
+      message="حدث خطأ أثناء تحميل الفيديو. يمكنك متابعة استخدام التبويبات أدناه."
+      variant="error"
+    />
   );
 }
 

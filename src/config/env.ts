@@ -1,6 +1,11 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
+/** Auth.js expects the site origin, not `/api/auth`. */
+function normalizeAuthUrl(url: string): string {
+  return url.replace(/\/api\/auth\/?$/, '');
+}
+
 export const env = createEnv({
   server: {
     // Node environment
@@ -13,7 +18,11 @@ export const env = createEnv({
     DATABASE_URL: z.string().url().describe('PostgreSQL database URL'),
 
     // NextAuth settings
-    AUTH_URL: z.string().url().describe('NextAuth base URL'),
+    AUTH_URL: z
+      .string()
+      .url()
+      .transform(normalizeAuthUrl)
+      .describe('NextAuth base URL (site origin)'),
     NEXTAUTH_URL: z
       .string()
       .url()
@@ -27,10 +36,6 @@ export const env = createEnv({
     AUTH_GOOGLE_SECRET: z.string().describe('Google OAuth Client Secret'),
     AUTH_GITHUB_ID: z.string().describe('GitHub OAuth Client ID'),
     AUTH_GITHUB_SECRET: z.string().describe('GitHub OAuth Client Secret'),
-
-    // Stripe
-    STRIPE_API_KEY: z.string().describe('Stripe Secret API Key'),
-    STRIPE_WEBHOOK_SECRET: z.string().describe('Stripe Webhook Secret'),
 
     // Paymob (optional: gateway registers only when configured)
     PAYMOB_API_URL: z
@@ -499,9 +504,6 @@ export const env = createEnv({
       .url()
       .default('http://localhost:3000')
       .describe('Next.js app public URL'),
-    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z
-      .string()
-      .describe('Stripe Publishable Key'),
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: z
       .string()
       .optional()
@@ -519,8 +521,6 @@ export const env = createEnv({
     AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
     AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
     AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
-    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
-    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     PAYMOB_API_URL: process.env.PAYMOB_API_URL,
     PAYMOB_SECRET_KEY: process.env.PAYMOB_SECRET_KEY,
     PAYMOB_PUBLIC_KEY: process.env.PAYMOB_PUBLIC_KEY,
@@ -570,8 +570,6 @@ export const env = createEnv({
     DIRECT_URL: process.env.DIRECT_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
-      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
     AI_PLATFORM_ENABLED: process.env.AI_PLATFORM_ENABLED,
     AI_PLATFORM_LLM_MODEL: process.env.AI_PLATFORM_LLM_MODEL,
@@ -635,3 +633,11 @@ export const env = createEnv({
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
 });
+
+// Auth.js reads AUTH_URL / NEXTAUTH_URL directly from process.env.
+if (typeof window === 'undefined') {
+  process.env.AUTH_URL = env.AUTH_URL;
+  process.env.NEXTAUTH_URL = env.NEXTAUTH_URL
+    ? normalizeAuthUrl(env.NEXTAUTH_URL)
+    : env.AUTH_URL;
+}

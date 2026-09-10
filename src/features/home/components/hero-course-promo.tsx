@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PUBLIC_ROUTES } from '@/constants/routes';
+import { formatPrice } from '@/lib/formatters';
 
 interface Course {
   id: string;
@@ -8,6 +9,7 @@ interface Course {
   slug: string;
   thumbnailUrl?: string;
   price?: number;
+  currency?: string;
   instructor?: {
     name: string;
   };
@@ -36,9 +38,9 @@ export function HeroCoursePromo({ course }: HeroCoursePromoProps) {
         {course.instructor && (
           <p className="text-sm text-brand mb-4">مع {course.instructor.name}</p>
         )}
-        {course.price && (
+        {course.price != null && (
           <div className="text-lg font-bold text-primary mb-4">
-            {course.price} جنيه
+            {formatPrice(course.price, course.currency)}
           </div>
         )}
         <Button asChild className="w-full">

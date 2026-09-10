@@ -30,7 +30,7 @@ export class PaymentProviderResolver {
     const gateway = this.registry[provider];
 
     if (!gateway) {
-      // TODO: Register concrete provider gateways (Paymob, Stripe, PayPal) in infrastructure.
+      // TODO: Register concrete provider gateways (Paymob, PayPal) in infrastructure.
       throw new CheckoutError(
         503,
         'مزود الدفع غير متاح حالياً',

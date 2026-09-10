@@ -175,7 +175,7 @@ export class PaymentService {
     courseId: string;
     orderId: string;
     paymentId: string;
-    stripePaymentIntent: string;
+    providerTransactionId: string;
     providerMetadata?: Prisma.InputJsonValue;
   }) {
     const {
@@ -183,7 +183,7 @@ export class PaymentService {
       courseId,
       orderId,
       paymentId,
-      stripePaymentIntent,
+      providerTransactionId,
       providerMetadata,
     } = data;
 
@@ -192,7 +192,7 @@ export class PaymentService {
         where: { id: paymentId },
         data: {
           status: 'SUCCEEDED',
-          providerTransactionId: stripePaymentIntent,
+          providerTransactionId,
           providerMetadata,
           paidAt: new Date(),
           failureCode: null,

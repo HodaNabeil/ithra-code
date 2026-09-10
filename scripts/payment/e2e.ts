@@ -60,7 +60,7 @@ function resolveProvider(): PaymentProvider {
   const upper = raw.toUpperCase();
   assert(
     isSupportedPaymentProvider(upper),
-    `Unsupported PAYMENT_PROVIDER="${raw}". Use fake|paymob|stripe|paypal|cash`,
+    `Unsupported PAYMENT_PROVIDER="${raw}". Use fake|paymob|paypal|cash`,
   );
   return upper;
 }

@@ -13,14 +13,40 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { SocialButtons } from './SocialButtons';
 import Link from 'next/link';
+import { APP_ROUTES } from '@/constants/enums';
 import { cn } from '../../../lib/utils';
 
-export function AuthCard() {
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState<string | null>(null);
+const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  Configuration: 'خطأ في إعداد تسجيل الدخول. يرجى المحاولة لاحقاً.',
+  AccessDenied: 'تم رفض الوصول.',
+  Verification: 'انتهت صلاحية رابط التحقق.',
+  OAuthSignin: 'تعذر بدء تسجيل الدخول.',
+  OAuthCallback: 'تعذر إكمال تسجيل الدخول. يرجى المحاولة مرة أخرى.',
+  OAuthCreateAccount: 'تعذر إنشاء الحساب.',
+  EmailCreateAccount: 'تعذر إنشاء الحساب.',
+  Callback: 'حدث خطأ أثناء تسجيل الدخول.',
+  OAuthAccountNotLinked:
+    'هذا البريد الإلكتروني مرتبط بطريقة تسجيل دخول أخرى.',
+  SessionRequired: 'يجب تسجيل الدخول أولاً.',
+  Default: 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.',
+};
 
+function getAuthErrorMessage(code: string | null): string {
+  if (!code) return '';
+  return (
+    AUTH_ERROR_MESSAGES[code] ??
+    'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.'
+  );
+}
+
+export function AuthCard() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const callbackUrl =
+    searchParams.get('callbackUrl') || APP_ROUTES.MY_COURSES;
+  const [error, setError] = useState(() =>
+    getAuthErrorMessage(searchParams.get('error')),
+  );
+  const [isLoading, setIsLoading] = useState<string | null>(null);
 
   return (
     <Card

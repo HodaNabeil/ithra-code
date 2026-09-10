@@ -14,6 +14,20 @@ export const authConfig: NextAuthConfig = {
   },
 
   callbacks: {
+    redirect({ url, baseUrl }) {
+      const origin = baseUrl.replace(/\/api\/auth\/?$/, '');
+
+      if (url.startsWith('/')) {
+        return `${origin}${url}`;
+      }
+
+      if (new URL(url).origin === origin) {
+        return url;
+      }
+
+      return origin;
+    },
+
     jwt({ token, user }) {
       if (user?.id) {
         token.id = user.id;

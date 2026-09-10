@@ -13,9 +13,7 @@ interface EnrolledCourseCardProps {
   enrollment: EnrollmentItem;
 }
 
-export const EnrolledCourseCard = ({
-  enrollment,
-}: EnrolledCourseCardProps) => {
+export const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
   const learnHref = enrollment.lastLectureId
     ? STUDENT_ROUTES.LEARN.replace(':courseSlug', enrollment.slug).replace(
         ':lectureId',

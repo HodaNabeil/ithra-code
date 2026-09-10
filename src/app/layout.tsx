@@ -5,8 +5,6 @@ import { AuthProvider } from '@/providers/AuthProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { NavigationTopLoader } from '@/providers/NavigationTopLoader';
 import { QueryProvider } from '@/providers/QueryProvider';
-import { Header } from '@/components/shared/header/Header';
-import { HeaderWrapper } from '@/components/shared/header/HeaderWrapper';
 import { auth } from '@/lib/auth';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -38,17 +36,15 @@ export default async function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          forcedTheme="dark"
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange
         >
           <NavigationTopLoader />
           <QueryProvider>
             <AuthProvider session={session}>
-              <HeaderWrapper>
-                <Header session={session} />
-              </HeaderWrapper>
-              <main className="flex-1">{children}</main>
+              {children}
               <Toaster position="top-center" richColors />
             </AuthProvider>
           </QueryProvider>
