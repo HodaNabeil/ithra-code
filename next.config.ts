@@ -1,8 +1,11 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: 'standalone',
   reactCompiler: true,
+  outputFileTracingIncludes: {
+    '/*': ['./src/generated/prisma/**/*'],
+  },
   serverExternalPackages: [
     '@opentelemetry/api',
     '@opentelemetry/exporter-metrics-otlp-http',
