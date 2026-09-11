@@ -1,8 +1,15 @@
-/** Arabic brand used in document titles (`%s | إثرالكود`). */
-export const SEO_SITE_NAME_AR = 'ithracode';
+/** Brand used in document titles (`%s | IthraCode`). */
+export const SEO_SITE_NAME_AR = 'IthraCode';
 
 /** Latin brand used for Open Graph `siteName`. */
-export const SEO_SITE_NAME_EN = 'ithracode';
+export const SEO_SITE_NAME_EN = 'IthraCode';
+
+/** Alternate spellings used in structured data. */
+export const SEO_SITE_ALTERNATE_NAMES = [
+  'ithracode',
+  'إثراكود',
+  'Ithra Code',
+] as const;
 
 export const SEO_OG_LOCALE = 'ar_EG';
 

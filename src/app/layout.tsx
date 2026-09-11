@@ -21,6 +21,7 @@ const indexingEnabled = isSeoIndexingEnabled();
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteOrigin()),
+  applicationName: SEO_SITE_NAME_EN,
   title: {
     default: `${SEO_DEFAULT_TITLE} | ${SEO_SITE_NAME_AR}`,
     template: `%s | ${SEO_SITE_NAME_AR}`,

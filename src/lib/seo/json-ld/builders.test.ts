@@ -17,6 +17,11 @@ describe('schema builders', () => {
 
     expect(schema['@type']).toBe('Organization');
     expect(schema['@id']).toBe(getOrganizationId(origin));
+    expect(schema.alternateName).toEqual([
+      'ithracode',
+      'إثراكود',
+      'Ithra Code',
+    ]);
     expect(schema.sameAs).toEqual(['https://youtube.com/@ithracode']);
   });
 

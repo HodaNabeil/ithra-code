@@ -33,28 +33,47 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       getAllPathsForSitemap(),
     ]);
 
-    return buildSitemapEntries({
-      indexingEnabled: true,
+    return withHomepageLastModified(
+      buildSitemapEntries({
+        indexingEnabled: true,
+        origin,
+        staticPaths: STATIC_SITEMAP_PATHS,
+        dynamicEntries: [
+          ...courses.map((course: { slug: string; updatedAt: Date }) => ({
+            path: `${APP_ROUTES.COURSES}/${course.slug}`,
+            lastModified: course.updatedAt,
+          })),
+          ...paths.map((path: { slug: string; updatedAt: Date }) => ({
+            path: `${APP_ROUTES.LEARNING_PATHS}/${path.slug}`,
+            lastModified: path.updatedAt,
+          })),
+        ],
+      }),
       origin,
-      staticPaths: STATIC_SITEMAP_PATHS,
-      dynamicEntries: [
-        ...courses.map((course: { slug: string; updatedAt: Date }) => ({
-          path: `${APP_ROUTES.COURSES}/${course.slug}`,
-          lastModified: course.updatedAt,
-        })),
-        ...paths.map((path: { slug: string; updatedAt: Date }) => ({
-          path: `${APP_ROUTES.LEARNING_PATHS}/${path.slug}`,
-          lastModified: path.updatedAt,
-        })),
-      ],
-    });
+    );
   } catch (error) {
     console.error('Sitemap Generation Error:', error);
-    return buildSitemapEntries({
-      indexingEnabled: true,
+    return withHomepageLastModified(
+      buildSitemapEntries({
+        indexingEnabled: true,
+        origin,
+        staticPaths: STATIC_SITEMAP_PATHS,
+        dynamicEntries: [],
+      }),
       origin,
-      staticPaths: STATIC_SITEMAP_PATHS,
-      dynamicEntries: [],
-    });
+    );
   }
+}
+
+function withHomepageLastModified(
+  entries: MetadataRoute.Sitemap,
+  origin: string,
+): MetadataRoute.Sitemap {
+  const homepageUrl = origin.replace(/\/+$/, '');
+
+  return entries.map((entry) =>
+    entry.url === homepageUrl
+      ? { ...entry, lastModified: new Date() }
+      : entry,
+  );
 }

@@ -1,4 +1,8 @@
-import { SEO_LOGO_PATH, SEO_SITE_NAME_AR } from '../../config';
+import {
+  SEO_LOGO_PATH,
+  SEO_SITE_ALTERNATE_NAMES,
+  SEO_SITE_NAME_AR,
+} from '../../config';
 import { getOrganizationId, toAbsoluteAssetUrl } from '../../urls';
 import type { JsonLdObject } from '../types';
 
@@ -18,6 +22,7 @@ export function buildOrganizationSchema(
     '@type': 'Organization',
     '@id': getOrganizationId(input.origin),
     name,
+    alternateName: [...SEO_SITE_ALTERNATE_NAMES],
     url: input.origin,
     logo: {
       '@type': 'ImageObject',
