@@ -35,6 +35,21 @@ export const metadata: Metadata = {
     locale: SEO_OG_LOCALE,
     type: 'website',
   },
+  icons: {
+    icon: [
+      {
+        url: '/favicon/favicon-96x96.png',
+        sizes: '96x96',
+        type: 'image/png',
+      },
+      {
+        url: '/favicon/favicon.svg',
+        type: 'image/svg+xml',
+      },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/favicon/apple-touch-icon.png',
+  },
 };
 
 export default async function RootLayout({
