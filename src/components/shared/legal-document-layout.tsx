@@ -7,7 +7,7 @@ type LegalDocumentLayoutProps = {
 export function LegalDocumentLayout({ children }: LegalDocumentLayoutProps) {
   return (
     <div className="py-12 md:py-16">
-      <div className="container max-w-4xl">
+      <div className="container">
         <article className="prose prose-neutral dark:prose-invert max-w-none">
           {children}
         </article>
