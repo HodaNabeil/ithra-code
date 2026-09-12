@@ -54,3 +54,7 @@ export const SEO_META_DESCRIPTION_MAX_LENGTH = 160;
 export const SEO_COURSE_SEARCH_PATH = '/courses';
 
 export const SEO_COURSE_SEARCH_QUERY_PARAM = 'search';
+
+/** Google Search Console site ownership verification token. */
+export const SEO_GOOGLE_SITE_VERIFICATION =
+  '5y-OWAMpRHmTG04E1uwGxWxErgzcuEqkAiGE50X0sL4';

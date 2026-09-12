@@ -10,6 +10,7 @@ import { Toaster } from '@/components/ui/sonner';
 import {
   SEO_DEFAULT_DESCRIPTION,
   SEO_DEFAULT_TITLE,
+  SEO_GOOGLE_SITE_VERIFICATION,
   SEO_OG_LOCALE,
   SEO_SITE_NAME_AR,
   SEO_SITE_NAME_EN,
@@ -35,6 +36,9 @@ export const metadata: Metadata = {
     siteName: SEO_SITE_NAME_EN,
     locale: SEO_OG_LOCALE,
     type: 'website',
+  },
+  verification: {
+    google: SEO_GOOGLE_SITE_VERIFICATION,
   },
   icons: {
     icon: [
