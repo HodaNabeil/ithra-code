@@ -6,6 +6,10 @@ import { ThemeProvider } from '@/providers/ThemeProvider';
 import { NavigationTopLoader } from '@/providers/NavigationTopLoader';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { auth } from '@/lib/auth';
+import {
+  GoogleTagManagerNoScript,
+  GoogleTagManagerScript,
+} from '@/components/shared/google-tag-manager';
 import { Toaster } from '@/components/ui/sonner';
 import {
   SEO_DEFAULT_DESCRIPTION,
@@ -71,6 +75,9 @@ export default async function RootLayout({
       className="h-full antialiased"
       suppressHydrationWarning
     >
+      <head>
+        <GoogleTagManagerScript />
+      </head>
       <body
         className={cn(
           'min-h-full font-sans bg-body-background',
@@ -78,6 +85,7 @@ export default async function RootLayout({
           'flex-col',
         )}
       >
+        <GoogleTagManagerNoScript />
         <ThemeProvider
           attribute="class"
           forcedTheme="dark"

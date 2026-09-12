@@ -58,3 +58,6 @@ export const SEO_COURSE_SEARCH_QUERY_PARAM = 'search';
 /** Google Search Console site ownership verification token. */
 export const SEO_GOOGLE_SITE_VERIFICATION =
   '5y-OWAMpRHmTG04E1uwGxWxErgzcuEqkAiGE50X0sL4';
+
+/** Google Tag Manager container ID. */
+export const GTM_CONTAINER_ID = 'GTM-K5XRQW2Z';
