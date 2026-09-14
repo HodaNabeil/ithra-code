@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { Logo } from '@/components/shared/header/Logo';
 import { ErrorRetry } from '@/components/shared';
 import { PUBLIC_ROUTES } from '@/constants/routes';
 import {
@@ -37,7 +36,6 @@ export function LectureHeader() {
     <header className="site-header sticky top-0 z-50 w-full">
       <div className="container flex h-20 items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0 flex-1">
-          <Logo />
           {isError && (
             <ErrorRetry
               onRetry={() => refetch()}
