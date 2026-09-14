@@ -38,7 +38,7 @@ export default async function LearningPathDetailPage({
   }
 
   return (
-    <main>
+    <>
       <JsonLd
         id="path-detail-jsonld"
         data={buildLearningPathPageJsonLd(result.path)}
@@ -48,6 +48,6 @@ export default async function LearningPathDetailPage({
       {result.path.tracks && result.path.tracks.length > 0 && (
         <PathTracks tracks={result.path.tracks} />
       )}
-    </main>
+    </>
   );
 }

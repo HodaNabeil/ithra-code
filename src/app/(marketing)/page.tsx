@@ -37,7 +37,7 @@ export default async function Home() {
     : faqsResponse.error;
 
   return (
-    <main>
+    <>
       <JsonLd id="home-jsonld" data={buildHomePageJsonLd(faqs)} />
       <HeroSection promoCourse={courses[0]} />
       <WhyIthraCode />
@@ -66,6 +66,6 @@ export default async function Home() {
         hasError={!faqsResponse.success}
         errorMessage={faqsErrorMessage}
       />
-    </main>
+    </>
   );
 }

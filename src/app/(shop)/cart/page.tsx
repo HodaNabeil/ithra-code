@@ -18,9 +18,9 @@ export default async function CartPage() {
 
   if (!isAuthed) {
     return (
-      <main className="pb-6">
+      <div className="pb-6">
         <GuestCartContainer />
-      </main>
+      </div>
     );
   }
 
@@ -36,9 +36,9 @@ export default async function CartPage() {
   }
 
   return (
-    <main className="pb-6">
+    <div className="pb-6">
       {!hasError && cart && <CartContainer cart={cart} />}
       {hasError && <ErrorRetry />}
-    </main>
+    </div>
   );
 }
