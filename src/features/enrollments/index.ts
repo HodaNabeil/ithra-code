@@ -47,3 +47,15 @@ export {
   createListStudentEnrollmentsUseCase,
 } from './application/use-cases/list-student-enrollments.use-case';
 export type { ListStudentEnrollmentsDependencies } from './application/use-cases/list-student-enrollments.use-case';
+
+export { enrollInFreeCourseUseCase } from './application/use-cases/enroll-in-free-course.use-case';
+export type { EnrollInFreeCourseUseCaseDeps } from './application/use-cases/enroll-in-free-course.use-case';
+
+export type { FreeEnrollmentRepository } from './application/ports/free-enrollment.repository';
+export { courseIdOrSlugSchema } from './api/validation/enroll-course-params';
+export type { CourseIdOrSlug } from './api/validation/enroll-course-params';
+
+export type {
+  EnrollInFreeCourseInputDTO,
+  EnrollInFreeCourseOutputDTO,
+} from './application/dto/enroll-free-course.dto';

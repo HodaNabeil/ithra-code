@@ -1,10 +1,8 @@
 'use client';
 
 import { formatPrice } from '@/lib/formatters';
-import {
-  AddToCartButton,
-  type AddToCartCourse,
-} from '@/features/courses/components/add-to-cart-button';
+import type { AddToCartCourse } from '@/features/courses/components/add-to-cart-button';
+import { CoursePurchaseCta } from '@/features/courses/components/course-purchase-cta';
 
 interface CourseStickyActionsProps {
   course: AddToCartCourse;
@@ -27,7 +25,7 @@ export function CourseStickyActions({ course }: CourseStickyActionsProps) {
           )}
         </div>
         <div className="flex-1">
-          <AddToCartButton
+          <CoursePurchaseCta
             course={course}
             className="w-full font-medium text-base rounded-lg"
             size="xl"

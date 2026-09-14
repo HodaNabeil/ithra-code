@@ -5,7 +5,7 @@ import type { CourseListDTO } from '@/types/course/course.dto';
 import { formatPrice } from '@/lib/formatters';
 import { CourseMetadataBadges } from '@/features/courses/components/course-metadata-badges';
 import Link from 'next/link';
-import { AddToCartButton } from '@/features/courses/components/add-to-cart-button';
+import { CoursePurchaseCta } from '@/features/courses/components/course-purchase-cta';
 import { PUBLIC_ROUTES, STUDENT_ROUTES } from '@/constants/routes';
 import { buttonVariants } from '@/components/ui/button';
 import { CourseCardWrapper } from '@/components/shared/course-card-wrapper';
@@ -104,7 +104,7 @@ export function CourseCard({ course }: CourseCardProps) {
               شاهد الدورة
             </Link>
           ) : (
-            <AddToCartButton course={course} />
+            <CoursePurchaseCta course={course} />
           )}
         </CardFooter>
       </Card>
