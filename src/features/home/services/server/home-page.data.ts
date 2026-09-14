@@ -4,6 +4,10 @@ import { getTestimonialsAction } from '@/features/testimonials/actions/testimoni
 import type { FaqItem } from '@/features/faqs';
 import type { TestimonialItem } from '@/features/testimonials/api/dto/testimonial.dto';
 import type { CourseListDTO } from '@/types/course/course.dto';
+import {
+  ensureIthraCodeFaq,
+  getHomeFallbackTestimonials,
+} from '@/features/home/data/home-marketing-content';
 
 export type HomeDataResult<T> = {
   success: boolean;
@@ -13,7 +17,7 @@ export type HomeDataResult<T> = {
 
 const HOME_FEATURED_COURSES_LIMIT = 6;
 const HOME_TESTIMONIALS_LIMIT = 6;
-const HOME_FAQS_LIMIT = 6;
+const HOME_FAQS_LIMIT = 8;
 
 export async function getFeaturedCoursesForHome(): Promise<
   HomeDataResult<{ courses: CourseListDTO[] }>
@@ -45,7 +49,12 @@ export async function getHomeTestimonials(): Promise<
   if (result.success) {
     return {
       success: true,
-      data: { items: result.items },
+      data: {
+        items:
+          result.items.length > 0
+            ? result.items
+            : getHomeFallbackTestimonials(),
+      },
     };
   }
 
@@ -64,7 +73,7 @@ export async function getHomeFaqs(): Promise<
   if (result.success) {
     return {
       success: true,
-      data: { items: result.items },
+      data: { items: ensureIthraCodeFaq(result.items) },
     };
   }
 

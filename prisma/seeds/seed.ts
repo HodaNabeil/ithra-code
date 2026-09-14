@@ -11,6 +11,10 @@ import {
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcryptjs';
 import * as dotenv from 'dotenv';
+import {
+  HOME_ITHRACODE_FAQ,
+  HOME_TESTIMONIALS,
+} from '../../src/features/home/data/home-marketing-content';
 
 dotenv.config();
 
@@ -35,7 +39,9 @@ const ENGINEERING_COURSE_SLUG = 'engineering-decisions';
 
 async function main() {
   console.log('🌱 Starting Engineering Decisions database seeding...');
-  console.log('ℹ️  Preserving existing users and FAQs');
+  console.log(
+    'ℹ️  Preserving existing users; upserting IthraCode FAQ and testimonials',
+  );
 
   console.log('👤 Upserting instructor user...');
 
@@ -323,6 +329,60 @@ async function main() {
       status: EnrollmentStatus.ACTIVE,
     },
   });
+
+  console.log('❓ Upserting IthraCode FAQ...');
+
+  const existingIthraCodeFaq = await prisma.faq.findFirst({
+    where: { question: HOME_ITHRACODE_FAQ.question },
+  });
+
+  if (existingIthraCodeFaq) {
+    await prisma.faq.update({
+      where: { id: existingIthraCodeFaq.id },
+      data: {
+        answer: HOME_ITHRACODE_FAQ.answer,
+        sortOrder: 0,
+        isActive: true,
+      },
+    });
+  } else {
+    await prisma.faq.create({
+      data: {
+        question: HOME_ITHRACODE_FAQ.question,
+        answer: HOME_ITHRACODE_FAQ.answer,
+        sortOrder: 0,
+        isActive: true,
+      },
+    });
+  }
+
+  console.log('💬 Upserting home testimonials...');
+
+  for (const testimonial of HOME_TESTIMONIALS) {
+    const existingTestimonial = await prisma.testimonial.findFirst({
+      where: { name: testimonial.name, content: testimonial.content },
+    });
+
+    if (existingTestimonial) {
+      await prisma.testimonial.update({
+        where: { id: existingTestimonial.id },
+        data: {
+          rating: testimonial.rating,
+          isActive: true,
+        },
+      });
+      continue;
+    }
+
+    await prisma.testimonial.create({
+      data: {
+        name: testimonial.name,
+        content: testimonial.content,
+        rating: testimonial.rating,
+        isActive: true,
+      },
+    });
+  }
 
   console.log('✅ Engineering Decisions seed completed successfully');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
