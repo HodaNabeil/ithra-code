@@ -5,10 +5,11 @@ import type { CourseListDTO } from '@/types/course/course.dto';
 import { formatPrice } from '@/lib/formatters';
 import { CourseMetadataBadges } from '@/features/courses/components/course-metadata-badges';
 import Link from 'next/link';
-import { AddToCartButton } from '@/features/courses/components/add-to-cart-button';
-import { PUBLIC_ROUTES, STUDENT_ROUTES } from '@/constants/routes';
+import { CoursePurchaseCta } from '@/features/courses/components/course-purchase-cta';
+import { PUBLIC_ROUTES } from '@/constants/routes';
 import { buttonVariants } from '@/components/ui/button';
 import { CourseCardWrapper } from '@/components/shared/course-card-wrapper';
+import { buildLearnHref } from '@/features/courses/lib/build-learn-href';
 // Hover Card Component
 interface CourseHoverCardProps {
   objectives: CourseListDTO['objectives'];
@@ -40,14 +41,11 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ course }: CourseCardProps) {
-  const firstLectureId = course.firstLectureId;
+  const learnHref = buildLearnHref({
+    slug: course.slug,
+    firstLectureId: course.firstLectureId,
+  });
 
-  const learnHref = firstLectureId
-    ? STUDENT_ROUTES.LEARN.replace(':courseSlug', course.slug).replace(
-        ':lectureId',
-        firstLectureId,
-      )
-    : `${PUBLIC_ROUTES.COURSES}/${course.slug}`;
   return (
     <CourseCardWrapper
       className="[&:nth-child(3n)_.course-hover-card]:lg:right-auto [&:nth-child(3n)_.course-hover-card]:lg:left-[calc(100%+0.8rem)] [&:nth-child(3n)_.course-hover-card]:lg:slide-in-from-left-2"
@@ -104,7 +102,7 @@ export function CourseCard({ course }: CourseCardProps) {
               شاهد الدورة
             </Link>
           ) : (
-            <AddToCartButton course={course} />
+            <CoursePurchaseCta course={course} />
           )}
         </CardFooter>
       </Card>

@@ -1,8 +1,15 @@
 import type { NextConfig } from 'next';
 
+const isVercel = Boolean(process.env.VERCEL);
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Standalone output is for self-hosted/Docker builds only. On Vercel it
+  // conflicts with the deployment adapter and breaks the build on Next.js 16.3+.
+  ...(isVercel ? {} : { output: 'standalone' as const }),
   reactCompiler: true,
+  outputFileTracingIncludes: {
+    '/*': ['./src/generated/prisma/**/*'],
+  },
   serverExternalPackages: [
     '@opentelemetry/api',
     '@opentelemetry/exporter-metrics-otlp-http',

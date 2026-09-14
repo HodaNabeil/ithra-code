@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 
 import CourseInfo from '@/features/courses/[slug]/components/course-info';
+import { CourseEnrollOnReturn } from '@/features/courses/[slug]/components/course-enroll-on-return';
 
 import { CoursePricingCard } from '@/features/courses/[slug]/components/course-pricing-card';
 import { CourseVideoPreview } from '@/features/courses/[slug]/components/course-video-preview';
@@ -9,6 +11,7 @@ import { getCourseDetail } from '@/features/courses/course-detail/use-cases/get-
 import { getCourseOverview } from '@/features/courses/course-overview/use-cases/get-course-overview.use-case';
 import { buildCoursePageJsonLd } from '@/features/courses/lib/seo/course-page-schema.adapter';
 import { resolveCoursePageMetadata } from '@/features/courses/lib/seo/resolve-course-page-metadata';
+import { auth } from '@/lib/auth';
 import { JsonLd } from '@/lib/seo/json-ld/json-ld';
 import type { Course, CourseOverview } from '@/types/course/course.types';
 
@@ -29,7 +32,11 @@ export default async function CourseDetailsPage({
   params,
 }: CourseSlugPageProps) {
   const { slug } = await params;
-  const course: Course = await getCourseDetail({ courseIdOrSlug: slug });
+  const session = await auth();
+  const course: Course = await getCourseDetail({
+    courseIdOrSlug: slug,
+    user: session?.user ?? null,
+  });
   const { overview }: { overview: CourseOverview } = await getCourseOverview({
     courseIdOrSlug: slug,
   });
@@ -37,6 +44,9 @@ export default async function CourseDetailsPage({
     <>
       <JsonLd id="course-detail-jsonld" data={buildCoursePageJsonLd(course)} />
       <main>
+        <Suspense fallback={null}>
+          <CourseEnrollOnReturn courseSlug={slug} />
+        </Suspense>
         <div className="container flex flex-col lg:flex-row gap-2 lg:gap-12 xl:gap-20 pb-10">
           {/* On mobile, breadcrumbs come first */}
           <div className="lg:hidden mt-6 px-4">

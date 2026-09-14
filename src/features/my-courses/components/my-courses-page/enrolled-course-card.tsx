@@ -5,7 +5,7 @@ import { PlayCircle } from 'lucide-react';
 import { Link } from '@/components/shared/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { STUDENT_ROUTES } from '@/constants/routes';
+import { buildLearnHref } from '@/features/courses/lib/build-learn-href';
 import type { EnrollmentItem } from '@/types/course/course.types';
 import { CourseProgress } from './course-progress';
 
@@ -14,12 +14,11 @@ interface EnrolledCourseCardProps {
 }
 
 export const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
-  const learnHref = enrollment.lastLectureId
-    ? STUDENT_ROUTES.LEARN.replace(':courseSlug', enrollment.slug).replace(
-        ':lectureId',
-        enrollment.lastLectureId,
-      )
-    : STUDENT_ROUTES.COURSE_DETAILS.replace(':courseSlug', enrollment.slug);
+  const learnHref = buildLearnHref({
+    slug: enrollment.slug,
+    firstLectureId: enrollment.firstLectureId,
+    lastLectureId: enrollment.lastLectureId,
+  });
 
   const progress = enrollment.progressPercentage || 0;
 

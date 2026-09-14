@@ -34,7 +34,9 @@ export async function findUserCourseSignals(
   const enrollmentStatus = enrollment?.status ?? null;
 
   return {
-    isPurchased: enrollmentStatus === EnrollmentStatus.ACTIVE,
+    isPurchased:
+      enrollmentStatus === EnrollmentStatus.ACTIVE ||
+      enrollmentStatus === EnrollmentStatus.COMPLETED,
     isInCart: !!cartItem,
     enrollmentStatus,
   };

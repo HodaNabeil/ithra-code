@@ -45,10 +45,7 @@ const proxy = auth((req) => {
 
   if (!isLoggedIn && isProtectedRoute) {
     const signInUrl = new URL(AUTH_ROUTES.SIGN_IN, nextUrl);
-    signInUrl.searchParams.set(
-      'callbackUrl',
-      `${pathname}${nextUrl.search}`,
-    );
+    signInUrl.searchParams.set('callbackUrl', `${pathname}${nextUrl.search}`);
     return NextResponse.redirect(signInUrl);
   }
 

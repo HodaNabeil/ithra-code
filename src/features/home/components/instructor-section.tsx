@@ -13,7 +13,12 @@ export default function InstructorSection() {
           title="تعرّف على مدربتك"
           subTitleUppercase={false}
         />
-        <div className="max-w-5xl mx-auto mt-12 w-full overflow-hidden rounded-xl border border-border bg-card [--fade-background:var(--card)] shadow-sm flex flex-col md:flex-row md:items-start">
+        <div
+          className="max-w-5xl mx-auto mt-12 w-full overflow-hidden
+         rounded-xl border border-border bg-card
+          [--fade-background:var(--card)] shadow-sm 
+          flex flex-col md:flex-row md:items-start"
+        >
           {/* Image block */}
           <div
             className="relative w-full aspect-4/5 sm:aspect-3/4 md:aspect-auto
@@ -22,8 +27,9 @@ export default function InstructorSection() {
             <Image
               src="/img/hoda.jpg"
               alt="Hoda Abu Hashima - مطورة الواجهات الأمامية"
-              fill
               sizes={INSTRUCTOR_IMAGE_SIZES}
+              width={600}
+              height={100}
               className="object-cover "
             />
           </div>

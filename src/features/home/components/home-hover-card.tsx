@@ -5,10 +5,10 @@ import { Check } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { AddToCartCourse } from '@/features/courses/components/add-to-cart-button';
 
-const AddToCartButton = dynamic(
+const CoursePurchaseCta = dynamic(
   () =>
-    import('@/features/courses/components/add-to-cart-button').then((mod) => ({
-      default: mod.AddToCartButton,
+    import('@/features/courses/components/course-purchase-cta').then((mod) => ({
+      default: mod.CoursePurchaseCta,
     })),
   {
     loading: () => (
@@ -40,7 +40,7 @@ export function HomeHoverCard({ objectives, course }: HomeHoverCardProps) {
       </div>
 
       <div className="mt-2">
-        <AddToCartButton course={course} className="w-full" size="xl" />
+        <CoursePurchaseCta course={course} className="w-full" size="xl" />
       </div>
     </div>
   );

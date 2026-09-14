@@ -13,7 +13,6 @@ import {
   getHomeFaqs,
   getHomeTestimonials,
 } from '@/features/home/services/server/home-page.data';
-import { ErrorRetry } from '@/components/shared';
 import { JsonLd } from '@/lib/seo/json-ld/json-ld';
 
 export const generateMetadata = buildHomePageMetadata;
@@ -44,15 +43,22 @@ export default async function Home() {
       <WhyIthraCode />
       <InstructorSection />
 
-      {coursesResponse.success ? (
-        <FeaturedCourses courses={courses} />
-      ) : (
-        <ErrorRetry />
-      )}
+      <FeaturedCourses
+        courses={courses}
+        hasError={!coursesResponse.success}
+        errorMessage={
+          coursesResponse.success ? undefined : coursesResponse.error
+        }
+      />
 
       <TestimonialSection
         items={testimonialItems}
         hasError={!testimonialsResponse.success}
+        errorMessage={
+          testimonialsResponse.success
+            ? undefined
+            : testimonialsResponse.error
+        }
       />
 
       <FaqsSection

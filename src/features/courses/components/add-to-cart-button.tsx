@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import type { CourseListDTO } from '@/types/course/course.dto';
 import type { SectionDTO } from '@/types/course/course.dto';
 import { APP_ROUTES } from '@/constants/enums';
+import { buildLearnHref } from '@/features/courses/lib/build-learn-href';
 import { isAuthenticatedStatus } from '@/constants/states';
 import { queryKeys } from '@/lib/query-keys';
 import type { CartDataType as Cart } from '@/types/cart/cart';
@@ -42,15 +43,6 @@ interface AddToCartButtonProps {
   course: AddToCartCourse;
   className?: string;
   size?: 'default' | 'sm' | 'lg' | 'icon' | 'xl';
-}
-
-function buildLearnHref(course: AddToCartCourse): string {
-  const lectureId =
-    course.firstLectureId || course.sections?.[0]?.lectures?.[0]?.id;
-
-  return lectureId
-    ? `${APP_ROUTES.MY_COURSES}/${course.slug}/${APP_ROUTES.LECTURE}/${lectureId}`
-    : `${APP_ROUTES.MY_COURSES}/${course.slug}`;
 }
 
 export function AddToCartButton({

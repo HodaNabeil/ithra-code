@@ -5,12 +5,7 @@ import {
   prismaDateToIso,
   prismaDateToIsoNullable,
 } from '@/features/courses/course-detail/mapper/shared';
-import {
-  DEV_SAMPLE_HLS_URL,
-  isBunnyStreamConfigured,
-  signBunnyHlsUrl,
-} from '@/lib/bunny-stream';
-import { env } from '@/config/env';
+import { isBunnyStreamConfigured, signBunnyHlsUrl } from '@/lib/bunny-stream';
 
 import type {
   CourseRatingAggregate,
@@ -43,10 +38,6 @@ function resolveVideoHlsUrl(lecture: DB_LectureDetailEntity): string | null {
       '[LECTURE_DETAIL] Bunny HLS signing failed for video',
       video!.id,
     );
-  }
-
-  if (env.NODE_ENV === 'development') {
-    return DEV_SAMPLE_HLS_URL;
   }
 
   return null;

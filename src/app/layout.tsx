@@ -6,10 +6,15 @@ import { ThemeProvider } from '@/providers/ThemeProvider';
 import { NavigationTopLoader } from '@/providers/NavigationTopLoader';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { auth } from '@/lib/auth';
+import {
+  GoogleTagManagerNoScript,
+  GoogleTagManagerScript,
+} from '@/components/shared/google-tag-manager';
 import { Toaster } from '@/components/ui/sonner';
 import {
   SEO_DEFAULT_DESCRIPTION,
   SEO_DEFAULT_TITLE,
+  SEO_GOOGLE_SITE_VERIFICATION,
   SEO_OG_LOCALE,
   SEO_SITE_NAME_AR,
   SEO_SITE_NAME_EN,
@@ -36,8 +41,16 @@ export const metadata: Metadata = {
     locale: SEO_OG_LOCALE,
     type: 'website',
   },
+  verification: {
+    google: SEO_GOOGLE_SITE_VERIFICATION,
+  },
   icons: {
     icon: [
+      {
+        url: '/favicon/favicon-48x48.png',
+        sizes: '48x48',
+        type: 'image/png',
+      },
       {
         url: '/favicon/favicon-96x96.png',
         sizes: '96x96',
@@ -67,6 +80,9 @@ export default async function RootLayout({
       className="h-full antialiased"
       suppressHydrationWarning
     >
+      <head>
+        <GoogleTagManagerScript />
+      </head>
       <body
         className={cn(
           'min-h-full font-sans bg-body-background',
@@ -74,6 +90,7 @@ export default async function RootLayout({
           'flex-col',
         )}
       >
+        <GoogleTagManagerNoScript />
         <ThemeProvider
           attribute="class"
           forcedTheme="dark"
