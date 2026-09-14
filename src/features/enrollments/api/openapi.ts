@@ -159,3 +159,9 @@ export const enrollmentListDataSchema = z.object({
   courses: z.array(enrollmentListItemSchema),
   pagination: enrollmentListPaginationSchema,
 });
+
+export const enrollInFreeCourseDataSchema = z.object({
+  courseId: z.string(),
+  slug: z.string(),
+  firstLectureId: z.string().nullable(),
+});

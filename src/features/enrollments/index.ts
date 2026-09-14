@@ -37,7 +37,10 @@ export {
 } from './api/validation/enrollment-list-query';
 export type { EnrollmentListQueryInput } from './api/validation/enrollment-list-query';
 
-export { enrollmentListDataSchema } from './api/openapi';
+export {
+  enrollInFreeCourseDataSchema,
+  enrollmentListDataSchema,
+} from './api/openapi';
 export { registerEnrollmentsOpenApi } from './api/register-enrollments-openapi';
 
 export { listStudentEnrollments } from './infrastructure/di/enrollments.container';

@@ -1,9 +1,11 @@
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 
-import type { z } from '@/lib/zod-openapi';
+import { z } from '@/lib/zod-openapi';
 
 import { enrollmentListQueryOpenApiSchema } from './validation/enrollment-list-query';
+
 import {
+  enrollInFreeCourseDataSchema,
   enrollmentCourseSchema,
   enrollmentListDataSchema,
   enrollmentListItemSchema,
@@ -189,6 +191,164 @@ export function registerEnrollmentsOpenApi(
           'application/json': {
             schema: deps.ApiErrorSchema,
             example: { success: false, message: 'ليس لديك صلاحية' },
+          },
+        },
+      },
+      500: {
+        description: 'Internal server error',
+        content: {
+          'application/json': {
+            schema: deps.ApiErrorSchema,
+            example: deps.apiErrorExample,
+          },
+        },
+      },
+    },
+  });
+
+  registry.register('EnrollInFreeCourseData', enrollInFreeCourseDataSchema);
+
+  const enrollCourseParamsSchema = z.object({
+    courseIdOrSlug: z.string().openapi({
+      example: String(deps.courseExample.slug),
+      description: 'Course UUID or URL slug',
+    }),
+  });
+
+  const freeEnrollExample = {
+    courseId: deps.courseId,
+    slug: deps.courseExample.slug,
+    firstLectureId: 'cllecture2k4m00008l5d6e3k1n',
+  };
+
+  registry.registerPath({
+    method: 'post',
+    path: '/courses/{courseIdOrSlug}/enroll',
+    tags: ['Enrollments'],
+    operationId: 'enrollInFreeCourse',
+    summary: 'Enroll in a published free course',
+    description: [
+      'Creates an **ACTIVE** enrollment for a published, public course with `price = 0`.',
+      'No request body — the course is identified by the path parameter only.',
+      '',
+      '**Authentication:** session cookie (`authjs.session-token`). `401` when missing.',
+      '**Authorization:** requires `enrollment:create` and `course:enroll`. `403` when missing.',
+      '',
+      '**Rejected cases:** paid course, unpublished/private course, already enrolled,',
+      'revoked enrollment, course at capacity, invalid course id/slug.',
+      '',
+      '**Rate limit:** 10 requests/user/min and 20 requests/IP/min (`429`).',
+      '',
+      '**Example:**',
+      '`POST /api/courses/nodejs-complete-guide/enroll`',
+    ].join('\n'),
+    security: deps.authenticated,
+    request: {
+      params: enrollCourseParamsSchema,
+    },
+    responses: {
+      200: {
+        description: 'تم التسجيل في الدورة بنجاح',
+        content: {
+          'application/json': {
+            schema: deps.registerApiSuccess(
+              'EnrollInFreeCourseResponse',
+              enrollInFreeCourseDataSchema,
+            ),
+            example: deps.apiSuccessExample(
+              'تم التسجيل في الدورة بنجاح',
+              freeEnrollExample,
+            ),
+          },
+        },
+      },
+      400: {
+        description:
+          'Invalid course id, paid course, not published, already enrolled, or course full',
+        content: {
+          'application/json': {
+            schema: deps.ApiErrorSchema,
+            examples: {
+              notFreeCourse: {
+                summary: 'Paid course',
+                value: {
+                  success: false,
+                  message: 'هذه الدورة مدفوعة — يُرجى إضافتها إلى السلة',
+                },
+              },
+              alreadyEnrolled: {
+                summary: 'Already enrolled',
+                value: {
+                  success: false,
+                  message: 'أنت مسجل بالفعل في هذه الدورة',
+                },
+              },
+              invalidCourseRef: {
+                summary: 'Invalid course id or slug',
+                value: {
+                  success: false,
+                  message: 'معرّف الدورة غير صالح',
+                },
+              },
+            },
+          },
+        },
+      },
+      401: {
+        description: 'Unauthorized - user not logged in',
+        content: {
+          'application/json': {
+            schema: deps.ApiErrorSchema,
+            example: {
+              success: false,
+              message: 'يجب تسجيل الدخول للتسجيل في الدورة',
+            },
+          },
+        },
+      },
+      403: {
+        description: 'Forbidden - missing permissions or revoked enrollment',
+        content: {
+          'application/json': {
+            schema: deps.ApiErrorSchema,
+            examples: {
+              forbidden: {
+                summary: 'Missing permission',
+                value: { success: false, message: 'ليس لديك صلاحية' },
+              },
+              revoked: {
+                summary: 'Revoked enrollment',
+                value: {
+                  success: false,
+                  message:
+                    'تم إلغاء تسجيلك في هذه الدورة ولا يمكنك إعادة التسجيل',
+                },
+              },
+            },
+          },
+        },
+      },
+      404: {
+        description: 'Course not found',
+        content: {
+          'application/json': {
+            schema: deps.ApiErrorSchema,
+            example: {
+              success: false,
+              message: 'هذه الدورة غير موجودة',
+            },
+          },
+        },
+      },
+      429: {
+        description: 'Rate limit exceeded',
+        content: {
+          'application/json': {
+            schema: deps.ApiErrorSchema,
+            example: {
+              success: false,
+              message: 'تم تجاوز حد طلبات التسجيل. حاول مرة أخرى لاحقاً',
+            },
           },
         },
       },
