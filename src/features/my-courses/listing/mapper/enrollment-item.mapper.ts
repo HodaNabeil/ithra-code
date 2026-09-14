@@ -1,10 +1,12 @@
+import { getFirstLectureId } from '@/features/courses/lib/build-learn-href';
 import type { EnrollmentListItemDTO } from '@/features/enrollments';
 import type { EnrollmentItem } from '@/types/course/course.types';
 
 export function mapEnrollmentListItem(
   item: EnrollmentListItemDTO,
 ): EnrollmentItem {
-  const firstLectureId = item.course.firstLectureId;
+  const firstLectureId =
+    getFirstLectureId(item.course.sections) ?? item.course.firstLectureId;
 
   return {
     id: item.course.id,
@@ -23,7 +25,6 @@ export function mapEnrollmentListItem(
       ? new Date(item.progress.lastAccessedAt)
       : new Date(item.enrollment.updatedAt),
     firstLectureId,
-    // Use the actual last-accessed lecture if available, fall back to first lecture for new enrolments.
     lastLectureId: item.progress.lastLectureId ?? firstLectureId,
     lastLectureTitle: undefined,
   };

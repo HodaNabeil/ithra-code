@@ -95,8 +95,8 @@ export const ORDER_ROUTES = {
 export const STUDENT_ROUTES = {
   DASHBOARD: '/student/dashboard',
   MY_COURSES: '/my-courses',
-  COURSE_DETAILS: '/my-courses/:courseSlug',
   LEARN: '/my-courses/:courseSlug/lecture/:lectureId',
+  LEARN_ENTRY: '/my-courses/:courseSlug/lecture',
   CERTIFICATES: '/student/certificates',
   PROGRESS: '/student/progress',
   PROFILE: '/profile',

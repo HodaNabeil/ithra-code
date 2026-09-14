@@ -10,7 +10,7 @@ import {
 import { useUpdateLectureWatchProgress } from '@/features/my-courses/hooks/use-my-courses-mutations';
 import { useCourseLayoutStore } from '@/features/my-courses/[courseSlug]/stores/use-course-layout-store';
 import { LectureVideoPlayer } from './lecture-video-player';
-import { LectureContentTabs } from './lecture-content-tabs';
+import { LectureWorkspace } from './lecture-workspace';
 import { ClientErrorBoundary } from '@/components/shared/client-error-boundary';
 import { Skeleton } from '@/components/ui/skeleton';
 import { APP_ROUTES } from '@/constants/enums';
@@ -145,31 +145,27 @@ export function LecturePlayer({
   const videoSrc = currentLecture?.videoHlsUrl;
 
   return (
-    <div className="flex flex-col gap-8 pb-10">
-      <section aria-label="مشغل الفيديو">
-        {isLectureDetailsError || !currentLecture ? (
-          <LectureNotFoundMessage />
-        ) : !videoSrc ? (
-          <LectureVideoUnavailableMessage />
-        ) : (
-          <ClientErrorBoundary
-            resetKey={lectureId}
-            fallback={<LectureVideoErrorMessage />}
-          >
-            <LectureVideoPlayer
-              videoSrc={videoSrc}
-              lectureId={lectureId}
-              courseSlug={courseSlug}
-              lectureNavigation={lectureNavigation ?? null}
-              onProgress={handleVideoProgress}
-              onEnded={handleVideoEnded}
-            />
-          </ClientErrorBoundary>
-        )}
-      </section>
-
-      <LectureContentTabs />
-    </div>
+    <LectureWorkspace>
+      {isLectureDetailsError || !currentLecture ? (
+        <LectureNotFoundMessage />
+      ) : !videoSrc ? (
+        <LectureVideoUnavailableMessage />
+      ) : (
+        <ClientErrorBoundary
+          resetKey={lectureId}
+          fallback={<LectureVideoErrorMessage />}
+        >
+          <LectureVideoPlayer
+            videoSrc={videoSrc}
+            lectureId={lectureId}
+            courseSlug={courseSlug}
+            lectureNavigation={lectureNavigation ?? null}
+            onProgress={handleVideoProgress}
+            onEnded={handleVideoEnded}
+          />
+        </ClientErrorBoundary>
+      )}
+    </LectureWorkspace>
   );
 }
 
@@ -184,8 +180,8 @@ function LecturePlayerMessage({
     <div
       className={
         variant === 'error'
-          ? 'flex h-[88vh] w-full items-center justify-center border-b border-destructive/20 bg-destructive/10'
-          : 'flex h-[88vh] w-full items-center justify-center border-b border-white/5 bg-black'
+          ? 'flex aspect-video w-full items-center justify-center bg-destructive/10'
+          : 'flex aspect-video w-full items-center justify-center bg-black'
       }
     >
       <p
@@ -224,8 +220,8 @@ function LectureVideoErrorMessage() {
 
 function LecturePlayerSkeleton() {
   return (
-    <div className="flex flex-col gap-8 pb-10 animate-pulse">
-      <div className="w-full aspect-video bg-muted/20 rounded-xl" />
+    <div className="flex flex-col animate-pulse">
+      <div className="aspect-video w-full bg-muted/20" />
       <div className="px-4 space-y-6">
         <div className="space-y-2">
           <Skeleton className="h-8 w-1/3" />
