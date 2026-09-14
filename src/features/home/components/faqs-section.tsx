@@ -25,7 +25,7 @@ export default function FaqsSection({
           {hasError ? (
             <ErrorRetry message={errorMessage} />
           ) : faqs.length === 0 ? (
-            <p className="text-center text-muted-foreground text-sm">
+            <p className="text-center text-muted-foreground text-lg">
               لا توجد أسئلة شائعة حالياً
             </p>
           ) : (

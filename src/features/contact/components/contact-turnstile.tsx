@@ -21,7 +21,6 @@ type TurnstileApi = {
   ) => string;
   remove: (widgetId: string) => void;
   reset: (widgetId: string) => void;
-  ready: (callback: () => void) => void;
 };
 
 declare global {
@@ -65,41 +64,45 @@ export default function ContactTurnstile({
     }
 
     onReadyChangeRef.current?.(false);
-    widgetIdRef.current = window.turnstile.render(containerRef.current, {
-      sitekey: TURNSTILE_SITE_KEY,
-      callback: (token) => {
-        onTokenChangeRef.current(token);
-        onReadyChangeRef.current?.(true);
-      },
-      'expired-callback': () => {
-        onTokenChangeRef.current(null);
-        onReadyChangeRef.current?.(false);
-      },
-      'error-callback': () => {
-        onTokenChangeRef.current(null);
-        onReadyChangeRef.current?.(false);
-      },
-    });
+
+    // next/script injects api.js with async; do not call turnstile.ready().
+    try {
+      widgetIdRef.current = window.turnstile.render(containerRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token) => {
+          onTokenChangeRef.current(token);
+          onReadyChangeRef.current?.(true);
+        },
+        'expired-callback': () => {
+          onTokenChangeRef.current(null);
+          onReadyChangeRef.current?.(false);
+        },
+        'error-callback': () => {
+          onTokenChangeRef.current(null);
+          onReadyChangeRef.current?.(false);
+        },
+      });
+    } catch {
+      widgetIdRef.current = null;
+      onTokenChangeRef.current(null);
+      onReadyChangeRef.current?.(false);
+    }
   }, []);
 
-  const mountWidget = useCallback(() => {
-    if (!window.turnstile) {
-      return;
-    }
-
-    window.turnstile.ready(renderWidget);
-  }, [renderWidget]);
-
   useEffect(() => {
-    mountWidget();
-  }, [mountWidget]);
+    renderWidget();
+  }, [renderWidget]);
 
   useEffect(() => {
     if (resetSignal === 0 || !widgetIdRef.current || !window.turnstile) {
       return;
     }
 
-    window.turnstile.reset(widgetIdRef.current);
+    try {
+      window.turnstile.reset(widgetIdRef.current);
+    } catch {
+      widgetIdRef.current = null;
+    }
     onTokenChangeRef.current(null);
     onReadyChangeRef.current?.(false);
   }, [resetSignal]);
@@ -107,7 +110,11 @@ export default function ContactTurnstile({
   useEffect(() => {
     return () => {
       if (widgetIdRef.current && window.turnstile) {
-        window.turnstile.remove(widgetIdRef.current);
+        try {
+          window.turnstile.remove(widgetIdRef.current);
+        } catch {
+          // Ignore teardown errors so they cannot take down the router.
+        }
         widgetIdRef.current = null;
       }
     };
@@ -120,9 +127,10 @@ export default function ContactTurnstile({
   return (
     <>
       <Script
+        id="cloudflare-turnstile"
         src={TURNSTILE_SCRIPT_SRC}
         strategy="afterInteractive"
-        onLoad={mountWidget}
+        onReady={renderWidget}
       />
       <div
         ref={containerRef}

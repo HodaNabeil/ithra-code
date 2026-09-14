@@ -1,15 +1,21 @@
 import Link from 'next/link';
 import type { CourseListDTO } from '@/types/course/course.dto';
+import { ErrorRetry } from '@/components/shared';
 import SectionHeading from './section-heading';
 import { PUBLIC_ROUTES } from '@/constants/routes';
 import { HomeCourseCard } from './home-course-card';
 
-
 interface FeaturedCoursesProps {
   courses: CourseListDTO[];
+  hasError?: boolean;
+  errorMessage?: string;
 }
 
-export function FeaturedCourses({ courses }: FeaturedCoursesProps) {
+export function FeaturedCourses({
+  courses,
+  hasError,
+  errorMessage,
+}: FeaturedCoursesProps) {
   return (
     <section className="pb-16 md:pb-20 lg:pb-24">
       <div className="container">
@@ -24,7 +30,9 @@ export function FeaturedCourses({ courses }: FeaturedCoursesProps) {
         </p>
 
         <div className="mt-20">
-          {courses.length > 0 ? (
+          {hasError ? (
+            <ErrorRetry message={errorMessage} />
+          ) : courses.length > 0 ? (
             <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto max-w-[calc(350px*3)]">
               {courses.map((course) => (
                 <li
