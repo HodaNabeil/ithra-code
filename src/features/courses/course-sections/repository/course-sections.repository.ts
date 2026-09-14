@@ -18,9 +18,7 @@ export type CourseIdRef = {
 };
 
 export interface CourseSectionsRepository {
-  findCourseIdByIdOrSlug(
-    courseIdOrSlug: string,
-  ): Promise<CourseIdRef | null>;
+  findCourseIdByIdOrSlug(courseIdOrSlug: string): Promise<CourseIdRef | null>;
   findCourseIdentity(
     courseIdOrSlug: string,
   ): Promise<CourseSectionsIdentity | null>;

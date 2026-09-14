@@ -12,7 +12,7 @@ import { formatDuration, formatPrice } from '@/lib/formatters';
 import { getCourseLevelsOptions } from '@/features/courses/lib/course-formatters';
 import type { Course, CourseOverview } from '@/types/course/course.types';
 
-import { AddToCartButton } from '@/features/courses/components/add-to-cart-button';
+import { CoursePurchaseCta } from '@/features/courses/components/course-purchase-cta';
 import { CourseVideoPreview } from './course-video-preview';
 
 interface CoursePricingCardProps {
@@ -79,7 +79,7 @@ export function CoursePricingCard({
           <div className="space-y-3">
             <div className="flex gap-2">
               <div className="flex-1">
-                <AddToCartButton course={course} size="xl" className="w-full" />
+                <CoursePurchaseCta course={course} size="xl" className="w-full" />
               </div>
               {/* <Button variant="outline" size="xl" className="rounded-lg shrink-0">
                 <Heart className="w-5 h-5" />
