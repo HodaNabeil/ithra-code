@@ -3,17 +3,31 @@ import type { Metadata } from 'next';
 import { LegalDocumentLayout } from '@/components/shared/legal-document-layout';
 import { PUBLIC_ROUTES } from '@/constants/routes';
 import { createPageMetadata } from '@/lib/seo/create-page-metadata';
+import { buildStaticWebPageJsonLd } from '@/lib/seo/json-ld/builders/static-webpage';
+import { JsonLd } from '@/lib/seo/json-ld/json-ld';
+
+const TERMS_TITLE = 'شروط الاستخدام';
+const TERMS_DESCRIPTION =
+  'شروط استخدام منصة IthraCode والقواعد المنظمة للوصول إلى الدورات والمحتوى التعليمي.';
 
 export const metadata: Metadata = createPageMetadata({
-  title: 'شروط الاستخدام',
-  description: 'شروط استخدام منصة IthraCode.',
+  title: TERMS_TITLE,
+  description: TERMS_DESCRIPTION,
   path: PUBLIC_ROUTES.TERMS,
 });
 
 export default function TermsPage() {
   return (
     <LegalDocumentLayout>
-      <h1>شروط الاستخدام</h1>
+      <JsonLd
+        id="terms-jsonld"
+        data={buildStaticWebPageJsonLd({
+          path: PUBLIC_ROUTES.TERMS,
+          name: TERMS_TITLE,
+          description: TERMS_DESCRIPTION,
+        })}
+      />
+      <h1>{TERMS_TITLE}</h1>
       <h2>شروط</h2>
       <p>
         من خلال الوصول إلى هذه المنصة، فإنك توافق على الالتزام بشروط الاستخدام

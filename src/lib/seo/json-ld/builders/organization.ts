@@ -3,7 +3,11 @@ import {
   SEO_SITE_ALTERNATE_NAMES,
   SEO_SITE_NAME_AR,
 } from '../../config';
-import { getOrganizationId, toAbsoluteAssetUrl } from '../../urls';
+import {
+  getOrganizationId,
+  getPersonId,
+  toAbsoluteAssetUrl,
+} from '../../urls';
 import type { JsonLdObject } from '../types';
 
 export type OrganizationSchemaInput = {
@@ -27,6 +31,9 @@ export function buildOrganizationSchema(
     logo: {
       '@type': 'ImageObject',
       url: toAbsoluteAssetUrl(input.logoPath ?? SEO_LOGO_PATH, input.origin),
+    },
+    founder: {
+      '@id': getPersonId(input.origin),
     },
     ...(input.sameAs && input.sameAs.length > 0
       ? { sameAs: [...input.sameAs] }

@@ -1,6 +1,7 @@
 import { SEO_LOGO_PATH, SEO_SAME_AS, SEO_SITE_NAME_AR } from '../config';
 import { getSiteOrigin } from '../urls';
 import { buildOrganizationSchema } from './builders/organization';
+import { buildPersonSchema } from './builders/person';
 import {
   buildCourseSearchUrlTemplate,
   buildWebsiteSchema,
@@ -13,6 +14,10 @@ export function getDefaultOrganizationSchema(origin = getSiteOrigin()) {
     logoPath: SEO_LOGO_PATH,
     sameAs: SEO_SAME_AS,
   });
+}
+
+export function getDefaultPersonSchema(origin = getSiteOrigin()) {
+  return buildPersonSchema({ origin });
 }
 
 export function getDefaultWebsiteSchema(origin = getSiteOrigin()) {

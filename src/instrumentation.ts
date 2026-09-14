@@ -18,9 +18,15 @@ export async function register() {
   }
 
   if (process.env.AI_TUTOR_ENABLED === 'true') {
-    const { validateAITutorConfig } =
-      await import('@/features/ai-tutor/infrastructure/config/ai-tutor.config');
+    if (process.env.AI_PLATFORM_ENABLED !== 'true') {
+      console.error(
+        '[instrumentation] AI_TUTOR_ENABLED=true requires AI_PLATFORM_ENABLED=true. Skipping AI Tutor startup so the app can boot.',
+      );
+    } else {
+      const { validateAITutorConfig } =
+        await import('@/features/ai-tutor/infrastructure/config/ai-tutor.config');
 
-    validateAITutorConfig();
+      validateAITutorConfig();
+    }
   }
 }

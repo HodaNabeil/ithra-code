@@ -3,17 +3,31 @@ import type { Metadata } from 'next';
 import { LegalDocumentLayout } from '@/components/shared/legal-document-layout';
 import { PUBLIC_ROUTES } from '@/constants/routes';
 import { createPageMetadata } from '@/lib/seo/create-page-metadata';
+import { buildStaticWebPageJsonLd } from '@/lib/seo/json-ld/builders/static-webpage';
+import { JsonLd } from '@/lib/seo/json-ld/json-ld';
+
+const PRIVACY_TITLE = 'سياسة الخصوصية';
+const PRIVACY_DESCRIPTION =
+  'تعرّف على كيفية جمع منصة IthraCode لمعلوماتك واستخدامها وحمايتها عند استخدام الدورات والخدمات.';
 
 export const metadata: Metadata = createPageMetadata({
-  title: 'سياسة الخصوصية',
-  description: 'سياسة الخصوصية لمنصة IthraCode.',
+  title: PRIVACY_TITLE,
+  description: PRIVACY_DESCRIPTION,
   path: PUBLIC_ROUTES.PRIVACY,
 });
 
 export default function PrivacyPolicyPage() {
   return (
     <LegalDocumentLayout>
-      <h1>سياسة الخصوصية</h1>
+      <JsonLd
+        id="privacy-jsonld"
+        data={buildStaticWebPageJsonLd({
+          path: PUBLIC_ROUTES.PRIVACY,
+          name: PRIVACY_TITLE,
+          description: PRIVACY_DESCRIPTION,
+        })}
+      />
+      <h1>{PRIVACY_TITLE}</h1>
 
       <p>
         تنظم سياسة الخصوصية هذه الطريقة التي تجمع بها المنصة المعلومات التي يتم

@@ -11,6 +11,7 @@ process.env.DATABASE_URL ??=
 process.env.REDIS_URL ??= 'redis://localhost:6379';
 process.env.AUTH_SECRET = 'test-secret-test-secret-test-secret';
 process.env.AUTH_URL = 'http://localhost:3000';
+process.env.NEXT_PUBLIC_APP_URL ??= 'http://localhost:3000';
 process.env.AUTH_GOOGLE_ID = 'test';
 process.env.AUTH_GOOGLE_SECRET = 'test';
 process.env.AUTH_GITHUB_ID = 'test';

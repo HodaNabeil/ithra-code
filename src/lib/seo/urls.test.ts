@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   getOrganizationId,
+  getPersonId,
   getWebsiteId,
   normalizePath,
   toAbsoluteAssetUrl,
@@ -41,5 +42,6 @@ describe('seo urls', () => {
       'https://ithracode.com/#organization',
     );
     expect(getWebsiteId(origin)).toBe('https://ithracode.com/#website');
+    expect(getPersonId(origin)).toBe('https://ithracode.com/#founder');
   });
 });

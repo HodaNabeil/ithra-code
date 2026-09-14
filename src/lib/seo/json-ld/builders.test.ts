@@ -3,10 +3,17 @@ import { describe, expect, it } from 'vitest';
 import { buildBreadcrumbSchema } from './builders/breadcrumb';
 import { buildCourseSchema } from './builders/course';
 import { buildOrganizationSchema } from './builders/organization';
+import { buildPersonSchema } from './builders/person';
+import { buildWebPageSchema } from './builders/webpage';
 import { buildWebsiteSchema } from './builders/website';
-import { getOrganizationId, getWebsiteId } from '../urls';
+import {
+  getOrganizationId,
+  getPersonId,
+  getWebPageId,
+  getWebsiteId,
+} from '../urls';
 
-const origin = 'https://ithracode.com';
+const origin = 'https://ithracode.tech';
 
 describe('schema builders', () => {
   it('builds an Organization with a stable @id', () => {
@@ -23,6 +30,25 @@ describe('schema builders', () => {
       'Ithra Code',
     ]);
     expect(schema.sameAs).toEqual(['https://youtube.com/@ithracode']);
+    expect(schema.founder).toEqual({ '@id': getPersonId(origin) });
+  });
+
+  it('builds a Person with English and Arabic names', () => {
+    const schema = buildPersonSchema({
+      origin,
+      sameAs: ['https://youtube.com/@ithracode'],
+    });
+
+    expect(schema).toMatchObject({
+      '@type': 'Person',
+      '@id': getPersonId(origin),
+      name: 'Hoda Abu Hashima',
+      jobTitle: 'Founder, Owner & Instructor',
+      worksFor: { '@id': getOrganizationId(origin) },
+    });
+    expect(schema.alternateName).toEqual(
+      expect.arrayContaining(['هدي ابوهشيمة', 'Hoda Nabeil']),
+    );
   });
 
   it('adds SearchAction only when a template is provided', () => {
@@ -76,6 +102,25 @@ describe('schema builders', () => {
       '@type': 'AggregateRating',
       ratingValue: 4.5,
       reviewCount: 12,
+    });
+  });
+
+  it('builds a WebPage linked to the website and organization', () => {
+    const schema = buildWebPageSchema({
+      origin,
+      path: '/privacy',
+      name: 'سياسة الخصوصية',
+      description: 'سياسة الخصوصية لمنصة IthraCode.',
+      url: `${origin}/privacy`,
+    });
+
+    expect(schema).toMatchObject({
+      '@type': 'WebPage',
+      '@id': getWebPageId('/privacy', origin),
+      url: `${origin}/privacy`,
+      name: 'سياسة الخصوصية',
+      isPartOf: { '@id': getWebsiteId(origin) },
+      about: { '@id': getOrganizationId(origin) },
     });
   });
 

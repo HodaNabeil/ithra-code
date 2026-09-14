@@ -50,6 +50,10 @@ export function getWebsiteId(origin: string = getSiteOrigin()): string {
   return `${getSiteOrigin(origin)}/#website`;
 }
 
+export function getPersonId(origin: string = getSiteOrigin()): string {
+  return `${getSiteOrigin(origin)}/#founder`;
+}
+
 export function getWebPageId(
   path: string,
   origin: string = getSiteOrigin(),
