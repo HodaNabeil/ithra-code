@@ -34,7 +34,7 @@ export function LectureVideoPlayer({
     <div className="w-full bg-black/5">
       <div className="w-full">
         <div className="w-full relative group">
-          <div className="h-[88vh] w-full bg-black overflow-hidden relative border-b border-white/5">
+          <div className="relative aspect-video w-full overflow-hidden bg-black">
             <VideoPlayer
               src={videoSrc}
               instanceKey={lectureId}

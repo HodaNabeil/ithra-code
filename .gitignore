@@ -25,5 +25,6 @@ eval/reports
 .cursor/
 
 # internal docs (not for public repo)
+.docs/
 docs/
 tsconfig.tsbuildinfo
