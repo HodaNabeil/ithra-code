@@ -1,5 +1,8 @@
 export {
+  SEO_AUTHOR_ALTERNATE_NAMES,
+  SEO_AUTHOR_JOB_TITLE,
   SEO_AUTHOR_NAME,
+  SEO_AUTHOR_NAME_AR,
   SEO_DEFAULT_DESCRIPTION,
   SEO_DEFAULT_TITLE,
   SEO_HOME_KEYWORDS,
@@ -31,6 +34,7 @@ export { buildRobotsConfig, ROBOTS_DISALLOW_PATHS } from './robots';
 export { buildSitemapEntries } from './sitemap';
 export {
   getOrganizationId,
+  getPersonId,
   getSiteOrigin,
   getWebPageId,
   getWebsiteId,

@@ -1,3 +1,4 @@
+import { Star } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -9,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ErrorRetry } from '@/components/shared';
 import SectionHeading from './section-heading';
 import { TestimonialQuoteIcon } from './testimonial-quote-icon';
+
+const MAX_RATING = 5;
 
 interface Testimonial {
   id: string;
@@ -52,6 +55,10 @@ export default function TestimonialSection({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 w-full">
             {items.map((testimonial) => {
               const avatarSrc = testimonial.avatarUrl || testimonial.avatar;
+              const rating = Math.min(
+                MAX_RATING,
+                Math.max(0, testimonial.rating ?? 0),
+              );
 
               return (
                 <Card key={testimonial.id} className="testimonial-card h-full">
@@ -82,6 +89,24 @@ export default function TestimonialSection({
                       <CardTitle className="truncate font-semibold">
                         {testimonial.name}
                       </CardTitle>
+                      <div
+                        className="mt-1 flex justify-end gap-0.5"
+                        aria-label={`التقييم ${rating} من ${MAX_RATING}`}
+                      >
+                        {Array.from({ length: MAX_RATING }, (_, index) => {
+                          const filled = index < rating;
+                          return (
+                            <Star
+                              key={index}
+                              className={
+                                filled
+                                  ? 'size-4 fill-star text-star'
+                                  : 'size-4 text-star/30'
+                              }
+                            />
+                          );
+                        })}
+                      </div>
                     </div>
                   </CardFooter>
                 </Card>

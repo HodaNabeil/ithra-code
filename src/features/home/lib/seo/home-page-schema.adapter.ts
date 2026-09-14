@@ -8,6 +8,7 @@ import { buildFaqSchema } from '@/lib/seo/json-ld/builders/faq';
 import { buildWebPageSchema } from '@/lib/seo/json-ld/builders/webpage';
 import {
   getDefaultOrganizationSchema,
+  getDefaultPersonSchema,
   getDefaultWebsiteSchema,
 } from '@/lib/seo/json-ld/defaults';
 
@@ -18,6 +19,7 @@ export function buildHomePageJsonLd(faqs: FaqItem[]) {
 
   return buildJsonLdGraph([
     getDefaultOrganizationSchema(origin),
+    getDefaultPersonSchema(origin),
     getDefaultWebsiteSchema(origin),
     buildWebPageSchema({
       origin,

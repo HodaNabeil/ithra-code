@@ -2,6 +2,7 @@ import { getAllCoursesForSitemap } from '@/features/courses/services/course.serv
 import { getAllPathsForSitemap } from '@/features/learning-paths/services/path.queries';
 import { env } from '@/config/env';
 import { APP_ROUTES } from '@/constants/enums';
+import { PUBLIC_ROUTES } from '@/constants/routes';
 import { isSeoIndexingEnabled } from '@/lib/seo/environment';
 import { buildSitemapEntries } from '@/lib/seo/sitemap';
 import { getSiteOrigin } from '@/lib/seo/urls';
@@ -10,10 +11,13 @@ import type { MetadataRoute } from 'next';
 export const revalidate = 3600;
 
 const STATIC_SITEMAP_PATHS = [
-  APP_ROUTES.ROOT,
-  APP_ROUTES.COURSES,
-  APP_ROUTES.LEARNING_PATHS,
-  APP_ROUTES.CONTACT,
+  PUBLIC_ROUTES.HOME,
+  PUBLIC_ROUTES.COURSES,
+  PUBLIC_ROUTES.LEARNING_PATHS,
+  PUBLIC_ROUTES.CONTACT,
+  PUBLIC_ROUTES.ABOUT,
+  PUBLIC_ROUTES.PRIVACY,
+  PUBLIC_ROUTES.TERMS,
 ] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

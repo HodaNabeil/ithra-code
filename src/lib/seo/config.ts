@@ -18,7 +18,7 @@ export const SEO_HTML_LANGUAGE = 'ar';
 export const SEO_DEFAULT_TITLE = 'تعلم البرمجة من الواقع';
 
 export const SEO_DEFAULT_DESCRIPTION =
-  'منصة تعليمية عربية لتعلم البرمجة من خلال تجارب وخبرات واقعية من الشركات. مصممة للمبتدئين والمطورين المتوسطين مع Hoda Abu Hashima.';
+  'منصة تعليمية عربية لتعلم البرمجة من خلال تجارب وخبرات واقعية من الشركات، بقيادة هدي ابوهشيمة (Hoda Abu Hashima).';
 
 export const SEO_LOGO_PATH = '/img/ithracode.png';
 
@@ -28,7 +28,16 @@ export const SEO_OG_IMAGE_HEIGHT = 630;
 
 export const SEO_TWITTER_SITE = '@ithracode';
 
+/** Public English name shown above the Arabic name. */
 export const SEO_AUTHOR_NAME = 'Hoda Abu Hashima';
+
+/** Public Arabic name. */
+export const SEO_AUTHOR_NAME_AR = 'هدي ابوهشيمة';
+
+/** Extra Latin spelling for search only. */
+export const SEO_AUTHOR_ALTERNATE_NAMES = ['Hoda Nabeil'] as const;
+
+export const SEO_AUTHOR_JOB_TITLE = 'Founder, Owner & Instructor';
 
 export const SEO_HOME_KEYWORDS = [
   'تعلم البرمجة',
@@ -37,6 +46,8 @@ export const SEO_HOME_KEYWORDS = [
   'JavaScript',
   'تطوير الويب',
   'ithracode',
+  SEO_AUTHOR_NAME,
+  SEO_AUTHOR_NAME_AR,
 ] as const;
 
 /**

@@ -3,44 +3,46 @@ import type { Metadata } from 'next';
 import { Link } from '@/components/shared/link';
 import { LegalDocumentLayout } from '@/components/shared/legal-document-layout';
 import { PUBLIC_ROUTES } from '@/constants/routes';
-import { toMetaDescription } from '@/lib/seo/description';
-import { JsonLd } from '@/lib/seo/json-ld/json-ld';
-import { buildWebPageSchema } from '@/lib/seo/json-ld/builders/webpage';
-import { getDefaultOrganizationSchema } from '@/lib/seo/json-ld/defaults';
-import { buildJsonLdGraph } from '@/lib/seo/json-ld/types';
+import {
+  SEO_AUTHOR_JOB_TITLE,
+  SEO_AUTHOR_NAME,
+  SEO_AUTHOR_NAME_AR,
+} from '@/lib/seo/config';
 import { createPageMetadata } from '@/lib/seo/create-page-metadata';
-import { getSiteOrigin, toCanonicalUrl } from '@/lib/seo/urls';
+import { buildStaticWebPageJsonLd } from '@/lib/seo/json-ld/builders/static-webpage';
+import { JsonLd } from '@/lib/seo/json-ld/json-ld';
 
 const ABOUT_TITLE = 'من نحن';
-const ABOUT_DESCRIPTION =
-  'تعرّف على IthraCode — منصة تعليمية عربية لتعلم البرمجة من خلال تجارب وخبرات واقعية.';
+const ABOUT_DESCRIPTION = `تعرّف على IthraCode بقيادة ${SEO_AUTHOR_NAME_AR} (${SEO_AUTHOR_NAME}) — المؤسسة والمالكة والمدرّبة.`;
 
-export const metadata: Metadata = createPageMetadata({
-  title: ABOUT_TITLE,
-  description: ABOUT_DESCRIPTION,
-  path: PUBLIC_ROUTES.ABOUT,
-});
-
-function buildAboutPageJsonLd() {
-  const origin = getSiteOrigin();
-  const url = toCanonicalUrl(PUBLIC_ROUTES.ABOUT);
-
-  return buildJsonLdGraph([
-    getDefaultOrganizationSchema(origin),
-    buildWebPageSchema({
-      origin,
-      path: PUBLIC_ROUTES.ABOUT,
-      name: ABOUT_TITLE,
-      description: toMetaDescription(ABOUT_DESCRIPTION),
-      url,
-    }),
-  ]);
-}
+export const metadata: Metadata = {
+  ...createPageMetadata({
+    title: ABOUT_TITLE,
+    description: ABOUT_DESCRIPTION,
+    path: PUBLIC_ROUTES.ABOUT,
+    keywords: [
+      SEO_AUTHOR_NAME,
+      SEO_AUTHOR_NAME_AR,
+      'مؤسسة IthraCode',
+      'مدربة برمجة',
+    ],
+  }),
+  authors: [{ name: SEO_AUTHOR_NAME }, { name: SEO_AUTHOR_NAME_AR }],
+  creator: SEO_AUTHOR_NAME,
+};
 
 export default function AboutPage() {
   return (
     <LegalDocumentLayout>
-      <JsonLd id="about-jsonld" data={buildAboutPageJsonLd()} />
+      <JsonLd
+        id="about-jsonld"
+        data={buildStaticWebPageJsonLd({
+          path: PUBLIC_ROUTES.ABOUT,
+          name: ABOUT_TITLE,
+          description: ABOUT_DESCRIPTION,
+          includeFounder: true,
+        })}
+      />
       <h1>{ABOUT_TITLE}</h1>
 
       <p>
@@ -72,8 +74,8 @@ export default function AboutPage() {
 
       <h2>مدرّبتك</h2>
       <p>
-        تقود المنصة <strong>Hoda Abu Hashima</strong> — المؤسسة والمدرّبة
-        الرئيسية (Founder &amp; Instructor). هدى مطوّرة واجهات أمامية
+        تقود المنصة <strong>{SEO_AUTHOR_NAME}</strong> — المؤسسة والمالكة
+        والمدرّبة الرئيسية ({SEO_AUTHOR_JOB_TITLE}). هدي مطوّرة واجهات أمامية
         (Frontend Engineer) متخصّصة في تصميم وبناء تطبيقات ويب حديثة وعالية
         الأداء وقابلة للتوسّع، بخبرة في React وNext.js وTypeScript، إلى جانب
         خلفية برمجية في C++ وJava. عملت كمدرّبة تقنية في عدد من المؤسسات

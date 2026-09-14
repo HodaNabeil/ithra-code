@@ -502,7 +502,6 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: z
       .string()
       .url()
-      .default('http://localhost:3000')
       .describe('Next.js app public URL'),
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: z
       .string()
