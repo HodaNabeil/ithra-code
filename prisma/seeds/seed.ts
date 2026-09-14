@@ -164,7 +164,7 @@ async function main() {
       thumbnailUrl:
         'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800',
       previewVideo: null,
-      price: 1,
+      price: 20,
       compareAtPrice: 499.0,
       currency: 'USD',
       level: CourseLevel.INTERMEDIATE,
@@ -232,7 +232,7 @@ async function main() {
       thumbnailUrl:
         'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800',
       previewVideo: null,
-      price: 1,
+      price: 20,
       compareAtPrice: 499.0,
       currency: 'USD',
       level: CourseLevel.INTERMEDIATE,
