@@ -4,6 +4,7 @@ import {
   CourseLevel,
   CourseStatus,
   CourseVisibility,
+  EnrollmentStatus,
   PrismaClient,
   Role,
 } from '@prisma/client';
@@ -26,38 +27,29 @@ const prisma = new PrismaClient({
   adapter,
 });
 
+const INSTRUCTOR_EMAIL = 'instructor@ithracode.com';
+const ENROLLED_STUDENT_EMAIL = 'hodanabeil67@gmail.com';
+const ENGINEERING_PATH_SLUG = 'engineering-decisions';
+const ADVANCED_FRONTEND_TRACK_SLUG = 'advanced-frontend-track';
+const ENGINEERING_COURSE_SLUG = 'engineering-decisions';
+
 async function main() {
   console.log('🌱 Starting Engineering Decisions database seeding...');
+  console.log('ℹ️  Preserving existing users and FAQs');
 
-  console.log('🧹 Cleaning existing data...');
-
-  await prisma.progress.deleteMany();
-  await prisma.enrollment.deleteMany();
-  await prisma.session.deleteMany();
-  await prisma.attachment.deleteMany();
-  await prisma.lecture.deleteMany();
-  await prisma.section.deleteMany();
-  await prisma.cartItem.deleteMany();
-  await prisma.cart.deleteMany();
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.coupon.deleteMany();
-  await prisma.review.deleteMany();
-  await prisma.faq.deleteMany();
-  await prisma.testimonial.deleteMany();
-  await prisma.videoCollection.deleteMany();
-  await prisma.course.deleteMany();
-  await prisma.track.deleteMany();
-  await prisma.path.deleteMany();
-  await prisma.user.deleteMany();
-
-  console.log('👤 Creating instructor user...');
+  console.log('👤 Upserting instructor user...');
 
   const instructorPassword = await bcrypt.hash('Instructor@123', 10);
 
-  const instructor = await prisma.user.create({
-    data: {
-      email: 'instructor@ithracode.com',
+  const instructor = await prisma.user.upsert({
+    where: { email: INSTRUCTOR_EMAIL },
+    update: {
+      role: Role.INSTRUCTOR,
+      isEmailVerified: true,
+      isActive: true,
+    },
+    create: {
+      email: INSTRUCTOR_EMAIL,
       password: instructorPassword,
       firstName: 'Ithra',
       lastName: 'Instructor',
@@ -70,247 +62,274 @@ async function main() {
     },
   });
 
-  console.log('🧭 Creating Engineering Decisions path...');
+  console.log('🧭 Upserting Engineering Decisions path...');
 
-  const engineeringPath = await prisma.path.create({
-    data: {
+  const engineeringPath = await prisma.path.upsert({
+    where: { slug: ENGINEERING_PATH_SLUG },
+    update: {
       title: 'Engineering Decisions',
-
-      slug: 'engineering-decisions',
-
       tagline:
-        'Learn how engineers think, evaluate trade-offs, and make better technical decisions.',
-
+        'انتقل من كتابة واجهات إلى تصميم Frontend Architecture قابل للتوسع والأداء.',
       shortDescription:
-        'A practical engineering path focused on making better technical decisions from idea to production.',
-
+        'مسار Frontend Architecture يركز على Design Systems و Rendering و Performance و Production.',
       description:
-        'Engineering Decisions is a practical learning path about how software engineers think when building real applications. Explore how to move from requirements to architecture, design data and APIs, structure frontend applications, handle authentication and authorization, evaluate performance and scalability, and make reliable deployment and production decisions. The focus is not on one technology or one type of application, but on understanding the reasoning, trade-offs, constraints, and consequences behind engineering decisions.',
-
+        'هذا المسار صُمم لينقلك إلى مستوى Frontend Architect. التركيز ليس على مجرد كتابة كود، بل على كيفية تصميم وبناء Infrastructure برمجية قوية، قابلة للتوسع (Scalable)، وفائقة الأداء للتطبيقات والمنصات التجارية الضخمة (Enterprise Applications). ستتعلم تحويل تصاميم Figma إلى Design System مستدام باستخدام Tailwind CSS و Shadcn UI، واتخاذ قرارات Rendering و State Management مع SSR و CSR و Zustand و TanStack React Query، وتحسين Core Web Vitals و Technical SEO، وصولاً إلى Frontend DevOps و Telemetry عبر Docker و GitHub Actions و Sentry و New Relic و Google Tag Manager.',
       thumbnailUrl:
         'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800',
-
       category: 'WEB',
-
       icon: '🧭',
-
       isPublished: true,
-
       sortOrder: 1,
-
       metaTitle: 'Engineering Decisions | IthraCode',
-
       metaDescription:
-        'Learn how software engineers make technical decisions across architecture, APIs, databases, frontend, security, performance, and production.',
+        'Learn frontend architecture decisions across design systems, rendering, Next.js, performance, and production.',
+    },
+    create: {
+      title: 'Engineering Decisions',
+      slug: ENGINEERING_PATH_SLUG,
+      tagline:
+        'انتقل من كتابة واجهات إلى تصميم Frontend Architecture قابل للتوسع والأداء.',
+      shortDescription:
+        'مسار Frontend Architecture يركز على Design Systems و Rendering و Performance و Production.',
+      description:
+        'هذا المسار صُمم لينقلك إلى مستوى Frontend Architect. التركيز ليس على مجرد كتابة كود، بل على كيفية تصميم وبناء Infrastructure برمجية قوية، قابلة للتوسع (Scalable)، وفائقة الأداء للتطبيقات والمنصات التجارية الضخمة (Enterprise Applications). ستتعلم تحويل تصاميم Figma إلى Design System مستدام باستخدام Tailwind CSS و Shadcn UI، واتخاذ قرارات Rendering و State Management مع SSR و CSR و Zustand و TanStack React Query، وتحسين Core Web Vitals و Technical SEO، وصولاً إلى Frontend DevOps و Telemetry عبر Docker و GitHub Actions و Sentry و New Relic و Google Tag Manager.',
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800',
+      category: 'WEB',
+      icon: '🧭',
+      isPublished: true,
+      sortOrder: 1,
+      metaTitle: 'Engineering Decisions | IthraCode',
+      metaDescription:
+        'Learn frontend architecture decisions across design systems, rendering, Next.js, performance, and production.',
     },
   });
 
-  console.log('📚 Creating Engineering Decisions course...');
+  console.log('🛤️ Upserting frontend track...');
 
-  const course = await prisma.course.create({
-    data: {
-      instructorId: instructor.id,
-
+  const advancedFrontendTrack = await prisma.track.upsert({
+    where: { slug: ADVANCED_FRONTEND_TRACK_SLUG },
+    update: {
       pathId: engineeringPath.id,
-
-      title: 'Engineering Decisions',
-
-      slug: 'engineering-decisions',
-
-      description:
-        'How do engineers decide what to build, how to structure it, which technologies to use, and when a solution is good enough for production? This course explores the thinking process behind real-world software engineering decisions. You will learn how to move from requirements to architecture, evaluate different approaches, understand technical trade-offs, design databases and APIs, structure frontend applications, handle authentication and authorization, think about performance and scalability, and prepare applications for production. Instead of presenting one "best" solution, the course focuses on how to evaluate options, understand constraints, communicate decisions, and learn from what happens after the system is shipped.',
-
+      title: 'Advanced Frontend Track',
       shortDescription:
-        'Learn how engineers evaluate options, understand trade-offs, and make technical decisions from idea to production.',
+        'Frontend architecture, rendering, performance, and production operations for enterprise applications.',
+      description:
+        'هذا التراك صُمم خصيصاً ليتجاوز حدود التطوير التقليدي، لينتقل بك إلى مستوى Frontend Architect. التركيز هنا ليس على مجرد كتابة كود، بل على كيفية تصميم وبناء Infrastructure برمجية قوية، قابلة للتوسع (Scalable)، وفائقة الأداء للتطبيقات والمنصات التجارية الضخمة (Enterprise Applications).\n\n1. معمارية الأنظمة المرئية (Visual Architecture): كيفية تحويل تصاميم Figma المعقدة إلى Design System مرن ومستدام باستخدام أدوات حديثة مثل Tailwind CSS و Shadcn UI لتوحيد الـ UI Components.\n\n2. استراتيجيات الرندر وإدارة الحالات (Rendering & State Engineering): فهم عميق لآليات الرندر الحديثة مثل Server-Side Rendering (SSR) و Client-Side Rendering (CSR)، وحل المعضلات المعمارية المعقدة مثل أخطاء الـ Hydration Mismatch، وإدارة الـ Global State بكفاءة عالية باستخدام Zustand.\n\n3. السيو التقني وتحسين الأداء (Technical SEO & Web Performance): هندسة الأداء لانتزاع تفوق كامل في مؤشرات Google Core Web Vitals (مثل LCP, INP, CLS)، وإعداد الـ Dynamic Sitemaps و JSON-LD Schema، وبناء استراتيجيات Caching ذكية للبيانات عبر TanStack React Query.\n\n4. عمليات الواجهة الأمامية والمراقبة (Frontend DevOps & Telemetry): أتمتة دورة حياة الكود من خلال التغليف باستخدام Docker وبناء خطوط أتمتة (CI/CD Pipelines) عبر GitHub Actions، وربط أنظمة الـ Telemetry لرصد الأخطاء والأداء حياً في بيئة الـ Production باستخدام Sentry و New Relic، بالإضافة إلى إدارة أدوات التتبع والتسويق عبر Google Tag Manager.',
+      category: 'WEB',
+      icon: '🎨',
+      isPublished: true,
+      sortOrder: 1,
+      metaTitle: 'Advanced Frontend Track | IthraCode',
+      metaDescription:
+        'Learn frontend architecture, rendering, SEO, performance, Docker, CI/CD, and production telemetry decisions.',
+    },
+    create: {
+      pathId: engineeringPath.id,
+      title: 'Advanced Frontend Track',
+      slug: ADVANCED_FRONTEND_TRACK_SLUG,
+      shortDescription:
+        'Frontend architecture, rendering, performance, and production operations for enterprise applications.',
+      description:
+        'هذا التراك صُمم خصيصاً ليتجاوز حدود التطوير التقليدي، لينتقل بك إلى مستوى Frontend Architect. التركيز هنا ليس على مجرد كتابة كود، بل على كيفية تصميم وبناء Infrastructure برمجية قوية، قابلة للتوسع (Scalable)، وفائقة الأداء للتطبيقات والمنصات التجارية الضخمة (Enterprise Applications).\n\n1. معمارية الأنظمة المرئية (Visual Architecture): كيفية تحويل تصاميم Figma المعقدة إلى Design System مرن ومستدام باستخدام أدوات حديثة مثل Tailwind CSS و Shadcn UI لتوحيد الـ UI Components.\n\n2. استراتيجيات الرندر وإدارة الحالات (Rendering & State Engineering): فهم عميق لآليات الرندر الحديثة مثل Server-Side Rendering (SSR) و Client-Side Rendering (CSR)، وحل المعضلات المعمارية المعقدة مثل أخطاء الـ Hydration Mismatch، وإدارة الـ Global State بكفاءة عالية باستخدام Zustand.\n\n3. السيو التقني وتحسين الأداء (Technical SEO & Web Performance): هندسة الأداء لانتزاع تفوق كامل في مؤشرات Google Core Web Vitals (مثل LCP, INP, CLS)، وإعداد الـ Dynamic Sitemaps و JSON-LD Schema، وبناء استراتيجيات Caching ذكية للبيانات عبر TanStack React Query.\n\n4. عمليات الواجهة الأمامية والمراقبة (Frontend DevOps & Telemetry): أتمتة دورة حياة الكود من خلال التغليف باستخدام Docker وبناء خطوط أتمتة (CI/CD Pipelines) عبر GitHub Actions، وربط أنظمة الـ Telemetry لرصد الأخطاء والأداء حياً في بيئة الـ Production باستخدام Sentry و New Relic، بالإضافة إلى إدارة أدوات التتبع والتسويق عبر Google Tag Manager.',
+      category: 'WEB',
+      icon: '🎨',
+      isPublished: true,
+      sortOrder: 1,
+      metaTitle: 'Advanced Frontend Track | IthraCode',
+      metaDescription:
+        'Learn frontend architecture, rendering, SEO, performance, Docker, CI/CD, and production telemetry decisions.',
+    },
+  });
 
+  console.log('📚 Upserting Engineering Decisions course...');
+
+  const course = await prisma.course.upsert({
+    where: { slug: ENGINEERING_COURSE_SLUG },
+    update: {
+      instructorId: instructor.id,
+      pathId: engineeringPath.id,
+      trackId: advancedFrontendTrack.id,
+      title: 'Engineering Decisions',
+      description:
+        'How do frontend engineers decide how to structure UI, choose rendering strategies, manage state, optimize performance, and ship interfaces to production? This course explores the thinking process behind real-world frontend engineering decisions across Design Systems, Tailwind CSS, Shadcn UI, Next.js, SSR, CSR, Hydration, Zustand, TanStack React Query, Core Web Vitals, Technical SEO, Docker, CI/CD, and frontend telemetry. Instead of presenting one "best" solution, the course focuses on how to evaluate options, understand constraints, communicate decisions, and learn from what happens after the UI reaches production.',
+      shortDescription:
+        'Master frontend engineering decisions from design systems and rendering to performance and production.',
       thumbnailUrl:
         'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800',
-
-      previewVideo:
-        'https://example.com/videos/engineering-decisions-preview.mp4',
-
-      price: 20.0,
-
+      previewVideo: null,
+      price: 0,
       compareAtPrice: 499.0,
-
       currency: 'USD',
-
       level: CourseLevel.INTERMEDIATE,
-
       status: CourseStatus.PUBLISHED,
-
       visibility: CourseVisibility.PUBLIC,
-
       publishedAt: new Date(),
-
       isFeatured: true,
-
-      duration: 0,
-
       requirements: [
         'Basic programming knowledge',
         'Basic understanding of web applications',
-        'Familiarity with at least one programming language',
-        'No specific framework or technology is required',
+        'Basic JavaScript knowledge',
       ],
-
       objectives: [
-        'Understand how engineers move from requirements to technical decisions',
-        'Evaluate multiple solutions using constraints and trade-offs',
-        'Design application architecture based on real requirements',
-        'Understand the reasoning behind database and API design decisions',
-        'Structure frontend applications for maintainability and scalability',
-        'Make informed authentication, authorization, security, and performance decisions',
-        'Understand how engineering decisions affect production and operations',
-        'Communicate technical decisions clearly with other engineers and stakeholders',
-        'Recognize when to keep a solution simple and when additional complexity is justified',
-        'Learn how architecture evolves as an application, team, and requirements grow',
+        'Build scalable frontend architecture with Tailwind CSS and Shadcn UI',
+        'Translate Figma designs into maintainable design systems and UI infrastructure',
+        'Choose rendering and state strategies using SSR, CSR, Zustand, and React Query',
+        'Apply Next.js frontend architecture decisions with App Router and Server Components',
+        'Improve Technical SEO, Core Web Vitals, and frontend performance budgets',
+        'Make production decisions around Docker, CI/CD, Sentry, New Relic, and GTM',
+        'Communicate frontend technical decisions clearly with engineers and stakeholders',
+        'Recognize when to keep a UI solution simple and when additional complexity is justified',
+        'Understand how frontend architecture evolves as products, teams, and requirements grow',
+        'Evaluate frontend trade-offs in enterprise and high-traffic applications',
       ],
-
       targetAudience: [
-        'Software developers who want to improve their engineering decision-making',
-        'Frontend developers who want to understand systems beyond the UI',
-        'Backend developers who want a structured approach to technical decisions',
-        'Developers preparing for technical interviews',
-        'Engineers working on real-world applications',
-        'Developers moving from implementation-focused work toward broader engineering thinking',
+        'Frontend developers who want stronger architecture and decision-making skills',
+        'React developers moving from component building toward frontend engineering',
+        'JavaScript developers preparing for frontend architecture interviews',
+        'UI engineers working on SaaS, E-Commerce, and enterprise web platforms',
+        'Developers who use Next.js and want deeper rendering and performance decisions',
+        'Engineers who want to understand frontend production operations and telemetry',
       ],
-
       tags: [
+        'javascript',
+        'frontend',
+        'react',
+        'nextjs',
         'engineering',
         'software-engineering',
-        'architecture',
-        'system-design',
-        'api-design',
-        'database-design',
         'frontend-architecture',
+        'design-systems',
+        'rendering',
+        'performance',
+        'technical-seo',
         'decision-making',
         'trade-offs',
         'production',
       ],
-
-      metaTitle: 'Engineering Decisions - From Idea to Production | IthraCode',
-
+      metaTitle: 'Engineering Decisions - Frontend Architecture | IthraCode',
       metaDescription:
-        'Learn how engineers make technical decisions from idea to production through architecture, database design, APIs, frontend architecture, security, performance, and real-world trade-offs.',
-
+        'Learn frontend engineering decisions across design systems, Next.js, rendering, performance, and production.',
       certificateEnabled: true,
-
+      maxStudents: 500,
+    },
+    create: {
+      instructorId: instructor.id,
+      pathId: engineeringPath.id,
+      trackId: advancedFrontendTrack.id,
+      title: 'Engineering Decisions',
+      slug: ENGINEERING_COURSE_SLUG,
+      description:
+        'How do frontend engineers decide how to structure UI, choose rendering strategies, manage state, optimize performance, and ship interfaces to production? This course explores the thinking process behind real-world frontend engineering decisions across Design Systems, Tailwind CSS, Shadcn UI, Next.js, SSR, CSR, Hydration, Zustand, TanStack React Query, Core Web Vitals, Technical SEO, Docker, CI/CD, and frontend telemetry. Instead of presenting one "best" solution, the course focuses on how to evaluate options, understand constraints, communicate decisions, and learn from what happens after the UI reaches production.',
+      shortDescription:
+        'Master frontend engineering decisions from design systems and rendering to performance and production.',
+      thumbnailUrl:
+        'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800',
+      previewVideo: null,
+      price: 0,
+      compareAtPrice: 499.0,
+      currency: 'USD',
+      level: CourseLevel.INTERMEDIATE,
+      status: CourseStatus.PUBLISHED,
+      visibility: CourseVisibility.PUBLIC,
+      publishedAt: new Date(),
+      isFeatured: true,
+      duration: 0,
+      requirements: [
+        'Basic programming knowledge',
+        'Basic understanding of web applications',
+        'Basic JavaScript knowledge',
+      ],
+      objectives: [
+        'Build scalable frontend architecture with Tailwind CSS and Shadcn UI',
+        'Translate Figma designs into maintainable design systems and UI infrastructure',
+        'Choose rendering and state strategies using SSR, CSR, Zustand, and React Query',
+        'Apply Next.js frontend architecture decisions with App Router and Server Components',
+        'Improve Technical SEO, Core Web Vitals, and frontend performance budgets',
+        'Make production decisions around Docker, CI/CD, Sentry, New Relic, and GTM',
+        'Communicate frontend technical decisions clearly with engineers and stakeholders',
+        'Recognize when to keep a UI solution simple and when additional complexity is justified',
+        'Understand how frontend architecture evolves as products, teams, and requirements grow',
+        'Evaluate frontend trade-offs in enterprise and high-traffic applications',
+      ],
+      targetAudience: [
+        'Frontend developers who want stronger architecture and decision-making skills',
+        'React developers moving from component building toward frontend engineering',
+        'JavaScript developers preparing for frontend architecture interviews',
+        'UI engineers working on SaaS, E-Commerce, and enterprise web platforms',
+        'Developers who use Next.js and want deeper rendering and performance decisions',
+        'Engineers who want to understand frontend production operations and telemetry',
+      ],
+      tags: [
+        'javascript',
+        'frontend',
+        'react',
+        'nextjs',
+        'engineering',
+        'software-engineering',
+        'frontend-architecture',
+        'design-systems',
+        'rendering',
+        'performance',
+        'technical-seo',
+        'decision-making',
+        'trade-offs',
+        'production',
+      ],
+      metaTitle: 'Engineering Decisions - Frontend Architecture | IthraCode',
+      metaDescription:
+        'Learn frontend engineering decisions across design systems, Next.js, rendering, performance, and production.',
+      certificateEnabled: true,
       maxStudents: 500,
     },
   });
 
-  console.log('❓ Creating FAQs...');
+  console.log(`🎓 Ensuring enrollment for ${ENROLLED_STUDENT_EMAIL}...`);
 
-  await prisma.faq.createMany({
-    data: [
-      {
-        question: 'ما هو موضوع الكورس؟',
+  const enrolledStudentPassword = await bcrypt.hash('Student@123', 10);
 
-        answer:
-          'الكورس يركز على طريقة التفكير الهندسي عند بناء التطبيقات، بدايةً من فهم المتطلبات واختيار الـArchitecture، مرورًا بتصميم الـDatabase والـAPIs والـFrontend والـSecurity والـPerformance، وحتى الـDeployment والـProduction.',
+  const enrolledStudent = await prisma.user.upsert({
+    where: { email: ENROLLED_STUDENT_EMAIL },
+    update: {
+      isEmailVerified: true,
+      isActive: true,
+    },
+    create: {
+      email: ENROLLED_STUDENT_EMAIL,
+      password: enrolledStudentPassword,
+      firstName: 'Hoda',
+      lastName: 'Nabeil',
+      role: Role.STUDENT,
+      isEmailVerified: true,
+      isActive: true,
+      timezone: 'Asia/Riyadh',
+      language: 'ar',
+    },
+  });
 
-        sortOrder: 1,
-
-        isActive: true,
+  await prisma.enrollment.upsert({
+    where: {
+      studentId_courseId: {
+        studentId: enrolledStudent.id,
+        courseId: course.id,
       },
-
-      {
-        question: 'هل الكورس مرتبط بنوع معين من التطبيقات؟',
-
-        answer:
-          'لا. المبادئ التي يتم شرحها عامة ويمكن تطبيقها على أنواع مختلفة من التطبيقات مثل SaaS وE-commerce وBooking وCRM وEdTech وغيرها. سيتم استخدام أمثلة واقعية لتوضيح طريقة التفكير والقرارات الهندسية.',
-
-        sortOrder: 2,
-
-        isActive: true,
-      },
-
-      {
-        question: 'هل الكورس مرتبط بتكنولوجيا معينة؟',
-
-        answer:
-          'لا. الهدف ليس تعلم Framework أو Technology معينة، وإنما فهم كيفية تقييم الخيارات واختيار الحل المناسب بناءً على المتطلبات والـConstraints والـTrade-offs.',
-
-        sortOrder: 3,
-
-        isActive: true,
-      },
-
-      {
-        question: 'هل الكورس مناسب للمبتدئين؟',
-
-        answer:
-          'الكورس مناسب أكثر لمن لديهم أساسيات البرمجة وتطوير التطبيقات. لا تحتاج إلى خبرة متقدمة، لكن من المفيد أن تكون لديك خبرة بسيطة في بناء تطبيقات أو التعامل مع APIs وقواعد البيانات.',
-
-        sortOrder: 4,
-
-        isActive: true,
-      },
-
-      {
-        question: 'هل الكورس يشرح System Design؟',
-
-        answer:
-          'يتناول الكورس العديد من مفاهيم الـSystem Design والـSoftware Architecture، لكنه لا يركز على حفظ تصميمات جاهزة. التركيز الأساسي هو فهم المشكلة، مقارنة الحلول، تحليل الـTrade-offs، واتخاذ القرار المناسب.',
-
-        sortOrder: 5,
-
-        isActive: true,
-      },
-
-      {
-        question: 'هل الكورس مناسب للـFrontend Developers؟',
-
-        answer:
-          'نعم. الكورس يساعد الـFrontend Developers على فهم الصورة الكاملة للتطبيق، وكيف تؤثر قرارات الـAPI والـDatabase والـAuthentication والـPerformance والـInfrastructure على الـFrontend وتجربة المستخدم.',
-
-        sortOrder: 6,
-
-        isActive: true,
-      },
-
-      {
-        question: 'هل الكورس مفيد للـTechnical Interviews؟',
-
-        answer:
-          'نعم. يساعدك الكورس على تطوير طريقة التفكير في أسئلة الـArchitecture والـSystem Design والـTrade-offs، والأهم هو تعلم كيفية شرح سبب اختيار حل تقني معين بدلًا من مجرد ذكر الحل.',
-
-        sortOrder: 7,
-
-        isActive: true,
-      },
-
-      {
-        question: 'هل سأتعلم بناء مشروع كامل؟',
-
-        answer:
-          'التركيز الأساسي ليس على بناء مشروع CRUD واحد، وإنما على فهم القرارات الهندسية التي تظهر أثناء بناء التطبيقات الحقيقية. سيتم استخدام Case Studies وأمثلة واقعية لشرح كيف تنتقل القرارات من الفكرة إلى الـProduction.',
-
-        sortOrder: 8,
-
-        isActive: true,
-      },
-
-      {
-        question: 'هل هناك حل واحد صحيح لكل Engineering Decision؟',
-
-        answer:
-          'لا. في الـSoftware Engineering غالبًا توجد أكثر من طريقة صحيحة. الهدف هو تعلم كيفية تقييم الخيارات بناءً على الـRequirements والـConstraints والـTrade-offs وحجم الـTeam والـProduct واحتياجات الـProduction.',
-
-        sortOrder: 9,
-
-        isActive: true,
-      },
-    ],
+    },
+    update: {
+      status: EnrollmentStatus.ACTIVE,
+    },
+    create: {
+      studentId: enrolledStudent.id,
+      courseId: course.id,
+      status: EnrollmentStatus.ACTIVE,
+    },
   });
 
   console.log('✅ Engineering Decisions seed completed successfully');
-
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log(`👤 Instructor: ${instructor.email}`);
   console.log(`🧭 Path: ${engineeringPath.title}`);
-  console.log(`📚 Course: ${course.title} (${course.slug})`);
+  console.log(`🛤️ Track: ${advancedFrontendTrack.title}`);
+  console.log(`📚 Course: ${course.title} (${course.slug}) — price: ${course.price}`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 }
 
