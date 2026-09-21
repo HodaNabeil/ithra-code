@@ -134,6 +134,7 @@
 
 .ai-tutor-chatscope .ai-tutor-message-row--assistant {
   width: 100%;
+  max-width: 100%;
 }
 
 .ai-tutor-chatscope .ai-tutor-message-avatar {
@@ -168,14 +169,27 @@
 }
 
 .ai-tutor-chatscope .ai-tutor-message-row--assistant .ai-tutor-message-body {
-  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex: 1 1 0%;
 }
 
 .ai-tutor-chatscope .ai-tutor-message-bubble {
   min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   padding: 0.75rem 1rem;
   border-radius: 1rem;
   box-shadow: 0 1px 2px color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.ai-tutor-chatscope .ai-tutor-user-message,
+.ai-tutor-chatscope .ai-tutor-assistant-message,
+.ai-tutor-chatscope .ai-tutor-assistant-message p,
+.ai-tutor-chatscope .ai-tutor-assistant-message li {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .ai-tutor-chatscope .ai-tutor-message-bubble--user {
@@ -348,8 +362,10 @@
 }
 
 .ai-tutor-chatscope .ai-tutor-sidebar-body {
+  min-width: 0;
   min-height: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 .ai-tutor-chatscope.is-sidebar .cs-message-list,
@@ -362,4 +378,176 @@
 
 .ai-tutor-chatscope:not(.is-sidebar) {
   background: color-mix(in oklch, var(--card) 30%, transparent);
+}
+
+/* ── Sidebar chat polish ─────────────────────────────────────────────── */
+.ai-tutor-chatscope.is-sidebar .ai-tutor-sidebar-messages {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  padding-bottom: 0.5rem;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row {
+  display: grid;
+  gap: 0.5rem;
+  align-items: end;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--assistant {
+  grid-template-columns: 1.75rem minmax(0, 1fr);
+  justify-items: stretch;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--user {
+  grid-template-columns: minmax(0, 1fr) 1.75rem;
+  justify-items: stretch;
+  max-width: 88%;
+  margin-inline-start: auto;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--assistant .ai-tutor-message-avatar {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--assistant .ai-tutor-message-body {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex: none;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--user .ai-tutor-message-avatar {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--user .ai-tutor-message-body {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex: none;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-avatar {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-top: 0;
+  margin-bottom: 0.125rem;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-avatar--assistant {
+  background: color-mix(in oklch, var(--brand) 16%, var(--sidebar));
+  color: var(--brand);
+  border-color: color-mix(in oklch, var(--brand) 30%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--brand) 8%, transparent);
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-avatar--user {
+  background: color-mix(in oklch, var(--brand) 22%, var(--sidebar));
+  color: #fff;
+  border-color: color-mix(in oklch, var(--brand) 45%, transparent);
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-body {
+  gap: 0.25rem;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-bubble {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  white-space: normal;
+  overflow: hidden;
+  padding: 0.625rem 0.875rem;
+  line-height: 1.6;
+  box-shadow:
+    0 1px 2px color-mix(in oklch, black 14%, transparent),
+    0 4px 12px color-mix(in oklch, black 6%, transparent);
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--user .ai-tutor-message-bubble {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline-start: auto;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-bubble--user {
+  border-radius: 1rem 1rem 0.35rem 1rem;
+  border: 1px solid color-mix(in oklch, var(--brand) 55%, transparent);
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--brand) 88%, white 12%),
+    var(--brand)
+  );
+  color: #fff;
+  box-shadow:
+    0 2px 10px color-mix(in oklch, var(--brand) 32%, transparent),
+    0 1px 2px color-mix(in oklch, black 10%, transparent);
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-message-bubble--assistant {
+  border-radius: 1rem 1rem 1rem 0.35rem;
+  border: 1px solid color-mix(in oklch, var(--border) 80%, transparent);
+  background: color-mix(
+    in oklch,
+    var(--sidebar-accent) 72%,
+    var(--sidebar) 28%
+  );
+  color: color-mix(in oklch, var(--sidebar-foreground) 94%, white);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 6%, transparent),
+    0 1px 3px color-mix(in oklch, black 12%, transparent);
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-assistant-message {
+  width: 100%;
+  max-width: 100%;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  white-space: normal;
+  color: inherit;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-assistant-message p,
+.ai-tutor-chatscope.is-sidebar .ai-tutor-assistant-message li {
+  width: 100%;
+  max-width: 100%;
+  white-space: normal;
+  color: inherit;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-user-message {
+  color: #fff;
+}
+
+.ai-tutor-chatscope.is-sidebar .ai-tutor-input-row {
+  padding: 0.625rem 0.75rem 0.75rem;
+  border-top: 1px solid color-mix(in oklch, var(--border) 45%, transparent);
+  background: color-mix(in oklch, var(--sidebar) 88%, black 12%);
+}
+
+.ai-tutor-chatscope.is-sidebar .cs-message-input__content-editor-wrapper {
+  border-radius: 1rem;
+  border-color: color-mix(in oklch, var(--border) 65%, transparent);
+  background: color-mix(in oklch, var(--sidebar-accent) 55%, var(--sidebar));
+}
+
+.ai-tutor-chatscope.is-sidebar .cs-message-input__content-editor-wrapper:focus-within {
+  border-color: color-mix(in oklch, var(--brand) 45%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--brand) 14%, transparent);
+}
+
+.ai-tutor-chatscope.is-sidebar .cs-button--send {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
 }

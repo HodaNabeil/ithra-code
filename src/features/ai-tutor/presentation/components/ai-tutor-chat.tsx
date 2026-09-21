@@ -55,7 +55,8 @@ export function AITutorChat({
 
   const isSidebar = variant === 'sidebar';
   const sidebarScrollRef = useRef<HTMLDivElement>(null);
-  const sidebarScrollTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const sidebarScrollTimeoutRef =
+    useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const handleSidebarScroll = useCallback(() => {
     const element = sidebarScrollRef.current;
@@ -111,16 +112,11 @@ export function AITutorChat({
       <LoadingState />
     </div>
   ) : messages.length === 0 ? (
-    <div
-      className={cn(
-        'flex min-h-0 flex-1 flex-col',
-        isSidebar ? 'px-3 py-4' : 'px-5 py-6',
-      )}
-    >
-      <EmptyState lectureTitle={lectureTitle} compact={isSidebar} />
-    </div>
+    <div className="min-h-0 flex-1" />
   ) : isSidebar ? (
-    <div className="flex flex-col gap-4 px-3 py-4">{messageList}</div>
+    <div className="ai-tutor-sidebar-messages flex flex-col gap-3 px-3 py-3">
+      {messageList}
+    </div>
   ) : (
     <MessageList
       className="px-5 py-5"
@@ -169,10 +165,7 @@ export function AITutorChat({
           )}
           aria-label="إيقاف التوليد"
         >
-          <span
-            className="size-3.5 shrink-0 rounded-sm bg-brand"
-            aria-hidden
-          />
+          <span className="size-3.5 shrink-0 rounded-sm bg-brand" aria-hidden />
           {!isSidebar && 'إيقاف'}
         </Button>
       )}
@@ -196,7 +189,7 @@ export function AITutorChat({
       <div
         ref={sidebarScrollRef}
         onScroll={handleSidebarScroll}
-        className="sidebar-scroll min-h-0 flex-1"
+        className="sidebar-scroll min-h-0 min-w-0 w-full flex-1"
       >
         {messageArea}
       </div>
@@ -240,20 +233,15 @@ export function AITutorChat({
           {isStreaming && <StreamingIndicator />}
         </div>
       ) : (
-        <div className="flex shrink-0 items-center justify-between border-b border-border/40 px-4 py-3">
-          <div className="flex min-w-0 items-center gap-2">
-            <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand ring-1 ring-brand/15">
-              <Sparkles className="size-3.5" />
+        <div className="flex shrink-0 items-center justify-between border-b border-border/35 bg-sidebar/80 px-4 py-2.5 backdrop-blur-sm">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-brand/12 text-brand ring-1 ring-brand/20">
+              <Sparkles className="size-4" />
             </div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold leading-tight">
+              <p className="truncate text-sm font-semibold leading-tight text-sidebar-foreground">
                 المدرس الذكي
               </p>
-              {lectureTitle && (
-                <p className="truncate text-[11px] text-muted-foreground">
-                  {lectureTitle}
-                </p>
-              )}
             </div>
           </div>
           {isStreaming && <StreamingIndicator compact />}
@@ -285,7 +273,6 @@ function ChatscopeMessageRow({
         isUser
           ? 'ai-tutor-message-row--user'
           : 'ai-tutor-message-row--assistant',
-        isUser && 'ms-auto',
       )}
     >
       <div
@@ -296,11 +283,7 @@ function ChatscopeMessageRow({
             : 'ai-tutor-message-avatar--assistant',
         )}
       >
-        {isUser ? (
-          <User className="size-3.5" />
-        ) : (
-          <Bot className="size-3.5" />
-        )}
+        {isUser ? <User className="size-3.5" /> : <Bot className="size-3.5" />}
       </div>
 
       <div className="ai-tutor-message-body">
@@ -315,11 +298,14 @@ function ChatscopeMessageRow({
         >
           {hasContent ? (
             isUser ? (
-              <p className="whitespace-pre-wrap text-sm leading-7">
+              <p className="ai-tutor-user-message wrap-break-word text-[0.8125rem] font-medium leading-relaxed whitespace-pre-wrap">
                 {message.content}
               </p>
             ) : (
-              <TutorMessageContent content={message.content} />
+              <TutorMessageContent
+                content={message.content}
+                className="ai-tutor-assistant-message"
+              />
             )
           ) : isStreaming ? (
             <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
@@ -370,51 +356,6 @@ function LoadingState() {
       </p>
       <p className="mt-1 text-xs text-muted-foreground">
         يتم جلب سجل الأسئلة والأجوبة
-      </p>
-    </div>
-  );
-}
-
-function EmptyState({
-  lectureTitle,
-  compact,
-}: {
-  lectureTitle?: string;
-  compact?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center text-center',
-        compact ? 'min-h-40 px-2 py-6' : 'min-h-70 px-4 py-10',
-      )}
-    >
-      <div
-        className={cn(
-          'mb-4 flex items-center justify-center rounded-2xl bg-brand/10 ring-1 ring-brand/15',
-          compact ? 'size-14' : 'size-16',
-        )}
-      >
-        <Bot className={cn('text-brand', compact ? 'size-7' : 'size-8')} />
-      </div>
-      <h4
-        className={cn(
-          'mb-2 font-bold tracking-tight',
-          compact ? 'text-base' : 'text-lg',
-        )}
-      >
-        ابدأ محادثة مع المدرس الذكي
-      </h4>
-      <p className="max-w-xs text-sm leading-6 text-muted-foreground">
-        اطرح سؤالك عن{' '}
-        {lectureTitle ? (
-          <span className="font-medium text-foreground/80">
-            محاضرة «{lectureTitle}»
-          </span>
-        ) : (
-          'المحاضرة'
-        )}{' '}
-        وسأساعدك على الفهم خطوة بخطوة.
       </p>
     </div>
   );
