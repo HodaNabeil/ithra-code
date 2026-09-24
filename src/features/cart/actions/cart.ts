@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * Cart Server Actions — the only mutation boundary for authenticated cart operations.
+ * Cart Server Actions — the client boundary for authenticated cart operations.
  *
  * Architecture:
  * - Client components never call API routes directly; they invoke these actions.
@@ -14,6 +14,7 @@
 import { revalidatePath } from 'next/cache';
 import { CART_ENDPOINTS } from '@/constants/cart';
 import { syncGuestCartUseCase } from '@/features/cart/application/use-cases/sync-guest-cart.use-case';
+import { getCartUseCase } from '@/features/cart/use-cases/get-cart.use-case';
 import { setPendingGuestCartCookie } from '@/features/cart/lib/pending-guest-cart.cookie';
 import { auth } from '@/lib/auth';
 import { HttpError } from '@/lib/http-error';
@@ -53,6 +54,31 @@ function mapCartError(error: unknown, fallback: string): ActionResponse<never> {
     success: false,
     error: extractErrorMessage(error, fallback),
   };
+}
+
+export async function getCartAction(): Promise<ActionResponse<CartDataType>> {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return {
+      success: false,
+      error: 'يجب تسجيل الدخول لعرض السلة',
+    };
+  }
+
+  try {
+    const data = await getCartUseCase(userId);
+
+    return {
+      success: true,
+      data,
+      message: 'تم جلب بيانات السلة بنجاح',
+    };
+  } catch (error) {
+    console.error('[GET_CART_ACTION]', error);
+    return mapCartError(error, 'فشل جلب بيانات السلة');
+  }
 }
 
 export async function addToCartAction(
