@@ -2,16 +2,10 @@
 
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
-import { SocialButtons } from './SocialButtons';
+import { SocialButtons } from './social-buttons';
 import Link from 'next/link';
 import { APP_ROUTES } from '@/constants/enums';
 import { cn } from '../../../lib/utils';
@@ -61,18 +55,7 @@ export function AuthCard() {
         'gap-0',
       )}
     >
-      <CardHeader
-        className={cn('flex', 'flex-col', 'p-6', 'space-y-1', 'mb-4')}
-      >
-        <CardTitle className={cn('font-semibold', 'tracking-tight', 'text-lg')}>
-          تسجيل الدخول
-        </CardTitle>
-        <CardDescription className={cn('text-sm')}>
-          للاستمرار التسجيل للمنصة
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className={cn('p-6', 'pt-0')}>
+      <CardContent className={cn('p-6')}>
         {error && (
           <Alert
             variant="destructive"

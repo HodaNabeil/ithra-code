@@ -41,6 +41,9 @@ const contactFieldClassName = cn(
   'focus-visible:border-ring!',
 );
 
+const WHATSAPP_DISPLAY = '01123189372';
+const WHATSAPP_URL = 'https://wa.me/201123189372';
+
 const MESSAGES = {
   securityRequired: 'يرجى إكمال التحقق الأمني قبل الإرسال.',
   success: 'تم إرسال رسالتك بنجاح. سنتواصل معك قريباً',
@@ -140,6 +143,19 @@ export default function ContactForm({ userDefaults }: ContactFormProps) {
     <form onSubmit={handleFormSubmit} noValidate>
       <FieldSet>
         <FieldGroup>
+          <p className="text-center text-sm text-muted-foreground">
+            رقم التواصل{' '}
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-medium underline-offset-4 hover:underline"
+            >
+              {WHATSAPP_DISPLAY}
+            </a>{' '}
+            (واتساب فقط)
+          </p>
+
           {getFormFields().map((field) => (
             <FormField
               key={field.name}
