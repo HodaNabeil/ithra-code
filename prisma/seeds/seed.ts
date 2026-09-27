@@ -333,13 +333,19 @@ async function main() {
   console.log('❓ Upserting IthraCode FAQ...');
 
   const existingIthraCodeFaq = await prisma.faq.findFirst({
-    where: { question: HOME_ITHRACODE_FAQ.question },
+    where: {
+      OR: [
+        { question: HOME_ITHRACODE_FAQ.question },
+        { question: 'ما هي IthraCode؟' },
+      ],
+    },
   });
 
   if (existingIthraCodeFaq) {
     await prisma.faq.update({
       where: { id: existingIthraCodeFaq.id },
       data: {
+        question: HOME_ITHRACODE_FAQ.question,
         answer: HOME_ITHRACODE_FAQ.answer,
         sortOrder: 0,
         isActive: true,

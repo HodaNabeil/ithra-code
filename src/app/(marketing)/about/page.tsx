@@ -13,7 +13,7 @@ import { buildStaticWebPageJsonLd } from '@/lib/seo/json-ld/builders/static-webp
 import { JsonLd } from '@/lib/seo/json-ld/json-ld';
 
 const ABOUT_TITLE = 'من نحن';
-const ABOUT_DESCRIPTION = `تعرّف على IthraCode بقيادة ${SEO_AUTHOR_NAME_AR} (${SEO_AUTHOR_NAME}) — المؤسسة والمالكة والمدرّبة.`;
+const ABOUT_DESCRIPTION = `تعرّف على ithra code بقيادة ${SEO_AUTHOR_NAME_AR} (${SEO_AUTHOR_NAME}) — المؤسسة والمالكة والمدرّبة.`;
 
 export const metadata: Metadata = {
   ...createPageMetadata({
@@ -23,7 +23,8 @@ export const metadata: Metadata = {
     keywords: [
       SEO_AUTHOR_NAME,
       SEO_AUTHOR_NAME_AR,
-      'مؤسسة IthraCode',
+      'مؤسسة ithra code',
+      'ithra code',
       'مدربة برمجة',
     ],
   }),
@@ -46,10 +47,11 @@ export default function AboutPage() {
       <h1>{ABOUT_TITLE}</h1>
 
       <p>
-        <strong>IthraCode</strong> منصة تعليمية عربية لتعلم البرمجة من خلال
-        تجارب وخبرات واقعية من الشركات. رسالتنا أن نُمكّن المتعلمين في
-        العالم العربي من بناء مهارات عملية في تطوير الويب والبرمجة، والوصول
-        إلى فرص وظيفية أفضل — تحت شعار «تعلم البرمجة من الواقع».
+        <strong>ithra code</strong> منصة تعليمية عربية على{' '}
+        <strong>ithracode.tech</strong> لتعلم البرمجة من خلال تجارب وخبرات
+        واقعية من الشركات. رسالتنا أن نُمكّن المتعلمين في العالم العربي من
+        بناء مهارات عملية في تطوير الويب والبرمجة، والوصول إلى فرص وظيفية
+        أفضل — تحت شعار «تعلم البرمجة من الواقع».
       </p>
 
       <h2>ماذا نقدّم</h2>

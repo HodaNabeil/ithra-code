@@ -1,15 +1,11 @@
-/** Brand used in document titles (`%s | IthraCode`). */
-export const SEO_SITE_NAME_AR = 'IthraCode';
+/** Brand used in document titles (`%s | ithra code`). */
+export const SEO_SITE_NAME_AR = 'ithra code';
 
 /** Latin brand used for Open Graph `siteName`. */
-export const SEO_SITE_NAME_EN = 'IthraCode';
+export const SEO_SITE_NAME_EN = 'ithra code';
 
 /** Alternate spellings used in structured data. */
-export const SEO_SITE_ALTERNATE_NAMES = [
-  'ithracode',
-  'إثراكود',
-  'Ithra Code',
-] as const;
+export const SEO_SITE_ALTERNATE_NAMES = ['ithracode', 'إثراكود'] as const;
 
 export const SEO_OG_LOCALE = 'ar_EG';
 
@@ -45,7 +41,7 @@ export const SEO_HOME_KEYWORDS = [
   'React',
   'JavaScript',
   'تطوير الويب',
-  'ithracode',
+  'ithra code',
   SEO_AUTHOR_NAME,
   SEO_AUTHOR_NAME_AR,
 ] as const;

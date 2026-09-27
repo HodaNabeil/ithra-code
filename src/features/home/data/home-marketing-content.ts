@@ -2,9 +2,9 @@ import type { FaqItem } from '@/features/faqs';
 import type { TestimonialItem } from '@/features/testimonials/api/dto/testimonial.dto';
 
 export const HOME_ITHRACODE_FAQ = {
-  question: 'ما هي IthraCode؟',
+  question: 'ما هي ithra code؟',
   answer:
-    'IthraCode منصة تعليمية عربية لتعلّم البرمجة من خلال تجارب وخبرات واقعية من الشركات. نقدّم دورات ومسارات عملية في تطوير الويب، بقيادة المؤسسة والمدرّبة هدي ابوهشيمة (Hoda Abu Hashima)، لمساعدتك على بناء مهارات قابلة للتطبيق والوصول إلى فرص أفضل في سوق العمل — تحت شعار «تعلّم البرمجة من الواقع».',
+    'ithra code منصة تعليمية عربية لتعلّم البرمجة من خلال تجارب وخبرات واقعية من الشركات. الموقع الرسمي ithracode.tech. نقدّم دورات ومسارات عملية في تطوير الويب، بقيادة المؤسسة والمدرّبة هدي ابوهشيمة (Hoda Abu Hashima)، لمساعدتك على بناء مهارات قابلة للتطبيق والوصول إلى فرص أفضل في سوق العمل — تحت شعار «تعلّم البرمجة من الواقع».',
 } as const;
 
 const HOME_FALLBACK_ITHRACODE_FAQ: FaqItem = {
@@ -27,7 +27,7 @@ export const HOME_TESTIMONIALS = [
   {
     name: 'عمر عبدالله',
     content:
-      'IthraCode عملية جدًا. لا أحفظ أدوات فقط، بل أفهم قرارات Next.js والأداء كما لو كنت أعمل على منتج حقيقي.',
+      'ithra code عملية جدًا. لا أحفظ أدوات فقط، بل أفهم قرارات Next.js والأداء كما لو كنت أعمل على منتج حقيقي.',
     rating: 5,
   },
   {
@@ -40,7 +40,9 @@ export const HOME_TESTIMONIALS = [
 
 export function isIthraCodeIdentityQuestion(question: string): boolean {
   const normalized = question.replace(/\s+/g, ' ').trim();
-  return /ithracode/i.test(normalized) && /ما هي|من هي/.test(normalized);
+  return (
+    /ithra\s*code/i.test(normalized) && /ما هي|من هي/.test(normalized)
+  );
 }
 
 export function ensureIthraCodeFaq(items: FaqItem[]): FaqItem[] {
