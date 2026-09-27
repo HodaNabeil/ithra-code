@@ -4,10 +4,7 @@ import { getTestimonialsAction } from '@/features/testimonials/actions/testimoni
 import type { FaqItem } from '@/features/faqs';
 import type { TestimonialItem } from '@/features/testimonials/api/dto/testimonial.dto';
 import type { CourseListDTO } from '@/types/course/course.dto';
-import {
-  ensureIthraCodeFaq,
-  getHomeFallbackTestimonials,
-} from '@/features/home/data/home-marketing-content';
+import { getHomeFallbackTestimonials } from '@/features/home/data/home-marketing-content';
 
 export type HomeDataResult<T> = {
   success: boolean;
@@ -73,7 +70,7 @@ export async function getHomeFaqs(): Promise<
   if (result.success) {
     return {
       success: true,
-      data: { items: ensureIthraCodeFaq(result.items) },
+      data: { items: result.items },
     };
   }
 

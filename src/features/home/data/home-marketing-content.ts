@@ -1,21 +1,4 @@
-import type { FaqItem } from '@/features/faqs';
 import type { TestimonialItem } from '@/features/testimonials/api/dto/testimonial.dto';
-
-export const HOME_ITHRACODE_FAQ = {
-  question: 'ما هي ithra code؟',
-  answer:
-    'ithra code منصة تعليمية عربية لتعلّم البرمجة من خلال تجارب وخبرات واقعية من الشركات. الموقع الرسمي ithracode.tech. نقدّم دورات ومسارات عملية في تطوير الويب، بقيادة المؤسسة والمدرّبة هدي ابوهشيمة (Hoda Abu Hashima)، لمساعدتك على بناء مهارات قابلة للتطبيق والوصول إلى فرص أفضل في سوق العمل — تحت شعار «تعلّم البرمجة من الواقع».',
-} as const;
-
-const HOME_FALLBACK_ITHRACODE_FAQ: FaqItem = {
-  id: 'faq-ithracode',
-  question: HOME_ITHRACODE_FAQ.question,
-  answer: HOME_ITHRACODE_FAQ.answer,
-  sortOrder: 0,
-  isActive: true,
-  createdAt: '2026-01-01T00:00:00.000Z',
-  updatedAt: '2026-01-01T00:00:00.000Z',
-};
 
 export const HOME_TESTIMONIALS = [
   {
@@ -37,27 +20,6 @@ export const HOME_TESTIMONIALS = [
     rating: 5,
   },
 ] as const;
-
-export function isIthraCodeIdentityQuestion(question: string): boolean {
-  const normalized = question.replace(/\s+/g, ' ').trim();
-  return (
-    /ithra\s*code/i.test(normalized) && /ما هي|من هي/.test(normalized)
-  );
-}
-
-export function ensureIthraCodeFaq(items: FaqItem[]): FaqItem[] {
-  const index = items.findIndex((faq) =>
-    isIthraCodeIdentityQuestion(faq.question),
-  );
-
-  if (index === -1) {
-    return [HOME_FALLBACK_ITHRACODE_FAQ, ...items];
-  }
-
-  const match = items[index]!;
-
-  return [match, ...items.filter((_, itemIndex) => itemIndex !== index)];
-}
 
 export function getHomeFallbackTestimonials(): TestimonialItem[] {
   return HOME_TESTIMONIALS.map((item, index) => ({

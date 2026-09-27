@@ -11,10 +11,7 @@ import {
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcryptjs';
 import * as dotenv from 'dotenv';
-import {
-  HOME_ITHRACODE_FAQ,
-  HOME_TESTIMONIALS,
-} from '../../src/features/home/data/home-marketing-content';
+import { HOME_TESTIMONIALS } from '../../src/features/home/data/home-marketing-content';
 
 dotenv.config();
 
@@ -40,7 +37,7 @@ const ENGINEERING_COURSE_SLUG = 'engineering-decisions';
 async function main() {
   console.log('🌱 Starting Engineering Decisions database seeding...');
   console.log(
-    'ℹ️  Preserving existing users; upserting IthraCode FAQ and testimonials',
+    'ℹ️  Preserving existing users; upserting home testimonials',
   );
 
   console.log('👤 Upserting instructor user...');
@@ -330,37 +327,16 @@ async function main() {
     },
   });
 
-  console.log('❓ Upserting IthraCode FAQ...');
+  console.log('❓ Removing legacy IthraCode identity FAQ...');
 
-  const existingIthraCodeFaq = await prisma.faq.findFirst({
+  await prisma.faq.deleteMany({
     where: {
       OR: [
-        { question: HOME_ITHRACODE_FAQ.question },
         { question: 'ما هي IthraCode؟' },
+        { question: 'ما هي ithra code؟' },
       ],
     },
   });
-
-  if (existingIthraCodeFaq) {
-    await prisma.faq.update({
-      where: { id: existingIthraCodeFaq.id },
-      data: {
-        question: HOME_ITHRACODE_FAQ.question,
-        answer: HOME_ITHRACODE_FAQ.answer,
-        sortOrder: 0,
-        isActive: true,
-      },
-    });
-  } else {
-    await prisma.faq.create({
-      data: {
-        question: HOME_ITHRACODE_FAQ.question,
-        answer: HOME_ITHRACODE_FAQ.answer,
-        sortOrder: 0,
-        isActive: true,
-      },
-    });
-  }
 
   console.log('💬 Upserting home testimonials...');
 
