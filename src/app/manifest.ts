@@ -4,10 +4,10 @@ const ITHRACODE_BRAND_ORANGE = '#E6682D';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'IthraCode',
-    short_name: 'IthraCode',
+    name: 'Ithra Code',
+    short_name: 'Ithra Code',
     description:
-      'IthraCode — practical programming education and real-world web development skills.',
+      'Ithra Code — practical programming education and real-world web development skills.',
     start_url: '/',
     display: 'standalone',
     theme_color: ITHRACODE_BRAND_ORANGE,
