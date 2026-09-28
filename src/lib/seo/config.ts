@@ -22,8 +22,7 @@ export const SEO_HTML_LANGUAGE = 'ar';
 export const SEO_DEFAULT_TITLE = 'تعلم البرمجة من الواقع';
 
 /** Full document title for the home page (`absolute` metadata). */
-export const SEO_HOME_DOCUMENT_TITLE =
-  'Ithra Code | إثراء كود - تعلم البرمجة من الواقع';
+export const SEO_HOME_DOCUMENT_TITLE = 'IthraCode';
 
 /** Root layout title template segment (`%s | Ithra Code`). */
 export const SEO_TITLE_TEMPLATE_SUFFIX = SEO_SITE_NAME_EN;
