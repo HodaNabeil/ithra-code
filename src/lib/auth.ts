@@ -29,6 +29,8 @@ export const config: NextAuthConfig = {
           GithubProvider({
             clientId: env.AUTH_GITHUB_ID,
             clientSecret: env.AUTH_GITHUB_SECRET,
+            // GitHub OAuth responses include RFC 9207 `iss`; required for callback validation.
+            issuer: 'https://github.com/login/oauth',
             allowDangerousEmailAccountLinking: true,
             authorization: {
               url: 'https://github.com/login/oauth/authorize',
