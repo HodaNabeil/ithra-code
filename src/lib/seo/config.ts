@@ -1,13 +1,13 @@
 /** Arabic brand name. */
 export const SEO_SITE_NAME_AR = 'إثراء كود';
 
-/** Latin brand used for Open Graph `siteName`, JSON-LD, and document title suffix. */
+/** Latin brand: home `<title>`, Open Graph `siteName`, JSON-LD, inner-page title suffix. */
 export const SEO_SITE_NAME_EN = 'Ithra Code';
 
 /** Alternate spellings used in structured data. */
 export const SEO_SITE_ALTERNATE_NAMES = [
   'IthraCode',
-  'إثراء كود',
+  SEO_SITE_NAME_AR,
   'ithra code',
 ] as const;
 
@@ -21,14 +21,7 @@ export const SEO_HTML_LANGUAGE = 'ar';
 /** Value proposition for inner pages and WebPage schema on the home page. */
 export const SEO_DEFAULT_TITLE = 'تعلم البرمجة من الواقع';
 
-/** Full document title for the home page (`absolute` metadata). */
-export const SEO_HOME_DOCUMENT_TITLE = 'IthraCode';
-
-/** Root layout title template segment (`%s | Ithra Code`). */
-export const SEO_TITLE_TEMPLATE_SUFFIX = SEO_SITE_NAME_EN;
-
-export const SEO_DEFAULT_DESCRIPTION =
-  'إثراء كود — منصة عربية لتعلم البرمجة من الواقع، من أساسيات تطوير الويب إلى React وNext.js وهندسة البرمجيات.';
+export const SEO_DEFAULT_DESCRIPTION = `${SEO_SITE_NAME_AR} — منصة عربية لتعلم البرمجة من الواقع، من أساسيات تطوير الويب إلى React وNext.js وهندسة البرمجيات.`;
 
 export const SEO_LOGO_PATH = '/img/ithracode.png';
 
@@ -52,9 +45,8 @@ export const SEO_AUTHOR_ALTERNATE_NAMES = [] as const;
 export const SEO_AUTHOR_JOB_TITLE = 'Founder, Software Engineer & Instructor';
 
 const SEO_BRAND_KEYWORDS = [
-  'Ithra Code',
-  'IthraCode',
-  'إثراء كود',
+  SEO_SITE_NAME_EN,
+  ...SEO_SITE_ALTERNATE_NAMES,
   'تعلم البرمجة',
   'Next.js',
   'Software Architecture',
