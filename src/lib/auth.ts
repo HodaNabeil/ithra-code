@@ -25,6 +25,11 @@ export const config: NextAuthConfig = {
       clientId: env.AUTH_GITHUB_ID,
       clientSecret: env.AUTH_GITHUB_SECRET,
       allowDangerousEmailAccountLinking: true,
+      authorization: {
+        params: {
+          scope: 'read:user user:email',
+        },
+      },
     }),
   ],
 
@@ -43,17 +48,23 @@ export const config: NextAuthConfig = {
     },
 
     async createUser({ user }) {
-      const [firstName, ...rest] = (user.name ?? '').split(' ');
-      await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          firstName: firstName || null,
-          lastName: rest.join(' ') || null,
-          isEmailVerified: !!(user as { emailVerified?: Date | null })
-            .emailVerified,
-          role: Role.STUDENT,
-        },
-      });
+      if (!user.id) return;
+
+      try {
+        const [firstName, ...rest] = (user.name ?? '').split(' ');
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            firstName: firstName || null,
+            lastName: rest.join(' ') || null,
+            isEmailVerified: !!(user as { emailVerified?: Date | null })
+              .emailVerified,
+            role: Role.STUDENT,
+          },
+        });
+      } catch (error) {
+        console.error('[AUTH_CREATE_USER_PROFILE]', error);
+      }
     },
   },
 

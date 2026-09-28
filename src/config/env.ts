@@ -28,14 +28,30 @@ export const env = createEnv({
       .url()
       .optional()
       .describe('NextAuth base URL (legacy)'),
-    AUTH_SECRET: z.string().describe('NextAuth secret key'),
+    AUTH_SECRET: z
+      .string()
+      .min(1)
+      .transform((value) => value.trim())
+      .describe('NextAuth secret key'),
     AUTH_TRUST_HOST: z.string().optional().default('true'),
 
     // OAuth Providers
-    AUTH_GOOGLE_ID: z.string().describe('Google OAuth Client ID'),
-    AUTH_GOOGLE_SECRET: z.string().describe('Google OAuth Client Secret'),
-    AUTH_GITHUB_ID: z.string().describe('GitHub OAuth Client ID'),
-    AUTH_GITHUB_SECRET: z.string().describe('GitHub OAuth Client Secret'),
+    AUTH_GOOGLE_ID: z
+      .string()
+      .transform((value) => value.trim())
+      .describe('Google OAuth Client ID'),
+    AUTH_GOOGLE_SECRET: z
+      .string()
+      .transform((value) => value.trim())
+      .describe('Google OAuth Client Secret'),
+    AUTH_GITHUB_ID: z
+      .string()
+      .transform((value) => value.trim())
+      .describe('GitHub OAuth Client ID'),
+    AUTH_GITHUB_SECRET: z
+      .string()
+      .transform((value) => value.trim())
+      .describe('GitHub OAuth Client Secret'),
 
     // Paymob (optional: gateway registers only when configured)
     PAYMOB_API_URL: z
@@ -634,9 +650,8 @@ export const env = createEnv({
 });
 
 // Auth.js reads AUTH_URL / NEXTAUTH_URL directly from process.env.
+// AUTH_URL is the single source of truth (a stale NEXTAUTH_URL in Vercel breaks OAuth).
 if (typeof window === 'undefined') {
   process.env.AUTH_URL = env.AUTH_URL;
-  process.env.NEXTAUTH_URL = env.NEXTAUTH_URL
-    ? normalizeAuthUrl(env.NEXTAUTH_URL)
-    : env.AUTH_URL;
+  process.env.NEXTAUTH_URL = env.AUTH_URL;
 }

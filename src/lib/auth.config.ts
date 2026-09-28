@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
+import { env } from '@/config/env';
 import { AUTH_ROUTES } from '@/constants/auth';
 
 /**
@@ -63,6 +64,6 @@ export const authConfig: NextAuthConfig = {
     error: AUTH_ROUTES.SIGN_IN,
   },
 
-  secret: process.env.AUTH_SECRET,
-  trustHost: true,
+  secret: env.AUTH_SECRET,
+  trustHost: env.AUTH_TRUST_HOST === 'true',
 };
