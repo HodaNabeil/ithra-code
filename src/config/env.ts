@@ -1,5 +1,6 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
+import { isValidGitHubOAuthClientId } from '@/features/auth/lib/github-oauth';
 
 /** Auth.js v5 (next-auth) treats AUTH_URL pathname `/` as "use default /api/auth". */
 function normalizeAuthUrl(url: string): string {
@@ -53,6 +54,15 @@ export const env = createEnv({
     AUTH_GITHUB_ID: z
       .string()
       .transform((value) => value.trim())
+      .refine(
+        (value) =>
+          process.env.NODE_ENV !== 'production' ||
+          isValidGitHubOAuthClientId(value, 'production'),
+        {
+          message:
+            'AUTH_GITHUB_ID must be a GitHub OAuth App Client ID in production (not local-dev placeholders or REPLACE_WITH)',
+        },
+      )
       .describe('GitHub OAuth Client ID'),
     AUTH_GITHUB_SECRET: z
       .string()

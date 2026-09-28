@@ -3,44 +3,37 @@
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import { AlertCircle } from 'lucide-react';
 import { SocialButtons } from './social-buttons';
 import Link from 'next/link';
 import { APP_ROUTES } from '@/constants/enums';
+import { AUTH_ROUTES } from '@/constants/auth';
 import { cn } from '../../../lib/utils';
+import {
+  getAuthErrorContent,
+  type AuthErrorContent,
+} from '@/features/auth/lib/auth-error-messages';
+import type { SocialAuthProvider } from '@/features/auth/lib/auth-providers';
 
-const AUTH_ERROR_MESSAGES: Record<string, string> = {
-  Configuration: 'خطأ في إعداد تسجيل الدخول. يرجى المحاولة لاحقاً.',
-  AccessDenied: 'تم رفض الوصول.',
-  Verification: 'انتهت صلاحية رابط التحقق.',
-  OAuthSignin: 'تعذر بدء تسجيل الدخول.',
-  OAuthCallback: 'تعذر إكمال تسجيل الدخول. يرجى المحاولة مرة أخرى.',
-  OAuthCreateAccount: 'تعذر إنشاء الحساب.',
-  EmailCreateAccount: 'تعذر إنشاء الحساب.',
-  Callback: 'حدث خطأ أثناء تسجيل الدخول.',
-  OAuthAccountNotLinked:
-    'هذا البريد الإلكتروني مرتبط بطريقة تسجيل دخول أخرى.',
-  SessionRequired: 'يجب تسجيل الدخول أولاً.',
-  Default: 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.',
+type AuthCardProps = {
+  providers: SocialAuthProvider[];
 };
 
-function getAuthErrorMessage(code: string | null): string {
-  if (!code) return '';
-  return (
-    AUTH_ERROR_MESSAGES[code] ??
-    'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.'
-  );
-}
-
-export function AuthCard() {
+export function AuthCard({ providers }: AuthCardProps) {
   const searchParams = useSearchParams();
   const callbackUrl =
     searchParams.get('callbackUrl') || APP_ROUTES.MY_COURSES;
-  const [error, setError] = useState(() =>
-    getAuthErrorMessage(searchParams.get('error')),
+  const [error, setError] = useState<AuthErrorContent | null>(() =>
+    getAuthErrorContent(searchParams.get('error')),
   );
   const [isLoading, setIsLoading] = useState<string | null>(null);
+
+  const retryHref =
+    callbackUrl !== APP_ROUTES.MY_COURSES
+      ? `${AUTH_ROUTES.SIGN_IN}?callbackUrl=${encodeURIComponent(callbackUrl)}`
+      : AUTH_ROUTES.SIGN_IN;
 
   return (
     <Card
@@ -55,21 +48,47 @@ export function AuthCard() {
         'gap-0',
       )}
     >
-      <CardContent className={cn('p-6')}>
+      <CardContent className={cn('flex', 'flex-col', 'gap-6', 'p-6')}>
         {error && (
           <Alert
             variant="destructive"
-            className={cn('animate-in', 'slide-in-from-top-2', 'duration-300')}
+            className={cn(
+              'animate-in',
+              'slide-in-from-top-2',
+              'duration-300',
+              'border-destructive/30',
+              'bg-destructive/5',
+            )}
           >
             <AlertCircle className={cn('h-4', 'w-4')} />
-            <AlertDescription>{error}</AlertDescription>
+            <AlertTitle className={cn('text-destructive')}>
+              {error.title}
+            </AlertTitle>
+            {error.description ? (
+              <AlertDescription className={cn('text-destructive/90')}>
+                {error.description}
+              </AlertDescription>
+            ) : null}
+            <div className={cn('col-start-2', 'mt-2')}>
+              <Button
+                variant="outline"
+                size="sm"
+                className={cn('h-8', 'border-destructive/40', 'bg-background')}
+                asChild
+              >
+                <Link href={retryHref}>حاول مرة أخرى</Link>
+              </Button>
+            </div>
           </Alert>
         )}
 
         <SocialButtons
+          providers={providers}
           isLoading={!!isLoading}
           callbackUrl={callbackUrl}
-          onError={setError}
+          onError={(message) =>
+            setError({ title: message, description: undefined })
+          }
           onLoadingChange={setIsLoading}
         />
 
@@ -81,7 +100,6 @@ export function AuthCard() {
             'leading-relaxed',
             'max-w-[320px]',
             'mx-auto',
-            'pt-4',
           )}
         >
           من خلال إنشاء حساب، فإنك توافق على{' '}

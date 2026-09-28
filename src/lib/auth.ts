@@ -8,6 +8,9 @@ import { authConfig } from '@/lib/auth.config';
 import { syncGuestCartUseCase } from '@/features/cart/application/use-cases/sync-guest-cart.use-case';
 import { readAndClearPendingGuestCartCookie } from '@/features/cart/lib/pending-guest-cart.cookie';
 import { Role } from '@prisma/client';
+import { isValidGitHubOAuthClientId } from '@/features/auth/lib/github-oauth';
+
+const githubOAuthEnabled = isValidGitHubOAuthClientId(env.AUTH_GITHUB_ID);
 
 export const config: NextAuthConfig = {
   ...authConfig,
@@ -21,17 +24,21 @@ export const config: NextAuthConfig = {
       allowDangerousEmailAccountLinking: true,
     }),
 
-    GithubProvider({
-      clientId: env.AUTH_GITHUB_ID,
-      clientSecret: env.AUTH_GITHUB_SECRET,
-      allowDangerousEmailAccountLinking: true,
-      authorization: {
-        url: 'https://github.com/login/oauth/authorize',
-        params: {
-          scope: 'read:user user:email',
-        },
-      },
-    }),
+    ...(githubOAuthEnabled
+      ? [
+          GithubProvider({
+            clientId: env.AUTH_GITHUB_ID,
+            clientSecret: env.AUTH_GITHUB_SECRET,
+            allowDangerousEmailAccountLinking: true,
+            authorization: {
+              url: 'https://github.com/login/oauth/authorize',
+              params: {
+                scope: 'read:user user:email',
+              },
+            },
+          }),
+        ]
+      : []),
   ],
 
   events: {
