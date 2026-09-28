@@ -11,7 +11,11 @@ import {
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcryptjs';
 import * as dotenv from 'dotenv';
-import { HOME_TESTIMONIALS } from '../../src/features/home/data/home-marketing-content';
+import {
+  HOME_FAQS,
+  HOME_TESTIMONIALS,
+} from '../../src/features/home/data/home-marketing-content';
+import { SEO_SITE_NAME_EN } from '../../src/lib/seo/config';
 
 dotenv.config();
 
@@ -37,7 +41,7 @@ const ENGINEERING_COURSE_SLUG = 'engineering-decisions';
 async function main() {
   console.log('🌱 Starting Engineering Decisions database seeding...');
   console.log(
-    'ℹ️  Preserving existing users; upserting home testimonials',
+    'ℹ️  Preserving existing users; upserting home FAQs and testimonials',
   );
 
   console.log('👤 Upserting instructor user...');
@@ -83,7 +87,7 @@ async function main() {
       icon: '🧭',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: 'Engineering Decisions | IthraCode',
+      metaTitle: `Engineering Decisions | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend architecture decisions across design systems, rendering, Next.js, performance, and production.',
     },
@@ -102,7 +106,7 @@ async function main() {
       icon: '🧭',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: 'Engineering Decisions | IthraCode',
+      metaTitle: `Engineering Decisions | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend architecture decisions across design systems, rendering, Next.js, performance, and production.',
     },
@@ -123,7 +127,7 @@ async function main() {
       icon: '🎨',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: 'Advanced Frontend Track | IthraCode',
+      metaTitle: `Advanced Frontend Track | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend architecture, rendering, SEO, performance, Docker, CI/CD, and production telemetry decisions.',
     },
@@ -139,7 +143,7 @@ async function main() {
       icon: '🎨',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: 'Advanced Frontend Track | IthraCode',
+      metaTitle: `Advanced Frontend Track | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend architecture, rendering, SEO, performance, Docker, CI/CD, and production telemetry decisions.',
     },
@@ -210,7 +214,7 @@ async function main() {
         'trade-offs',
         'production',
       ],
-      metaTitle: 'Engineering Decisions - Frontend Architecture | IthraCode',
+      metaTitle: `Engineering Decisions - Frontend Architecture | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend engineering decisions across design systems, Next.js, rendering, performance, and production.',
       certificateEnabled: true,
@@ -279,7 +283,7 @@ async function main() {
         'trade-offs',
         'production',
       ],
-      metaTitle: 'Engineering Decisions - Frontend Architecture | IthraCode',
+      metaTitle: `Engineering Decisions - Frontend Architecture | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend engineering decisions across design systems, Next.js, rendering, performance, and production.',
       certificateEnabled: true,
@@ -327,28 +331,61 @@ async function main() {
     },
   });
 
-  console.log('❓ Removing legacy IthraCode identity FAQ...');
+  console.log('❓ Syncing home FAQs...');
 
-  await prisma.faq.deleteMany({
-    where: {
-      OR: [
-        { question: 'ما هي IthraCode؟' },
-        { question: 'ما هي ithra code؟' },
-      ],
-    },
-  });
+  if (HOME_FAQS.length === 0) {
+    await prisma.faq.deleteMany();
+  } else {
+    for (const faq of HOME_FAQS) {
+      const existingFaq = await prisma.faq.findFirst({
+        where: { question: faq.question },
+      });
+
+      if (existingFaq) {
+        await prisma.faq.update({
+          where: { id: existingFaq.id },
+          data: {
+            answer: faq.answer,
+            sortOrder: faq.sortOrder,
+            isActive: true,
+          },
+        });
+        continue;
+      }
+
+      await prisma.faq.create({
+        data: {
+          question: faq.question,
+          answer: faq.answer,
+          sortOrder: faq.sortOrder,
+          isActive: true,
+        },
+      });
+    }
+
+    const homeFaqQuestions = HOME_FAQS.map((faq) => faq.question);
+
+    await prisma.faq.updateMany({
+      where: {
+        question: { notIn: homeFaqQuestions },
+        isActive: true,
+      },
+      data: { isActive: false },
+    });
+  }
 
   console.log('💬 Upserting home testimonials...');
 
   for (const testimonial of HOME_TESTIMONIALS) {
     const existingTestimonial = await prisma.testimonial.findFirst({
-      where: { name: testimonial.name, content: testimonial.content },
+      where: { name: testimonial.name },
     });
 
     if (existingTestimonial) {
       await prisma.testimonial.update({
         where: { id: existingTestimonial.id },
         data: {
+          content: testimonial.content,
           rating: testimonial.rating,
           isActive: true,
         },
