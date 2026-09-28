@@ -52,7 +52,7 @@ export async function getPublicCourses(
           isFeatured: true,
           instructor: {
             id: '1',
-            name: 'Hoda Abu Hashima',
+            name: 'Hoda Nabeil',
           },
         },
         {
@@ -65,7 +65,7 @@ export async function getPublicCourses(
           isFeatured: true,
           instructor: {
             id: '1',
-            name: 'Hoda Abu Hashima',
+            name: 'Hoda Nabeil',
           },
         },
       ],

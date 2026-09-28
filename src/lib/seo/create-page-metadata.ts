@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import {
+  SEO_DEFAULT_OG_IMAGE_PATH,
   SEO_OG_IMAGE_HEIGHT,
   SEO_OG_IMAGE_WIDTH,
   SEO_OG_LOCALE,
@@ -29,12 +30,23 @@ export type CreatePageMetadataInput = {
   absoluteTitle?: boolean;
 };
 
+export function buildHreflangAlternates(canonicalUrl: string) {
+  return {
+    canonical: canonicalUrl,
+    languages: {
+      ar: canonicalUrl,
+      en: canonicalUrl,
+      'x-default': canonicalUrl,
+    },
+  };
+}
+
 export function createPageMetadata(input: CreatePageMetadataInput): Metadata {
   const description = toMetaDescription(input.description) || undefined;
   const canonicalUrl = toCanonicalUrl(input.path);
-  const imageUrl = input.imageUrl
-    ? toAbsoluteAssetUrl(input.imageUrl)
-    : undefined;
+  const imageUrl = toAbsoluteAssetUrl(
+    input.imageUrl ?? SEO_DEFAULT_OG_IMAGE_PATH,
+  );
   const indexingEnabled = isSeoIndexingEnabled();
   const robots = input.robots ?? INDEX_FOLLOW;
 
@@ -46,9 +58,7 @@ export function createPageMetadata(input: CreatePageMetadataInput): Metadata {
       index: indexingEnabled && robots.index,
       follow: indexingEnabled && robots.follow,
     },
-    alternates: {
-      canonical: canonicalUrl,
-    },
+    alternates: buildHreflangAlternates(canonicalUrl),
     openGraph: {
       title: input.title,
       description,
@@ -56,23 +66,21 @@ export function createPageMetadata(input: CreatePageMetadataInput): Metadata {
       type: input.openGraphType ?? 'website',
       locale: SEO_OG_LOCALE,
       siteName: SEO_SITE_NAME_EN,
-      images: imageUrl
-        ? [
-            {
-              url: imageUrl,
-              width: SEO_OG_IMAGE_WIDTH,
-              height: SEO_OG_IMAGE_HEIGHT,
-              alt: input.imageAlt ?? input.title,
-            },
-          ]
-        : undefined,
+      images: [
+        {
+          url: imageUrl,
+          width: SEO_OG_IMAGE_WIDTH,
+          height: SEO_OG_IMAGE_HEIGHT,
+          alt: input.imageAlt ?? input.title,
+        },
+      ],
     },
     twitter: {
-      card: imageUrl ? 'summary_large_image' : 'summary',
+      card: 'summary_large_image',
       site: SEO_TWITTER_SITE,
       title: input.title,
       description,
-      images: imageUrl ? [imageUrl] : undefined,
+      images: [imageUrl],
     },
   };
 }
