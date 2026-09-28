@@ -15,5 +15,5 @@
     "testConnection.js",
     "tests/**/*.d.ts"
   ],
-  "exclude": ["node_modules", "prisma/seeds"]
+  "exclude": ["node_modules", "prisma/seeds", ".next"]
 }
