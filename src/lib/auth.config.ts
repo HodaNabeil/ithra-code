@@ -65,5 +65,5 @@ export const authConfig: NextAuthConfig = {
   },
 
   secret: env.AUTH_SECRET,
-  trustHost: env.AUTH_TRUST_HOST === 'true',
+  trustHost: true,
 };

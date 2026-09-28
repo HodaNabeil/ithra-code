@@ -1,12 +1,11 @@
-import { auth } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 
-import { AUTH_ENDPOINTS } from '@/constants/auth';
-import { APP_ROUTES } from '@/constants/enums';
+import { auth } from '@/lib/auth';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import {
   MyCoursesContainer,
   MyCoursesDashboard,
+  MyCoursesSignInRequired,
 } from '@/features/my-courses/components';
 import { fetchEnrollments } from '@/features/my-courses/services/my-courses.service';
 import type { EnrollmentItem } from '@/types/course/course.types';
@@ -33,7 +32,7 @@ export default async function MyCoursesPage({
 
   const session = await auth();
   if (!session?.user?.id) {
-    redirect(`${AUTH_ENDPOINTS.LOGIN}?callbackUrl=${APP_ROUTES.MY_COURSES}`);
+    return <MyCoursesSignInRequired />;
   }
 
   let allEnrollments: EnrollmentItem[] = [];
@@ -70,17 +69,19 @@ export default async function MyCoursesPage({
   };
 
   return (
-    <MyCoursesDashboard
-      allEnrollments={allEnrollments}
-      totalEnrollments={totalEnrollments}
-      initialTab={tab}
-      enrollmentsContent={
-        <MyCoursesContainer
-          enrollments={enrollments}
-          pagination={resolvedPagination}
-          totalEnrollments={totalEnrollments}
-        />
-      }
-    />
+    <Suspense fallback={<div className="container py-6 lg:py-8" />}>
+      <MyCoursesDashboard
+        allEnrollments={allEnrollments}
+        totalEnrollments={totalEnrollments}
+        initialTab={tab}
+        enrollmentsContent={
+          <MyCoursesContainer
+            enrollments={enrollments}
+            pagination={resolvedPagination}
+            totalEnrollments={totalEnrollments}
+          />
+        }
+      />
+    </Suspense>
   );
 }

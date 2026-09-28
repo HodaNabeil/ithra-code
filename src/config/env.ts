@@ -33,7 +33,13 @@ export const env = createEnv({
       .min(1)
       .transform((value) => value.trim())
       .describe('NextAuth secret key'),
-    AUTH_TRUST_HOST: z.string().optional().default('true'),
+    AUTH_TRUST_HOST: z
+      .string()
+      .optional()
+      .default('true')
+      .describe(
+        'Trust Host header for Auth.js (required on localhost and Vercel)',
+      ),
 
     // OAuth Providers
     AUTH_GOOGLE_ID: z
@@ -649,9 +655,10 @@ export const env = createEnv({
   emptyStringAsUndefined: true,
 });
 
-// Auth.js reads AUTH_URL / NEXTAUTH_URL directly from process.env.
+// Auth.js reads AUTH_URL / NEXTAUTH_URL / AUTH_TRUST_HOST from process.env.
 // AUTH_URL is the single source of truth (a stale NEXTAUTH_URL in Vercel breaks OAuth).
 if (typeof window === 'undefined') {
   process.env.AUTH_URL = env.AUTH_URL;
   process.env.NEXTAUTH_URL = env.AUTH_URL;
+  process.env.AUTH_TRUST_HOST = 'true';
 }
