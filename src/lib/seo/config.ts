@@ -1,13 +1,14 @@
 /** Arabic brand name. */
 export const SEO_SITE_NAME_AR = 'إثراء كود';
 
-/** Latin brand used for Open Graph `siteName` and document title suffix. */
-export const SEO_SITE_NAME_EN = 'IthraCode';
+/** Latin brand used for Open Graph `siteName`, JSON-LD, and document title suffix. */
+export const SEO_SITE_NAME_EN = 'Ithra Code';
 
 /** Alternate spellings used in structured data. */
 export const SEO_SITE_ALTERNATE_NAMES = [
-  'Ithra Code',
+  'IthraCode',
   'إثراء كود',
+  'ithra code',
 ] as const;
 
 /** Production canonical origin for metadata and JSON-LD when indexing is enabled. */
@@ -22,9 +23,9 @@ export const SEO_DEFAULT_TITLE = 'تعلم البرمجة من الواقع';
 
 /** Full document title for the home page (`absolute` metadata). */
 export const SEO_HOME_DOCUMENT_TITLE =
-  'IthraCode | إثراء كود - تعلم البرمجة من الواقع';
+  'Ithra Code | إثراء كود - تعلم البرمجة من الواقع';
 
-/** Root layout title template segment (`%s | IthraCode`). */
+/** Root layout title template segment (`%s | Ithra Code`). */
 export const SEO_TITLE_TEMPLATE_SUFFIX = SEO_SITE_NAME_EN;
 
 export const SEO_DEFAULT_DESCRIPTION =
@@ -52,8 +53,8 @@ export const SEO_AUTHOR_ALTERNATE_NAMES = [] as const;
 export const SEO_AUTHOR_JOB_TITLE = 'Founder, Software Engineer & Instructor';
 
 const SEO_BRAND_KEYWORDS = [
-  'IthraCode',
   'Ithra Code',
+  'IthraCode',
   'إثراء كود',
   'تعلم البرمجة',
   'Next.js',
@@ -79,7 +80,7 @@ export const SEO_HOME_KEYWORDS = [
 export const SEO_SAME_AS = [
   'https://www.linkedin.com/in/hoda-nabeil-144094225/',
   'https://youtube.com/@ithracode',
-  'https://www.facebook.com/hodanabeel.abuhashem/',
+  'https://www.facebook.com/profile.php?id=61594744076040',
 ] as const;
 
 export const SEO_META_DESCRIPTION_MAX_LENGTH = 160;

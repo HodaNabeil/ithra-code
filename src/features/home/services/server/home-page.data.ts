@@ -14,7 +14,7 @@ export type HomeDataResult<T> = {
 
 const HOME_FEATURED_COURSES_LIMIT = 6;
 const HOME_TESTIMONIALS_LIMIT = 6;
-const HOME_FAQS_LIMIT = 8;
+const HOME_FAQS_LIMIT = 12;
 
 export async function getFeaturedCoursesForHome(): Promise<
   HomeDataResult<{ courses: CourseListDTO[] }>

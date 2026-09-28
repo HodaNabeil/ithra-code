@@ -30,6 +30,7 @@ export function buildRootLayoutMetadata(): Metadata {
 
   return {
     metadataBase: new URL(getCanonicalOrigin()),
+    applicationName: SEO_SITE_NAME_EN,
     title: {
       default: SEO_HOME_DOCUMENT_TITLE,
       template: `%s | ${SEO_TITLE_TEMPLATE_SUFFIX}`,

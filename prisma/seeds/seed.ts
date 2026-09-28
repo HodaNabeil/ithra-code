@@ -11,7 +11,11 @@ import {
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcryptjs';
 import * as dotenv from 'dotenv';
-import { HOME_TESTIMONIALS } from '../../src/features/home/data/home-marketing-content';
+import {
+  HOME_FAQS,
+  HOME_TESTIMONIALS,
+} from '../../src/features/home/data/home-marketing-content';
+import { SEO_SITE_NAME_EN } from '../../src/lib/seo/config';
 
 dotenv.config();
 
@@ -30,14 +34,23 @@ const prisma = new PrismaClient({
 
 const INSTRUCTOR_EMAIL = 'instructor@ithracode.com';
 const ENROLLED_STUDENT_EMAIL = 'hodanabeil67@gmail.com';
-const ENGINEERING_PATH_SLUG = 'engineering-decisions';
+const LEGACY_ENGINEERING_SLUG = 'engineering-decisions';
+const PRODUCTION_READY_FULL_STACK_SLUG =
+  'production-ready-full-stack-apps-with-nextjs';
+const ENGINEERING_PATH_SLUG = PRODUCTION_READY_FULL_STACK_SLUG;
+const ENGINEERING_PATH_SLUG_LEGACY = LEGACY_ENGINEERING_SLUG;
 const ADVANCED_FRONTEND_TRACK_SLUG = 'advanced-frontend-track';
-const ENGINEERING_COURSE_SLUG = 'engineering-decisions';
+const ENGINEERING_COURSE_SLUG = PRODUCTION_READY_FULL_STACK_SLUG;
+const ENGINEERING_COURSE_SLUG_LEGACY = LEGACY_ENGINEERING_SLUG;
+const ENGINEERING_COURSE_TITLE =
+  'من الفكرة إلى Production: بناء تطبيقات Full-Stack باستخدام Next.js وTypeScript';
+const ENGINEERING_COURSE_TITLE_EN =
+  'Production-Ready Full-Stack Apps with Next.js';
 
 async function main() {
   console.log('🌱 Starting Engineering Decisions database seeding...');
   console.log(
-    'ℹ️  Preserving existing users; upserting home testimonials',
+    'ℹ️  Preserving existing users; upserting home FAQs and testimonials',
   );
 
   console.log('👤 Upserting instructor user...');
@@ -65,12 +78,26 @@ async function main() {
     },
   });
 
-  console.log('🧭 Upserting Engineering Decisions path...');
+  console.log('🧭 Upserting learning path...');
+
+  if (ENGINEERING_PATH_SLUG_LEGACY !== ENGINEERING_PATH_SLUG) {
+    const legacyPath = await prisma.path.findUnique({
+      where: { slug: ENGINEERING_PATH_SLUG_LEGACY },
+      select: { id: true },
+    });
+
+    if (legacyPath) {
+      await prisma.path.update({
+        where: { id: legacyPath.id },
+        data: { slug: ENGINEERING_PATH_SLUG },
+      });
+    }
+  }
 
   const engineeringPath = await prisma.path.upsert({
     where: { slug: ENGINEERING_PATH_SLUG },
     update: {
-      title: 'Engineering Decisions',
+      title: ENGINEERING_COURSE_TITLE_EN,
       tagline:
         'انتقل من كتابة واجهات إلى تصميم Frontend Architecture قابل للتوسع والأداء.',
       shortDescription:
@@ -83,12 +110,12 @@ async function main() {
       icon: '🧭',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: 'Engineering Decisions | IthraCode',
+      metaTitle: `${ENGINEERING_COURSE_TITLE_EN} | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend architecture decisions across design systems, rendering, Next.js, performance, and production.',
     },
     create: {
-      title: 'Engineering Decisions',
+      title: ENGINEERING_COURSE_TITLE_EN,
       slug: ENGINEERING_PATH_SLUG,
       tagline:
         'انتقل من كتابة واجهات إلى تصميم Frontend Architecture قابل للتوسع والأداء.',
@@ -102,7 +129,7 @@ async function main() {
       icon: '🧭',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: 'Engineering Decisions | IthraCode',
+      metaTitle: `${ENGINEERING_COURSE_TITLE_EN} | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend architecture decisions across design systems, rendering, Next.js, performance, and production.',
     },
@@ -123,7 +150,7 @@ async function main() {
       icon: '🎨',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: 'Advanced Frontend Track | IthraCode',
+      metaTitle: `Advanced Frontend Track | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend architecture, rendering, SEO, performance, Docker, CI/CD, and production telemetry decisions.',
     },
@@ -139,7 +166,7 @@ async function main() {
       icon: '🎨',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: 'Advanced Frontend Track | IthraCode',
+      metaTitle: `Advanced Frontend Track | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend architecture, rendering, SEO, performance, Docker, CI/CD, and production telemetry decisions.',
     },
@@ -147,17 +174,30 @@ async function main() {
 
   console.log('📚 Upserting Engineering Decisions course...');
 
+  if (ENGINEERING_COURSE_SLUG_LEGACY !== ENGINEERING_COURSE_SLUG) {
+    const legacyCourse = await prisma.course.findUnique({
+      where: { slug: ENGINEERING_COURSE_SLUG_LEGACY },
+      select: { id: true },
+    });
+
+    if (legacyCourse) {
+      await prisma.course.update({
+        where: { id: legacyCourse.id },
+        data: { slug: ENGINEERING_COURSE_SLUG },
+      });
+    }
+  }
+
   const course = await prisma.course.upsert({
     where: { slug: ENGINEERING_COURSE_SLUG },
     update: {
       instructorId: instructor.id,
       pathId: engineeringPath.id,
       trackId: advancedFrontendTrack.id,
-      title: 'Engineering Decisions',
+      title: ENGINEERING_COURSE_TITLE_EN,
       description:
         'How do frontend engineers decide how to structure UI, choose rendering strategies, manage state, optimize performance, and ship interfaces to production? This course explores the thinking process behind real-world frontend engineering decisions across Design Systems, Tailwind CSS, Shadcn UI, Next.js, SSR, CSR, Hydration, Zustand, TanStack React Query, Core Web Vitals, Technical SEO, Docker, CI/CD, and frontend telemetry. Instead of presenting one "best" solution, the course focuses on how to evaluate options, understand constraints, communicate decisions, and learn from what happens after the UI reaches production.',
-      shortDescription:
-        'Master frontend engineering decisions from design systems and rendering to performance and production.',
+      shortDescription: ENGINEERING_COURSE_TITLE,
       thumbnailUrl:
         'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800',
       previewVideo: null,
@@ -210,7 +250,7 @@ async function main() {
         'trade-offs',
         'production',
       ],
-      metaTitle: 'Engineering Decisions - Frontend Architecture | IthraCode',
+      metaTitle: `${ENGINEERING_COURSE_TITLE_EN} | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend engineering decisions across design systems, Next.js, rendering, performance, and production.',
       certificateEnabled: true,
@@ -220,12 +260,11 @@ async function main() {
       instructorId: instructor.id,
       pathId: engineeringPath.id,
       trackId: advancedFrontendTrack.id,
-      title: 'Engineering Decisions',
+      title: ENGINEERING_COURSE_TITLE_EN,
       slug: ENGINEERING_COURSE_SLUG,
       description:
         'How do frontend engineers decide how to structure UI, choose rendering strategies, manage state, optimize performance, and ship interfaces to production? This course explores the thinking process behind real-world frontend engineering decisions across Design Systems, Tailwind CSS, Shadcn UI, Next.js, SSR, CSR, Hydration, Zustand, TanStack React Query, Core Web Vitals, Technical SEO, Docker, CI/CD, and frontend telemetry. Instead of presenting one "best" solution, the course focuses on how to evaluate options, understand constraints, communicate decisions, and learn from what happens after the UI reaches production.',
-      shortDescription:
-        'Master frontend engineering decisions from design systems and rendering to performance and production.',
+      shortDescription: ENGINEERING_COURSE_TITLE,
       thumbnailUrl:
         'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800',
       previewVideo: null,
@@ -279,7 +318,7 @@ async function main() {
         'trade-offs',
         'production',
       ],
-      metaTitle: 'Engineering Decisions - Frontend Architecture | IthraCode',
+      metaTitle: `${ENGINEERING_COURSE_TITLE_EN} | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend engineering decisions across design systems, Next.js, rendering, performance, and production.',
       certificateEnabled: true,
@@ -327,28 +366,61 @@ async function main() {
     },
   });
 
-  console.log('❓ Removing legacy IthraCode identity FAQ...');
+  console.log('❓ Syncing home FAQs...');
 
-  await prisma.faq.deleteMany({
-    where: {
-      OR: [
-        { question: 'ما هي IthraCode؟' },
-        { question: 'ما هي ithra code؟' },
-      ],
-    },
-  });
+  if (HOME_FAQS.length === 0) {
+    await prisma.faq.deleteMany();
+  } else {
+    for (const faq of HOME_FAQS) {
+      const existingFaq = await prisma.faq.findFirst({
+        where: { question: faq.question },
+      });
+
+      if (existingFaq) {
+        await prisma.faq.update({
+          where: { id: existingFaq.id },
+          data: {
+            answer: faq.answer,
+            sortOrder: faq.sortOrder,
+            isActive: true,
+          },
+        });
+        continue;
+      }
+
+      await prisma.faq.create({
+        data: {
+          question: faq.question,
+          answer: faq.answer,
+          sortOrder: faq.sortOrder,
+          isActive: true,
+        },
+      });
+    }
+
+    const homeFaqQuestions = HOME_FAQS.map((faq) => faq.question);
+
+    await prisma.faq.updateMany({
+      where: {
+        question: { notIn: homeFaqQuestions },
+        isActive: true,
+      },
+      data: { isActive: false },
+    });
+  }
 
   console.log('💬 Upserting home testimonials...');
 
   for (const testimonial of HOME_TESTIMONIALS) {
     const existingTestimonial = await prisma.testimonial.findFirst({
-      where: { name: testimonial.name, content: testimonial.content },
+      where: { name: testimonial.name },
     });
 
     if (existingTestimonial) {
       await prisma.testimonial.update({
         where: { id: existingTestimonial.id },
         data: {
+          content: testimonial.content,
           rating: testimonial.rating,
           isActive: true,
         },
