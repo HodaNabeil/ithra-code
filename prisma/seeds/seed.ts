@@ -34,9 +34,18 @@ const prisma = new PrismaClient({
 
 const INSTRUCTOR_EMAIL = 'instructor@ithracode.com';
 const ENROLLED_STUDENT_EMAIL = 'hodanabeil67@gmail.com';
-const ENGINEERING_PATH_SLUG = 'engineering-decisions';
+const LEGACY_ENGINEERING_SLUG = 'engineering-decisions';
+const PRODUCTION_READY_FULL_STACK_SLUG =
+  'production-ready-full-stack-apps-with-nextjs';
+const ENGINEERING_PATH_SLUG = PRODUCTION_READY_FULL_STACK_SLUG;
+const ENGINEERING_PATH_SLUG_LEGACY = LEGACY_ENGINEERING_SLUG;
 const ADVANCED_FRONTEND_TRACK_SLUG = 'advanced-frontend-track';
-const ENGINEERING_COURSE_SLUG = 'engineering-decisions';
+const ENGINEERING_COURSE_SLUG = PRODUCTION_READY_FULL_STACK_SLUG;
+const ENGINEERING_COURSE_SLUG_LEGACY = LEGACY_ENGINEERING_SLUG;
+const ENGINEERING_COURSE_TITLE =
+  'من الفكرة إلى Production: بناء تطبيقات Full-Stack باستخدام Next.js وTypeScript';
+const ENGINEERING_COURSE_TITLE_EN =
+  'Production-Ready Full-Stack Apps with Next.js';
 
 async function main() {
   console.log('🌱 Starting Engineering Decisions database seeding...');
@@ -69,12 +78,26 @@ async function main() {
     },
   });
 
-  console.log('🧭 Upserting Engineering Decisions path...');
+  console.log('🧭 Upserting learning path...');
+
+  if (ENGINEERING_PATH_SLUG_LEGACY !== ENGINEERING_PATH_SLUG) {
+    const legacyPath = await prisma.path.findUnique({
+      where: { slug: ENGINEERING_PATH_SLUG_LEGACY },
+      select: { id: true },
+    });
+
+    if (legacyPath) {
+      await prisma.path.update({
+        where: { id: legacyPath.id },
+        data: { slug: ENGINEERING_PATH_SLUG },
+      });
+    }
+  }
 
   const engineeringPath = await prisma.path.upsert({
     where: { slug: ENGINEERING_PATH_SLUG },
     update: {
-      title: 'Engineering Decisions',
+      title: ENGINEERING_COURSE_TITLE_EN,
       tagline:
         'انتقل من كتابة واجهات إلى تصميم Frontend Architecture قابل للتوسع والأداء.',
       shortDescription:
@@ -87,12 +110,12 @@ async function main() {
       icon: '🧭',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: `Engineering Decisions | ${SEO_SITE_NAME_EN}`,
+      metaTitle: `${ENGINEERING_COURSE_TITLE_EN} | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend architecture decisions across design systems, rendering, Next.js, performance, and production.',
     },
     create: {
-      title: 'Engineering Decisions',
+      title: ENGINEERING_COURSE_TITLE_EN,
       slug: ENGINEERING_PATH_SLUG,
       tagline:
         'انتقل من كتابة واجهات إلى تصميم Frontend Architecture قابل للتوسع والأداء.',
@@ -106,7 +129,7 @@ async function main() {
       icon: '🧭',
       isPublished: true,
       sortOrder: 1,
-      metaTitle: `Engineering Decisions | ${SEO_SITE_NAME_EN}`,
+      metaTitle: `${ENGINEERING_COURSE_TITLE_EN} | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend architecture decisions across design systems, rendering, Next.js, performance, and production.',
     },
@@ -151,17 +174,30 @@ async function main() {
 
   console.log('📚 Upserting Engineering Decisions course...');
 
+  if (ENGINEERING_COURSE_SLUG_LEGACY !== ENGINEERING_COURSE_SLUG) {
+    const legacyCourse = await prisma.course.findUnique({
+      where: { slug: ENGINEERING_COURSE_SLUG_LEGACY },
+      select: { id: true },
+    });
+
+    if (legacyCourse) {
+      await prisma.course.update({
+        where: { id: legacyCourse.id },
+        data: { slug: ENGINEERING_COURSE_SLUG },
+      });
+    }
+  }
+
   const course = await prisma.course.upsert({
     where: { slug: ENGINEERING_COURSE_SLUG },
     update: {
       instructorId: instructor.id,
       pathId: engineeringPath.id,
       trackId: advancedFrontendTrack.id,
-      title: 'Engineering Decisions',
+      title: ENGINEERING_COURSE_TITLE_EN,
       description:
         'How do frontend engineers decide how to structure UI, choose rendering strategies, manage state, optimize performance, and ship interfaces to production? This course explores the thinking process behind real-world frontend engineering decisions across Design Systems, Tailwind CSS, Shadcn UI, Next.js, SSR, CSR, Hydration, Zustand, TanStack React Query, Core Web Vitals, Technical SEO, Docker, CI/CD, and frontend telemetry. Instead of presenting one "best" solution, the course focuses on how to evaluate options, understand constraints, communicate decisions, and learn from what happens after the UI reaches production.',
-      shortDescription:
-        'Master frontend engineering decisions from design systems and rendering to performance and production.',
+      shortDescription: ENGINEERING_COURSE_TITLE,
       thumbnailUrl:
         'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800',
       previewVideo: null,
@@ -214,7 +250,7 @@ async function main() {
         'trade-offs',
         'production',
       ],
-      metaTitle: `Engineering Decisions - Frontend Architecture | ${SEO_SITE_NAME_EN}`,
+      metaTitle: `${ENGINEERING_COURSE_TITLE_EN} | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend engineering decisions across design systems, Next.js, rendering, performance, and production.',
       certificateEnabled: true,
@@ -224,12 +260,11 @@ async function main() {
       instructorId: instructor.id,
       pathId: engineeringPath.id,
       trackId: advancedFrontendTrack.id,
-      title: 'Engineering Decisions',
+      title: ENGINEERING_COURSE_TITLE_EN,
       slug: ENGINEERING_COURSE_SLUG,
       description:
         'How do frontend engineers decide how to structure UI, choose rendering strategies, manage state, optimize performance, and ship interfaces to production? This course explores the thinking process behind real-world frontend engineering decisions across Design Systems, Tailwind CSS, Shadcn UI, Next.js, SSR, CSR, Hydration, Zustand, TanStack React Query, Core Web Vitals, Technical SEO, Docker, CI/CD, and frontend telemetry. Instead of presenting one "best" solution, the course focuses on how to evaluate options, understand constraints, communicate decisions, and learn from what happens after the UI reaches production.',
-      shortDescription:
-        'Master frontend engineering decisions from design systems and rendering to performance and production.',
+      shortDescription: ENGINEERING_COURSE_TITLE,
       thumbnailUrl:
         'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800',
       previewVideo: null,
@@ -283,7 +318,7 @@ async function main() {
         'trade-offs',
         'production',
       ],
-      metaTitle: `Engineering Decisions - Frontend Architecture | ${SEO_SITE_NAME_EN}`,
+      metaTitle: `${ENGINEERING_COURSE_TITLE_EN} | ${SEO_SITE_NAME_EN}`,
       metaDescription:
         'Learn frontend engineering decisions across design systems, Next.js, rendering, performance, and production.',
       certificateEnabled: true,
