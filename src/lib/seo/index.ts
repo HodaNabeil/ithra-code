@@ -3,8 +3,12 @@ export {
   SEO_AUTHOR_JOB_TITLE,
   SEO_AUTHOR_NAME,
   SEO_AUTHOR_NAME_AR,
+  SEO_CANONICAL_ORIGIN,
   SEO_DEFAULT_DESCRIPTION,
+  SEO_DEFAULT_OG_IMAGE_PATH,
   SEO_DEFAULT_TITLE,
+  SEO_GLOBAL_KEYWORDS,
+  SEO_HOME_DOCUMENT_TITLE,
   SEO_HOME_KEYWORDS,
   SEO_OG_IMAGE_HEIGHT,
   SEO_OG_IMAGE_WIDTH,
@@ -12,13 +16,16 @@ export {
   SEO_SAME_AS,
   SEO_SITE_NAME_AR,
   SEO_SITE_NAME_EN,
+  SEO_TITLE_TEMPLATE_SUFFIX,
   SEO_TWITTER_SITE,
 } from './config';
 export {
+  buildHreflangAlternates,
   createNoIndexMetadata,
   createPageMetadata,
   type CreatePageMetadataInput,
 } from './create-page-metadata';
+export { buildRootLayoutMetadata } from './root-metadata';
 export { toMetaDescription } from './description';
 export { isSeoIndexingEnabled } from './environment';
 export {
@@ -33,6 +40,7 @@ export { buildJsonLdGraph } from './json-ld/types';
 export { buildRobotsConfig, ROBOTS_DISALLOW_PATHS } from './robots';
 export { buildSitemapEntries } from './sitemap';
 export {
+  getCanonicalOrigin,
   getOrganizationId,
   getPersonId,
   getSiteOrigin,
