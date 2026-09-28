@@ -9,6 +9,9 @@ import { AUTH_ROUTES } from '@/constants/auth';
  */
 export const authConfig: NextAuthConfig = {
   providers: [],
+  basePath: '/api/auth',
+  trustHost: true,
+  secret: env.AUTH_SECRET ?? process.env.AUTH_SECRET,
 
   session: {
     strategy: 'jwt',
@@ -63,7 +66,4 @@ export const authConfig: NextAuthConfig = {
     signIn: AUTH_ROUTES.SIGN_IN,
     error: AUTH_ROUTES.SIGN_IN,
   },
-
-  secret: env.AUTH_SECRET,
-  trustHost: true,
 };

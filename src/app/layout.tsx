@@ -4,7 +4,7 @@ import { AuthProvider } from '@/providers/AuthProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { NavigationTopLoader } from '@/providers/NavigationTopLoader';
 import { QueryProvider } from '@/providers/QueryProvider';
-import { auth } from '@/lib/auth';
+import { getAuthSession } from '@/lib/get-auth-session';
 import { Toaster } from '@/components/ui/sonner';
 import { buildRootLayoutMetadata } from '@/lib/seo/root-metadata';
 
@@ -37,7 +37,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  const session = await getAuthSession();
 
   return (
     <html

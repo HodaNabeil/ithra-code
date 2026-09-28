@@ -1,9 +1,9 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
-/** Auth.js expects the site origin, not `/api/auth`. */
+/** Auth.js v5 (next-auth) treats AUTH_URL pathname `/` as "use default /api/auth". */
 function normalizeAuthUrl(url: string): string {
-  return url.replace(/\/api\/auth\/?$/, '');
+  return new URL(url.replace(/\/api\/auth\/?$/, '')).origin;
 }
 
 export const env = createEnv({
@@ -655,10 +655,15 @@ export const env = createEnv({
   emptyStringAsUndefined: true,
 });
 
-// Auth.js reads AUTH_URL / NEXTAUTH_URL / AUTH_TRUST_HOST from process.env.
-// AUTH_URL is the single source of truth (a stale NEXTAUTH_URL in Vercel breaks OAuth).
+// Auth.js reads AUTH_URL / NEXTAUTH_URL / AUTH_TRUST_HOST / AUTH_SECRET from
+// process.env. Keep AUTH_URL as the site origin (next-auth ignores pathname `/`
+// and defaults basePath to `/api/auth`). Overwrite a stale NEXTAUTH_URL so it
+// cannot point at an old Vercel hostname.
 if (typeof window === 'undefined') {
   process.env.AUTH_URL = env.AUTH_URL;
   process.env.NEXTAUTH_URL = env.AUTH_URL;
   process.env.AUTH_TRUST_HOST = 'true';
+  if (env.AUTH_SECRET) {
+    process.env.AUTH_SECRET = env.AUTH_SECRET;
+  }
 }

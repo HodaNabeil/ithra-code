@@ -26,6 +26,7 @@ export const config: NextAuthConfig = {
       clientSecret: env.AUTH_GITHUB_SECRET,
       allowDangerousEmailAccountLinking: true,
       authorization: {
+        url: 'https://github.com/login/oauth/authorize',
         params: {
           scope: 'read:user user:email',
         },
@@ -136,6 +137,8 @@ export const config: NextAuthConfig = {
   },
 
   secret: env.AUTH_SECRET,
+  trustHost: true,
+  basePath: '/api/auth',
 };
 
 const {

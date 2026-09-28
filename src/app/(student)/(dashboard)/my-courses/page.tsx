@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 
-import { auth } from '@/lib/auth';
+import { getAuthSession } from '@/lib/get-auth-session';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
 import {
   MyCoursesContainer,
@@ -30,7 +30,7 @@ export default async function MyCoursesPage({
   const search = resolvedSearchParams.search || undefined;
   const sort = (resolvedSearchParams.sort as StudentSortOption) || undefined;
 
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) {
     return <MyCoursesSignInRequired />;
   }
