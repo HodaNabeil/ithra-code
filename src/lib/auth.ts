@@ -12,6 +12,16 @@ import { isValidGitHubOAuthClientId } from '@/features/auth/lib/github-oauth';
 
 const githubOAuthEnabled = isValidGitHubOAuthClientId(env.AUTH_GITHUB_ID);
 
+// Validate AUTH_URL at runtime to catch production misconfigurations early
+if (
+  env.AUTH_URL.includes('authjs.dev') ||
+  (env.AUTH_URL.includes('localhost') && process.env.NODE_ENV === 'production')
+) {
+  throw new Error(
+    `Invalid AUTH_URL in production: ${env.AUTH_URL}. Must be your actual domain (e.g., https://yourdomain.com)`,
+  );
+}
+
 export const config: NextAuthConfig = {
   ...authConfig,
 
@@ -29,11 +39,7 @@ export const config: NextAuthConfig = {
           GithubProvider({
             clientId: env.AUTH_GITHUB_ID,
             clientSecret: env.AUTH_GITHUB_SECRET,
-            // GitHub OAuth responses include RFC 9207 `iss`; required for callback validation.
-            issuer: 'https://github.com/login/oauth',
             allowDangerousEmailAccountLinking: true,
-            // Bypass strict issuer check to prevent "unexpected iss" errors
-            checks: ['pkce', 'state'],
             authorization: {
               url: 'https://github.com/login/oauth/authorize',
               params: {

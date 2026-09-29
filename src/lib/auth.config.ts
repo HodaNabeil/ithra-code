@@ -15,7 +15,10 @@ export const authConfig: NextAuthConfig = {
 
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+
+  useSecureCookies: process.env.NODE_ENV === 'production',
 
   callbacks: {
     redirect({ url, baseUrl }) {

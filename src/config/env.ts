@@ -22,6 +22,10 @@ export const env = createEnv({
     AUTH_URL: z
       .string()
       .url()
+      .refine((url) => !url.includes('authjs.dev'), {
+        message:
+          'AUTH_URL must be your actual domain, not authjs.dev placeholder',
+      })
       .transform(normalizeAuthUrl)
       .describe('NextAuth base URL (site origin)'),
     NEXTAUTH_URL: z
