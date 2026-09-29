@@ -7,6 +7,8 @@ import { QueryProvider } from '@/providers/QueryProvider';
 import { getAuthSession } from '@/lib/get-auth-session';
 import { Toaster } from '@/components/ui/sonner';
 import { buildRootLayoutMetadata } from '@/lib/seo/root-metadata';
+import { JsonLd } from '@/lib/seo/json-ld/json-ld';
+import { buildWebSiteSchema } from '@/lib/seo/json-ld/website-schema';
 
 export const metadata = {
   ...buildRootLayoutMetadata(),
@@ -46,6 +48,9 @@ export default async function RootLayout({
       className="h-full antialiased"
       suppressHydrationWarning
     >
+      <head>
+        <JsonLd id="website-schema" data={buildWebSiteSchema()} />
+      </head>
       <body
         className={cn(
           'min-h-full font-sans bg-body-background',
