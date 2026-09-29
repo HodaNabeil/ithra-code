@@ -32,6 +32,8 @@ export const config: NextAuthConfig = {
             // GitHub OAuth responses include RFC 9207 `iss`; required for callback validation.
             issuer: 'https://github.com/login/oauth',
             allowDangerousEmailAccountLinking: true,
+            // Bypass strict issuer check to prevent "unexpected iss" errors
+            checks: ['pkce', 'state'],
             authorization: {
               url: 'https://github.com/login/oauth/authorize',
               params: {
