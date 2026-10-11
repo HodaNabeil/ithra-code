@@ -1,6 +1,5 @@
 import {
   SEO_SITE_NAME_EN,
-  SEO_SITE_NAME_AR,
   SEO_SITE_ALTERNATE_NAMES,
   SEO_DEFAULT_DESCRIPTION,
 } from '../config';
@@ -8,7 +7,7 @@ import { getCanonicalOrigin, toCanonicalUrl } from '../urls';
 
 /**
  * Builds Schema.org WebSite structured data for the root layout.
- * This tells Google to display "Ithra Code" as the site name in search results
+ * This tells Google to display "IthraCode" as the site name in search results
  * instead of the domain name "ithracode.tech".
  *
  * @see https://developers.google.com/search/docs/appearance/site-names
@@ -23,7 +22,7 @@ export function buildWebSiteSchema() {
     '@id': `${getCanonicalOrigin()}/#website`,
     url: siteUrl,
     name: SEO_SITE_NAME_EN,
-    alternateName: [SEO_SITE_NAME_AR, ...SEO_SITE_ALTERNATE_NAMES],
+    alternateName: [...SEO_SITE_ALTERNATE_NAMES],
     description: SEO_DEFAULT_DESCRIPTION,
     inLanguage: 'ar',
   };

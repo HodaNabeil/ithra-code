@@ -53,7 +53,7 @@ const WhyIthraCode = () => {
       <div className="container element-center flex-col">
         <SectionHeading
           subTitle="الميزات"
-          title="لماذا Ithra Code"
+          title="لماذا IthraCode"
           icon={
             <TestimonialQuoteIcon
               gradientId="why-ithracode-quote"
