@@ -12,14 +12,37 @@ import { isValidGitHubOAuthClientId } from '@/features/auth/lib/github-oauth';
 
 const githubOAuthEnabled = isValidGitHubOAuthClientId(env.AUTH_GITHUB_ID);
 
-// Validate AUTH_URL at runtime to catch production misconfigurations early
-if (
-  env.AUTH_URL.includes('authjs.dev') ||
-  (env.AUTH_URL.includes('localhost') && process.env.NODE_ENV === 'production')
-) {
-  throw new Error(
-    `Invalid AUTH_URL in production: ${env.AUTH_URL}. Must be your actual domain (e.g., https://yourdomain.com)`,
-  );
+// Runtime validation flag - checked on first auth request in production
+let _productionAuthUrlValidated = false;
+
+/**
+ * Validates AUTH_URL for production deployments.
+ * Called lazily on first auth request to avoid build failures
+ * when using localhost in .env for local development.
+ */
+function validateProductionAuthUrl(): void {
+  // Only validate in production to allow local dev with localhost
+  // Skip during build (next build sets NODE_ENV=production but we're not "running" yet)
+  if (
+    process.env.NODE_ENV !== 'production' ||
+    typeof window !== 'undefined'
+  ) {
+    return;
+  }
+
+  // Only validate once per server instance
+  if (_productionAuthUrlValidated) return;
+
+  const authUrl = process.env.AUTH_URL || env.AUTH_URL;
+
+  // Check for localhost in production (security risk for redirects)
+  if (authUrl?.includes('localhost')) {
+    throw new Error(
+      `Invalid AUTH_URL in production: ${authUrl}. Must be your actual domain (e.g., https://yourdomain.com)`,
+    );
+  }
+
+  _productionAuthUrlValidated = true;
 }
 
 export const config: NextAuthConfig = {
@@ -159,11 +182,23 @@ export const config: NextAuthConfig = {
 };
 
 const {
-  handlers: authHandlers,
+  handlers: originalHandlers,
   auth: authMethod,
   signIn: authSignIn,
   signOut: authSignOut,
 } = NextAuth(config);
+
+// Wrap handlers to validate AUTH_URL on first production request
+const authHandlers: typeof originalHandlers = {
+  GET: async (...args) => {
+    validateProductionAuthUrl();
+    return originalHandlers.GET(...args);
+  },
+  POST: async (...args) => {
+    validateProductionAuthUrl();
+    return originalHandlers.POST(...args);
+  },
+};
 
 export const handlers = authHandlers;
 export const auth: NextAuthResult['auth'] = authMethod;
