@@ -19,10 +19,7 @@ let _productionAuthUrlValidated = false;
 function validateProductionAuthUrl(): void {
   // Only validate in production to allow local dev with localhost
   // Skip during build (next build sets NODE_ENV=production but we're not "running" yet)
-  if (
-    process.env.NODE_ENV !== 'production' ||
-    typeof window !== 'undefined'
-  ) {
+  if (process.env.NODE_ENV !== 'production' || typeof window !== 'undefined') {
     return;
   }
 
@@ -123,10 +120,7 @@ export const config: NextAuthConfig = {
         if (resolvedName) {
           token.name = resolvedName;
         }
-      } else if (
-        token.id &&
-        (!token.picture || !token.name)
-      ) {
+      } else if (token.id && (!token.picture || !token.name)) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: {
