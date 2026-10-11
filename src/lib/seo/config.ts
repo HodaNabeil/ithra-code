@@ -1,11 +1,15 @@
 /** Arabic brand name. */
 export const SEO_SITE_NAME_AR = 'إثراء كود';
 
-/** Official brand name: home `<title>`, Open Graph `siteName`, JSON-LD, inner-page title suffix. */
-export const SEO_SITE_NAME_EN = 'IthraCode';
+/** Latin brand: home `<title>`, Open Graph `siteName`, JSON-LD, inner-page title suffix. */
+export const SEO_SITE_NAME_EN = 'Ithra Code';
 
-/** Alternative brand name for SEO structured data. */
-export const SEO_SITE_ALTERNATE_NAMES = ['Ithra Code'] as const;
+/** Alternate spellings used in structured data. */
+export const SEO_SITE_ALTERNATE_NAMES = [
+  'IthraCode',
+  SEO_SITE_NAME_AR,
+  'ithra code',
+] as const;
 
 /** Production canonical origin for metadata and JSON-LD when indexing is enabled. */
 export const SEO_CANONICAL_ORIGIN = 'https://ithracode.tech';

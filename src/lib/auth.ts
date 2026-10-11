@@ -1,5 +1,4 @@
 import NextAuth, { type NextAuthConfig, type NextAuthResult } from 'next-auth';
-import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
@@ -8,9 +7,6 @@ import { authConfig } from '@/lib/auth.config';
 import { syncGuestCartUseCase } from '@/features/cart/application/use-cases/sync-guest-cart.use-case';
 import { readAndClearPendingGuestCartCookie } from '@/features/cart/lib/pending-guest-cart.cookie';
 import { Role } from '@prisma/client';
-import { isValidGitHubOAuthClientId } from '@/features/auth/lib/github-oauth';
-
-const githubOAuthEnabled = isValidGitHubOAuthClientId(env.AUTH_GITHUB_ID);
 
 // Runtime validation flag - checked on first auth request in production
 let _productionAuthUrlValidated = false;
@@ -56,22 +52,6 @@ export const config: NextAuthConfig = {
       clientSecret: env.AUTH_GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
-
-    ...(githubOAuthEnabled
-      ? [
-          GithubProvider({
-            clientId: env.AUTH_GITHUB_ID,
-            clientSecret: env.AUTH_GITHUB_SECRET,
-            allowDangerousEmailAccountLinking: true,
-            authorization: {
-              url: 'https://github.com/login/oauth/authorize',
-              params: {
-                scope: 'read:user user:email',
-              },
-            },
-          }),
-        ]
-      : []),
   ],
 
   events: {
