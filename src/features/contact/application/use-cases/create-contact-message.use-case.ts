@@ -48,7 +48,11 @@ export async function createContactMessageUseCase(
       const message =
         error.issues.map((issue) => issue.message).join(', ') ||
         'يرجى التحقق من البيانات المدخلة';
-      throw new ContactError(400, message, CONTACT_ERROR_CODES.VALIDATION_ERROR);
+      throw new ContactError(
+        400,
+        message,
+        CONTACT_ERROR_CODES.VALIDATION_ERROR,
+      );
     }
     throw error;
   }

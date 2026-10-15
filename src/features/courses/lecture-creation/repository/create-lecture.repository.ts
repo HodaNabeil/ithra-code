@@ -57,7 +57,9 @@ export class PrismaCreateLectureRepository implements CreateLectureRepository {
     };
   }
 
-  async createLecture(data: CreateLectureData): Promise<CreateLectureOutputDTO> {
+  async createLecture(
+    data: CreateLectureData,
+  ): Promise<CreateLectureOutputDTO> {
     return prisma.$transaction(async (tx) => {
       await tx.$executeRaw`SELECT id FROM sections WHERE id = ${data.sectionId} FOR UPDATE`;
 

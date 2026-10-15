@@ -14,7 +14,5 @@ export type SupportedPaymentProvider =
 export function isSupportedPaymentProvider(
   provider: string,
 ): provider is SupportedPaymentProvider {
-  return (SUPPORTED_PAYMENT_PROVIDERS as readonly string[]).includes(
-    provider,
-  );
+  return (SUPPORTED_PAYMENT_PROVIDERS as readonly string[]).includes(provider);
 }

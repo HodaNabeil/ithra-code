@@ -64,9 +64,7 @@ export function MyCoursesDashboard({
     <div className="container py-6 lg:py-8">
       <Tabs
         value={activeTab}
-        onValueChange={(value) =>
-          handleTabChange(resolveDashboardTab(value))
-        }
+        onValueChange={(value) => handleTabChange(resolveDashboardTab(value))}
         className="w-full"
       >
         <StudentDashboardTabs />

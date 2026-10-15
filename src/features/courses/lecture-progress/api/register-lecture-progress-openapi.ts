@@ -144,7 +144,7 @@ function buildUpdateResponses(deps: RegisterLectureProgressOpenApiDeps) {
               summary: 'Unknown body field',
               value: {
                 success: false,
-                message: 'Unrecognized key(s) in object: \'timeSpent\'',
+                message: "Unrecognized key(s) in object: 'timeSpent'",
               },
             },
             negativeIncrement: {
@@ -325,17 +325,23 @@ function buildListCourseLectureProgressResponses(
           examples: {
             withProgress: {
               summary: 'Progress records exist',
-              value: deps.apiSuccessExample('تم جلب تقدم محاضرات الدورة بنجاح', {
-                progress: [progressRecordExample],
-                total: 1,
-              }),
+              value: deps.apiSuccessExample(
+                'تم جلب تقدم محاضرات الدورة بنجاح',
+                {
+                  progress: [progressRecordExample],
+                  total: 1,
+                },
+              ),
             },
             noProgress: {
               summary: 'No progress rows yet',
-              value: deps.apiSuccessExample('تم جلب تقدم محاضرات الدورة بنجاح', {
-                progress: [],
-                total: 0,
-              }),
+              value: deps.apiSuccessExample(
+                'تم جلب تقدم محاضرات الدورة بنجاح',
+                {
+                  progress: [],
+                  total: 0,
+                },
+              ),
             },
           },
         },
@@ -422,11 +428,14 @@ export function registerLectureProgressOpenApi(
       example: deps.courseSlug,
       description: 'Course CUID or slug (must match the lecture’s course)',
     }),
-    lectureId: z.string().cuid().openapi({
-      param: { name: 'lectureId', in: 'path' },
-      example: deps.lectureId,
-      description: 'Lecture CUID',
-    }),
+    lectureId: z
+      .string()
+      .cuid()
+      .openapi({
+        param: { name: 'lectureId', in: 'path' },
+        example: deps.lectureId,
+        description: 'Lecture CUID',
+      }),
   });
 
   const updateResponses = buildUpdateResponses(deps);

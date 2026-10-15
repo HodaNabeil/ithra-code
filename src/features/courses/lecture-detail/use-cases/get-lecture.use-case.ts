@@ -33,9 +33,7 @@ function canBypassEnrollment(
   viewer: LectureDetailViewer,
   course: LectureDetailCourseIdentity,
 ): boolean {
-  return (
-    viewer.role === Role.ADMIN || viewer.id === course.instructorId
-  );
+  return viewer.role === Role.ADMIN || viewer.id === course.instructorId;
 }
 
 export async function getLecture(
@@ -114,11 +112,7 @@ export async function getLecture(
 
   assertLecturePaidAccess(courseIdentity, lecture, viewer, enrollment);
 
-  const hasPurchased = computeHasPurchased(
-    courseIdentity,
-    viewer,
-    enrollment,
-  );
+  const hasPurchased = computeHasPurchased(courseIdentity, viewer, enrollment);
 
   return mapGetLectureResponse({
     lecture,

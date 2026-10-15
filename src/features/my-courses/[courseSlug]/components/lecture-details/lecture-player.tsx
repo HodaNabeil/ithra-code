@@ -33,10 +33,7 @@ function getHttpStatus(error: unknown): number | undefined {
   return undefined;
 }
 
-export function LecturePlayer({
-  lectureId,
-  courseSlug,
-}: LecturePlayerProps) {
+export function LecturePlayer({ lectureId, courseSlug }: LecturePlayerProps) {
   const router = useRouter();
   const stoppedRef = useRef(false);
   const {
@@ -135,7 +132,13 @@ export function LecturePlayer({
         toast.error('فشل في تحديث حالة المحاضرة');
       }
     },
-    [courseSlug, lectureId, lectureNavigation?.nextLectureId, router, updateProgress],
+    [
+      courseSlug,
+      lectureId,
+      lectureNavigation?.nextLectureId,
+      router,
+      updateProgress,
+    ],
   );
 
   if (isLectureDetailsLoading || isLectureNavigationLoading) {
@@ -198,15 +201,11 @@ function LecturePlayerMessage({
 }
 
 function LectureNotFoundMessage() {
-  return (
-    <LecturePlayerMessage message="المحاضرة غير موجودة" variant="error" />
-  );
+  return <LecturePlayerMessage message="المحاضرة غير موجودة" variant="error" />;
 }
 
 function LectureVideoUnavailableMessage() {
-  return (
-    <LecturePlayerMessage message="لا يتوفر مصدر تشغيل لهذه المحاضرة" />
-  );
+  return <LecturePlayerMessage message="لا يتوفر مصدر تشغيل لهذه المحاضرة" />;
 }
 
 function LectureVideoErrorMessage() {

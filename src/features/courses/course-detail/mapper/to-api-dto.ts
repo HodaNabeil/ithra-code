@@ -115,9 +115,8 @@ export function mapCourseDetailEntityToPublicDTO(
     (acc, section) => acc + section.lectures.length,
     0,
   );
-  const firstLectureId = sections.find(
-    (section) => section.lectures[0]?.id,
-  )?.lectures[0]?.id;
+  const firstLectureId = sections.find((section) => section.lectures[0]?.id)
+    ?.lectures[0]?.id;
   const hours = computeHours(course);
 
   return {

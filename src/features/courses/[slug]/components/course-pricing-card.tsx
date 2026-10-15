@@ -79,7 +79,11 @@ export function CoursePricingCard({
           <div className="space-y-3">
             <div className="flex gap-2">
               <div className="flex-1">
-                <CoursePurchaseCta course={course} size="xl" className="w-full" />
+                <CoursePurchaseCta
+                  course={course}
+                  size="xl"
+                  className="w-full"
+                />
               </div>
               {/* <Button variant="outline" size="xl" className="rounded-lg shrink-0">
                 <Heart className="w-5 h-5" />

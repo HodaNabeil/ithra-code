@@ -353,17 +353,17 @@ pnpm worker:ai-cost-aggregation    # تجميع تكاليف الذكاء الا
 
 ### الدورات ومسارات التعلم
 
-| Endpoint                               | الوصف                   |
-| -------------------------------------- | ----------------------- |
-| `GET /api/courses`                     | قائمة الدورات المنشورة  |
-| `POST /api/courses`                    | إنشاء مسودة دورة        |
+| Endpoint                                     | الوصف                   |
+| -------------------------------------------- | ----------------------- |
+| `GET /api/courses`                           | قائمة الدورات المنشورة  |
+| `POST /api/courses`                          | إنشاء مسودة دورة        |
 | `GET /api/courses/{courseIdOrSlug}`          | تفاصيل الدورة           |
 | `PUT /api/courses/{courseIdOrSlug}`          | تحديث الدورة            |
 | `DELETE /api/courses/{courseIdOrSlug}`       | أرشفة الدورة            |
 | `GET /api/courses/{courseIdOrSlug}/access`   | التحقق من صلاحية الوصول |
 | `GET /api/courses/{courseIdOrSlug}/overview` | إحصائيات الدورة         |
-| `GET /api/paths`                       | قائمة مسارات التعلم     |
-| `GET /api/paths/{slug}`                | تفاصيل مسار التعلم      |
+| `GET /api/paths`                             | قائمة مسارات التعلم     |
+| `GET /api/paths/{slug}`                      | تفاصيل مسار التعلم      |
 
 ### السلة والطلبات والدفع
 

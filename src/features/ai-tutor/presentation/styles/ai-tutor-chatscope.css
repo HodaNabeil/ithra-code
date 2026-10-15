@@ -409,12 +409,16 @@
   margin-inline-start: auto;
 }
 
-.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--assistant .ai-tutor-message-avatar {
+.ai-tutor-chatscope.is-sidebar
+  .ai-tutor-message-row--assistant
+  .ai-tutor-message-avatar {
   grid-column: 1;
   grid-row: 1;
 }
 
-.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--assistant .ai-tutor-message-body {
+.ai-tutor-chatscope.is-sidebar
+  .ai-tutor-message-row--assistant
+  .ai-tutor-message-body {
   grid-column: 2;
   grid-row: 1;
   width: 100%;
@@ -423,12 +427,16 @@
   flex: none;
 }
 
-.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--user .ai-tutor-message-avatar {
+.ai-tutor-chatscope.is-sidebar
+  .ai-tutor-message-row--user
+  .ai-tutor-message-avatar {
   grid-column: 2;
   grid-row: 1;
 }
 
-.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--user .ai-tutor-message-body {
+.ai-tutor-chatscope.is-sidebar
+  .ai-tutor-message-row--user
+  .ai-tutor-message-body {
   grid-column: 1;
   grid-row: 1;
   width: 100%;
@@ -474,7 +482,9 @@
     0 4px 12px color-mix(in oklch, black 6%, transparent);
 }
 
-.ai-tutor-chatscope.is-sidebar .ai-tutor-message-row--user .ai-tutor-message-bubble {
+.ai-tutor-chatscope.is-sidebar
+  .ai-tutor-message-row--user
+  .ai-tutor-message-bubble {
   width: fit-content;
   max-width: 100%;
   margin-inline-start: auto;
@@ -541,7 +551,8 @@
   background: color-mix(in oklch, var(--sidebar-accent) 55%, var(--sidebar));
 }
 
-.ai-tutor-chatscope.is-sidebar .cs-message-input__content-editor-wrapper:focus-within {
+.ai-tutor-chatscope.is-sidebar
+  .cs-message-input__content-editor-wrapper:focus-within {
   border-color: color-mix(in oklch, var(--brand) 45%, transparent);
   box-shadow: 0 0 0 3px color-mix(in oklch, var(--brand) 14%, transparent);
 }

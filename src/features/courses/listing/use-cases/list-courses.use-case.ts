@@ -10,10 +10,7 @@ import {
   getCourseProgress,
   type CourseProgressDTO,
 } from '@/features/courses/course-progress';
-import {
-  courseListCache,
-  resolveCacheScope,
-} from '../cache/course-list.cache';
+import { courseListCache, resolveCacheScope } from '../cache/course-list.cache';
 import { mapToPublicItem } from '../mapper/to-course-list-dto';
 import {
   buildVisibilityWhere,

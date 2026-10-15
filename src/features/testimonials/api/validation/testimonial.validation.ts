@@ -23,7 +23,11 @@ export const createTestimonialSchema = z.object({
  * All fields are optional.
  */
 export const updateTestimonialSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(255, 'Name is too long').optional(),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(255, 'Name is too long')
+    .optional(),
   avatarUrl: z.string().url('Invalid avatar URL').optional().nullable(),
   content: z
     .string()

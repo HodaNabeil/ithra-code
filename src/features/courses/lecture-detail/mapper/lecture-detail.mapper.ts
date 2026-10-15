@@ -21,8 +21,7 @@ function resolveVideoHlsUrl(lecture: DB_LectureDetailEntity): string | null {
   }
 
   const video = lecture.video;
-  const hasReadyVideo =
-    Boolean(lecture.videoId) && video?.status === 'ready';
+  const hasReadyVideo = Boolean(lecture.videoId) && video?.status === 'ready';
 
   if (hasReadyVideo && isBunnyStreamConfigured()) {
     const hlsUrl = signBunnyHlsUrl({

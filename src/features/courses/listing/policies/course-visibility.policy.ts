@@ -39,10 +39,7 @@ export function buildVisibilityWhere(
 
 /** Post-query safety filter (defense in depth). */
 export function isCourseVisibleToViewer(
-  course: Pick<
-    CourseListPublicItem,
-    'status' | 'visibility' | 'instructorId'
-  >,
+  course: Pick<CourseListPublicItem, 'status' | 'visibility' | 'instructorId'>,
   viewer: CourseViewer,
 ): boolean {
   const role = resolveViewerRole(viewer);

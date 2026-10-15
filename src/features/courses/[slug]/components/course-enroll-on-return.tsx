@@ -13,7 +13,9 @@ interface CourseEnrollOnReturnProps {
   courseSlug: string;
 }
 
-export function CourseEnrollOnReturn({ courseSlug }: CourseEnrollOnReturnProps) {
+export function CourseEnrollOnReturn({
+  courseSlug,
+}: CourseEnrollOnReturnProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { status } = useSession();

@@ -66,8 +66,7 @@ export class PrismaCourseProgressRepository implements CourseProgressRepository 
         completedLectures,
         totalLectures,
       ),
-      lastAccessedAt:
-        aggregates._max.lastAccessedAt?.toISOString() ?? null,
+      lastAccessedAt: aggregates._max.lastAccessedAt?.toISOString() ?? null,
     };
   }
 }

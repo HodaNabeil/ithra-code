@@ -55,9 +55,7 @@ export default async function Home() {
         items={testimonialItems}
         hasError={!testimonialsResponse.success}
         errorMessage={
-          testimonialsResponse.success
-            ? undefined
-            : testimonialsResponse.error
+          testimonialsResponse.success ? undefined : testimonialsResponse.error
         }
       />
 

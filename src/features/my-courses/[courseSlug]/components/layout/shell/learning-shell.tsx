@@ -18,7 +18,9 @@ export const CourseLearningShell: React.FC<CourseLearningShellProps> = ({
   isAiTutorEnabled = false,
   children,
 }) => {
-  const initializeForCourse = useCourseLayoutStore((s) => s.initializeForCourse);
+  const initializeForCourse = useCourseLayoutStore(
+    (s) => s.initializeForCourse,
+  );
 
   useLayoutEffect(() => {
     initializeForCourse(courseSlug);

@@ -53,7 +53,9 @@ export function mapLectureNavigationFromSections(
   courseSlug: string,
 ): LectureNavigationDTO {
   const allLectures = response.sections.flatMap((section) => section.lectures);
-  const currentIndex = allLectures.findIndex((lecture) => lecture.id === lectureId);
+  const currentIndex = allLectures.findIndex(
+    (lecture) => lecture.id === lectureId,
+  );
   const currentLecture = allLectures[currentIndex];
   const prevLecture = allLectures[currentIndex - 1];
   const nextLecture = allLectures[currentIndex + 1];

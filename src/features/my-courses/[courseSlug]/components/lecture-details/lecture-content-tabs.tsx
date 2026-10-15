@@ -1,12 +1,7 @@
 'use client';
 
 import React, { type ReactNode } from 'react';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
 interface LectureTab {
@@ -24,7 +19,10 @@ const tabs: LectureTab[] = [
 
 export function LectureContentTabs() {
   return (
-    <Tabs defaultValue="notes" className="w-full px-4 border-b border-border/40">
+    <Tabs
+      defaultValue="notes"
+      className="w-full px-4 border-b border-border/40"
+    >
       <TabsList>
         {tabs.map((tab) => (
           <TabsTrigger key={tab.value} value={tab.value}>
@@ -41,9 +39,7 @@ export function LectureContentTabs() {
         >
           {tab.content ?? (
             <div className="py-6 text-center text-muted-foreground">
-              {tab.soon
-                ? `محتوى ${tab.label} قريباً...`
-                : null}
+              {tab.soon ? `محتوى ${tab.label} قريباً...` : null}
             </div>
           )}
         </TabsContent>

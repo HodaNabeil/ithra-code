@@ -23,8 +23,7 @@ type AuthCardProps = {
 
 export function AuthCard({ providers }: AuthCardProps) {
   const searchParams = useSearchParams();
-  const callbackUrl =
-    searchParams.get('callbackUrl') || APP_ROUTES.MY_COURSES;
+  const callbackUrl = searchParams.get('callbackUrl') || APP_ROUTES.MY_COURSES;
   const [error, setError] = useState<AuthErrorContent | null>(() =>
     getAuthErrorContent(searchParams.get('error')),
   );

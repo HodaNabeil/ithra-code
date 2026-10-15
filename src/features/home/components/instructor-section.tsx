@@ -44,24 +44,22 @@ export default function InstructorSection() {
             <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mt-1">
               {SEO_AUTHOR_NAME}
             </h3>
-            <p className="text-brand mt-2 font-bold">
-              {SEO_AUTHOR_JOB_TITLE}
-            </p>
+            <p className="text-brand mt-2 font-bold">{SEO_AUTHOR_JOB_TITLE}</p>
             <p className="text-muted-foreground text-sm font-medium">
               المؤسسة والمالكة والمدرّبة
             </p>
             <ExpandableContent className="mt-4">
               <div className="space-y-4 text-muted-foreground text-base leading-relaxed">
                 <p>
-                  {SEO_AUTHOR_NAME_AR} (Frontend Engineer) متخصّصة في تصميم وبناء
-                  تطبيقات ويب حديثة وعالية الأداء وقابلة للتوسع (Scalable
-                  Web Applications).
-                  تتمتع بكفاءة متقدمة في تطوير الواجهات الأمامية (Frontend
-                  Development) باستخدام React وNext.js وTypeScript، إلى جانب
-                  خبرة في هندسة البرمجيات (Software Engineering)، وتصميم
-                  معماريات الواجهات (Frontend Architecture)، وبناء أنظمة مكوّنات
-                  قابلة لإعادة الاستخدام (Reusable Component Systems)، وتحسين
-                  الأداء وتجربة المستخدم وتحسين محركات البحث (SEO).
+                  {SEO_AUTHOR_NAME_AR} (Frontend Engineer) متخصّصة في تصميم
+                  وبناء تطبيقات ويب حديثة وعالية الأداء وقابلة للتوسع (Scalable
+                  Web Applications). تتمتع بكفاءة متقدمة في تطوير الواجهات
+                  الأمامية (Frontend Development) باستخدام React وNext.js
+                  وTypeScript، إلى جانب خبرة في هندسة البرمجيات (Software
+                  Engineering)، وتصميم معماريات الواجهات (Frontend
+                  Architecture)، وبناء أنظمة مكوّنات قابلة لإعادة الاستخدام
+                  (Reusable Component Systems)، وتحسين الأداء وتجربة المستخدم
+                  وتحسين محركات البحث (SEO).
                 </p>
                 <p>
                   تمتلك هدى كذلك خلفية برمجية متينة في C++ وJava، تعزّز فهمها

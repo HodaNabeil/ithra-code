@@ -41,7 +41,9 @@ export async function getFeaturedCoursesForHome(): Promise<
 export async function getHomeTestimonials(): Promise<
   HomeDataResult<{ items: TestimonialItem[] }>
 > {
-  const result = await getTestimonialsAction({ limit: HOME_TESTIMONIALS_LIMIT });
+  const result = await getTestimonialsAction({
+    limit: HOME_TESTIMONIALS_LIMIT,
+  });
 
   if (result.success) {
     return {

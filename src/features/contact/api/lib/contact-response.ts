@@ -32,7 +32,9 @@ export function contactSuccessResponse(
   );
 }
 
-export function contactErrorResponse(error: ContactError): NextResponse<ContactErrorBody> {
+export function contactErrorResponse(
+  error: ContactError,
+): NextResponse<ContactErrorBody> {
   return NextResponse.json(
     {
       success: false,
@@ -45,7 +47,9 @@ export function contactErrorResponse(error: ContactError): NextResponse<ContactE
   );
 }
 
-export function mapContactRouteError(error: unknown): NextResponse<ContactErrorBody> {
+export function mapContactRouteError(
+  error: unknown,
+): NextResponse<ContactErrorBody> {
   if (isContactError(error)) {
     return contactErrorResponse(error);
   }

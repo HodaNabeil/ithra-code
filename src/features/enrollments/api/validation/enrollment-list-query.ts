@@ -91,7 +91,11 @@ export function parseEnrollmentListQuery(
   }
 
   const sortBy = input.sortBy?.trim() || 'enrolledAt';
-  if (!ENROLLMENT_LIST_SORT_BY.includes(sortBy as (typeof ENROLLMENT_LIST_SORT_BY)[number])) {
+  if (
+    !ENROLLMENT_LIST_SORT_BY.includes(
+      sortBy as (typeof ENROLLMENT_LIST_SORT_BY)[number],
+    )
+  ) {
     throw new EnrollmentValidationError('قيمة الترتيب غير صالحة');
   }
 

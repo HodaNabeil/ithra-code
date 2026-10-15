@@ -443,7 +443,9 @@ async function main() {
   console.log(`👤 Instructor: ${instructor.email}`);
   console.log(`🧭 Path: ${engineeringPath.title}`);
   console.log(`🛤️ Track: ${advancedFrontendTrack.title}`);
-  console.log(`📚 Course: ${course.title} (${course.slug}) — price: ${course.price}`);
+  console.log(
+    `📚 Course: ${course.title} (${course.slug}) — price: ${course.price}`,
+  );
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 }
 

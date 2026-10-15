@@ -1,6 +1,5 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
-import { isValidGitHubOAuthClientId } from '@/features/auth/lib/github-oauth';
 
 /** Auth.js v5 (next-auth) treats AUTH_URL pathname `/` as "use default /api/auth". */
 function normalizeAuthUrl(url: string): string {
@@ -55,23 +54,6 @@ export const env = createEnv({
       .string()
       .transform((value) => value.trim())
       .describe('Google OAuth Client Secret'),
-    AUTH_GITHUB_ID: z
-      .string()
-      .transform((value) => value.trim())
-      .refine(
-        (value) =>
-          process.env.NODE_ENV !== 'production' ||
-          isValidGitHubOAuthClientId(value, 'production'),
-        {
-          message:
-            'AUTH_GITHUB_ID must be a GitHub OAuth App Client ID in production (not local-dev placeholders or REPLACE_WITH)',
-        },
-      )
-      .describe('GitHub OAuth Client ID'),
-    AUTH_GITHUB_SECRET: z
-      .string()
-      .transform((value) => value.trim())
-      .describe('GitHub OAuth Client Secret'),
 
     // Paymob (optional: gateway registers only when configured)
     PAYMOB_API_URL: z
@@ -535,10 +517,7 @@ export const env = createEnv({
 
   client: {
     NEXT_PUBLIC_API_URL: z.string().url().optional().describe('API base URL'),
-    NEXT_PUBLIC_APP_URL: z
-      .string()
-      .url()
-      .describe('Next.js app public URL'),
+    NEXT_PUBLIC_APP_URL: z.string().url().describe('Next.js app public URL'),
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: z
       .string()
       .optional()
@@ -554,8 +533,6 @@ export const env = createEnv({
     AUTH_TRUST_HOST: process.env.AUTH_TRUST_HOST,
     AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
     AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
-    AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
-    AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     PAYMOB_API_URL: process.env.PAYMOB_API_URL,
     PAYMOB_SECRET_KEY: process.env.PAYMOB_SECRET_KEY,
     PAYMOB_PUBLIC_KEY: process.env.PAYMOB_PUBLIC_KEY,

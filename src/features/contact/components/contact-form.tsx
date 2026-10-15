@@ -2,7 +2,13 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle2, TriangleAlertIcon } from 'lucide-react';
-import { useCallback, useMemo, useState, useSyncExternalStore, type FormEvent } from 'react';
+import {
+  useCallback,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+  type FormEvent,
+} from 'react';
 import { useForm } from 'react-hook-form';
 
 import FormField from '@/components/shared/form-fields';
@@ -56,7 +62,11 @@ function subscribeNoop() {
 }
 
 function useIsClient() {
-  return useSyncExternalStore(subscribeNoop, () => true, () => false);
+  return useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
 }
 
 export default function ContactForm({ userDefaults }: ContactFormProps) {
@@ -116,13 +126,7 @@ export default function ContactForm({ userDefaults }: ContactFormProps) {
       setError(result.message || MESSAGES.validationFailed);
       resetTurnstile();
     },
-    [
-      defaultValues,
-      form,
-      resetTurnstile,
-      turnstileEnabled,
-      turnstileToken,
-    ],
+    [defaultValues, form, resetTurnstile, turnstileEnabled, turnstileToken],
   );
 
   const handleFormSubmit = useCallback(
