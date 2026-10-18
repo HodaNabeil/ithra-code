@@ -8,28 +8,43 @@ import { Session } from 'next-auth';
 
 export function Header({ session }: { session: Session | null }) {
   return (
-    <header className="site-header sticky top-0 z-50 w-full text-base">
-      <div className="container flex h-header-height items-center justify-between">
-        <Logo />
-
-        <div className="flex items-center gap-4">
-          {/* Desktop Navigation - Hidden on mobile */}
-          <div className="hidden lg:flex flex-1 justify-center px-4">
-            <NavItems session={session} />
+    <header className="site-header sticky top-0 z-50 w-full text-base flex  h-17">
+      <div className="container h-full">
+        {/* Mobile & small screens: centered logo with independent side controls */}
+        <div className="grid h-full grid-cols-[1fr_auto_1fr] items-center lg:hidden">
+          <div className="flex items-center justify-start">
+            <ShopingCartButton />
           </div>
 
-          {/* User Navigation - Hidden on mobile */}
-          <div className="flex items-center gap-4">
-            <ShopingCartButton />
+          <div className="flex items-center justify-center px-2">
+            <Logo />
+          </div>
 
-            <div className="hidden lg:flex items-center gap-4">
-              <UserNav session={session} />
+          <div className="flex items-center justify-end">
+            <div className="block">
+              <MobileMenu session={session} />
             </div>
           </div>
+        </div>
 
-          {/* Mobile Menu - Only visible on mobile */}
-          <div className="block lg:hidden">
-            <MobileMenu session={session} />
+        {/* Desktop & large screens: preserve existing header layout */}
+        <div className="hidden h-full items-center justify-between lg:flex">
+          <Logo />
+
+          <div className="flex items-center gap-4">
+            {/* Desktop Navigation - Hidden on mobile */}
+            <div className="hidden flex-1 justify-center px-4 lg:flex">
+              <NavItems session={session} />
+            </div>
+
+            {/* User Navigation - Hidden on mobile */}
+            <div className="flex items-center gap-4">
+              <ShopingCartButton />
+
+              <div className="hidden items-center gap-4 lg:flex">
+                <UserNav session={session} />
+              </div>
+            </div>
           </div>
         </div>
       </div>

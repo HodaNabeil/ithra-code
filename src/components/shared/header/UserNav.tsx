@@ -24,9 +24,9 @@ export function UserNav({ session }: { session: Session | null }) {
       <div className="flex items-center gap-4">
         <Link
           href={AUTH_ROUTES.SIGN_IN}
-          className="text-base font-bold text-accent transition-all duration-200 bg-primary hover:bg-primary/90 hover:text-accent rounded-3xl w-[100px] h-10 element-center"
+          className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 h-8 gap-1.5 px-3 has-[>svg]:px-2.5 rounded-md"
         >
-          تسجيل
+          تسجيل الدخول
         </Link>
       </div>
     );
