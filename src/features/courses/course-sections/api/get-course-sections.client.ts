@@ -10,9 +10,9 @@ import { http } from '@/lib/http-client';
 export async function getCourseSectionsClient(
   courseIdOrSlug: string,
 ): Promise<GetCourseSectionsResponse> {
-  const response = await http.get<ApiSuccessResponse<GetCourseSectionsResponse>>(
-    `/courses/${encodeURIComponent(courseIdOrSlug)}/sections`,
-  );
+  const response = await http.get<
+    ApiSuccessResponse<GetCourseSectionsResponse>
+  >(`/courses/${encodeURIComponent(courseIdOrSlug)}/sections`);
 
   return response.data;
 }

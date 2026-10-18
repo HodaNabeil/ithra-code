@@ -1,59 +1,27 @@
-import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '../lib/utils';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { NavigationTopLoader } from '@/providers/NavigationTopLoader';
 import { QueryProvider } from '@/providers/QueryProvider';
-import { auth } from '@/lib/auth';
-import {
-  GoogleTagManagerNoScript,
-  GoogleTagManagerScript,
-} from '@/components/shared/google-tag-manager';
+import { getAuthSession } from '@/lib/get-auth-session';
 import { Toaster } from '@/components/ui/sonner';
-import {
-  SEO_DEFAULT_DESCRIPTION,
-  SEO_DEFAULT_TITLE,
-  SEO_GOOGLE_SITE_VERIFICATION,
-  SEO_OG_LOCALE,
-  SEO_SITE_NAME_AR,
-  SEO_SITE_NAME_EN,
-} from '@/lib/seo/config';
-import { isSeoIndexingEnabled } from '@/lib/seo/environment';
-import { getSiteOrigin } from '@/lib/seo/urls';
+import { buildRootLayoutMetadata } from '@/lib/seo/root-metadata';
+import { JsonLd } from '@/lib/seo/json-ld/json-ld';
+import { buildWebSiteSchema } from '@/lib/seo/json-ld/website-schema';
 
-const indexingEnabled = isSeoIndexingEnabled();
-
-export const metadata: Metadata = {
-  metadataBase: new URL(getSiteOrigin()),
-  applicationName: SEO_SITE_NAME_EN,
-  title: {
-    default: `${SEO_DEFAULT_TITLE} | ${SEO_SITE_NAME_AR}`,
-    template: `%s | ${SEO_SITE_NAME_AR}`,
-  },
-  description: SEO_DEFAULT_DESCRIPTION,
-  robots: {
-    index: indexingEnabled,
-    follow: indexingEnabled,
-  },
-  openGraph: {
-    siteName: SEO_SITE_NAME_EN,
-    locale: SEO_OG_LOCALE,
-    type: 'website',
-  },
-  verification: {
-    google: SEO_GOOGLE_SITE_VERIFICATION,
-  },
+export const metadata = {
+  ...buildRootLayoutMetadata(),
   icons: {
     icon: [
       {
-        url: '/favicon/favicon-48x48.png',
-        sizes: '48x48',
+        url: '/favicon/favicon-96x96.png',
+        sizes: '96x96',
         type: 'image/png',
       },
       {
-        url: '/favicon/favicon-96x96.png',
-        sizes: '96x96',
+        url: '/favicon/favicon-32x32.png',
+        sizes: '32x32',
         type: 'image/png',
       },
       {
@@ -71,7 +39,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  const session = await getAuthSession();
 
   return (
     <html
@@ -81,7 +49,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <GoogleTagManagerScript />
+        <JsonLd id="website-schema" data={buildWebSiteSchema()} />
       </head>
       <body
         className={cn(
@@ -90,7 +58,6 @@ export default async function RootLayout({
           'flex-col',
         )}
       >
-        <GoogleTagManagerNoScript />
         <ThemeProvider
           attribute="class"
           forcedTheme="dark"

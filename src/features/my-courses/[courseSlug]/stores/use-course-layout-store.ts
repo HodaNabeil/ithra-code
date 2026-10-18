@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 
-const SIDEBAR_DEFAULT_WIDTH_CLASS =
-  'w-[415px] max-w-full lg:max-w-[415px]';
+const SIDEBAR_DEFAULT_WIDTH_CLASS = 'w-[415px] max-w-full lg:max-w-[415px]';
 const SIDEBAR_EXPANDED_WIDTH_CLASS = 'w-[70%] min-w-[300px] max-w-full';
 
 export type ActiveLectureContext = {
@@ -57,7 +56,5 @@ export function getSidebarContainerWidthClass(
 export function getSidebarContentWidthClass(
   isSidebarExpanded: boolean,
 ): string {
-  return isSidebarExpanded
-    ? 'w-full min-w-0'
-    : 'w-full min-w-0 max-w-[415px]';
+  return isSidebarExpanded ? 'w-full min-w-0' : 'w-full min-w-0 max-w-[415px]';
 }

@@ -5,7 +5,7 @@ import { XCircle } from 'lucide-react';
 
 export default function PaymentCancelPage() {
   return (
-    <main
+    <div
       className="min-h-[60vh] flex flex-col items-center justify-center px-4 py-16 text-center"
       dir="rtl"
     >
@@ -31,6 +31,6 @@ export default function PaymentCancelPage() {
           </Button>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

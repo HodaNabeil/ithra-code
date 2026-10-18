@@ -2,10 +2,7 @@ import { EnrollmentStatus, Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { COURSE_ORDER_BY } from '@/constants/course';
 import type { CourseListQuery } from '../dto/course-list.dto';
-import {
-  courseListSelect,
-  type DB_CourseListItem,
-} from './course-list.select';
+import { courseListSelect, type DB_CourseListItem } from './course-list.select';
 
 export type FindManyWithCountInput = {
   where: Prisma.CourseWhereInput;

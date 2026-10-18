@@ -10,10 +10,7 @@ async function findActiveFaqs(skip: number, take: number): Promise<FaqItem[]> {
     where: {
       isActive: true,
     },
-    orderBy: [
-      { sortOrder: 'asc' },
-      { createdAt: 'asc' },
-    ],
+    orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
     skip,
     take,
     select: {

@@ -16,7 +16,9 @@ export default async function DashboardPage() {
   const session = await auth();
 
   if (!session?.user?.id) {
-    redirect(`${AUTH_ENDPOINTS.LOGIN}?callbackUrl=${PROTECTED_ROUTES.DASHBOARD}`);
+    redirect(
+      `${AUTH_ENDPOINTS.LOGIN}?callbackUrl=${PROTECTED_ROUTES.DASHBOARD}`,
+    );
   }
 
   return <ComingSoon title="لوحة التحكم" />;

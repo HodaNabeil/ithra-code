@@ -1,26 +1,31 @@
-/** Brand used in document titles (`%s | IthraCode`). */
-export const SEO_SITE_NAME_AR = 'IthraCode';
+/** Arabic brand name. */
+export const SEO_SITE_NAME_AR = 'إثراء كود';
 
-/** Latin brand used for Open Graph `siteName`. */
-export const SEO_SITE_NAME_EN = 'IthraCode';
+/** Latin brand: home `<title>`, Open Graph `siteName`, JSON-LD, inner-page title suffix. */
+export const SEO_SITE_NAME_EN = 'Ithra Code';
 
 /** Alternate spellings used in structured data. */
 export const SEO_SITE_ALTERNATE_NAMES = [
-  'ithracode',
-  'إثراكود',
-  'Ithra Code',
+  'IthraCode',
+  SEO_SITE_NAME_AR,
+  'ithra code',
 ] as const;
+
+/** Production canonical origin for metadata and JSON-LD when indexing is enabled. */
+export const SEO_CANONICAL_ORIGIN = 'https://ithracode.tech';
 
 export const SEO_OG_LOCALE = 'ar_EG';
 
 export const SEO_HTML_LANGUAGE = 'ar';
 
+/** Value proposition for inner pages and WebPage schema on the home page. */
 export const SEO_DEFAULT_TITLE = 'تعلم البرمجة من الواقع';
 
-export const SEO_DEFAULT_DESCRIPTION =
-  'منصة تعليمية عربية لتعلم البرمجة من خلال تجارب وخبرات واقعية من الشركات، بقيادة هدي ابوهشيمة (Hoda Abu Hashima).';
+export const SEO_DEFAULT_DESCRIPTION = `${SEO_SITE_NAME_AR} — منصة عربية لتعلم البرمجة من الواقع، من أساسيات تطوير الويب إلى React وNext.js وهندسة البرمجيات.`;
 
 export const SEO_LOGO_PATH = '/img/ithracode.png';
+
+export const SEO_DEFAULT_OG_IMAGE_PATH = '/img/ithracode.png';
 
 export const SEO_OG_IMAGE_WIDTH = 1200;
 
@@ -29,23 +34,32 @@ export const SEO_OG_IMAGE_HEIGHT = 630;
 export const SEO_TWITTER_SITE = '@ithracode';
 
 /** Public English name shown above the Arabic name. */
-export const SEO_AUTHOR_NAME = 'Hoda Abu Hashima';
+export const SEO_AUTHOR_NAME = 'Hoda Nabeil';
 
 /** Public Arabic name. */
-export const SEO_AUTHOR_NAME_AR = 'هدي ابوهشيمة';
+export const SEO_AUTHOR_NAME_AR = 'هدى نبيل';
 
 /** Extra Latin spelling for search only. */
-export const SEO_AUTHOR_ALTERNATE_NAMES = ['Hoda Nabeil'] as const;
+export const SEO_AUTHOR_ALTERNATE_NAMES = [] as const;
 
-export const SEO_AUTHOR_JOB_TITLE = 'Founder, Owner & Instructor';
+export const SEO_AUTHOR_JOB_TITLE = 'Founder, Software Engineer & Instructor';
+
+const SEO_BRAND_KEYWORDS = [
+  SEO_SITE_NAME_EN,
+  ...SEO_SITE_ALTERNATE_NAMES,
+  'تعلم البرمجة',
+  'Next.js',
+  'Software Architecture',
+] as const;
+
+export const SEO_GLOBAL_KEYWORDS = [...SEO_BRAND_KEYWORDS] as const;
 
 export const SEO_HOME_KEYWORDS = [
-  'تعلم البرمجة',
+  ...SEO_BRAND_KEYWORDS,
   'برمجة',
   'React',
   'JavaScript',
   'تطوير الويب',
-  'ithracode',
   SEO_AUTHOR_NAME,
   SEO_AUTHOR_NAME_AR,
 ] as const;
@@ -57,7 +71,7 @@ export const SEO_HOME_KEYWORDS = [
 export const SEO_SAME_AS = [
   'https://www.linkedin.com/in/hoda-nabeil-144094225/',
   'https://youtube.com/@ithracode',
-  'https://www.facebook.com/hodanabeel.abuhashem/',
+  'https://www.facebook.com/profile.php?id=61594744076040',
 ] as const;
 
 export const SEO_META_DESCRIPTION_MAX_LENGTH = 160;

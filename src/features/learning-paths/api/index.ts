@@ -17,10 +17,7 @@ export type {
 
 export { PathListError, PathDetailError } from './errors/path.errors';
 
-export {
-  PATHS_PAGE_LIMIT,
-  parsePathSearchParams,
-} from './lib/path-list-query';
+export { PATHS_PAGE_LIMIT, parsePathSearchParams } from './lib/path-list-query';
 export type { PathSearchParamsInput } from './lib/path-list-query';
 
 export {

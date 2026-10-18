@@ -266,14 +266,14 @@ Sources are typed (`KnowledgeContentType`) and tagged with sensitivity (`PUBLIC`
 
 ### Indexing triggers
 
-| Trigger         | Mechanism                                                       |
-| --------------- | --------------------------------------------------------------- |
-| Course publish  | `POST /api/courses/[courseIdOrSlug]/publish` enqueues indexing        |
-| Lecture publish | `POST /api/courses/[courseIdOrSlug]/lectures/[lectureId]/publish`     |
-| Manual re-index | `POST /api/tutor/index` (authenticated)                         |
-| Bootstrap       | `bootstrapUnindexedCourseIndexing()` for courses missing chunks |
-| Worker          | `pnpm worker:course-indexing` (BullMQ `course-indexing` queue)  |
-| Outbox          | `CourseIndexingOutbox` for reliable enqueue                     |
+| Trigger         | Mechanism                                                         |
+| --------------- | ----------------------------------------------------------------- |
+| Course publish  | `POST /api/courses/[courseIdOrSlug]/publish` enqueues indexing    |
+| Lecture publish | `POST /api/courses/[courseIdOrSlug]/lectures/[lectureId]/publish` |
+| Manual re-index | `POST /api/tutor/index` (authenticated)                           |
+| Bootstrap       | `bootstrapUnindexedCourseIndexing()` for courses missing chunks   |
+| Worker          | `pnpm worker:course-indexing` (BullMQ `course-indexing` queue)    |
+| Outbox          | `CourseIndexingOutbox` for reliable enqueue                       |
 
 ---
 
@@ -327,7 +327,7 @@ rate-limit guard failures are fail-closed**.
 | Langfuse-managed prompts                   | Works with local template fallback when Langfuse is not configured         |
 | Real-time dashboards                       | Metrics export is pull-based (Prometheus scrape); no bundled Grafana stack |
 | Nightly Ragas CI gate                      | `pnpm eval:ragas` exists; automated nightly job not in repo                |
-| Advanced cost engine (forecasting, quotas) | Not implemented — planned for a future cost-engine phase                    |
+| Advanced cost engine (forecasting, quotas) | Not implemented — planned for a future cost-engine phase                   |
 
 ---
 
@@ -488,35 +488,35 @@ See `.env.example` for the full variable list.
 
 ## Available Commands
 
-| Command                           | Description                                       |
-| --------------------------------- | ------------------------------------------------- |
-| `pnpm dev`                        | Start Next.js dev server (port 3000)              |
-| `pnpm build`                      | Production build                                  |
-| `pnpm start`                      | Start production server                           |
-| `pnpm lint`                       | ESLint                                            |
-| `pnpm format`                     | Prettier write                                    |
-| `pnpm format:check`               | Prettier check                                    |
-| `pnpm type-check`                 | `tsc --noEmit`                                    |
+| Command                           | Description                                          |
+| --------------------------------- | ---------------------------------------------------- |
+| `pnpm dev`                        | Start Next.js dev server (port 3000)                 |
+| `pnpm build`                      | Production build                                     |
+| `pnpm start`                      | Start production server                              |
+| `pnpm lint`                       | ESLint                                               |
+| `pnpm format`                     | Prettier write                                       |
+| `pnpm format:check`               | Prettier check                                       |
+| `pnpm type-check`                 | `tsc --noEmit`                                       |
 | `pnpm test`                       | Vitest — smoke tests only; integration suite skipped |
-| `pnpm test:watch`                 | Vitest watch mode                                 |
-| `pnpm test:integration`           | Full integration suite (`VITEST_INTEGRATION=true`)  |
-| `pnpm eval:ragas`                 | Run Ragas evaluation suite                        |
-| `pnpm deepeval:golden`            | Run DeepEval golden suite                         |
-| `pnpm seed`                       | Seed database                                     |
-| `pnpm db:push`                    | Push schema (avoid for pgvector tables)           |
-| `pnpm db:reset`                   | Reset database                                    |
-| `pnpm db:studio`                  | Prisma Studio                                     |
-| `pnpm worker:order-completed`     | Post-payment fulfillment worker                   |
-| `pnpm worker:course-indexing`     | Course knowledge indexing worker                  |
-| `pnpm index:course`               | Manual course indexing script                     |
-| `pnpm worker:ai-cost-aggregation` | AI usage daily aggregation worker                 |
-| `pnpm worker:reconcile`           | Payment reconciliation scheduler                  |
-| `pnpm worker:reconcile-consumer`  | Reconciliation queue consumer                     |
-| `pnpm payment:e2e`                | Payment end-to-end script                         |
-| `pnpm payment:webhook-smoke`      | Paymob webhook smoke test                         |
-| `pnpm payment:reconcile`          | Manual reconciliation script                      |
-| `pnpm payment:reconcile-review`   | Review reconciliation discrepancies               |
-| `pnpm payment:reconcile-report`   | Generate reconciliation report                    |
+| `pnpm test:watch`                 | Vitest watch mode                                    |
+| `pnpm test:integration`           | Full integration suite (`VITEST_INTEGRATION=true`)   |
+| `pnpm eval:ragas`                 | Run Ragas evaluation suite                           |
+| `pnpm deepeval:golden`            | Run DeepEval golden suite                            |
+| `pnpm seed`                       | Seed database                                        |
+| `pnpm db:push`                    | Push schema (avoid for pgvector tables)              |
+| `pnpm db:reset`                   | Reset database                                       |
+| `pnpm db:studio`                  | Prisma Studio                                        |
+| `pnpm worker:order-completed`     | Post-payment fulfillment worker                      |
+| `pnpm worker:course-indexing`     | Course knowledge indexing worker                     |
+| `pnpm index:course`               | Manual course indexing script                        |
+| `pnpm worker:ai-cost-aggregation` | AI usage daily aggregation worker                    |
+| `pnpm worker:reconcile`           | Payment reconciliation scheduler                     |
+| `pnpm worker:reconcile-consumer`  | Reconciliation queue consumer                        |
+| `pnpm payment:e2e`                | Payment end-to-end script                            |
+| `pnpm payment:webhook-smoke`      | Paymob webhook smoke test                            |
+| `pnpm payment:reconcile`          | Manual reconciliation script                         |
+| `pnpm payment:reconcile-review`   | Review reconciliation discrepancies                  |
+| `pnpm payment:reconcile-report`   | Generate reconciliation report                       |
 
 `prisma generate` runs automatically on `postinstall`.
 
@@ -524,22 +524,22 @@ See `.env.example` for the full variable list.
 
 ## Testing
 
-| Item                  | Detail                                                                                        |
-| --------------------- | --------------------------------------------------------------------------------------------- |
-| **Framework**         | Vitest (`vitest.config.ts`)                                                                   |
+| Item                  | Detail                                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------------- |
+| **Framework**         | Vitest (`vitest.config.ts`)                                                                  |
 | **Integration tests** | `tests/integration/` — AI Tutor, contact API, course progress & lectures; require PostgreSQL |
-| **Helpers**           | `tests/helpers/` — auth stubs, course-progress fixtures, Redis mock, tutor fixtures           |
-| **Setup**             | `tests/setup/env.ts` — loads `.env`, sets test defaults, `SKIP_ENV_VALIDATION=true`           |
-| **Default run**       | `pnpm test` — 4 smoke tests pass; 66 integration tests skipped                                |
-| **Full suite**        | `pnpm test:integration` — 70 tests across 12 files (requires live database)                   |
+| **Helpers**           | `tests/helpers/` — auth stubs, course-progress fixtures, Redis mock, tutor fixtures          |
+| **Setup**             | `tests/setup/env.ts` — loads `.env`, sets test defaults, `SKIP_ENV_VALIDATION=true`          |
+| **Default run**       | `pnpm test` — 4 smoke tests pass; 66 integration tests skipped                               |
+| **Full suite**        | `pnpm test:integration` — 70 tests across 12 files (requires live database)                  |
 
 ### Integration coverage
 
-| Area            | Tests | Focus                                                                 |
-| --------------- | ----- | --------------------------------------------------------------------- |
-| **AI Tutor**    | 7     | Smoke, enrollment cache, idempotency, pagination, lecture validation, GDPR delete |
-| **Contact**     | 3     | API validation, security, and response handling                       |
-| **Courses**     | 60    | Course/lecture progress APIs, repository aggregation, publication rules, RBAC |
+| Area         | Tests | Focus                                                                             |
+| ------------ | ----- | --------------------------------------------------------------------------------- |
+| **AI Tutor** | 7     | Smoke, enrollment cache, idempotency, pagination, lecture validation, GDPR delete |
+| **Contact**  | 3     | API validation, security, and response handling                                   |
+| **Courses**  | 60    | Course/lecture progress APIs, repository aggregation, publication rules, RBAC     |
 
 Integration tests auto-skip when `VITEST_INTEGRATION` is unset or the database is unreachable.
 
@@ -620,16 +620,16 @@ Items below are explicitly tracked in project documentation as incomplete — no
 
 ## Documentation
 
-| Area                     | Location                                      |
-| ------------------------ | --------------------------------------------- |
-| AI Platform overview     | `src/ai-platform/README.md`                   |
-| AI Tutor feature         | `src/features/ai-tutor/README.md`               |
-| Contact feature          | `.docs/contact/README.md`                       |
-| Course progress API      | `.docs/COURSE_PROGRESS_API_AUDIT.md`            |
-| Lectures API quickstart  | `.docs/LECTURES_API_QUICKSTART.md`              |
-| Product features catalog | `FEATURES.md` (Arabic)                          |
-| Agent guidelines         | `AGENTS.md`                                   |
-| API docs (live)          | `/docs` (Swagger UI)                          |
+| Area                     | Location                             |
+| ------------------------ | ------------------------------------ |
+| AI Platform overview     | `src/ai-platform/README.md`          |
+| AI Tutor feature         | `src/features/ai-tutor/README.md`    |
+| Contact feature          | `.docs/contact/README.md`            |
+| Course progress API      | `.docs/COURSE_PROGRESS_API_AUDIT.md` |
+| Lectures API quickstart  | `.docs/LECTURES_API_QUICKSTART.md`   |
+| Product features catalog | `FEATURES.md` (Arabic)               |
+| Agent guidelines         | `AGENTS.md`                          |
+| API docs (live)          | `/docs` (Swagger UI)                 |
 
 ---
 

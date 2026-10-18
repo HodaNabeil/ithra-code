@@ -1,5 +1,4 @@
 import NextAuth, { type NextAuthConfig, type NextAuthResult } from 'next-auth';
-import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
@@ -8,6 +7,36 @@ import { authConfig } from '@/lib/auth.config';
 import { syncGuestCartUseCase } from '@/features/cart/application/use-cases/sync-guest-cart.use-case';
 import { readAndClearPendingGuestCartCookie } from '@/features/cart/lib/pending-guest-cart.cookie';
 import { Role } from '@prisma/client';
+
+// Runtime validation flag - checked on first auth request in production
+let _productionAuthUrlValidated = false;
+
+/**
+ * Validates AUTH_URL for production deployments.
+ * Called lazily on first auth request to avoid build failures
+ * when using localhost in .env for local development.
+ */
+function validateProductionAuthUrl(): void {
+  // Only validate in production to allow local dev with localhost
+  // Skip during build (next build sets NODE_ENV=production but we're not "running" yet)
+  if (process.env.NODE_ENV !== 'production' || typeof window !== 'undefined') {
+    return;
+  }
+
+  // Only validate once per server instance
+  if (_productionAuthUrlValidated) return;
+
+  const authUrl = process.env.AUTH_URL || env.AUTH_URL;
+
+  // Check for localhost in production (security risk for redirects)
+  if (authUrl?.includes('localhost')) {
+    throw new Error(
+      `Invalid AUTH_URL in production: ${authUrl}. Must be your actual domain (e.g., https://yourdomain.com)`,
+    );
+  }
+
+  _productionAuthUrlValidated = true;
+}
 
 export const config: NextAuthConfig = {
   ...authConfig,
@@ -18,12 +47,6 @@ export const config: NextAuthConfig = {
     GoogleProvider({
       clientId: env.AUTH_GOOGLE_ID,
       clientSecret: env.AUTH_GOOGLE_SECRET,
-      allowDangerousEmailAccountLinking: true,
-    }),
-
-    GithubProvider({
-      clientId: env.AUTH_GITHUB_ID,
-      clientSecret: env.AUTH_GITHUB_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
   ],
@@ -43,17 +66,23 @@ export const config: NextAuthConfig = {
     },
 
     async createUser({ user }) {
-      const [firstName, ...rest] = (user.name ?? '').split(' ');
-      await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          firstName: firstName || null,
-          lastName: rest.join(' ') || null,
-          isEmailVerified: !!(user as { emailVerified?: Date | null })
-            .emailVerified,
-          role: Role.STUDENT,
-        },
-      });
+      if (!user.id) return;
+
+      try {
+        const [firstName, ...rest] = (user.name ?? '').split(' ');
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            firstName: firstName || null,
+            lastName: rest.join(' ') || null,
+            isEmailVerified: !!(user as { emailVerified?: Date | null })
+              .emailVerified,
+            role: Role.STUDENT,
+          },
+        });
+      } catch (error) {
+        console.error('[AUTH_CREATE_USER_PROFILE]', error);
+      }
     },
   },
 
@@ -91,10 +120,7 @@ export const config: NextAuthConfig = {
         if (resolvedName) {
           token.name = resolvedName;
         }
-      } else if (
-        token.id &&
-        (!token.picture || !token.name)
-      ) {
+      } else if (token.id && (!token.picture || !token.name)) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: {
@@ -125,14 +151,28 @@ export const config: NextAuthConfig = {
   },
 
   secret: env.AUTH_SECRET,
+  trustHost: true,
+  basePath: '/api/auth',
 };
 
 const {
-  handlers: authHandlers,
+  handlers: originalHandlers,
   auth: authMethod,
   signIn: authSignIn,
   signOut: authSignOut,
 } = NextAuth(config);
+
+// Wrap handlers to validate AUTH_URL on first production request
+const authHandlers: typeof originalHandlers = {
+  GET: async (...args) => {
+    validateProductionAuthUrl();
+    return originalHandlers.GET(...args);
+  },
+  POST: async (...args) => {
+    validateProductionAuthUrl();
+    return originalHandlers.POST(...args);
+  },
+};
 
 export const handlers = authHandlers;
 export const auth: NextAuthResult['auth'] = authMethod;

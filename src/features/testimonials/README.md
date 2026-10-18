@@ -3,6 +3,7 @@
 ## Overview
 
 This feature provides a unified testimonials system that combines:
+
 - Admin-created testimonials
 - Platform reviews with rating >= 4
 
@@ -15,12 +16,12 @@ import { getTestimonialsAction } from '@/features/testimonials/actions/testimoni
 
 export default async function MyPage() {
   const result = await getTestimonialsAction({ limit: 6 });
-  
+
   if (!result.success) {
     // Handle error
     return <div>Error loading testimonials</div>;
   }
-  
+
   return <TestimonialSection items={result.items} />;
 }
 ```

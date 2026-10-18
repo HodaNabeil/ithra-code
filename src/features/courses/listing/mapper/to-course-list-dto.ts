@@ -31,9 +31,8 @@ function computeListAggregates(course: CourseRowForListMapping) {
       : course.duration
         ? Math.round(course.duration / 60)
         : null;
-  const firstLectureId = sections.find(
-    (section) => section.lectures?.[0]?.id,
-  )?.lectures?.[0]?.id;
+  const firstLectureId = sections.find((section) => section.lectures?.[0]?.id)
+    ?.lectures?.[0]?.id;
 
   return { lecturesCount, hours, firstLectureId };
 }

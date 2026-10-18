@@ -4,10 +4,7 @@ import { getTestimonialsAction } from '@/features/testimonials/actions/testimoni
 import type { FaqItem } from '@/features/faqs';
 import type { TestimonialItem } from '@/features/testimonials/api/dto/testimonial.dto';
 import type { CourseListDTO } from '@/types/course/course.dto';
-import {
-  ensureIthraCodeFaq,
-  getHomeFallbackTestimonials,
-} from '@/features/home/data/home-marketing-content';
+import { getHomeFallbackTestimonials } from '@/features/home/data/home-marketing-content';
 
 export type HomeDataResult<T> = {
   success: boolean;
@@ -17,7 +14,7 @@ export type HomeDataResult<T> = {
 
 const HOME_FEATURED_COURSES_LIMIT = 6;
 const HOME_TESTIMONIALS_LIMIT = 6;
-const HOME_FAQS_LIMIT = 8;
+const HOME_FAQS_LIMIT = 12;
 
 export async function getFeaturedCoursesForHome(): Promise<
   HomeDataResult<{ courses: CourseListDTO[] }>
@@ -44,7 +41,9 @@ export async function getFeaturedCoursesForHome(): Promise<
 export async function getHomeTestimonials(): Promise<
   HomeDataResult<{ items: TestimonialItem[] }>
 > {
-  const result = await getTestimonialsAction({ limit: HOME_TESTIMONIALS_LIMIT });
+  const result = await getTestimonialsAction({
+    limit: HOME_TESTIMONIALS_LIMIT,
+  });
 
   if (result.success) {
     return {
@@ -73,7 +72,7 @@ export async function getHomeFaqs(): Promise<
   if (result.success) {
     return {
       success: true,
-      data: { items: ensureIthraCodeFaq(result.items) },
+      data: { items: result.items },
     };
   }
 

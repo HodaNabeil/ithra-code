@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
+import { env } from '@/config/env';
 import { AUTH_ROUTES } from '@/constants/auth';
 
 /**
@@ -8,10 +9,16 @@ import { AUTH_ROUTES } from '@/constants/auth';
  */
 export const authConfig: NextAuthConfig = {
   providers: [],
+  basePath: '/api/auth',
+  trustHost: true,
+  secret: env.AUTH_SECRET ?? process.env.AUTH_SECRET,
 
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+
+  useSecureCookies: process.env.NODE_ENV === 'production',
 
   callbacks: {
     redirect({ url, baseUrl }) {
@@ -62,7 +69,4 @@ export const authConfig: NextAuthConfig = {
     signIn: AUTH_ROUTES.SIGN_IN,
     error: AUTH_ROUTES.SIGN_IN,
   },
-
-  secret: process.env.AUTH_SECRET,
-  trustHost: true,
 };

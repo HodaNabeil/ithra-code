@@ -3,16 +3,14 @@ import { NextResponse, type NextMiddleware } from 'next/server';
 import '@/config/env';
 import { authConfig } from '@/lib/auth.config';
 import { AUTH_ROUTES } from '@/constants/auth';
-import { APP_ROUTES } from '@/constants/enums';
-import { Role } from '@prisma/client';
+import { APP_ROUTES, APP_USER_ROLES } from '@/constants/enums';
 
-function getRoleHome(role: Role): string {
+function getRoleHome(role: string | undefined): string {
   switch (role) {
-    case Role.ADMIN:
+    case APP_USER_ROLES.ADMIN:
       return APP_ROUTES.ADMIN;
-    case Role.INSTRUCTOR:
+    case APP_USER_ROLES.INSTRUCTOR:
       return '/instructor';
-    case Role.STUDENT:
     default:
       return APP_ROUTES.MY_COURSES;
   }
@@ -23,8 +21,11 @@ const { auth } = NextAuth(authConfig);
 const proxy = auth((req) => {
   const { nextUrl } = req;
 
-  const isLoggedIn = !!req.auth;
-  const role = (req.auth?.user?.role ?? Role.STUDENT) as Role;
+  // Auth.js may put an error payload or `{ user: null }` on `req.auth`.
+  // Only a real user id counts as signed in — otherwise /auth/signin loops
+  // to /my-courses when `/api/auth/session` is failing.
+  const isLoggedIn = Boolean(req.auth?.user?.id);
+  const role = req.auth?.user?.role;
   const pathname = nextUrl.pathname;
 
   const isPublicRoute =
@@ -51,21 +52,21 @@ const proxy = auth((req) => {
 
   if (isLoggedIn && isAuthRoute) {
     const callbackUrl = nextUrl.searchParams.get('callbackUrl');
-    if (callbackUrl) {
+    if (callbackUrl?.startsWith('/') && !callbackUrl.startsWith('//')) {
       return NextResponse.redirect(new URL(callbackUrl, nextUrl.origin));
     }
     return NextResponse.redirect(new URL(getRoleHome(role), nextUrl));
   }
 
-  if (isAdminRoute && role !== Role.ADMIN) {
+  if (isAdminRoute && role !== APP_USER_ROLES.ADMIN) {
     return NextResponse.redirect(new URL('/', nextUrl));
   }
 
-  if (isInstructorRoute && role !== Role.INSTRUCTOR) {
+  if (isInstructorRoute && role !== APP_USER_ROLES.INSTRUCTOR) {
     return NextResponse.redirect(new URL('/', nextUrl));
   }
 
-  if (isStudentRoute && role !== Role.STUDENT) {
+  if (isStudentRoute && role && role !== APP_USER_ROLES.STUDENT) {
     return NextResponse.redirect(new URL('/', nextUrl));
   }
 

@@ -1,6 +1,6 @@
 import Footer from '@/components/shared/footer';
 import { Header } from '@/components/shared/header/Header';
-import { auth } from '@/lib/auth';
+import { getAuthSession } from '@/lib/get-auth-session';
 
 type SiteChromeProps = {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ export async function SiteChrome({
   children,
   showFooter = true,
 }: SiteChromeProps) {
-  const session = await auth();
+  const session = await getAuthSession();
 
   return (
     <>

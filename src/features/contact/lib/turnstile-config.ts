@@ -5,8 +5,7 @@
  * @see https://developers.cloudflare.com/turnstile/troubleshooting/testing/
  */
 export const TURNSTILE_TEST_SITE_KEY = '1x00000000000000000000AA';
-export const TURNSTILE_TEST_SECRET_KEY =
-  '1x0000000000000000000000000000000AA';
+export const TURNSTILE_TEST_SECRET_KEY = '1x0000000000000000000000000000000AA';
 
 function isDevelopment(): boolean {
   return process.env.NODE_ENV === 'development';

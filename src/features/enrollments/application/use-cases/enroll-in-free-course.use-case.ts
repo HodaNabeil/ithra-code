@@ -17,8 +17,5 @@ export async function enrollInFreeCourseUseCase(
   const repository =
     deps.freeEnrollmentRepository ?? prismaFreeEnrollmentRepository;
 
-  return repository.enrollInFreeCourse(
-    input.studentId,
-    input.courseIdOrSlug,
-  );
+  return repository.enrollInFreeCourse(input.studentId, input.courseIdOrSlug);
 }

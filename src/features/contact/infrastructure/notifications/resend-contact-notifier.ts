@@ -40,10 +40,7 @@ export class ResendContactNotifier implements ContactNotifier {
       ].join('\n'),
     });
 
-    logger.info(
-      { contactMessageId: message.id },
-      '[CONTACT_EMAIL_SENT]',
-    );
+    logger.info({ contactMessageId: message.id }, '[CONTACT_EMAIL_SENT]');
   }
 }
 

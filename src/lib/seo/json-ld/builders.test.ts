@@ -22,13 +22,14 @@ describe('schema builders', () => {
       sameAs: ['https://youtube.com/@ithracode'],
     });
 
-    expect(schema['@type']).toBe('Organization');
-    expect(schema['@id']).toBe(getOrganizationId(origin));
-    expect(schema.alternateName).toEqual([
-      'ithracode',
-      'إثراكود',
-      'Ithra Code',
+    expect(schema['@type']).toEqual([
+      'Organization',
+      'EducationalOrganization',
     ]);
+    expect(schema['@id']).toBe(getOrganizationId(origin));
+    expect(schema.alternateName).toEqual(['Ithra Code']);
+    expect(schema.name).toBe('IthraCode');
+    expect(schema.description).toBeTruthy();
     expect(schema.sameAs).toEqual(['https://youtube.com/@ithracode']);
     expect(schema.founder).toEqual({ '@id': getPersonId(origin) });
   });
@@ -42,13 +43,11 @@ describe('schema builders', () => {
     expect(schema).toMatchObject({
       '@type': 'Person',
       '@id': getPersonId(origin),
-      name: 'Hoda Abu Hashima',
-      jobTitle: 'Founder, Owner & Instructor',
+      name: 'Hoda Nabeil',
+      jobTitle: 'Founder, Software Engineer & Instructor',
       worksFor: { '@id': getOrganizationId(origin) },
     });
-    expect(schema.alternateName).toEqual(
-      expect.arrayContaining(['هدي ابوهشيمة', 'Hoda Nabeil']),
-    );
+    expect(schema.alternateName).toEqual(['هدى نبيل']);
   });
 
   it('adds SearchAction only when a template is provided', () => {

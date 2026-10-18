@@ -14,7 +14,5 @@ process.env.AUTH_URL = 'http://localhost:3000';
 process.env.NEXT_PUBLIC_APP_URL ??= 'http://localhost:3000';
 process.env.AUTH_GOOGLE_ID = 'test';
 process.env.AUTH_GOOGLE_SECRET = 'test';
-process.env.AUTH_GITHUB_ID = 'test';
-process.env.AUTH_GITHUB_SECRET = 'test';
 process.env.AI_PLATFORM_ENABLED = 'false';
 process.env.AI_TUTOR_ENABLED = 'false';

@@ -82,7 +82,7 @@ export default function PaymentSuccessContent() {
 
   if (missingOrder) {
     return (
-      <main
+      <div
         className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center gap-4"
         dir="rtl"
       >
@@ -96,12 +96,12 @@ export default function PaymentSuccessContent() {
         <Button asChild size="lg" className="rounded-lg">
           <Link href={APP_ROUTES.MY_COURSES}>دوراتي</Link>
         </Button>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main
+    <div
       className="min-h-[60vh] flex flex-col items-center justify-center px-4 py-16 text-center"
       dir="rtl"
     >
@@ -145,6 +145,6 @@ export default function PaymentSuccessContent() {
           </Button>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

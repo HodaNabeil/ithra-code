@@ -36,11 +36,7 @@ export async function createLectureUseCase(
   }
 
   if (!sectionWithCourse.courseId) {
-    throw new LectureCreationError(
-      404,
-      'Course not found',
-      'COURSE_NOT_FOUND',
-    );
+    throw new LectureCreationError(404, 'Course not found', 'COURSE_NOT_FOUND');
   }
 
   assertCourseOwnership(user, sectionWithCourse.instructorId);

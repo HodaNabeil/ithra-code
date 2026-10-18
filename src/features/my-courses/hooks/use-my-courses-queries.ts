@@ -44,11 +44,7 @@ export function useLectureNavigation(lectureId: string, courseSlug: string) {
     queryKey: MY_COURSES_TAGS.navigation(lectureId, courseSlug),
     queryFn: async () => {
       const sections = await getCourseSectionsClient(courseSlug);
-      return mapLectureNavigationFromSections(
-        sections,
-        lectureId,
-        courseSlug,
-      );
+      return mapLectureNavigationFromSections(sections, lectureId, courseSlug);
     },
     enabled: !!lectureId && !!courseSlug,
   });

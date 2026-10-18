@@ -38,9 +38,7 @@ function parsePage(raw: string | undefined): number {
 /**
  * Parse search params into validated FaqQuery.
  */
-export function parseFaqSearchParams(
-  input: FaqSearchParamsInput,
-): FaqQuery {
+export function parseFaqSearchParams(input: FaqSearchParamsInput): FaqQuery {
   return {
     page: parsePage(input.page),
     limit: parseLimit(input.limit),

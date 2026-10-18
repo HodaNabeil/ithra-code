@@ -1,5 +1,5 @@
-import { SEO_LOGO_PATH, SEO_SAME_AS, SEO_SITE_NAME_AR } from '../config';
-import { getSiteOrigin } from '../urls';
+import { SEO_LOGO_PATH, SEO_SAME_AS, SEO_SITE_NAME_EN } from '../config';
+import { getCanonicalOrigin } from '../urls';
 import { buildOrganizationSchema } from './builders/organization';
 import { buildPersonSchema } from './builders/person';
 import {
@@ -7,23 +7,23 @@ import {
   buildWebsiteSchema,
 } from './builders/website';
 
-export function getDefaultOrganizationSchema(origin = getSiteOrigin()) {
+export function getDefaultOrganizationSchema(origin = getCanonicalOrigin()) {
   return buildOrganizationSchema({
     origin,
-    name: SEO_SITE_NAME_AR,
+    name: SEO_SITE_NAME_EN,
     logoPath: SEO_LOGO_PATH,
     sameAs: SEO_SAME_AS,
   });
 }
 
-export function getDefaultPersonSchema(origin = getSiteOrigin()) {
+export function getDefaultPersonSchema(origin = getCanonicalOrigin()) {
   return buildPersonSchema({ origin });
 }
 
-export function getDefaultWebsiteSchema(origin = getSiteOrigin()) {
+export function getDefaultWebsiteSchema(origin = getCanonicalOrigin()) {
   return buildWebsiteSchema({
     origin,
-    name: SEO_SITE_NAME_AR,
+    name: SEO_SITE_NAME_EN,
     searchUrlTemplate: buildCourseSearchUrlTemplate(origin),
   });
 }

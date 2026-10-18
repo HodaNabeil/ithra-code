@@ -58,13 +58,13 @@ export default async function LearningPathsPage({
         data={buildLearningPathsListingJsonLd(paths)}
       />
 
-      <main className="py-14 space-y-8">
+      <div className="py-14 space-y-8">
         <LearningPathsHero />
 
         {!hasError && pagination && <LearningPathsContainer paths={paths} />}
 
         {hasError && <ErrorRetry />}
-      </main>
+      </div>
     </>
   );
 }

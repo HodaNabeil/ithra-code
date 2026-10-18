@@ -9,5 +9,9 @@ export const metadata: Metadata = createNoIndexMetadata({
 });
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
-  return <div className="flex flex-1 flex-col">{children}</div>;
+  return (
+    <div className="flex min-h-full flex-1 flex-col bg-background">
+      {children}
+    </div>
+  );
 }

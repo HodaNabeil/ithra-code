@@ -28,7 +28,9 @@ type LockedCourseRow = {
   maxStudents: number | null;
 };
 
-function toCourseForFreeEnrollment(row: LockedCourseRow): CourseForFreeEnrollment {
+function toCourseForFreeEnrollment(
+  row: LockedCourseRow,
+): CourseForFreeEnrollment {
   return {
     id: row.id,
     slug: row.slug,
@@ -183,9 +185,8 @@ export class PrismaFreeEnrollmentRepository implements FreeEnrollmentRepository 
 
       assertEnrollmentEligibleForFreeEnrollment(existingEnrollment);
 
-      const willIncreaseActive = willIncreaseActiveEnrollmentCount(
-        existingEnrollment,
-      );
+      const willIncreaseActive =
+        willIncreaseActiveEnrollmentCount(existingEnrollment);
 
       if (willIncreaseActive && course.maxStudents != null) {
         const activeEnrollmentCount = await tx.enrollment.count({

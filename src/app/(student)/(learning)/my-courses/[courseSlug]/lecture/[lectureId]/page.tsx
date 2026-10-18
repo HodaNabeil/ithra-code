@@ -8,10 +8,7 @@ import { getLecture } from '@/features/courses/lecture-detail';
 import { LecturePlayer } from '@/features/my-courses/[courseSlug]/components/lecture-details';
 import { mapLectureNavigationFromSections } from '@/features/my-courses/lib/my-course.mapper';
 import { auth } from '@/lib/auth';
-import {
-  LECTURE_DETAIL_TAGS,
-  MY_COURSES_TAGS,
-} from '@/lib/query-keys';
+import { LECTURE_DETAIL_TAGS, MY_COURSES_TAGS } from '@/lib/query-keys';
 
 /**
  * LectureDetailsPage (Server Component)

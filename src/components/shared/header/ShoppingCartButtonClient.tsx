@@ -23,9 +23,7 @@ export function ShoppingCartButtonClient({
   const router = useRouter();
   const { status } = useSession();
   const isClient = useIsClient();
-  const isAuthed = isClient
-    ? isAuthenticatedStatus(status)
-    : isAuthenticated;
+  const isAuthed = isClient ? isAuthenticatedStatus(status) : isAuthenticated;
   const prevStatusRef = useRef(status);
 
   const itemCount = useCartStore((state) => state.itemCount);

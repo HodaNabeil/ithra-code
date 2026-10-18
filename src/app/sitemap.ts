@@ -76,8 +76,6 @@ function withHomepageLastModified(
   const homepageUrl = origin.replace(/\/+$/, '');
 
   return entries.map((entry) =>
-    entry.url === homepageUrl
-      ? { ...entry, lastModified: new Date() }
-      : entry,
+    entry.url === homepageUrl ? { ...entry, lastModified: new Date() } : entry,
   );
 }

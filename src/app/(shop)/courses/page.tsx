@@ -101,7 +101,7 @@ export default async function Courses({ searchParams }: CoursesPageProps) {
         data={buildCoursesListingJsonLd(courses)}
       />
 
-      <main className="py-14 space-y-8">
+      <div className="py-14 space-y-8">
         <CoursesHero />
         {!hasError && pagination && (
           <CoursesContainer
@@ -111,7 +111,7 @@ export default async function Courses({ searchParams }: CoursesPageProps) {
           />
         )}
         {hasError && <ErrorRetry />}
-      </main>
+      </div>
     </>
   );
 }

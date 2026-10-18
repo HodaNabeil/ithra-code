@@ -2,7 +2,11 @@ import Image from 'next/image';
 import { ExpandableContent } from '@/components/shared/expandable-content';
 import SocialLinks from '@/components/shared/footer/social-links';
 import { INSTRUCTOR_IMAGE_SIZES } from '@/features/home/constants/image-sizes';
-import { SEO_AUTHOR_JOB_TITLE, SEO_AUTHOR_NAME } from '@/lib/seo/config';
+import {
+  SEO_AUTHOR_JOB_TITLE,
+  SEO_AUTHOR_NAME,
+  SEO_AUTHOR_NAME_AR,
+} from '@/lib/seo/config';
 import SectionHeading from './section-heading';
 
 export default function InstructorSection() {
@@ -40,27 +44,25 @@ export default function InstructorSection() {
             <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mt-1">
               {SEO_AUTHOR_NAME}
             </h3>
-            <p className="text-brand mt-2 font-bold">
-              {SEO_AUTHOR_JOB_TITLE}
-            </p>
+            <p className="text-brand mt-2 font-bold">{SEO_AUTHOR_JOB_TITLE}</p>
             <p className="text-muted-foreground text-sm font-medium">
               المؤسسة والمالكة والمدرّبة
             </p>
             <ExpandableContent className="mt-4">
               <div className="space-y-4 text-muted-foreground text-base leading-relaxed">
                 <p>
-                  هدي ابوهشيمة (Frontend Engineer) متخصّصة في تصميم وبناء
-                  تطبيقات ويب حديثة وعالية الأداء وقابلة للتوسع (Scalable
-                  Web Applications).
-                  تتمتع بكفاءة متقدمة في تطوير الواجهات الأمامية (Frontend
-                  Development) باستخدام React وNext.js وTypeScript، إلى جانب
-                  خبرة في هندسة البرمجيات (Software Engineering)، وتصميم
-                  معماريات الواجهات (Frontend Architecture)، وبناء أنظمة مكوّنات
-                  قابلة لإعادة الاستخدام (Reusable Component Systems)، وتحسين
-                  الأداء وتجربة المستخدم وتحسين محركات البحث (SEO).
+                  {SEO_AUTHOR_NAME_AR} (Frontend Engineer) متخصّصة في تصميم
+                  وبناء تطبيقات ويب حديثة وعالية الأداء وقابلة للتوسع (Scalable
+                  Web Applications). تتمتع بكفاءة متقدمة في تطوير الواجهات
+                  الأمامية (Frontend Development) باستخدام React وNext.js
+                  وTypeScript، إلى جانب خبرة في هندسة البرمجيات (Software
+                  Engineering)، وتصميم معماريات الواجهات (Frontend
+                  Architecture)، وبناء أنظمة مكوّنات قابلة لإعادة الاستخدام
+                  (Reusable Component Systems)، وتحسين الأداء وتجربة المستخدم
+                  وتحسين محركات البحث (SEO).
                 </p>
                 <p>
-                  تمتلك هدي كذلك خلفية برمجية متينة في C++ وJava، تعزّز فهمها
+                  تمتلك هدى كذلك خلفية برمجية متينة في C++ وJava، تعزّز فهمها
                   لأساسيات البرمجة وهندسة البرمجيات وحل المشكلات التقنية
                   المعقدة، إلى جانب خبرة عملية في التكامل مع الواجهات الخلفية
                   (Backend APIs) وتطوير حلول متكاملة تشمل المصادقة، والمدفوعات،
@@ -69,7 +71,7 @@ export default function InstructorSection() {
                   الإنتاج (Production-Ready Solutions).
                 </p>
                 <p>
-                  وإلى جانب مسيرتها التقنية، عملت هدي كمدرّبة تقنية (Tech)
+                  وإلى جانب مسيرتها التقنية، عملت هدى كمدرّبة تقنية (Tech)
                   Instructor) في عدد من المؤسسات والبرامج التعليمية، من بينها
                   مؤسسة العرب التابعة للجامعة الأمريكية بالقاهرة، حيث قامت
                   بتدريب المبتدئين وتبسيط المفاهيم البرمجية والتقنية وتقديمها

@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 import { Menu } from 'lucide-react';
-import { APP_LINK_ROLES, APP_ROUTES, APP_USER_ROLES } from '@/constants/enums';
 import { UserNav } from './UserNav';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,49 +16,18 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import type { Session } from 'next-auth';
+import { filterNavLinks } from './nav-links';
 
-const NAV_LINKS = [
-  {
-    label: 'الدورات',
-    href: APP_ROUTES.COURSES,
-    role: APP_LINK_ROLES.ALL,
-  },
-  {
-    label: 'مسارات التعلم',
-    href: APP_ROUTES.LEARNING_PATHS,
-    role: APP_LINK_ROLES.ALL,
-  },
-  {
-    label: 'تواصل معنا',
-    href: APP_ROUTES.CONTACT,
-    role: APP_LINK_ROLES.ALL,
-  },
-  {
-    label: 'دوراتي',
-    href: APP_ROUTES.MY_COURSES,
-    role: APP_LINK_ROLES.STUDENT,
-  },
-  {
-    label: 'Admin',
-    href: APP_ROUTES.ADMIN,
-    role: APP_LINK_ROLES.ADMIN,
-  },
-];
-
-export function MobileMenu({ session: serverSession }: { session: Session | null }) {
+export function MobileMenu({
+  session: serverSession,
+}: {
+  session: Session | null;
+}) {
   const pathname = usePathname();
   const { data: clientSession } = useSession();
   const session = clientSession ?? serverSession;
-  const userRole = session?.user?.role;
   const [isOpen, setIsOpen] = useState(false);
-
-  const filteredLinks = NAV_LINKS.filter((link) => {
-    if (link.role === APP_LINK_ROLES.ALL) return true;
-    if (link.role === APP_LINK_ROLES.ADMIN && userRole === APP_USER_ROLES.ADMIN)
-      return true;
-    if (link.role === APP_LINK_ROLES.STUDENT && session?.user) return true;
-    return false;
-  });
+  const filteredLinks = filterNavLinks(session);
 
   const closeMenu = () => setIsOpen(false);
 

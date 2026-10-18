@@ -18,11 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Link } from '@/components/shared/link';
 import { ErrorRetry } from '@/components/shared/ErrorRetry';
-import {
-  DIRECTIONS,
-  LANGUAGES,
-  type Direction,
-} from '@/constants/i18n';
+import { DIRECTIONS, LANGUAGES, type Direction } from '@/constants/i18n';
 import { STUDENT_ROUTES } from '@/constants/routes';
 import { formatDurationFromSeconds } from '@/features/courses/lib/formatters';
 import type { Locale } from '@/features/courses/lib/formatters';
@@ -154,10 +150,7 @@ function Lecture({
                 isActive ? 'font-semibold' : 'font-normal'
               }`}
             >
-              <span
-                dir="ltr"
-                className="tabular-nums [unicode-bidi:isolate]"
-              >
+              <span dir="ltr" className="tabular-nums [unicode-bidi:isolate]">
                 {lecture.position}.
               </span>{' '}
               {lecture.title}
@@ -217,10 +210,7 @@ function Section({
             </span>
             {' | '}
             <span dir="ltr" className="tabular-nums [unicode-bidi:isolate]">
-              {formatDurationFromSeconds(
-                statistics.totalDuration,
-                locale,
-              )}
+              {formatDurationFromSeconds(statistics.totalDuration, locale)}
             </span>
           </p>
         </div>

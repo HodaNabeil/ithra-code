@@ -48,12 +48,10 @@ export default async function CheckoutPage() {
   }
 
   return (
-    <main>
-      <CheckoutView
-        cart={cart}
-        paymobSession={paymobSession}
-        paymobError={paymobError}
-      />
-    </main>
+    <CheckoutView
+      cart={cart}
+      paymobSession={paymobSession}
+      paymobError={paymobError}
+    />
   );
 }

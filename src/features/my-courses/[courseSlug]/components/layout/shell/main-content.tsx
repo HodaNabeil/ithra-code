@@ -16,7 +16,7 @@ export const CourseMainContent: React.FC<CourseMainContentProps> = ({
   const setSidebarOpen = useCourseLayoutStore((s) => s.setSidebarOpen);
 
   return (
-    <main
+    <div
       className={cn(
         'flex-1 overflow-y-auto no-scrollbar relative bg-background transition-all duration-300 ease-in-out',
         !isSidebarOpen && 'w-full h-[88vh]',
@@ -40,6 +40,6 @@ export const CourseMainContent: React.FC<CourseMainContentProps> = ({
           </span>
         </button>
       )}
-    </main>
+    </div>
   );
 };

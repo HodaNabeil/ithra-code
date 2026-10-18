@@ -1,9 +1,9 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
-/** Auth.js expects the site origin, not `/api/auth`. */
+/** Auth.js v5 (next-auth) treats AUTH_URL pathname `/` as "use default /api/auth". */
 function normalizeAuthUrl(url: string): string {
-  return url.replace(/\/api\/auth\/?$/, '');
+  return new URL(url.replace(/\/api\/auth\/?$/, '')).origin;
 }
 
 export const env = createEnv({
@@ -21,6 +21,10 @@ export const env = createEnv({
     AUTH_URL: z
       .string()
       .url()
+      .refine((url) => !url.includes('authjs.dev'), {
+        message:
+          'AUTH_URL must be your actual domain, not authjs.dev placeholder',
+      })
       .transform(normalizeAuthUrl)
       .describe('NextAuth base URL (site origin)'),
     NEXTAUTH_URL: z
@@ -28,14 +32,28 @@ export const env = createEnv({
       .url()
       .optional()
       .describe('NextAuth base URL (legacy)'),
-    AUTH_SECRET: z.string().describe('NextAuth secret key'),
-    AUTH_TRUST_HOST: z.string().optional().default('true'),
+    AUTH_SECRET: z
+      .string()
+      .min(1)
+      .transform((value) => value.trim())
+      .describe('NextAuth secret key'),
+    AUTH_TRUST_HOST: z
+      .string()
+      .optional()
+      .default('true')
+      .describe(
+        'Trust Host header for Auth.js (required on localhost and Vercel)',
+      ),
 
     // OAuth Providers
-    AUTH_GOOGLE_ID: z.string().describe('Google OAuth Client ID'),
-    AUTH_GOOGLE_SECRET: z.string().describe('Google OAuth Client Secret'),
-    AUTH_GITHUB_ID: z.string().describe('GitHub OAuth Client ID'),
-    AUTH_GITHUB_SECRET: z.string().describe('GitHub OAuth Client Secret'),
+    AUTH_GOOGLE_ID: z
+      .string()
+      .transform((value) => value.trim())
+      .describe('Google OAuth Client ID'),
+    AUTH_GOOGLE_SECRET: z
+      .string()
+      .transform((value) => value.trim())
+      .describe('Google OAuth Client Secret'),
 
     // Paymob (optional: gateway registers only when configured)
     PAYMOB_API_URL: z
@@ -499,10 +517,7 @@ export const env = createEnv({
 
   client: {
     NEXT_PUBLIC_API_URL: z.string().url().optional().describe('API base URL'),
-    NEXT_PUBLIC_APP_URL: z
-      .string()
-      .url()
-      .describe('Next.js app public URL'),
+    NEXT_PUBLIC_APP_URL: z.string().url().describe('Next.js app public URL'),
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: z
       .string()
       .optional()
@@ -518,8 +533,6 @@ export const env = createEnv({
     AUTH_TRUST_HOST: process.env.AUTH_TRUST_HOST,
     AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
     AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
-    AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
-    AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     PAYMOB_API_URL: process.env.PAYMOB_API_URL,
     PAYMOB_SECRET_KEY: process.env.PAYMOB_SECRET_KEY,
     PAYMOB_PUBLIC_KEY: process.env.PAYMOB_PUBLIC_KEY,
@@ -633,10 +646,15 @@ export const env = createEnv({
   emptyStringAsUndefined: true,
 });
 
-// Auth.js reads AUTH_URL / NEXTAUTH_URL directly from process.env.
+// Auth.js reads AUTH_URL / NEXTAUTH_URL / AUTH_TRUST_HOST / AUTH_SECRET from
+// process.env. Keep AUTH_URL as the site origin (next-auth ignores pathname `/`
+// and defaults basePath to `/api/auth`). Overwrite a stale NEXTAUTH_URL so it
+// cannot point at an old Vercel hostname.
 if (typeof window === 'undefined') {
   process.env.AUTH_URL = env.AUTH_URL;
-  process.env.NEXTAUTH_URL = env.NEXTAUTH_URL
-    ? normalizeAuthUrl(env.NEXTAUTH_URL)
-    : env.AUTH_URL;
+  process.env.NEXTAUTH_URL = env.AUTH_URL;
+  process.env.AUTH_TRUST_HOST = 'true';
+  if (env.AUTH_SECRET) {
+    process.env.AUTH_SECRET = env.AUTH_SECRET;
+  }
 }

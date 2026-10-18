@@ -15,7 +15,10 @@ type EnrollApiResponse = {
   data: EnrollInFreeCourseOutputDTO;
 };
 
-function mapEnrollError(error: unknown, fallback: string): ActionResponse<never> {
+function mapEnrollError(
+  error: unknown,
+  fallback: string,
+): ActionResponse<never> {
   if (error instanceof HttpError) {
     if (error.status === 401) {
       return {

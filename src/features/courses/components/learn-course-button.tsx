@@ -19,12 +19,7 @@ export function LearnCourseButton({
   label = 'ابدأ التعلم',
 }: LearnCourseButtonProps) {
   return (
-    <Button
-      asChild
-      variant="course"
-      className={className}
-      size={size}
-    >
+    <Button asChild variant="course" className={className} size={size}>
       <Link href={buildLearnHref(course)}>{label}</Link>
     </Button>
   );
