@@ -12,31 +12,65 @@ import { Role } from '@prisma/client';
 // Runtime validation flag - checked on first auth request in production
 let _productionAuthUrlValidated = false;
 
+function isLocalOrigin(url: string): boolean {
+  try {
+    const hostname = new URL(url).hostname;
+    return (
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname === '::1'
+    );
+  } catch {
+    return url.includes('localhost');
+  }
+}
+
 /**
- * Validates AUTH_URL for production deployments.
- * Called lazily on first auth request to avoid build failures
- * when using localhost in .env for local development.
+ * Ensures AUTH_URL is safe in production.
+ *
+ * If a stale localhost AUTH_URL is deployed, derive the runtime origin from
+ * the incoming request so auth can keep working instead of failing with a
+ * generic "Configuration" error.
  */
-function validateProductionAuthUrl(): void {
-  // Only validate in production to allow local dev with localhost
-  // Skip during build (next build sets NODE_ENV=production but we're not "running" yet)
+function ensureProductionAuthUrl(requestLike?: unknown): void {
   if (process.env.NODE_ENV !== 'production' || typeof window !== 'undefined') {
     return;
   }
 
-  // Only validate once per server instance
   if (_productionAuthUrlValidated) return;
 
   const authUrl = process.env.AUTH_URL || env.AUTH_URL;
 
-  // Check for localhost in production (security risk for redirects)
-  if (authUrl?.includes('localhost')) {
-    throw new Error(
-      `Invalid AUTH_URL in production: ${authUrl}. Must be your actual domain (e.g., https://yourdomain.com)`,
-    );
+  if (!isLocalOrigin(authUrl)) {
+    _productionAuthUrlValidated = true;
+    return;
   }
 
-  _productionAuthUrlValidated = true;
+  const requestUrl =
+    requestLike &&
+    typeof requestLike === 'object' &&
+    'url' in requestLike &&
+    typeof (requestLike as { url?: unknown }).url === 'string'
+      ? (requestLike as { url: string }).url
+      : null;
+
+  if (requestUrl) {
+    const requestOrigin = new URL(requestUrl).origin;
+
+    if (!isLocalOrigin(requestOrigin)) {
+      process.env.AUTH_URL = requestOrigin;
+      process.env.NEXTAUTH_URL = requestOrigin;
+      _productionAuthUrlValidated = true;
+      console.warn(
+        `[AUTH_URL_AUTO_RECOVERY] AUTH_URL pointed to localhost in production. Using request origin instead: ${requestOrigin}`,
+      );
+      return;
+    }
+  }
+
+  throw new Error(
+    `Invalid AUTH_URL in production: ${authUrl}. Must be your actual domain (e.g., https://yourdomain.com)`,
+  );
 }
 
 export const config: NextAuthConfig = {
@@ -45,13 +79,17 @@ export const config: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
 
   providers: (() => {
-    const providers: NonNullable<NextAuthConfig['providers']> = [
-    GoogleProvider({
-      clientId: env.AUTH_GOOGLE_ID,
-      clientSecret: env.AUTH_GOOGLE_SECRET,
-      allowDangerousEmailAccountLinking: true,
-    }),
-    ];
+    const providers: NonNullable<NextAuthConfig['providers']> = [];
+
+    if (env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET) {
+      providers.push(
+        GoogleProvider({
+          clientId: env.AUTH_GOOGLE_ID,
+          clientSecret: env.AUTH_GOOGLE_SECRET,
+          allowDangerousEmailAccountLinking: true,
+        }),
+      );
+    }
 
     if (env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET) {
       providers.push(
@@ -177,14 +215,14 @@ const {
   signOut: authSignOut,
 } = NextAuth(config);
 
-// Wrap handlers to validate AUTH_URL on first production request
+// Wrap handlers to validate/repair AUTH_URL on first production request
 const authHandlers: typeof originalHandlers = {
   GET: async (...args) => {
-    validateProductionAuthUrl();
+    ensureProductionAuthUrl(args[0]);
     return originalHandlers.GET(...args);
   },
   POST: async (...args) => {
-    validateProductionAuthUrl();
+    ensureProductionAuthUrl(args[0]);
     return originalHandlers.POST(...args);
   },
 };

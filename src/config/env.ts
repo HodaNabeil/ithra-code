@@ -49,10 +49,12 @@ export const env = createEnv({
     AUTH_GOOGLE_ID: z
       .string()
       .transform((value) => value.trim())
+      .optional()
       .describe('Google OAuth Client ID'),
     AUTH_GOOGLE_SECRET: z
       .string()
       .transform((value) => value.trim())
+      .optional()
       .describe('Google OAuth Client Secret'),
     AUTH_GITHUB_ID: z
       .string()
@@ -663,8 +665,16 @@ export const env = createEnv({
 // and defaults basePath to `/api/auth`). Overwrite a stale NEXTAUTH_URL so it
 // cannot point at an old Vercel hostname.
 if (typeof window === 'undefined') {
+  const hasGoogleClientId = Boolean(env.AUTH_GOOGLE_ID);
+  const hasGoogleClientSecret = Boolean(env.AUTH_GOOGLE_SECRET);
   const hasGitHubClientId = Boolean(env.AUTH_GITHUB_ID);
   const hasGitHubClientSecret = Boolean(env.AUTH_GITHUB_SECRET);
+
+  if (hasGoogleClientId !== hasGoogleClientSecret) {
+    throw new Error(
+      'Google OAuth configuration is incomplete. Set both AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET, or leave both unset to disable Google login.',
+    );
+  }
 
   if (hasGitHubClientId !== hasGitHubClientSecret) {
     throw new Error(

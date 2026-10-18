@@ -81,15 +81,28 @@ export function AuthCard({ providers }: AuthCardProps) {
           </Alert>
         )}
 
-        <SocialButtons
-          providers={providers}
-          isLoading={!!isLoading}
-          callbackUrl={callbackUrl}
-          onError={(message) =>
-            setError({ title: message, description: undefined })
-          }
-          onLoadingChange={setIsLoading}
-        />
+        {providers.length > 0 ? (
+          <SocialButtons
+            providers={providers}
+            isLoading={!!isLoading}
+            callbackUrl={callbackUrl}
+            onError={(message) =>
+              setError({ title: message, description: undefined })
+            }
+            onLoadingChange={setIsLoading}
+          />
+        ) : (
+          <Alert variant="destructive" className={cn('border-destructive/30')}>
+            <AlertCircle className={cn('h-4', 'w-4')} />
+            <AlertTitle className={cn('text-destructive')}>
+              لا يوجد مزود تسجيل دخول متاح
+            </AlertTitle>
+            <AlertDescription className={cn('text-destructive/90')}>
+              يرجى ضبط إعدادات تسجيل الدخول في الخادم (Google أو GitHub) ثم
+              إعادة المحاولة.
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div
           className={cn(
