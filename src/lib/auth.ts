@@ -96,6 +96,8 @@ export const config: NextAuthConfig = {
         GitHubProvider({
           clientId: env.AUTH_GITHUB_ID,
           clientSecret: env.AUTH_GITHUB_SECRET,
+          // Pin issuer to GitHub to prevent bad env overrides (e.g. AUTH_GITHUB_ISSUER=authjs.dev)
+          issuer: 'https://github.com/login/oauth',
           allowDangerousEmailAccountLinking: true,
         }),
       );

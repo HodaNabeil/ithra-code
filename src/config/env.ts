@@ -665,6 +665,15 @@ export const env = createEnv({
 // and defaults basePath to `/api/auth`). Overwrite a stale NEXTAUTH_URL so it
 // cannot point at an old Vercel hostname.
 if (typeof window === 'undefined') {
+  // Auth.js auto-reads provider env vars such as AUTH_GITHUB_ISSUER.
+  // Ignore placeholder values that can break OAuth callback validation in production.
+  if (process.env.AUTH_GITHUB_ISSUER?.includes('authjs.dev')) {
+    console.warn(
+      '[AUTH_GITHUB_ISSUER_SANITIZED] Ignoring placeholder AUTH_GITHUB_ISSUER value.',
+    );
+    delete process.env.AUTH_GITHUB_ISSUER;
+  }
+
   const hasGoogleClientId = Boolean(env.AUTH_GOOGLE_ID);
   const hasGoogleClientSecret = Boolean(env.AUTH_GOOGLE_SECRET);
   const hasGitHubClientId = Boolean(env.AUTH_GITHUB_ID);
