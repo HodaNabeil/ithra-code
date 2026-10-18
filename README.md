@@ -436,6 +436,16 @@ cp .env.example .env
 # Fill in values — never commit .env
 ```
 
+### OAuth provider setup (Auth.js v5)
+
+- Google redirect URI: `https://YOUR_DOMAIN/api/auth/callback/google`
+- GitHub callback URL: `https://YOUR_DOMAIN/api/auth/callback/github`
+- GitHub is optional: set both `AUTH_GITHUB_ID` and `AUTH_GITHUB_SECRET` to
+  enable it, or leave both unset to disable it.
+- In production (Vercel), keep `AUTH_URL` as your site origin only
+  (`https://YOUR_DOMAIN`) and configure matching callback URLs in provider
+  consoles.
+
 ### Database
 
 ```bash

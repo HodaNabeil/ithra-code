@@ -54,6 +54,16 @@ export const env = createEnv({
       .string()
       .transform((value) => value.trim())
       .describe('Google OAuth Client Secret'),
+    AUTH_GITHUB_ID: z
+      .string()
+      .transform((value) => value.trim())
+      .optional()
+      .describe('GitHub OAuth Client ID'),
+    AUTH_GITHUB_SECRET: z
+      .string()
+      .transform((value) => value.trim())
+      .optional()
+      .describe('GitHub OAuth Client Secret'),
 
     // Paymob (optional: gateway registers only when configured)
     PAYMOB_API_URL: z
@@ -533,6 +543,8 @@ export const env = createEnv({
     AUTH_TRUST_HOST: process.env.AUTH_TRUST_HOST,
     AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
     AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
+    AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
+    AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     PAYMOB_API_URL: process.env.PAYMOB_API_URL,
     PAYMOB_SECRET_KEY: process.env.PAYMOB_SECRET_KEY,
     PAYMOB_PUBLIC_KEY: process.env.PAYMOB_PUBLIC_KEY,
@@ -651,6 +663,15 @@ export const env = createEnv({
 // and defaults basePath to `/api/auth`). Overwrite a stale NEXTAUTH_URL so it
 // cannot point at an old Vercel hostname.
 if (typeof window === 'undefined') {
+  const hasGitHubClientId = Boolean(env.AUTH_GITHUB_ID);
+  const hasGitHubClientSecret = Boolean(env.AUTH_GITHUB_SECRET);
+
+  if (hasGitHubClientId !== hasGitHubClientSecret) {
+    throw new Error(
+      'GitHub OAuth configuration is incomplete. Set both AUTH_GITHUB_ID and AUTH_GITHUB_SECRET, or leave both unset to disable GitHub login.',
+    );
+  }
+
   process.env.AUTH_URL = env.AUTH_URL;
   process.env.NEXTAUTH_URL = env.AUTH_URL;
   process.env.AUTH_TRUST_HOST = 'true';
