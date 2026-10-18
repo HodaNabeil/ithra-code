@@ -1,5 +1,6 @@
 import NextAuth, { type NextAuthConfig, type NextAuthResult } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import GitHubProvider from 'next-auth/providers/github';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import { env } from '@/config';
@@ -43,13 +44,27 @@ export const config: NextAuthConfig = {
 
   adapter: PrismaAdapter(prisma),
 
-  providers: [
+  providers: (() => {
+    const providers: NonNullable<NextAuthConfig['providers']> = [
     GoogleProvider({
       clientId: env.AUTH_GOOGLE_ID,
       clientSecret: env.AUTH_GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
-  ],
+    ];
+
+    if (env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET) {
+      providers.push(
+        GitHubProvider({
+          clientId: env.AUTH_GITHUB_ID,
+          clientSecret: env.AUTH_GITHUB_SECRET,
+          allowDangerousEmailAccountLinking: true,
+        }),
+      );
+    }
+
+    return providers;
+  })(),
 
   events: {
     async signIn({ user }) {

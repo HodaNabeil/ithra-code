@@ -12,7 +12,7 @@ const AUTH_ERROR_MESSAGES: Record<string, AuthErrorContent> = {
   Configuration: {
     title: 'تعذّر إكمال تسجيل الدخول',
     description:
-      'خدمة تسجيل الدخول غير مهيأة بشكل صحيح حالياً. جرّب Google، أو حاول لاحقاً. إذا استمرت المشكلة، تواصل مع الدعم.',
+      'خدمة تسجيل الدخول غير مهيأة بشكل صحيح حالياً. جرّب مزوداً آخر أو حاول لاحقاً. إذا استمرت المشكلة، تواصل مع الدعم.',
   },
   AccessDenied: {
     title: 'تم رفض الوصول',
@@ -29,7 +29,7 @@ const AUTH_ERROR_MESSAGES: Record<string, AuthErrorContent> = {
   OAuthCallback: {
     title: 'تعذّر إكمال تسجيل الدخول',
     description:
-      'فشلت عملية المصادقة بعد العودة من Google. تأكد من السماح بالوصول ثم أعد المحاولة.',
+      'فشلت عملية المصادقة بعد العودة من مزود تسجيل الدخول. تأكد من السماح بالوصول ثم أعد المحاولة.',
   },
   OAuthCreateAccount: {
     title: 'تعذّر إنشاء الحساب',
