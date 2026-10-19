@@ -8,7 +8,7 @@ export function LandingHero() {
     <section className="section-padding ">
       <div className="container flex flex-col lg:flex-row items-center gap-8 lg:gap-12 xl:gap-16">
         <div className="flex flex-col  text-right w-full lg:w-1/2 lg:max-w-xl gap-6">
-          <h1 className="text-foreground">ithracode</h1>
+          <h1 className="text-foreground">IthraCode</h1>
           <p className="text-muted-foreground leading-relaxed">
             هي منصة تهدف الي تعليم البرمجة بأبسط الطرق الممكنة مع وجود مجموعة
             متنوعة من الدورات التي تجمع بين الشرح المفصل والتجارب العملية للوصول
@@ -25,7 +25,7 @@ export function LandingHero() {
         <div className="w-full lg:w-1/2 flex justify-center">
           <Image
             src="/img/landing.webp"
-            alt="ithracode — code editor preview"
+            alt="IthraCode — code editor preview"
             width={2488}
             height={1680}
             priority

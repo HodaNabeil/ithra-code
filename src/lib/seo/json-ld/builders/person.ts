@@ -4,7 +4,6 @@ import {
   SEO_AUTHOR_ALTERNATE_NAMES,
   SEO_AUTHOR_JOB_TITLE,
   SEO_AUTHOR_NAME,
-  SEO_AUTHOR_NAME_AR,
   SEO_SAME_AS,
 } from '../../config';
 import { getOrganizationId, getPersonId, toCanonicalUrl } from '../../urls';
@@ -20,16 +19,13 @@ export type PersonSchemaInput = {
 };
 
 export function buildPersonSchema(input: PersonSchemaInput): JsonLdObject {
-  const alternateName = input.alternateName ?? [
-    SEO_AUTHOR_NAME_AR,
-    ...SEO_AUTHOR_ALTERNATE_NAMES,
-  ];
+  const alternateName = input.alternateName ?? [...SEO_AUTHOR_ALTERNATE_NAMES];
 
   return {
     '@type': 'Person',
     '@id': getPersonId(input.origin),
     name: input.name ?? SEO_AUTHOR_NAME,
-    alternateName: [...alternateName],
+    ...(alternateName.length > 0 ? { alternateName: [...alternateName] } : {}),
     jobTitle: input.jobTitle ?? SEO_AUTHOR_JOB_TITLE,
     url: input.url ?? toCanonicalUrl(PUBLIC_ROUTES.ABOUT, input.origin),
     worksFor: {

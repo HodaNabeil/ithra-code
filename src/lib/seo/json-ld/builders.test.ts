@@ -27,14 +27,14 @@ describe('schema builders', () => {
       'EducationalOrganization',
     ]);
     expect(schema['@id']).toBe(getOrganizationId(origin));
-    expect(schema.alternateName).toEqual(['Ithra Code']);
+    expect(schema.alternateName).toBeUndefined();
     expect(schema.name).toBe('IthraCode');
     expect(schema.description).toBeTruthy();
     expect(schema.sameAs).toEqual(['https://youtube.com/@ithracode']);
     expect(schema.founder).toEqual({ '@id': getPersonId(origin) });
   });
 
-  it('builds a Person with English and Arabic names', () => {
+  it('builds a Person with the English name only', () => {
     const schema = buildPersonSchema({
       origin,
       sameAs: ['https://youtube.com/@ithracode'],
@@ -47,7 +47,7 @@ describe('schema builders', () => {
       jobTitle: 'Founder, Software Engineer & Instructor',
       worksFor: { '@id': getOrganizationId(origin) },
     });
-    expect(schema.alternateName).toEqual(['هدى نبيل']);
+    expect(schema.alternateName).toBeUndefined();
   });
 
   it('adds SearchAction only when a template is provided', () => {

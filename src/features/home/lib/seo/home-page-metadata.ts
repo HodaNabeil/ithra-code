@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import { APP_ROUTES } from '@/constants/enums';
 import {
   SEO_AUTHOR_NAME,
-  SEO_AUTHOR_NAME_AR,
   SEO_DEFAULT_DESCRIPTION,
   SEO_HOME_KEYWORDS,
   SEO_SITE_NAME_EN,
@@ -19,7 +18,7 @@ export function buildHomePageMetadata(): Metadata {
       path: APP_ROUTES.ROOT,
       keywords: [...SEO_HOME_KEYWORDS],
     }),
-    authors: [{ name: SEO_AUTHOR_NAME }, { name: SEO_AUTHOR_NAME_AR }],
+    authors: [{ name: SEO_AUTHOR_NAME }],
     creator: SEO_SITE_NAME_EN,
     publisher: SEO_SITE_NAME_EN,
   };
