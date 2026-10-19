@@ -1,9 +1,9 @@
 import React from 'react';
-import { Logo } from './Logo';
-import { NavItems } from './NavItems';
-import { UserNav } from './UserNav';
-import { MobileMenu } from './MobileMenu';
-import ShopingCartButton from './ShopingCartButton';
+import { Logo } from './logo';
+import { NavItems } from './nav-items';
+import { UserNav } from './user-nav';
+import { MobileMenu } from './mobile-menu';
+import ShoppingCartButton from './shopping-cart-button';
 import { Session } from 'next-auth';
 
 export function Header({ session }: { session: Session | null }) {
@@ -13,7 +13,7 @@ export function Header({ session }: { session: Session | null }) {
         {/* Mobile & small screens: centered logo with independent side controls */}
         <div className="grid h-full grid-cols-[1fr_auto_1fr] items-center lg:hidden">
           <div className="flex items-center justify-start">
-            <ShopingCartButton />
+            <ShoppingCartButton />
           </div>
 
           <div className="flex items-center justify-center px-2">
@@ -39,7 +39,7 @@ export function Header({ session }: { session: Session | null }) {
 
             {/* User Navigation - Hidden on mobile */}
             <div className="flex items-center gap-4">
-              <ShopingCartButton />
+              <ShoppingCartButton />
 
               <div className="hidden items-center gap-4 lg:flex">
                 <UserNav session={session} />

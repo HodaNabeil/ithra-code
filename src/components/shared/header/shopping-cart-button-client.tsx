@@ -58,7 +58,7 @@ export function ShoppingCartButtonClient({
   return (
     <Link
       href={APP_ROUTES.CART}
-      className="relative inline-flex h-8 w-8 items-center justify-center text-primary"
+      className="relative inline-flex items-center justify-center rounded-xl p-2 text-primary transition-colors hover:bg-primary/10 focus-visible:bg-primary/10 focus-visible:outline-none"
       aria-label="السلة"
     >
       <ShoppingCartIcon className="h-4 w-4" />

@@ -21,9 +21,8 @@ import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
 const DEFAULT_SORT_OPTION = SORT_OPTIONS[0]!;
-
 const FILTER_TRIGGER_CLASS =
-  'w-full h-10! lg:h-11.5! px-4 text-xs! sm:text-sm! flex items-center justify-between gap-2 min-w-[130px] rounded-[100px]';
+  'w-full h-10! lg:h-11.5! px-4 text-xs sm:text-sm flex items-center justify-between gap-2 min-w-[130px] rounded-[100px]';
 
 // Path Filter Component
 interface PathFilterProps {
