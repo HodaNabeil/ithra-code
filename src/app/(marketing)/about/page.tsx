@@ -3,20 +3,29 @@ import type { Metadata } from 'next';
 import { Link } from '@/components/shared/link';
 import { LegalDocumentLayout } from '@/components/shared/legal-document-layout';
 import { PUBLIC_ROUTES } from '@/constants/routes';
-import { SEO_AUTHOR_JOB_TITLE, SEO_AUTHOR_NAME } from '@/lib/seo/config';
+import {
+  SEO_AUTHOR_JOB_TITLE,
+  SEO_AUTHOR_NAME,
+  SEO_SITE_NAME_EN,
+} from '@/lib/seo/config';
 import { createPageMetadata } from '@/lib/seo/create-page-metadata';
 import { buildStaticWebPageJsonLd } from '@/lib/seo/json-ld/builders/static-webpage';
 import { JsonLd } from '@/lib/seo/json-ld/json-ld';
 
 const ABOUT_TITLE = 'من نحن';
-const ABOUT_DESCRIPTION = `تعرّف على ithra code بقيادة ${SEO_AUTHOR_NAME} — المؤسسة والمالكة والمدرّبة.`;
+const ABOUT_DESCRIPTION = `تعرّف على ${SEO_SITE_NAME_EN} بقيادة ${SEO_AUTHOR_NAME} — المؤسسة والمالكة والمدرّبة.`;
 
 export const metadata: Metadata = {
   ...createPageMetadata({
     title: ABOUT_TITLE,
     description: ABOUT_DESCRIPTION,
     path: PUBLIC_ROUTES.ABOUT,
-    keywords: [SEO_AUTHOR_NAME, 'مؤسسة ithra code', 'ithra code', 'مدربة برمجة'],
+    keywords: [
+      SEO_AUTHOR_NAME,
+      `مؤسسة ${SEO_SITE_NAME_EN}`,
+      SEO_SITE_NAME_EN,
+      'مدربة برمجة',
+    ],
   }),
   authors: [{ name: SEO_AUTHOR_NAME }],
   creator: SEO_AUTHOR_NAME,
@@ -37,7 +46,7 @@ export default function AboutPage() {
       <h1>{ABOUT_TITLE}</h1>
 
       <p>
-        <strong>ithra code</strong> منصة تعليمية عربية على{' '}
+        <strong>{SEO_SITE_NAME_EN}</strong> منصة تعليمية عربية على{' '}
         <strong>ithracode.tech</strong> لتعلم البرمجة من خلال تجارب وخبرات
         واقعية من الشركات. رسالتنا أن نُمكّن المتعلمين في العالم العربي من بناء
         مهارات عملية في تطوير الويب والبرمجة، والوصول إلى فرص وظيفية أفضل — تحت

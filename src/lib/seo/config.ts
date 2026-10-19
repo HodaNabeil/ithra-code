@@ -1,9 +1,6 @@
 /** Latin brand: home `<title>`, Open Graph `siteName`, JSON-LD, inner-page title suffix. */
 export const SEO_SITE_NAME_EN = 'IthraCode';
 
-/** Alternate spellings used in structured data. */
-export const SEO_SITE_ALTERNATE_NAMES = ['IthraCode', 'ithra code'] as const;
-
 /** Production canonical origin for metadata and JSON-LD when indexing is enabled. */
 export const SEO_CANONICAL_ORIGIN = 'https://ithracode.tech';
 
@@ -36,7 +33,6 @@ export const SEO_AUTHOR_JOB_TITLE = 'Founder, Software Engineer & Instructor';
 
 const SEO_BRAND_KEYWORDS = [
   SEO_SITE_NAME_EN,
-  ...SEO_SITE_ALTERNATE_NAMES,
   'تعلم البرمجة',
   'Next.js',
   'Software Architecture',
@@ -52,8 +48,6 @@ export const SEO_HOME_KEYWORDS = [
   'JavaScript',
   'تطوير الويب',
   'هندسة البرمجيات',
-  'React',
-  'JavaScript',
   'Next.js',
   'Node.js',
   'TypeScript',
@@ -69,7 +63,7 @@ export const SEO_HOME_KEYWORDS = [
 export const SEO_SAME_AS = [
   'https://www.linkedin.com/in/hoda-nabeil-144094225/',
   'https://youtube.com/@ithracode',
-  'https://www.facebook.com/profile.php?id=61594744076040',
+  'https://www.facebook.com/profile.php?id=61594744076040&locale=ar_AR',
 ] as const;
 
 export const SEO_META_DESCRIPTION_MAX_LENGTH = 160;

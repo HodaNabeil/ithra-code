@@ -27,7 +27,7 @@ describe('schema builders', () => {
       'EducationalOrganization',
     ]);
     expect(schema['@id']).toBe(getOrganizationId(origin));
-    expect(schema.alternateName).toEqual(['IthraCode', 'ithra code']);
+    expect(schema.alternateName).toBeUndefined();
     expect(schema.name).toBe('IthraCode');
     expect(schema.description).toBeTruthy();
     expect(schema.sameAs).toEqual(['https://youtube.com/@ithracode']);

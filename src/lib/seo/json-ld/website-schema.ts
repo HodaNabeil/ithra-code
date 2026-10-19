@@ -1,6 +1,5 @@
 import {
   SEO_SITE_NAME_EN,
-  SEO_SITE_ALTERNATE_NAMES,
   SEO_DEFAULT_DESCRIPTION,
 } from '../config';
 import { getCanonicalOrigin, toCanonicalUrl } from '../urls';
@@ -22,7 +21,6 @@ export function buildWebSiteSchema() {
     '@id': `${getCanonicalOrigin()}/#website`,
     url: siteUrl,
     name: SEO_SITE_NAME_EN,
-    alternateName: [...SEO_SITE_ALTERNATE_NAMES],
     description: SEO_DEFAULT_DESCRIPTION,
     inLanguage: 'ar',
   };
