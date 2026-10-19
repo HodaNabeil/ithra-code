@@ -2,9 +2,9 @@ import { auth } from '@/lib/auth'; // Path to your auth.ts file
 import Link from 'next/link';
 import { Menu } from 'lucide-react';
 import { AUTH_ROUTES } from '@/constants/auth';
-import { UserNavClient } from './UserNavClient';
+import { UserNavClient } from './user-nav-client';
 
-export default async function UserNav() {
+export default async function Navbar() {
   const session = await auth();
 
   // If no session exists, render the "Start" (Sign In) button server-side

@@ -1,5 +1,5 @@
 import Footer from '@/components/shared/footer';
-import { Header } from '@/components/shared/header/Header';
+import { Header } from '@/components/shared/header/header';
 import { getAuthSession } from '@/lib/get-auth-session';
 
 type SiteChromeProps = {

@@ -13,8 +13,8 @@ export function Logo({ className }: LogoProps) {
       <Image
         src="/img/ithracode.png"
         alt="IthraCode"
-        width={1960}
-        height={802}
+        width={126}
+        height={117}
         className={className ?? 'h-12 w-auto shrink-0 sm:h-14 lg:h-16'}
         priority
       />

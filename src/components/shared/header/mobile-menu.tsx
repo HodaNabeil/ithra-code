@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 import { Menu } from 'lucide-react';
-import { UserNav } from './UserNav';
 import { Button } from '@/components/ui/button';
+import { AUTH_ROUTES } from '@/constants/auth';
 import {
   Sheet,
   SheetContent,
@@ -32,7 +32,7 @@ export function MobileMenu({
   const closeMenu = () => setIsOpen(false);
 
   return (
-    <div className="flex gap-4 items-center">
+    <div className="flex items-center">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
           <Button
@@ -70,11 +70,19 @@ export function MobileMenu({
                 {link.label}
               </Link>
             ))}
+
+            {!session?.user ? (
+              <Link
+                href={AUTH_ROUTES.SIGN_IN}
+                onClick={closeMenu}
+                className="block w-full text-base font-bold leading-tight text-foreground/85 transition-colors hover:text-foreground"
+              >
+                تسجيل الدخول
+              </Link>
+            ) : null}
           </nav>
         </SheetContent>
       </Sheet>
-
-      <UserNav session={session} />
     </div>
   );
 }
