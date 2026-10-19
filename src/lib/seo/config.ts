@@ -2,14 +2,10 @@
 export const SEO_SITE_NAME_AR = 'إثراء كود';
 
 /** Latin brand: home `<title>`, Open Graph `siteName`, JSON-LD, inner-page title suffix. */
-export const SEO_SITE_NAME_EN = 'Ithra Code';
+export const SEO_SITE_NAME_EN = 'IthraCode';
 
 /** Alternate spellings used in structured data. */
-export const SEO_SITE_ALTERNATE_NAMES = [
-  'IthraCode',
-  SEO_SITE_NAME_AR,
-  'ithra code',
-] as const;
+export const SEO_SITE_ALTERNATE_NAMES = ['IthraCode', 'ithra code'] as const;
 
 /** Production canonical origin for metadata and JSON-LD when indexing is enabled. */
 export const SEO_CANONICAL_ORIGIN = 'https://ithracode.tech';
@@ -21,7 +17,7 @@ export const SEO_HTML_LANGUAGE = 'ar';
 /** Value proposition for inner pages and WebPage schema on the home page. */
 export const SEO_DEFAULT_TITLE = 'تعلم البرمجة من الواقع';
 
-export const SEO_DEFAULT_DESCRIPTION = `${SEO_SITE_NAME_AR} — منصة عربية لتعلم البرمجة من الواقع، من أساسيات تطوير الويب إلى React وNext.js وهندسة البرمجيات.`;
+export const SEO_DEFAULT_DESCRIPTION = `${SEO_SITE_NAME_EN} — منصة عربية لتعلم البرمجة من الواقع، من أساسيات تطوير الويب إلى React وNext.js وهندسة البرمجيات.`;
 
 export const SEO_LOGO_PATH = '/img/ithracode.png';
 
@@ -50,6 +46,7 @@ const SEO_BRAND_KEYWORDS = [
   'تعلم البرمجة',
   'Next.js',
   'Software Architecture',
+  'Software Development',
 ] as const;
 
 export const SEO_GLOBAL_KEYWORDS = [...SEO_BRAND_KEYWORDS] as const;
@@ -60,8 +57,15 @@ export const SEO_HOME_KEYWORDS = [
   'React',
   'JavaScript',
   'تطوير الويب',
+  'هندسة البرمجيات',
+  'React',
+  'JavaScript',
+  'Next.js',
+  'Node.js',
+  'TypeScript',
+  'Python',
+  'Java',
   SEO_AUTHOR_NAME,
-  SEO_AUTHOR_NAME_AR,
 ] as const;
 
 /**
