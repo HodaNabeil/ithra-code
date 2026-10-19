@@ -1,6 +1,3 @@
-/** Arabic brand name. */
-export const SEO_SITE_NAME_AR = 'إثراء كود';
-
 /** Latin brand: home `<title>`, Open Graph `siteName`, JSON-LD, inner-page title suffix. */
 export const SEO_SITE_NAME_EN = 'IthraCode';
 
@@ -10,9 +7,9 @@ export const SEO_SITE_ALTERNATE_NAMES = ['IthraCode', 'ithra code'] as const;
 /** Production canonical origin for metadata and JSON-LD when indexing is enabled. */
 export const SEO_CANONICAL_ORIGIN = 'https://ithracode.tech';
 
-export const SEO_OG_LOCALE = 'ar_EG';
+export const SEO_OG_LOCALE = 'en_US';
 
-export const SEO_HTML_LANGUAGE = 'ar';
+export const SEO_HTML_LANGUAGE = 'en';
 
 /** Value proposition for inner pages and WebPage schema on the home page. */
 export const SEO_DEFAULT_TITLE = 'تعلم البرمجة من الواقع';
@@ -29,11 +26,8 @@ export const SEO_OG_IMAGE_HEIGHT = 630;
 
 export const SEO_TWITTER_SITE = '@ithracode';
 
-/** Public English name shown above the Arabic name. */
+/** Public author name. */
 export const SEO_AUTHOR_NAME = 'Hoda Nabeil';
-
-/** Public Arabic name. */
-export const SEO_AUTHOR_NAME_AR = 'هدى نبيل';
 
 /** Extra Latin spelling for search only. */
 export const SEO_AUTHOR_ALTERNATE_NAMES = [] as const;

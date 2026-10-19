@@ -3,32 +3,22 @@ import type { Metadata } from 'next';
 import { Link } from '@/components/shared/link';
 import { LegalDocumentLayout } from '@/components/shared/legal-document-layout';
 import { PUBLIC_ROUTES } from '@/constants/routes';
-import {
-  SEO_AUTHOR_JOB_TITLE,
-  SEO_AUTHOR_NAME,
-  SEO_AUTHOR_NAME_AR,
-} from '@/lib/seo/config';
+import { SEO_AUTHOR_JOB_TITLE, SEO_AUTHOR_NAME } from '@/lib/seo/config';
 import { createPageMetadata } from '@/lib/seo/create-page-metadata';
 import { buildStaticWebPageJsonLd } from '@/lib/seo/json-ld/builders/static-webpage';
 import { JsonLd } from '@/lib/seo/json-ld/json-ld';
 
 const ABOUT_TITLE = 'من نحن';
-const ABOUT_DESCRIPTION = `تعرّف على ithra code بقيادة ${SEO_AUTHOR_NAME_AR} (${SEO_AUTHOR_NAME}) — المؤسسة والمالكة والمدرّبة.`;
+const ABOUT_DESCRIPTION = `تعرّف على ithra code بقيادة ${SEO_AUTHOR_NAME} — المؤسسة والمالكة والمدرّبة.`;
 
 export const metadata: Metadata = {
   ...createPageMetadata({
     title: ABOUT_TITLE,
     description: ABOUT_DESCRIPTION,
     path: PUBLIC_ROUTES.ABOUT,
-    keywords: [
-      SEO_AUTHOR_NAME,
-      SEO_AUTHOR_NAME_AR,
-      'مؤسسة ithra code',
-      'ithra code',
-      'مدربة برمجة',
-    ],
+    keywords: [SEO_AUTHOR_NAME, 'مؤسسة ithra code', 'ithra code', 'مدربة برمجة'],
   }),
-  authors: [{ name: SEO_AUTHOR_NAME }, { name: SEO_AUTHOR_NAME_AR }],
+  authors: [{ name: SEO_AUTHOR_NAME }],
   creator: SEO_AUTHOR_NAME,
 };
 

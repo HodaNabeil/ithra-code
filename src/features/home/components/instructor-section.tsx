@@ -2,11 +2,7 @@ import Image from 'next/image';
 import { ExpandableContent } from '@/components/shared/expandable-content';
 import SocialLinks from '@/components/shared/footer/social-links';
 import { INSTRUCTOR_IMAGE_SIZES } from '@/features/home/constants/image-sizes';
-import {
-  SEO_AUTHOR_JOB_TITLE,
-  SEO_AUTHOR_NAME,
-  SEO_AUTHOR_NAME_AR,
-} from '@/lib/seo/config';
+import { SEO_AUTHOR_JOB_TITLE, SEO_AUTHOR_NAME } from '@/lib/seo/config';
 import SectionHeading from './section-heading';
 
 export default function InstructorSection() {
@@ -51,7 +47,7 @@ export default function InstructorSection() {
             <ExpandableContent className="mt-4">
               <div className="space-y-4 text-muted-foreground text-base leading-relaxed">
                 <p>
-                  {SEO_AUTHOR_NAME_AR} (Frontend Engineer) متخصّصة في تصميم
+                  {SEO_AUTHOR_NAME} (Frontend Engineer) متخصّصة في تصميم
                   وبناء تطبيقات ويب حديثة وعالية الأداء وقابلة للتوسع (Scalable
                   Web Applications). تتمتع بكفاءة متقدمة في تطوير الواجهات
                   الأمامية (Frontend Development) باستخدام React وNext.js
