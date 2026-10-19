@@ -93,7 +93,7 @@ export const ORDER_ROUTES = {
 
 // Student routes
 export const STUDENT_ROUTES = {
-  DASHBOARD: '/student/dashboard',
+  DASHBOARD: '/dashboard',
   MY_COURSES: '/my-courses',
   LEARN: '/my-courses/:courseSlug/lecture/:lectureId',
   LEARN_ENTRY: '/my-courses/:courseSlug/lecture',
