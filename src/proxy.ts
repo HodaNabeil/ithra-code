@@ -76,5 +76,5 @@ const proxy = auth((req) => {
 export default proxy as unknown as NextMiddleware;
 
 export const config = {
-  matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api/auth|monitoring|_next/static|_next/image|favicon.ico).*)'],
 };
