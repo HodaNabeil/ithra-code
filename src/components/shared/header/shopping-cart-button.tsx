@@ -8,9 +8,14 @@ export default async function ShoppingCartButton() {
   let initialCount = 0;
 
   if (session?.user?.id) {
-    initialCount = await prisma.cartItem.count({
-      where: { cart: { userId: session.user.id } },
-    });
+    try {
+      initialCount = await prisma.cartItem.count({
+        where: { cart: { userId: session.user.id } },
+      });
+    } catch (error) {
+      // Don't let a cart-count failure break the whole header/layout.
+      console.error('Failed to load cart item count', error);
+    }
   }
 
   return (
